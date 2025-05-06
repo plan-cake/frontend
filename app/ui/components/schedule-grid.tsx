@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 interface ScheduleGridProps {
   isGenericWeek: boolean;
   disableSelect?: boolean;
@@ -22,31 +24,62 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
     ? (weekdays?.length ?? 0)
     : dateRange.to.getDate() - dateRange.from.getDate() + 1;
 
+  const maxDaysVisible = 7;
+  const [currentPage, setCurrentPage] = useState(0);
+  const totalPages = Math.ceil(numDays / maxDaysVisible);
+
+  const startIndex = currentPage * maxDaysVisible;
+  const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
+  const visibleDays = Array.from({ length: endIndex - startIndex }, (_, i) =>
+    isGenericWeek
+      ? (weekdays?.[startIndex + i] ?? "")
+      : new Date(dateRange.from.getTime() + (startIndex + i) * 86400000),
+  );
+
   return (
     <div className="relative h-[60vh] w-full md:w-1/2">
+      {/* Arrows */}
+      {currentPage > 0 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+          className="absolute top-0 left-6 z-10 h-[50px] w-[30px] text-xl"
+        >
+          ◀
+        </button>
+      )}
+      {currentPage < totalPages - 1 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
+          className="absolute top-0 right-0 z-10 h-[50px] w-[30px] text-xl"
+        >
+          ▶
+        </button>
+      )}
+
+      {/* Grid */}
       <div
         className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-300"
         style={{
-          gridTemplateColumns: `60px repeat(${numDays}, 1fr)`,
-          gridTemplateRows: `30px repeat(${numHours}, 1fr)`,
+          gridTemplateColumns: `60px repeat(${visibleDays.length}, 1fr) 30px`,
+          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
         }}
       >
         {/* Grid cells */}
-        {Array.from({ length: (numHours + 1) * (numDays + 1) + 1 }).map(
-          (_, i) => (
-            <div
-              key={i}
-              className={`${disableSelect ? "cursor-not-allowed" : ""}`}
-            />
-          ),
-        )}
+        {Array.from({
+          length: (numHours + 1) * (visibleDays.length + 2) + 1,
+        }).map((_, i) => (
+          <div
+            key={i}
+            className={`${disableSelect ? "cursor-not-allowed" : ""}`}
+          />
+        ))}
       </div>
 
       {/* Time labels positioned between lines */}
       <div
         className="pointer-events-none absolute top-0 left-0 grid h-full w-[60px] bg-white dark:bg-dblue"
         style={{
-          gridTemplateRows: `30px repeat(${numHours}, 1fr)`,
+          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
         }}
       >
         <div /> {/* Empty header corner */}
@@ -67,24 +100,45 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Column headers */}
       <div
-        className="absolute top-0 right-0 left-[60px] grid h-[30px]"
+        className="absolute top-0 right-[30px] left-[60px] grid h-[50px]"
         style={{
-          gridTemplateColumns: `repeat(${numDays}, 1fr)`,
+          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
         }}
       >
-        {Array.from({ length: numDays }).map((_, dayIndex) => (
-          <div
-            key={`day-${dayIndex}`}
-            className="flex items-center justify-center text-sm font-medium"
-          >
-            {isGenericWeek
-              ? weekdays?.[dayIndex]
-              : new Date(
-                  dateRange.from.getTime() + dayIndex * 86400000,
-                ).toLocaleDateString()}
-          </div>
-        ))}
+        {visibleDays.map((day, dayIndex) => {
+          if (isGenericWeek && typeof day === "string") {
+            return (
+              <div
+                key={`day-${dayIndex}`}
+                className="flex items-center justify-center text-sm font-medium"
+              >
+                {day.toUpperCase()}
+              </div>
+            );
+          } else if (day instanceof Date) {
+            const weekday = day
+              .toLocaleDateString("en-US", { weekday: "short" })
+              .toUpperCase();
+            const monthDay = day
+              .toLocaleDateString("en-US", { month: "short", day: "numeric" })
+              .toUpperCase();
+            return (
+              <div
+                key={`day-${dayIndex}`}
+                className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
+              >
+                <div>{weekday}</div>
+                <div>{monthDay}</div>
+              </div>
+            );
+          } else {
+            return null;
+          }
+        })}
       </div>
+
+      {/* Right border */}
+      <div className="pointer-events-none absolute top-0 right-0 grid h-full w-[30px] bg-white dark:bg-dblue"></div>
     </div>
   );
 }
