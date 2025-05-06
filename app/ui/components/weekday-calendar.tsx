@@ -27,7 +27,7 @@ export default function WeekdayCalendar({
 
   return (
     <div className="space-y-2">
-      <div className="grid w-fit grid-cols-7 divide-x-1 divide-solid divide-gray-300 border border-gray-300 md:w-1/2 md:w-full">
+      <div className="grid w-fit grid-cols-7 divide-x-1 divide-solid divide-gray-300 border border-gray-300 md:w-full">
         {days.map((day) => (
           <button
             key={day}

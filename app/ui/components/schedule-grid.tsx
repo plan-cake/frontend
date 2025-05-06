@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 interface ScheduleGridProps {
   isGenericWeek: boolean;
   disableSelect?: boolean;
@@ -46,7 +44,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Time labels positioned between lines */}
       <div
-        className="pointer-events-none absolute top-0 left-0 grid h-full w-[60px] bg-white"
+        className="pointer-events-none absolute top-0 left-0 grid h-full w-[60px] bg-white dark:bg-dblue"
         style={{
           gridTemplateRows: `30px repeat(${numHours}, 1fr)`,
         }}

@@ -27,7 +27,10 @@ export default function Page() {
   const [rangeType, setRangeType] = useState<"specific" | "weekday">(
     "specific",
   );
-  const [specificRange, setSpecificRange] = useState<TimeDateRange>();
+  const [specificRange, setSpecificRange] = useState<TimeDateRange>({
+    from: new Date(),
+    to: new Date(),
+  });
   const [weekdayRange, setWeekdayRange] = useState<string[]>([]);
 
   const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
