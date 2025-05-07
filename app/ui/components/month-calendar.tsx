@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import useCheckMobile from "@/app/utils/useCheckMobile";
+import useCheckMobile from "@/app/_utils/useCheckMobile";
 
-import { format } from "date-fns";
 import {
   DateRange,
   DayPicker,
@@ -14,10 +13,15 @@ import "react-day-picker/dist/style.css";
 
 type CalendarProps = {
   className?: string;
+  selectedRange?: DateRange;
   onRangeSelect?: (from: Date | null, to: Date | null) => void;
 };
 
-export function Calendar({ className, onRangeSelect }: CalendarProps) {
+export function Calendar({
+  className,
+  selectedRange,
+  onRangeSelect,
+}: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
   const isMobile = useCheckMobile();
@@ -27,12 +31,10 @@ export function Calendar({ className, onRangeSelect }: CalendarProps) {
   const today = new Date();
 
   const [month, setMonth] = useState(today);
-  const [selectedRange, setSelectedRange] = useState<DateRange>();
 
   const handleRangeSelect: SelectRangeEventHandler = (
     range: DateRange | undefined,
   ) => {
-    setSelectedRange(range);
     const from = range?.from || null;
     const to = range?.to || null;
     onRangeSelect?.(from, to);

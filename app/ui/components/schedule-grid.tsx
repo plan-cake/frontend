@@ -22,7 +22,10 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
   const numHours = timeRange.to.getHours() - timeRange.from.getHours() + 1;
   const numDays = isGenericWeek
     ? (weekdays?.length ?? 0)
-    : dateRange.to.getDate() - dateRange.from.getDate() + 1;
+    : Math.ceil(
+        (dateRange.to.getTime() - dateRange.from.getTime()) /
+          (1000 * 60 * 60 * 24),
+      ) + 1;
 
   const maxDaysVisible = 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -37,7 +40,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
   );
 
   return (
-    <div className="relative h-[60vh] w-full md:w-1/2">
+    <div className="relative h-full w-full">
       {/* Arrows */}
       {currentPage > 0 && (
         <button
