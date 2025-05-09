@@ -7,6 +7,8 @@ import {
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 
+import useCheckMobile from "@/app/_utils/useCheckMobile";
+
 interface ScheduleGridProps {
   isGenericWeek: boolean;
   disableSelect?: boolean;
@@ -16,6 +18,8 @@ interface ScheduleGridProps {
 }
 
 export default function ScheduleGrid(props: ScheduleGridProps) {
+  const isMobile = useCheckMobile();
+
   const {
     isGenericWeek,
     disableSelect = false,
@@ -32,7 +36,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
           (1000 * 60 * 60 * 24),
       ) + 1;
 
-  const maxDaysVisible = 7;
+  const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
   const totalPages = Math.ceil(numDays / maxDaysVisible);
 
@@ -43,6 +47,9 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       ? (weekdays?.[startIndex + i] ?? "")
       : new Date(dateRange.from.getTime() + (startIndex + i) * 86400000),
   );
+
+  const timeColWidth = 50;
+  const rightArrowWidth = 20;
 
   if (numHours <= 0) {
     return GridError({ message: "Invalid time range" });
@@ -56,7 +63,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       {currentPage > 0 && (
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] w-[30px] text-xl"
+          className={`absolute top-0 left-6 z-10 h-[50px] w-[${timeColWidth}px] text-xl`}
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
@@ -64,7 +71,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       {currentPage < totalPages - 1 && (
         <button
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] w-[30px] text-xl"
+          className={`absolute top-0 right-0 z-10 h-[50px] w-[${rightArrowWidth}px] text-xl`}
         >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
@@ -74,7 +81,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       <div
         className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-300 dark:divide-gray-400"
         style={{
-          gridTemplateColumns: `60px repeat(${visibleDays.length}, 1fr) 30px`,
+          gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
         }}
       >
@@ -91,7 +98,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Time labels positioned between lines */}
       <div
-        className="pointer-events-none absolute top-0 left-0 grid h-full w-[60px] bg-white dark:bg-dblue"
+        className={`pointer-events-none absolute top-0 left-0 grid h-full w-[${timeColWidth}px] bg-white dark:bg-dblue`}
         style={{
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
         }}
@@ -114,7 +121,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Column headers */}
       <div
-        className="absolute top-0 right-[30px] left-[60px] grid h-[50px]"
+        className={`absolute top-0 right-[${rightArrowWidth}px] left-[${timeColWidth}px] grid h-[50px]`}
         style={{
           gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
         }}
@@ -152,7 +159,9 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       </div>
 
       {/* Right border */}
-      <div className="pointer-events-none absolute top-0 right-0 grid h-full w-[30px] bg-white dark:bg-dblue"></div>
+      <div
+        className={`pointer-events-none absolute top-0 right-0 grid h-full w-[${rightArrowWidth}px] bg-white dark:bg-dblue`}
+      ></div>
     </div>
   );
 }
