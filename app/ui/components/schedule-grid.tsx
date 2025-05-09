@@ -63,7 +63,8 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       {currentPage > 0 && (
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className={`absolute top-0 left-6 z-10 h-[50px] w-[${timeColWidth}px] text-xl`}
+          className="absolute top-0 left-6 z-10 h-[50px] text-xl"
+          style={{ width: `${timeColWidth}px` }}
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
@@ -71,7 +72,8 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       {currentPage < totalPages - 1 && (
         <button
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className={`absolute top-0 right-0 z-10 h-[50px] w-[${rightArrowWidth}px] text-xl`}
+          className="absolute top-0 right-0 z-10 h-[50px] text-xl"
+          style={{ width: `${rightArrowWidth}px` }}
         >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
@@ -85,7 +87,6 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
         }}
       >
-        {/* Grid cells */}
         {Array.from({
           length: (numHours + 1) * (visibleDays.length + 2) + 1,
         }).map((_, i) => (
@@ -96,14 +97,18 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
         ))}
       </div>
 
-      {/* Time labels positioned between lines */}
+      {/* Time labels */}
       <div
-        className={`pointer-events-none absolute top-0 left-0 grid h-full w-[${timeColWidth}px] bg-white dark:bg-dblue`}
+        className="pointer-events-none absolute top-0 bg-white dark:bg-dblue"
         style={{
+          width: `${timeColWidth}px`,
+          height: "100%",
+          display: "grid",
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
+          left: 0,
         }}
       >
-        <div /> {/* Empty header corner */}
+        <div />
         {Array.from({ length: numHours }).map((_, i) => {
           const hour = new Date(timeRange.from.getTime() + i * 3600000);
           return (
@@ -121,8 +126,10 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Column headers */}
       <div
-        className={`absolute top-0 right-[${rightArrowWidth}px] left-[${timeColWidth}px] grid h-[50px]`}
+        className="absolute top-0 grid h-[50px]"
         style={{
+          left: `${timeColWidth}px`,
+          right: `${rightArrowWidth}px`,
           gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
         }}
       >
@@ -160,7 +167,12 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Right border */}
       <div
-        className={`pointer-events-none absolute top-0 right-0 grid h-full w-[${rightArrowWidth}px] bg-white dark:bg-dblue`}
+        className="pointer-events-none absolute top-0 bg-white dark:bg-dblue"
+        style={{
+          width: `${rightArrowWidth}px`,
+          height: "100%",
+          right: 0,
+        }}
       ></div>
     </div>
   );
