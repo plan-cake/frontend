@@ -22,7 +22,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${roboto.variable} h-dvh p-12 antialiased`}>
+      <body className={`${roboto.variable} m-12 h-dvh antialiased md:h-fit`}>
         <Providers>
           <Header />
           {children}

@@ -7,6 +7,7 @@ import DateRangePopover from "../ui/components/date-range-popover";
 import WeekdayCalendar from "../ui/components/weekday-calendar";
 import ScheduleGrid from "../ui/components/schedule-grid";
 import { TimeDateRange, WeekdayMap } from "../_types/schedule-types";
+import CustomSelect from "../ui/components/custom-select";
 
 export default function Page() {
   const [selectedTime, setSelectedTime] = useState<TimeDateRange>({
@@ -63,18 +64,16 @@ export default function Page() {
             What times and dates is this event?
           </p>
         </div>
-        <div className="mb-4 flex w-fit flex-col space-y-2 space-x-20 pl-4 md:flex-row">
-          <select
-            name="dates"
-            id="dates"
-            className="h-fit w-fit rounded-full border-1 border-gray-300 p-2 focus:outline-none"
-            onChange={(e) =>
-              setRangeType(e.target.value === "1" ? "specific" : "weekday")
+        <div className="mb-4 flex flex-col space-y-2 space-x-20 pl-4 md:flex-row">
+          <CustomSelect
+            options={["Specific Dates", "Days of the Week"]}
+            value={
+              rangeType === "specific" ? "Specific Dates" : "Days of the Week"
             }
-          >
-            <option value="1">Specific Dates</option>
-            <option value="2">Days of the Week</option>
-          </select>
+            onValueChange={(value) => {
+              setRangeType(value === "Specific Dates" ? "specific" : "weekday");
+            }}
+          />
 
           {rangeType === "specific" &&
           specificRange?.from &&
