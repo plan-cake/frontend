@@ -28,14 +28,14 @@ export default function WeekdayCalendar({
 
   return (
     <div className="space-y-2">
-      <div className="grid w-fit grid-cols-7 divide-x-1 divide-solid divide-gray-300 border border-gray-300 md:w-full">
+      <div className="grid w-fit grid-cols-7 divide-x-1 divide-solid divide-gray-300 rounded-lg border border-gray-300 text-sm md:w-full dark:divide-gray-400 dark:border-gray-400">
         {days.map((day) => (
           <button
             key={day}
             onClick={() => handleRangeSelect(day)}
-            className={`p-2 ${
+            className={`min-h-9 px-2 py-1 ${
               selectedDays[day] === 1
-                ? "bg-red-400 text-red dark:bg-red dark:text-white"
+                ? "bg-red-300 text-red dark:bg-red dark:text-white"
                 : ""
             } `}
           >
