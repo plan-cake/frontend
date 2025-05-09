@@ -73,6 +73,7 @@ export default function Page() {
             onValueChange={(value) => {
               setRangeType(value === "Specific Dates" ? "specific" : "weekday");
             }}
+            className="min-h-9 min-w-[180px]"
           />
 
           {rangeType === "specific" &&
