@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
 
 interface ScheduleGridProps {
   isGenericWeek: boolean;
@@ -40,6 +44,12 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       : new Date(dateRange.from.getTime() + (startIndex + i) * 86400000),
   );
 
+  if (numHours <= 0) {
+    return GridError({ message: "Invalid time range" });
+  } else if (numDays <= 0) {
+    return GridError({ message: "Invalid or missing date range" });
+  }
+
   return (
     <div className="relative h-full w-full">
       {/* Arrows */}
@@ -62,7 +72,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
       {/* Grid */}
       <div
-        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-300"
+        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-300 dark:divide-gray-400"
         style={{
           gridTemplateColumns: `60px repeat(${visibleDays.length}, 1fr) 30px`,
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
@@ -146,3 +156,12 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
     </div>
   );
 }
+
+const GridError = ({ message }: { message: string }) => {
+  return (
+    <div className="flex h-full w-full items-center justify-center text-sm">
+      <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red dark:text-red-500" />
+      {message}
+    </div>
+  );
+};
