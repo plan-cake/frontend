@@ -1,27 +1,28 @@
 "use client";
 
 import * as Popover from "@radix-ui/react-popover";
-import { Calendar } from "./month-calendar";
+import { Calendar } from "../month-calendar";
 import { format } from "date-fns";
-
-type Props = {
-  specificRange: { from: Date | null; to: Date | null };
-  onChangeSpecific: (range: { from: Date | null; to: Date | null }) => void;
-};
+import { DateRangeProps } from "@/app/_types/date-range-types";
 
 export default function DateRangePopover({
   specificRange,
   onChangeSpecific,
-}: Props) {
+}: DateRangeProps) {
+  const displayFrom = specificRange.from
+    ? format(specificRange.from, "EEE, MMM d")
+    : "";
+  const displayTo = specificRange.to
+    ? format(specificRange.to, "EEE, MMM d")
+    : "";
+
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
         <form className="ma2 w-fit rounded-full">
           <input
             size={10}
-            value={
-              specificRange.from ? format(specificRange.from, "EEE, MMM d") : ""
-            }
+            value={displayFrom}
             onChange={(e) =>
               onChangeSpecific({
                 ...specificRange,
@@ -33,9 +34,7 @@ export default function DateRangePopover({
           />
           <input
             size={10}
-            value={
-              specificRange.to ? format(specificRange.to, "EEE, MMM d") : ""
-            }
+            value={displayTo}
             onChange={(e) =>
               onChangeSpecific({
                 ...specificRange,

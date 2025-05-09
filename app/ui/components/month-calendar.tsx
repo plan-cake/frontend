@@ -41,19 +41,27 @@ export function Calendar({
   };
 
   return (
-    <DayPicker
-      mode="range"
-      numberOfMonths={numberOfMonths}
-      animate
-      hideNavigation={hideNavigation}
-      month={month}
-      onMonthChange={setMonth}
-      selected={selectedRange}
-      onSelect={handleRangeSelect}
-      disabled={{ before: new Date() }}
-      classNames={{
-        root: `${defaultClassNames.root}`,
-      }}
-    />
+    <div className={className}>
+      {/* <button
+        onClick={() => setMonth(today)}
+        className="rounded-full border-1 border-red px-6 py-1 hover:bg-red-300 dark:hover:bg-red-900"
+      >
+        Today
+      </button> */}
+      <DayPicker
+        mode="range"
+        numberOfMonths={numberOfMonths}
+        animate
+        hideNavigation={hideNavigation}
+        month={month}
+        onMonthChange={setMonth}
+        selected={selectedRange}
+        onSelect={handleRangeSelect}
+        disabled={{ before: new Date() }}
+        classNames={{
+          root: `${defaultClassNames.root} flex justify-center items-center`,
+        }}
+      />
+    </div>
   );
 }

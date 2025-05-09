@@ -3,11 +3,9 @@
 import { useState } from "react";
 
 import TimeDropdown from "../ui/components/time-dropdown";
-import DateRangePopover from "../ui/components/date-range-popover";
-import WeekdayCalendar from "../ui/components/weekday-calendar";
 import ScheduleGrid from "../ui/components/schedule-grid";
 import { TimeDateRange, WeekdayMap } from "../_types/schedule-types";
-import CustomSelect from "../ui/components/custom-select";
+import DateRangeSelector from "../ui/components/date-range/date-range-selector";
 
 export default function Page() {
   const [selectedTime, setSelectedTime] = useState<TimeDateRange>({
@@ -50,47 +48,31 @@ export default function Page() {
       <input
         type="text"
         placeholder="add event name"
-        className="w-auto border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
+        className="w-full border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
       <div
-        className="grid h-full w-full"
+        className="flex h-full w-full flex-col space-y-4 md:grid"
         style={{
-          gridTemplateColumns: `200px auto`,
+          gridTemplateColumns: `min(18vw, 200px) auto`,
           gridTemplateRows: `50px auto`,
         }}
       >
         <div>
-          <p className="pr-4 pl-4 text-center font-bold">
+          <p className="font-bold md:pr-4 md:pl-4 md:text-center">
             What times and dates is this event?
           </p>
         </div>
-        <div className="mb-4 flex flex-col space-y-2 space-x-20 pl-4 md:flex-row">
-          <CustomSelect
-            options={["Specific Dates", "Days of the Week"]}
-            value={
-              rangeType === "specific" ? "Specific Dates" : "Days of the Week"
-            }
-            onValueChange={(value) => {
-              setRangeType(value === "Specific Dates" ? "specific" : "weekday");
-            }}
-            className="min-h-9 min-w-[180px]"
-          />
 
-          {rangeType === "specific" &&
-          specificRange?.from &&
-          specificRange?.to ? (
-            <DateRangePopover
-              specificRange={specificRange}
-              onChangeSpecific={handleSpecificRangeChange}
-            />
-          ) : (
-            <WeekdayCalendar
-              selectedDays={weekdayRange}
-              onChange={handleWeekdayRangeChange}
-            />
-          )}
-        </div>
-        <div className="flex flex-col items-center gap-2 p-4">
+        <DateRangeSelector
+          rangeType={rangeType}
+          onChangeRangeType={setRangeType}
+          specificRange={specificRange}
+          onChangeSpecific={handleSpecificRangeChange}
+          weekdayRange={weekdayRange}
+          onChangeWeekday={handleWeekdayRangeChange}
+        />
+
+        <div className="flex items-center gap-2 md:flex-col md:p-4">
           <TimeDropdown
             value={selectedTime.from}
             onChange={(from) => setSelectedTime({ ...selectedTime, from })}
@@ -117,6 +99,13 @@ export default function Page() {
             .map(([day]) => day)}
         />
       </div>
+      <style jsx>{`
+        @media (max-width: 768px) {
+          div[style] {
+            grid-template-rows: 80px auto !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
