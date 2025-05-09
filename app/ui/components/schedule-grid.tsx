@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 interface ScheduleGridProps {
   isGenericWeek: boolean;
@@ -47,7 +48,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
           className="absolute top-0 left-6 z-10 h-[50px] w-[30px] text-xl"
         >
-          ◀
+          <ChevronLeftIcon className="h-5 w-5" />
         </button>
       )}
       {currentPage < totalPages - 1 && (
@@ -55,7 +56,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
           className="absolute top-0 right-0 z-10 h-[50px] w-[30px] text-xl"
         >
-          ▶
+          <ChevronRightIcon className="h-5 w-5" />
         </button>
       )}
 
