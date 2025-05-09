@@ -46,11 +46,11 @@ export default function Page() {
   };
 
   return (
-    <div className="relative h-[70vh] w-full space-y-6">
+    <div className="relative mt-2 h-[70vh] w-full space-y-6">
       <input
         type="text"
         placeholder="add event name"
-        className="w-auto border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4"
+        className="w-auto border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
       <div
         className="grid h-full w-full"
