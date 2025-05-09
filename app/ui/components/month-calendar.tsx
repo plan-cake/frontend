@@ -41,21 +41,19 @@ export function Calendar({
   };
 
   return (
-    <div className={className}>
-      <DayPicker
-        mode="range"
-        numberOfMonths={numberOfMonths}
-        animate
-        hideNavigation={hideNavigation}
-        month={month}
-        onMonthChange={setMonth}
-        selected={selectedRange}
-        onSelect={handleRangeSelect}
-        disabled={{ before: new Date() }}
-        classNames={{
-          root: `${defaultClassNames.root}`,
-        }}
-      />
-    </div>
+    <DayPicker
+      mode="range"
+      numberOfMonths={numberOfMonths}
+      animate
+      hideNavigation={hideNavigation}
+      month={month}
+      onMonthChange={setMonth}
+      selected={selectedRange}
+      onSelect={handleRangeSelect}
+      disabled={{ before: new Date() }}
+      classNames={{
+        root: `${defaultClassNames.root}`,
+      }}
+    />
   );
 }
