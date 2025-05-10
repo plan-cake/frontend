@@ -15,6 +15,7 @@ interface ScheduleGridProps {
   weekdays?: string[];
   dateRange?: { from: Date; to: Date };
   timeRange: { from: Date; to: Date };
+  timezone: string;
 }
 
 export default function ScheduleGrid(props: ScheduleGridProps) {
@@ -26,6 +27,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
     weekdays,
     dateRange = { from: new Date(), to: new Date() },
     timeRange = { from: new Date(), to: new Date() },
+    timezone,
   } = props;
 
   const numHours = timeRange.to.getHours() - timeRange.from.getHours() + 1;
@@ -58,7 +60,7 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-[90%] w-full">
       {/* Arrows */}
       {currentPage > 0 && (
         <button
@@ -111,14 +113,17 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
         <div />
         {Array.from({ length: numHours }).map((_, i) => {
           const hour = new Date(timeRange.from.getTime() + i * 3600000);
+          const formatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: timezone,
+            hour: "numeric",
+            hour12: true,
+          });
           return (
             <div
               key={i}
               className="relative flex items-start justify-end pr-2 text-right text-xs"
             >
-              <span className="absolute -top-2">
-                {hour.toLocaleTimeString([], { hour: "numeric", hour12: true })}
-              </span>
+              <span className="absolute -top-2">{formatter.format(hour)}</span>
             </div>
           );
         })}

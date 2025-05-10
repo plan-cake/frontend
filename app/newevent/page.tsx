@@ -6,8 +6,13 @@ import TimeDropdown from "../ui/components/time-dropdown";
 import ScheduleGrid from "../ui/components/schedule-grid";
 import { TimeDateRange, WeekdayMap } from "../_types/schedule-types";
 import DateRangeSelector from "../ui/components/date-range/date-range-selector";
+import TimezoneSelect from "../ui/components/timezone-select";
+import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
+  const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const [timezone, setTimezone] = useState(defaultTZ);
+
   const [selectedTime, setSelectedTime] = useState<TimeDateRange>({
     from: new Date(),
     to: new Date(),
@@ -72,32 +77,45 @@ export default function Page() {
           onChangeWeekday={handleWeekdayRangeChange}
         />
 
-        <div className="flex items-center gap-2 md:flex-col md:p-4">
-          <TimeDropdown
-            value={selectedTime.from}
-            onChange={(from) => setSelectedTime({ ...selectedTime, from })}
-          />
-          {"to"}
-          <TimeDropdown
-            value={selectedTime.to}
-            onChange={(to) => setSelectedTime({ ...selectedTime, to })}
+        <div className="flex flex-col gap-2 md:items-center md:p-4">
+          <div className="flex gap-2 md:flex-col md:items-center">
+            <TimeDropdown
+              defaultTZ={defaultTZ}
+              value={selectedTime.from}
+              onChange={(from) => setSelectedTime({ ...selectedTime, from })}
+            />
+            {"to"}
+            <TimeDropdown
+              defaultTZ={defaultTZ}
+              value={selectedTime.to}
+              onChange={(to) => setSelectedTime({ ...selectedTime, to })}
+            />
+          </div>
+          <TimezoneSelect value={timezone} onChange={setTimezone} />
+        </div>
+        <div className="group h-full space-y-4 rounded border border-transparent p-4 hover:border-dblue dark:hover:border-white">
+          <div className="mr-4 flex items-center justify-end space-x-2">
+            <label className="text-sm font-medium">{timezone}</label>
+            <label className="text-sm font-medium">Grid Preview</label>
+            <EnterFullScreenIcon className="h-5 w-5 cursor-pointer text-dblue hover:text-red" />
+          </div>
+          <ScheduleGrid
+            isGenericWeek={rangeType == "weekday"}
+            disableSelect={true}
+            timeRange={{
+              from: selectedTime.from || new Date(),
+              to: selectedTime.to || new Date(),
+            }}
+            dateRange={{
+              from: specificRange?.from || new Date(),
+              to: specificRange?.to || new Date(),
+            }}
+            weekdays={Object.entries(weekdayRange)
+              .filter(([, v]) => v === 1)
+              .map(([day]) => day)}
+            timezone={timezone}
           />
         </div>
-        <ScheduleGrid
-          isGenericWeek={rangeType == "weekday"}
-          disableSelect={true}
-          timeRange={{
-            from: selectedTime.from || new Date(),
-            to: selectedTime.to || new Date(),
-          }}
-          dateRange={{
-            from: specificRange?.from || new Date(),
-            to: specificRange?.to || new Date(),
-          }}
-          weekdays={Object.entries(weekdayRange)
-            .filter(([, v]) => v === 1)
-            .map(([day]) => day)}
-        />
       </div>
       <style jsx>{`
         @media (max-width: 768px) {
