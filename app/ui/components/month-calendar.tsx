@@ -13,8 +13,8 @@ import "react-day-picker/dist/style.css";
 
 type CalendarProps = {
   className?: string;
-  selectedRange?: DateRange;
-  onRangeSelect?: (from: Date | null, to: Date | null) => void;
+  selectedRange: DateRange;
+  onRangeSelect: (range: { from: Date | null; to: Date | null }) => void;
 };
 
 export function Calendar({
@@ -37,7 +37,7 @@ export function Calendar({
   ) => {
     const from = range?.from || null;
     const to = range?.to || null;
-    onRangeSelect?.(from, to);
+    onRangeSelect({ from, to });
   };
 
   return (

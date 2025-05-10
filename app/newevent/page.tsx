@@ -4,48 +4,34 @@ import { useState } from "react";
 
 import TimeDropdown from "../ui/components/time-dropdown";
 import ScheduleGrid from "../ui/components/schedule-grid";
-import { TimeDateRange, WeekdayMap } from "../_types/schedule-types";
 import DateRangeSelector from "../ui/components/date-range/date-range-selector";
 import TimezoneSelect from "../ui/components/timezone-select";
 import { EnterFullScreenIcon } from "@radix-ui/react-icons";
+
+import { EventRange } from "../_types/schedule-types";
 
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const [timezone, setTimezone] = useState(defaultTZ);
 
-  const [selectedTime, setSelectedTime] = useState<TimeDateRange>({
-    from: new Date(),
-    to: new Date(),
+  const [eventRange, setEventRange] = useState<EventRange>({
+    type: "specific",
+    dateRange: { from: new Date(), to: new Date() },
+    timeRange: { from: new Date(), to: new Date() },
   });
 
-  const [rangeType, setRangeType] = useState<"specific" | "weekday">(
-    "specific",
-  );
-
-  const [specificRange, setSpecificRange] = useState<TimeDateRange>({
-    from: new Date(),
-    to: new Date(),
-  });
-
-  const WEEKDAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-  const today = WEEKDAYS[new Date().getDay()];
-
-  const [weekdayRange, setWeekdayRange] = useState<WeekdayMap>(() =>
-    WEEKDAYS.reduce((acc, day) => {
-      acc[day] = day === today ? 1 : 0;
-      return acc;
-    }, {} as WeekdayMap),
-  );
-
-  const handleWeekdayRangeChange = (newRange: WeekdayMap) => {
-    setWeekdayRange(newRange);
+  const handleTimeChange = (key: "from" | "to", value: Date) => {
+    setEventRange((prev) => ({
+      ...prev,
+      timeRange: {
+        ...prev.timeRange,
+        [key]: value,
+      },
+    }));
   };
 
-  const handleSpecificRangeChange = (range: TimeDateRange) => {
-    setSpecificRange({
-      from: range.from ? new Date(range.from) : null,
-      to: range.to ? new Date(range.to) : null,
-    });
+  const handleEventRangeChange = (range: EventRange) => {
+    setEventRange(range);
   };
 
   return (
@@ -69,26 +55,22 @@ export default function Page() {
         </div>
 
         <DateRangeSelector
-          rangeType={rangeType}
-          onChangeRangeType={setRangeType}
-          specificRange={specificRange}
-          onChangeSpecific={handleSpecificRangeChange}
-          weekdayRange={weekdayRange}
-          onChangeWeekday={handleWeekdayRangeChange}
+          eventRange={eventRange}
+          onChangeEventRange={handleEventRangeChange}
         />
 
         <div className="flex flex-col gap-2 md:items-center md:p-4">
           <div className="flex gap-2 md:flex-col md:items-center">
             <TimeDropdown
               defaultTZ={defaultTZ}
-              value={selectedTime.from}
-              onChange={(from) => setSelectedTime({ ...selectedTime, from })}
+              value={eventRange.timeRange.from}
+              onChange={(from) => handleTimeChange("from", from)}
             />
             {"to"}
             <TimeDropdown
               defaultTZ={defaultTZ}
-              value={selectedTime.to}
-              onChange={(to) => setSelectedTime({ ...selectedTime, to })}
+              value={eventRange.timeRange.to}
+              onChange={(to) => handleTimeChange("to", to)}
             />
           </div>
           <TimezoneSelect value={timezone} onChange={setTimezone} />
@@ -100,19 +82,8 @@ export default function Page() {
             <EnterFullScreenIcon className="h-5 w-5 cursor-pointer text-dblue hover:text-red" />
           </div>
           <ScheduleGrid
-            isGenericWeek={rangeType == "weekday"}
+            eventRange={eventRange}
             disableSelect={true}
-            timeRange={{
-              from: selectedTime.from || new Date(),
-              to: selectedTime.to || new Date(),
-            }}
-            dateRange={{
-              from: specificRange?.from || new Date(),
-              to: specificRange?.to || new Date(),
-            }}
-            weekdays={Object.entries(weekdayRange)
-              .filter(([, v]) => v === 1)
-              .map(([day]) => day)}
             timezone={timezone}
           />
         </div>

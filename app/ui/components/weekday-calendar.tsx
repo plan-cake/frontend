@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Checkbox from "./checkbox";
 
 import { WeekdayMap } from "@/app/_types/schedule-types";
@@ -10,7 +10,15 @@ type WeekdayCalendarProps = {
   onChange: (map: WeekdayMap) => void;
 };
 
-let days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+let days: Array<keyof WeekdayMap> = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];
 
 export default function WeekdayCalendar({
   selectedDays,
@@ -19,11 +27,17 @@ export default function WeekdayCalendar({
   const [startMonday, setStartMonday] = useState(false);
   days = startMonday ? [...days.slice(1), days[0]] : days;
 
-  const handleRangeSelect = (day: string) => {
-    onChange({
-      ...selectedDays,
-      [day]: selectedDays[day] === 1 ? 0 : 1,
-    });
+  useEffect(() => {
+    const today = new Date();
+    const dayOfWeek = today.getDay();
+    selectedDays[days[dayOfWeek]] = 1;
+    onChange(selectedDays);
+  }, []);
+
+  const handleRangeSelect = (day: keyof WeekdayMap) => {
+    const newSelectedDays = { ...selectedDays };
+    newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
+    onChange(newSelectedDays);
   };
 
   return (
@@ -32,9 +46,9 @@ export default function WeekdayCalendar({
         {days.map((day) => (
           <button
             key={day}
-            onClick={() => handleRangeSelect(day)}
+            onClick={() => handleRangeSelect(day as keyof WeekdayMap)}
             className={`min-h-9 px-2 py-1 ${
-              selectedDays[day] === 1
+              selectedDays[day as keyof WeekdayMap] === 1
                 ? "bg-red-300 text-red dark:bg-red dark:text-white"
                 : ""
             } `}

@@ -4,47 +4,21 @@ import * as Popover from "@radix-ui/react-popover";
 import { Calendar } from "../month-calendar";
 import { format } from "date-fns";
 import { DateRangeProps } from "@/app/_types/date-range-types";
+import DateRangeInput from "./date-range-input";
 
 export default function DateRangePopover({
   specificRange,
   onChangeSpecific,
 }: DateRangeProps) {
-  const displayFrom = specificRange.from
-    ? format(specificRange.from, "EEE, MMM d")
-    : "";
-  const displayTo = specificRange.to
-    ? format(specificRange.to, "EEE, MMM d")
-    : "";
-
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
-        <form className="ma2 w-fit rounded-full">
-          <input
-            size={10}
-            value={displayFrom}
-            onChange={(e) =>
-              onChangeSpecific({
-                ...specificRange,
-                from: new Date(e.target.value),
-              })
-            }
-            className="rounded-l-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
-            aria-label="Start date"
+        <div>
+          <DateRangeInput
+            specificRange={specificRange}
+            onChangeSpecific={onChangeSpecific}
           />
-          <input
-            size={10}
-            value={displayTo}
-            onChange={(e) =>
-              onChangeSpecific({
-                ...specificRange,
-                to: new Date(e.target.value),
-              })
-            }
-            className="rounded-r-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
-            aria-label="End date"
-          />
-        </form>
+        </div>
       </Popover.Trigger>
 
       <Popover.Portal>
@@ -56,10 +30,17 @@ export default function DateRangePopover({
           <Calendar
             className="w-fit"
             selectedRange={{
-              from: specificRange.from || undefined,
-              to: specificRange.to || undefined,
+              from: specificRange?.from || undefined,
+              to: specificRange?.to || undefined,
             }}
-            onRangeSelect={(from, to) => onChangeSpecific({ from, to })}
+            onRangeSelect={(range) => {
+              if (range?.from) {
+                onChangeSpecific?.("from", range.from);
+              }
+              if (range?.to) {
+                onChangeSpecific?.("to", range.to);
+              }
+            }}
           />
         </Popover.Content>
       </Popover.Portal>

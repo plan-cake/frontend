@@ -6,19 +6,19 @@ import DateRangeInput from "./date-range-input";
 import { DateRangeProps } from "@/app/_types/date-range-types";
 
 export default function DateRangeDrawer({
-  specificRange,
+  eventRange,
+  onChangeRangeType,
   onChangeSpecific,
-  rangeType = "specific",
-  onChangeRangeType = () => {},
-  weekdayRange = {},
-  onChangeWeekday = () => {},
+  onChangeWeekday,
 }: DateRangeProps) {
+  const rangeType = eventRange?.type ?? "specific";
+
   const select = (
     <CustomSelect
       options={["Specific Dates", "Days of the Week"]}
       value={rangeType === "specific" ? "Specific Dates" : "Days of the Week"}
       onValueChange={(value) =>
-        onChangeRangeType(value === "Specific Dates" ? "specific" : "weekday")
+        onChangeRangeType?.(value === "Specific Dates" ? "specific" : "weekday")
       }
       className="min-h-9 min-w-[100px] border-none px-2"
     />
@@ -28,10 +28,8 @@ export default function DateRangeDrawer({
       <Dialog.Trigger asChild>
         <div className="cursor-pointer">
           <DateRangeDrawerSelector
-            rangeType={rangeType}
-            specificRange={specificRange}
+            eventRange={eventRange}
             onChangeSpecific={onChangeSpecific}
-            weekdayRange={weekdayRange}
             onChangeWeekday={onChangeWeekday}
           />
         </div>
@@ -54,10 +52,8 @@ export default function DateRangeDrawer({
             </Dialog.Title>
 
             <DateRangeDrawerSelector
-              rangeType={rangeType}
-              specificRange={specificRange}
+              eventRange={eventRange}
               onChangeSpecific={onChangeSpecific}
-              weekdayRange={weekdayRange}
               onChangeWeekday={onChangeWeekday}
               displayCalendar={true}
             />
@@ -69,14 +65,13 @@ export default function DateRangeDrawer({
 }
 
 const DateRangeDrawerSelector = ({
-  rangeType = "specific",
-  specificRange,
+  eventRange,
   onChangeSpecific,
-  weekdayRange = {},
   onChangeWeekday = () => {},
   displayCalendar = false,
 }: DateRangeProps) => {
-  if (rangeType === "specific" && specificRange?.from && specificRange?.to) {
+  if (eventRange?.type === "specific") {
+    const specificRange = eventRange.dateRange;
     return (
       <div className="flex flex-col space-y-2 space-x-20 md:flex-row md:pl-4">
         <DateRangeInput
@@ -89,13 +84,33 @@ const DateRangeDrawerSelector = ({
               from: specificRange.from || undefined,
               to: specificRange.to || undefined,
             }}
-            onRangeSelect={(from, to) => onChangeSpecific({ from, to })}
+            onRangeSelect={(range) => {
+              if (range?.from) {
+                onChangeSpecific?.("from", range.from);
+              }
+              if (range?.to) {
+                onChangeSpecific?.("to", range.to);
+              }
+            }}
           />
         )}
       </div>
     );
   }
   return (
-    <WeekdayCalendar selectedDays={weekdayRange} onChange={onChangeWeekday} />
+    <WeekdayCalendar
+      selectedDays={
+        eventRange?.weekdays ?? {
+          Sun: 0,
+          Mon: 0,
+          Tue: 0,
+          Wed: 0,
+          Thu: 0,
+          Fri: 0,
+          Sat: 0,
+        }
+      }
+      onChange={onChangeWeekday}
+    />
   );
 };

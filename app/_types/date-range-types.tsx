@@ -1,11 +1,17 @@
-import { WeekdayMap } from "@/app/_types/schedule-types";
+// _types/date-range-types.ts
+
+import { EventRange, WeekdayMap } from "@/app/_types/schedule-types";
 
 export type DateRangeProps = {
+  eventRange?: EventRange;
+  onChangeEventRange?: (range: EventRange) => void;
+  displayCalendar?: boolean;
+
+  // Optional legacy support props
   rangeType?: "specific" | "weekday";
   onChangeRangeType?: (type: "specific" | "weekday") => void;
-  specificRange: { from: Date | null; to: Date | null };
-  onChangeSpecific: (range: { from: Date | null; to: Date | null }) => void;
+  specificRange?: { from: Date | null; to: Date | null };
+  onChangeSpecific?: (key: "from" | "to", value: Date) => void;
   weekdayRange?: WeekdayMap;
   onChangeWeekday?: (map: WeekdayMap) => void;
-  displayCalendar?: boolean;
 };

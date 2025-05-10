@@ -3,28 +3,68 @@ import DateRangeDrawer from "./date-range-drawer";
 import DateRangePopover from "./date-range-popover";
 import WeekdayCalendar from "../weekday-calendar";
 import { DateRangeProps } from "@/app/_types/date-range-types";
+import { WeekdayMap } from "@/app/_types/schedule-types";
 
 import useCheckMobile from "@/app/_utils/useCheckMobile";
 
-export default function DateRangeSelector(props: DateRangeProps) {
-  const {
-    rangeType = "specific",
-    onChangeRangeType = () => {},
-    specificRange,
-    onChangeSpecific,
-    weekdayRange = {},
-    onChangeWeekday = () => {},
-  } = props;
-
+export default function DateRangeSelector({
+  eventRange,
+  onChangeEventRange,
+}: DateRangeProps) {
   const isMobile = useCheckMobile();
+
+  const rangeType = eventRange?.type ?? "specific";
+
+  const handleRangeTypeChange = (value: string) => {
+    const newType = value === "Specific Dates" ? "specific" : "weekday";
+    if (newType !== eventRange?.type) {
+      onChangeEventRange?.(
+        newType === "specific"
+          ? {
+              type: "specific",
+              dateRange: { from: new Date(), to: new Date() },
+              timeRange: eventRange?.timeRange ?? { from: null, to: null },
+            }
+          : {
+              type: "weekday",
+              weekdays: {
+                Sun: 0,
+                Mon: 0,
+                Tue: 0,
+                Wed: 0,
+                Thu: 0,
+                Fri: 0,
+                Sat: 0,
+              },
+              timeRange: eventRange?.timeRange ?? { from: null, to: null },
+            },
+      );
+    }
+  };
+
+  const updateSpecificRange = (key: "from" | "to", value: Date) => {
+    if (eventRange?.type === "specific") {
+      onChangeEventRange?.({
+        ...eventRange,
+        dateRange: {
+          ...eventRange.dateRange,
+          [key]: value,
+        },
+      });
+    }
+  };
+
+  const updateWeekdayRange = (map: WeekdayMap) => {
+    if (eventRange?.type === "weekday") {
+      onChangeEventRange?.({ ...eventRange, weekdays: map });
+    }
+  };
 
   const select = (
     <CustomSelect
       options={["Specific Dates", "Days of the Week"]}
       value={rangeType === "specific" ? "Specific Dates" : "Days of the Week"}
-      onValueChange={(value) =>
-        onChangeRangeType(value === "Specific Dates" ? "specific" : "weekday")
-      }
+      onValueChange={handleRangeTypeChange}
       className="hidden min-h-9 min-w-[180px] md:flex"
     />
   );
@@ -32,12 +72,10 @@ export default function DateRangeSelector(props: DateRangeProps) {
   if (isMobile) {
     return (
       <DateRangeDrawer
-        specificRange={specificRange}
-        onChangeSpecific={onChangeSpecific}
-        rangeType={rangeType}
-        onChangeRangeType={onChangeRangeType}
-        weekdayRange={weekdayRange}
-        onChangeWeekday={onChangeWeekday}
+        eventRange={eventRange}
+        onChangeRangeType={handleRangeTypeChange}
+        onChangeSpecific={updateSpecificRange}
+        onChangeWeekday={updateWeekdayRange}
       />
     );
   }
@@ -45,15 +83,25 @@ export default function DateRangeSelector(props: DateRangeProps) {
   return (
     <div className="flex flex-col space-y-2 space-x-20 md:flex-row md:pl-4">
       {select}
-      {rangeType === "specific" && specificRange.from && specificRange.to ? (
+      {eventRange?.type === "specific" ? (
         <DateRangePopover
-          specificRange={specificRange}
-          onChangeSpecific={onChangeSpecific}
+          specificRange={eventRange.dateRange}
+          onChangeSpecific={updateSpecificRange}
         />
       ) : (
         <WeekdayCalendar
-          selectedDays={weekdayRange}
-          onChange={onChangeWeekday}
+          selectedDays={
+            eventRange?.weekdays ?? {
+              Sun: 0,
+              Mon: 0,
+              Tue: 0,
+              Wed: 0,
+              Thu: 0,
+              Fri: 0,
+              Sat: 0,
+            }
+          }
+          onChange={updateWeekdayRange}
         />
       )}
     </div>

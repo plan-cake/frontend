@@ -7,36 +7,58 @@ import {
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 
+import {
+  EventRange,
+  getDateLabels,
+  getEnabledWeekdays,
+} from "@/app/_types/schedule-types";
 import useCheckMobile from "@/app/_utils/useCheckMobile";
 
 interface ScheduleGridProps {
-  isGenericWeek: boolean;
-  disableSelect?: boolean;
-  weekdays?: string[];
-  dateRange?: { from: Date; to: Date };
-  timeRange: { from: Date; to: Date };
+  eventRange: EventRange;
   timezone: string;
+  disableSelect?: boolean;
 }
 
-export default function ScheduleGrid(props: ScheduleGridProps) {
+export default function ScheduleGrid({
+  disableSelect = false,
+  eventRange,
+  timezone,
+}: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const {
-    isGenericWeek,
-    disableSelect = false,
-    weekdays,
-    dateRange = { from: new Date(), to: new Date() },
-    timeRange = { from: new Date(), to: new Date() },
-    timezone,
-  } = props;
+  let numHours = 0;
+  let numDays = 0;
+  let daysLabel: string[] = [];
 
-  const numHours = timeRange.to.getHours() - timeRange.from.getHours() + 1;
-  const numDays = isGenericWeek
-    ? (weekdays?.length ?? 0)
-    : Math.ceil(
-        (dateRange.to.getTime() - dateRange.from.getTime()) /
+  const { timeRange } = eventRange;
+  numHours =
+    timeRange.to && timeRange.from
+      ? timeRange.to.getHours() - timeRange.from.getHours() + 1
+      : 0;
+
+  if (eventRange.type === "specific") {
+    const { dateRange } = eventRange;
+    if (!dateRange || !timeRange) {
+      return GridError({ message: "Invalid date or time range" });
+    }
+
+    numDays =
+      Math.ceil(
+        ((dateRange.to?.getTime() ?? 0) - (dateRange.from?.getTime() ?? 0)) /
           (1000 * 60 * 60 * 24),
       ) + 1;
+    daysLabel = getDateLabels(dateRange);
+  } else if (eventRange.type === "weekday") {
+    const { weekdays } = eventRange;
+    const enabledWeekdays = getEnabledWeekdays(weekdays);
+    if (!enabledWeekdays || !timeRange) {
+      return GridError({ message: "Invalid weekdays or time range" });
+    }
+
+    numDays = enabledWeekdays.length;
+    daysLabel = enabledWeekdays.map((day) => day.toUpperCase());
+  }
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -44,10 +66,9 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-  const visibleDays = Array.from({ length: endIndex - startIndex }, (_, i) =>
-    isGenericWeek
-      ? (weekdays?.[startIndex + i] ?? "")
-      : new Date(dateRange.from.getTime() + (startIndex + i) * 86400000),
+  const visibleDays = Array.from(
+    { length: endIndex - startIndex },
+    (_, i) => daysLabel[startIndex + i],
   );
 
   const timeColWidth = 50;
@@ -112,7 +133,9 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
       >
         <div />
         {Array.from({ length: numHours }).map((_, i) => {
-          const hour = new Date(timeRange.from.getTime() + i * 3600000);
+          const hour = timeRange.from
+            ? new Date(timeRange.from.getTime() + i * 3600000)
+            : new Date(); // Fallback to current time or handle appropriately
           const formatter = new Intl.DateTimeFormat("en-US", {
             timeZone: timezone,
             hour: "numeric",
@@ -139,33 +162,31 @@ export default function ScheduleGrid(props: ScheduleGridProps) {
         }}
       >
         {visibleDays.map((day, dayIndex) => {
-          if (isGenericWeek && typeof day === "string") {
+          const type = eventRange.type;
+
+          if (type === "specific") {
+            // split the day string into date and month
+            const [weekday, month, date] = day.split(" ");
             return (
               <div
-                key={`day-${dayIndex}`}
+                key={dayIndex}
+                className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
+              >
+                <div>{weekday}</div>
+                <div>
+                  {month} {date}
+                </div>
+              </div>
+            );
+          } else if (type === "weekday") {
+            return (
+              <div
+                key={dayIndex}
                 className="flex items-center justify-center text-sm font-medium"
               >
                 {day.toUpperCase()}
               </div>
             );
-          } else if (day instanceof Date) {
-            const weekday = day
-              .toLocaleDateString("en-US", { weekday: "short" })
-              .toUpperCase();
-            const monthDay = day
-              .toLocaleDateString("en-US", { month: "short", day: "numeric" })
-              .toUpperCase();
-            return (
-              <div
-                key={`day-${dayIndex}`}
-                className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
-              >
-                <div>{weekday}</div>
-                <div>{monthDay}</div>
-              </div>
-            );
-          } else {
-            return null;
           }
         })}
       </div>
