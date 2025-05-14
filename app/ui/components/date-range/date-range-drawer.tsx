@@ -15,7 +15,10 @@ export default function DateRangeDrawer({
 
   const select = (
     <CustomSelect
-      options={["Specific Dates", "Days of the Week"]}
+      options={[
+        { label: "Specific Dates", value: "specific" },
+        { label: "Days of the Week", value: "weekday" },
+      ]}
       value={rangeType === "specific" ? "Specific Dates" : "Days of the Week"}
       onValueChange={(value) =>
         onChangeRangeType?.(value === "Specific Dates" ? "specific" : "weekday")

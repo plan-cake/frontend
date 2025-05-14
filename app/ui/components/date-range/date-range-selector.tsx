@@ -15,18 +15,20 @@ export default function DateRangeSelector({
 
   const rangeType = eventRange?.type ?? "specific";
 
-  const handleRangeTypeChange = (value: string) => {
+  const handleRangeTypeChange = (value: string | number) => {
     const newType = value === "Specific Dates" ? "specific" : "weekday";
     if (newType !== eventRange?.type) {
       onChangeEventRange?.(
         newType === "specific"
           ? {
               type: "specific",
+              duration: 60,
               dateRange: { from: new Date(), to: new Date() },
               timeRange: eventRange?.timeRange ?? { from: null, to: null },
             }
           : {
               type: "weekday",
+              duration: 60,
               weekdays: {
                 Sun: 0,
                 Mon: 0,
@@ -62,8 +64,11 @@ export default function DateRangeSelector({
 
   const select = (
     <CustomSelect
-      options={["Specific Dates", "Days of the Week"]}
-      value={rangeType === "specific" ? "Specific Dates" : "Days of the Week"}
+      options={[
+        { label: "Specific Dates", value: "specific" },
+        { label: "Days of the Week", value: "weekday" },
+      ]}
+      value={rangeType === "specific" ? "specific" : "weekday"}
       onValueChange={handleRangeTypeChange}
       className="hidden min-h-9 min-w-[180px] md:flex"
     />

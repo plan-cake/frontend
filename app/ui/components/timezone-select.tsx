@@ -1,10 +1,10 @@
 import { groupedTimezones } from "@/app/_lib/grouped-timezones";
-import CustomGroupSelect from "./custom-group-select";
+import CustomSelect from "./custom-select";
 
 type TimezoneSelectProps = {
   label?: string;
   value: string;
-  onChange: (tz: string) => void;
+  onChange: (tz: string | number) => void;
 };
 
 export default function TimezoneSelect({
@@ -20,8 +20,9 @@ export default function TimezoneSelect({
       >
         {label}
       </label>
-      <CustomGroupSelect
-        groupedOptions={groupedTimezones}
+      <CustomSelect
+        options={groupedTimezones}
+        isGrouped
         value={value}
         onValueChange={onChange}
         className="w-fit"

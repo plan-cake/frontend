@@ -1,30 +1,31 @@
-// Reuse this for both date and weekday modes
 export type TimeDateRange = {
   from: Date | null;
   to: Date | null;
 };
 
-// For generic week-based input like "Mon: true, Tue: false"
+// generic weekday mode map
 export type WeekdayMap = {
   [day in "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat"]: 0 | 1;
 };
 
-// Explicit structure for specific date mode
+// specific date mode
 export type SpecificDateRange = {
   type: "specific";
+  duration: number;
   dateRange: TimeDateRange;
   timeRange: TimeDateRange;
 };
 
-// Explicit structure for generic weekday mode
-export type WeekdayTimeRange = {
+// generic weekday mode
+export type WeekdayRange = {
   type: "weekday";
+  duration: number;
   weekdays: WeekdayMap;
   timeRange: TimeDateRange;
 };
 
-// Unified type to support both
-export type EventRange = SpecificDateRange | WeekdayTimeRange;
+// unified type
+export type EventRange = SpecificDateRange | WeekdayRange;
 
 export type DateTimeSlot = {
   day: string;
@@ -41,7 +42,7 @@ export function combineDateAndTime(date: Date, time: Date): Date {
 
 // Generate all concrete weekday instances for a given reference week
 export function generateConcreteInstancesForWeek(
-  range: WeekdayTimeRange,
+  range: WeekdayRange,
   weekStart: Date,
 ): DateTimeSlot[] {
   const slots: DateTimeSlot[] = [];
