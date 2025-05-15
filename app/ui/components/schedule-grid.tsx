@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -37,6 +37,17 @@ export default function ScheduleGrid({
       ? timeRange.to.getHours() - timeRange.from.getHours() + 1
       : 0;
 
+  const hours = useMemo(() => {
+    const range: Date[] = [];
+    for (let i = 0; i < numHours; i++) {
+      const hour = timeRange.from
+        ? new Date(timeRange.from.getTime() + i * 3600000)
+        : new Date(); // Fallback to current time or handle appropriately
+      range.push(hour);
+    }
+    return range;
+  }, [timeRange, numHours]);
+
   if (eventRange.type === "specific") {
     const { dateRange } = eventRange;
     if (!dateRange || !timeRange) {
@@ -66,10 +77,7 @@ export default function ScheduleGrid({
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-  const visibleDays = Array.from(
-    { length: endIndex - startIndex },
-    (_, i) => daysLabel[startIndex + i],
-  );
+  const visibleDays = daysLabel.slice(startIndex, endIndex);
 
   const timeColWidth = 50;
   const rightArrowWidth = 20;

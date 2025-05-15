@@ -12,6 +12,7 @@ export type WeekdayMap = {
 export type SpecificDateRange = {
   type: "specific";
   duration: number;
+  timezone: string;
   dateRange: TimeDateRange;
   timeRange: TimeDateRange;
 };
@@ -20,6 +21,7 @@ export type SpecificDateRange = {
 export type WeekdayRange = {
   type: "weekday";
   duration: number;
+  timezone: string;
   weekdays: WeekdayMap;
   timeRange: TimeDateRange;
 };

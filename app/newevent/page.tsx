@@ -3,27 +3,29 @@
 import { useState } from "react";
 
 import TimeDropdown from "../ui/components/time-dropdown";
-import ScheduleGrid from "../ui/components/schedule-grid";
 import DateRangeSelector from "../ui/components/date-range/date-range-selector";
 import TimezoneSelect from "../ui/components/timezone-select";
-import { EnterFullScreenIcon } from "@radix-ui/react-icons";
 import CustomSelect from "../ui/components/custom-select";
+import GridPreviewDialog from "../ui/components/grid-preview-dialog";
 
 import { EventRange } from "../_types/schedule-types";
 
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [timezone, setTimezone] = useState(defaultTZ);
 
   const [eventRange, setEventRange] = useState<EventRange>({
     type: "specific",
     duration: 60,
+    timezone: defaultTZ,
     dateRange: { from: new Date(), to: new Date() },
     timeRange: { from: new Date(), to: new Date() },
   });
 
   const handleTZChange = (newTZ: string | number) => {
-    setTimezone(newTZ.toString());
+    setEventRange((prev) => ({
+      ...prev,
+      timezone: newTZ.toString(),
+    }));
   };
 
   const duationOptions = [
@@ -61,7 +63,7 @@ export default function Page() {
         placeholder="add event name"
         className="w-full border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
-      <div className="flex-1 auto-rows-fr grid-cols-12 place-content-stretch gap-x-2 gap-y-2 md:grid [&>*]:px-2">
+      <div className="flex flex-1 auto-rows-fr grid-cols-12 flex-col place-content-stretch gap-x-2 gap-y-2 md:grid [&>*]:px-2">
         {/* Prompt */}
         <div className="col-span-2 flex items-center text-center font-medium">
           What times and dates is this event?
@@ -105,11 +107,16 @@ export default function Page() {
               onValueChange={handleDurationChange}
             />
           </div>
-          <TimezoneSelect value={timezone} onChange={handleTZChange} />
+          <TimezoneSelect
+            value={eventRange.timezone}
+            onChange={handleTZChange}
+          />
         </div>
 
-        <div className="group col-span-10 col-start-3 row-span-9 row-start-2 h-full space-y-4 rounded border border-transparent p-4 hover:border-dblue dark:hover:border-white">
-          <div className="mr-4 flex items-center justify-end space-x-2">
+        <div className="group col-span-10 col-start-3 row-span-9 row-start-2 flex-1">
+          <GridPreviewDialog eventRange={eventRange} />
+
+          {/* <div className="mr-4 flex items-center justify-end space-x-2">
             <label className="text-sm font-medium">{timezone}</label>
             <label className="text-sm font-medium">Grid Preview</label>
             <EnterFullScreenIcon className="h-5 w-5 cursor-pointer text-dblue hover:text-red" />
@@ -118,7 +125,7 @@ export default function Page() {
             eventRange={eventRange}
             disableSelect={true}
             timezone={timezone}
-          />
+          /> */}
         </div>
       </div>
       <style jsx>{`
