@@ -17,7 +17,7 @@ export default function TimeDropdown({
   const options = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
     const period = i < 12 ? "am" : "pm";
-    return { label: `${hour} ${period}`, value: i };
+    return { label: `${hour}:00 ${period}`, value: i };
   });
 
   const handleValueChange = (selectedValue: string | number) => {
@@ -39,15 +39,12 @@ export default function TimeDropdown({
   })();
 
   return (
-    <div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <CustomSelect
-          options={options}
-          value={value ? value.getHours() : ""}
-          onValueChange={handleValueChange}
-        />
-      </div>
-    </div>
+    <CustomSelect
+      options={options}
+      value={value ? value.getHours() : ""}
+      onValueChange={handleValueChange}
+      className="h-fit w-fit"
+    />
   );
 }
 

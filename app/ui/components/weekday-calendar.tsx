@@ -41,13 +41,13 @@ export default function WeekdayCalendar({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="grid w-fit grid-cols-7 divide-x-1 divide-solid divide-gray-300 rounded-lg border border-gray-300 text-sm md:w-full dark:divide-gray-400 dark:border-gray-400">
+    <div className="flex space-y-2">
+      <div className="grid flex-1 grid-cols-7 divide-x-1 divide-solid divide-gray-300 rounded-lg border border-gray-300 text-sm dark:divide-gray-400 dark:border-gray-400 [&>*]:px-2">
         {days.map((day) => (
           <button
             key={day}
             onClick={() => handleRangeSelect(day as keyof WeekdayMap)}
-            className={`min-h-9 px-2 py-1 ${
+            className={`min-h-9 ${
               selectedDays[day as keyof WeekdayMap] === 1
                 ? "bg-red-300 text-red dark:bg-red dark:text-white"
                 : ""

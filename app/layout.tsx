@@ -22,11 +22,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${roboto.variable} m-10 h-dvh antialiased md:h-fit`}>
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+      <body className={`${roboto.variable} antialiased`}>
+        <div className="flex min-h-dvh flex-col p-10">
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );

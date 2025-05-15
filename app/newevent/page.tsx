@@ -55,55 +55,60 @@ export default function Page() {
   };
 
   return (
-    <div className="relative mt-2 h-[70vh] w-full space-y-6">
+    <div className="flex w-full grow flex-col space-y-2">
       <input
         type="text"
         placeholder="add event name"
         className="w-full border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
-      <div
-        className="flex h-full w-full flex-col space-y-4 md:grid"
-        style={{
-          gridTemplateColumns: `min(18vw, 200px) auto`,
-          gridTemplateRows: `50px auto`,
-        }}
-      >
-        <div>
-          <p className="font-bold md:pr-4 md:pl-4 md:text-center">
-            What times and dates is this event?
-          </p>
+      <div className="flex-1 auto-rows-fr grid-cols-12 place-content-stretch gap-x-2 gap-y-2 md:grid [&>*]:px-2">
+        {/* Prompt */}
+        <div className="col-span-2 flex items-center text-center font-medium">
+          What times and dates is this event?
         </div>
 
-        <DateRangeSelector
-          eventRange={eventRange}
-          onChangeEventRange={handleEventRangeChange}
-        />
-
-        <div className="flex flex-col gap-2 md:items-center md:p-4">
-          <label className="text-sm font-medium">Duration</label>
-          <CustomSelect
-            options={duationOptions}
-            value={eventRange.duration}
-            onValueChange={handleDurationChange}
+        {/* Date range picker */}
+        <div className="col-span-4 flex items-center">
+          <DateRangeSelector
+            eventRange={eventRange}
+            onChangeEventRange={handleEventRangeChange}
           />
-          <div className="flex gap-2 md:flex-col md:items-center">
-            <TimeDropdown
-              defaultTZ={defaultTZ}
-              duration={eventRange.duration}
-              value={eventRange.timeRange.from}
-              onChange={(from) => handleTimeChange("from", from)}
-            />
-            {"to"}
-            <TimeDropdown
-              defaultTZ={defaultTZ}
-              duration={eventRange.duration}
-              value={eventRange.timeRange.to}
-              onChange={(to) => handleTimeChange("to", to)}
+        </div>
+
+        {/* From/To */}
+        <div className="col-span-2 col-start-1 flex items-center justify-center space-x-4">
+          <label className="text-sm font-medium">from</label>
+          <TimeDropdown
+            defaultTZ={defaultTZ}
+            duration={eventRange.duration}
+            value={eventRange.timeRange.from}
+            onChange={(from) => handleTimeChange("from", from)}
+          />
+        </div>
+        <div className="col-span-2 col-start-1 flex items-center justify-center space-x-4">
+          <label className="text-sm font-medium">to</label>
+          <TimeDropdown
+            defaultTZ={defaultTZ}
+            duration={eventRange.duration}
+            value={eventRange.timeRange.to}
+            onChange={(to) => handleTimeChange("to", to)}
+          />
+        </div>
+
+        {/* Timezone */}
+        <div className="col-span-2 col-start-1 row-span-3">
+          <div className="flex items-center justify-between">
+            <label className="text-sm font-medium">Duration</label>
+            <CustomSelect
+              options={duationOptions}
+              value={eventRange.duration}
+              onValueChange={handleDurationChange}
             />
           </div>
           <TimezoneSelect value={timezone} onChange={handleTZChange} />
         </div>
-        <div className="group h-full space-y-4 rounded border border-transparent p-4 hover:border-dblue dark:hover:border-white">
+
+        <div className="group col-span-10 col-start-3 row-span-9 row-start-2 h-full space-y-4 rounded border border-transparent p-4 hover:border-dblue dark:hover:border-white">
           <div className="mr-4 flex items-center justify-end space-x-2">
             <label className="text-sm font-medium">{timezone}</label>
             <label className="text-sm font-medium">Grid Preview</label>

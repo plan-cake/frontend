@@ -16,7 +16,8 @@ export default function DateRangeSelector({
   const rangeType = eventRange?.type ?? "specific";
 
   const handleRangeTypeChange = (value: string | number) => {
-    const newType = value === "Specific Dates" ? "specific" : "weekday";
+    console.log("handleRangeTypeChange", value);
+    const newType = value === "specific" ? "specific" : "weekday";
     if (newType !== eventRange?.type) {
       onChangeEventRange?.(
         newType === "specific"
@@ -42,6 +43,9 @@ export default function DateRangeSelector({
             },
       );
     }
+
+    console.log("handleRangeTypeChange", newType);
+    console.log("eventRange", eventRange);
   };
 
   const updateSpecificRange = (key: "from" | "to", value: Date) => {
@@ -86,7 +90,7 @@ export default function DateRangeSelector({
   }
 
   return (
-    <div className="flex flex-col space-y-2 space-x-20 md:flex-row md:pl-4">
+    <div className="flex gap-4 bg-amber-50 md:flex-row">
       {select}
       {eventRange?.type === "specific" ? (
         <DateRangePopover
