@@ -7,6 +7,9 @@ import { EventRange } from "@/app/_types/schedule-types";
 import { useState } from "react";
 import TimezoneSelect from "./timezone-select";
 
+import InteractiveScheduleGrid from "./interactive-schedule-grid";
+import { UserAvailability } from "@/app/_types/user-availability";
+
 interface GridPreviewDialogProps {
   eventRange: EventRange;
 }
@@ -14,6 +17,11 @@ interface GridPreviewDialogProps {
 export default function GridPreviewDialog({
   eventRange,
 }: GridPreviewDialogProps) {
+  const [userAvailability, setUserAvailability] = useState<UserAvailability>({
+    type: "specific",
+    selections: {},
+  });
+
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
 
@@ -60,9 +68,15 @@ export default function GridPreviewDialog({
           <motion.div className="grow space-y-4">
             <ScheduleGrid
               eventRange={eventRange}
-              disableSelect={true}
+              // disableSelect={false}
               timezone={timezone}
             />
+            {/* <InteractiveScheduleGrid
+              eventRange={eventRange}
+              timezone={timezone}
+              setUserAvailability={setUserAvailability}
+              userAvailability={userAvailability}
+            /> */}
             <div className="flex items-center justify-between">
               <TimezoneSelect
                 value={timezone}

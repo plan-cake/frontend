@@ -23,7 +23,7 @@ interface ScheduleGridProps {
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
-  timezone,
+  timezone, // current timezone of the user, not necessarily the original
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
