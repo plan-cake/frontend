@@ -1,7 +1,7 @@
 import * as Select from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { forwardRef } from "react";
-import { cn } from "@/app/_lib/utils";
+import { cn } from "@/app/_lib/classname";
 
 type Option = { label: string; value: string | number };
 type GroupedOption = { label: string; options: Option[] };

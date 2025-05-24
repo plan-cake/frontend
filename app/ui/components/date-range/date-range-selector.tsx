@@ -5,7 +5,7 @@ import WeekdayCalendar from "../weekday-calendar";
 import { DateRangeProps } from "@/app/_types/date-range-types";
 import { WeekdayMap } from "@/app/_types/schedule-types";
 
-import useCheckMobile from "@/app/_utils/useCheckMobile";
+import useCheckMobile from "@/app/_utils/use-check-mobile";
 
 export default function DateRangeSelector({
   eventRange,

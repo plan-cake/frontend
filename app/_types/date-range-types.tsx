@@ -7,7 +7,7 @@ export type DateRangeProps = {
   onChangeEventRange?: (range: EventRange) => void;
   displayCalendar?: boolean;
 
-  // Optional legacy support props
+  // optional legacy support props
   rangeType?: "specific" | "weekday";
   onChangeRangeType?: (type: "specific" | "weekday") => void;
   specificRange?: { from: Date | null; to: Date | null };

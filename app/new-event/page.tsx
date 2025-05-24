@@ -6,7 +6,7 @@ import TimeDropdown from "../ui/components/time-dropdown";
 import DateRangeSelector from "../ui/components/date-range/date-range-selector";
 import TimezoneSelect from "../ui/components/timezone-select";
 import CustomSelect from "../ui/components/custom-select";
-import GridPreviewDialog from "../ui/components/grid-preview-dialog";
+import GridPreviewDialog from "../ui/components/schedule/grid-preview-dialog";
 
 import { EventRange } from "../_types/schedule-types";
 

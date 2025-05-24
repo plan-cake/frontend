@@ -12,7 +12,7 @@ import {
   getDateLabels,
   getEnabledWeekdays,
 } from "@/app/_types/schedule-types";
-import useCheckMobile from "@/app/_utils/useCheckMobile";
+import useCheckMobile from "@/app/_utils/use-check-mobile";
 
 interface ScheduleGridProps {
   eventRange: EventRange;

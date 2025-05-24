@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import ScheduleGrid from "./schedule-grid";
 import { EventRange } from "@/app/_types/schedule-types";
 import { useState } from "react";
-import TimezoneSelect from "./timezone-select";
+import TimezoneSelect from "../timezone-select";
 
 import InteractiveScheduleGrid from "./interactive-schedule-grid";
 import { UserAvailability } from "@/app/_types/user-availability";

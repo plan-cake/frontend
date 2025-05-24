@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEventHandler, useEffect, useState } from "react";
-import useCheckMobile from "@/app/_utils/useCheckMobile";
+import useCheckMobile from "@/app/_utils/use-check-mobile";
 
 import { format, isAfter, isBefore, isValid, parse } from "date-fns";
 import {
