@@ -26,6 +26,9 @@ export default function DateRangeSelector({
               duration: 60,
               dateRange: { from: new Date(), to: new Date() },
               timeRange: eventRange?.timeRange ?? { from: null, to: null },
+              timezone:
+                eventRange?.timezone ??
+                Intl.DateTimeFormat().resolvedOptions().timeZone,
             }
           : {
               type: "weekday",
@@ -40,6 +43,9 @@ export default function DateRangeSelector({
                 Sat: 0,
               },
               timeRange: eventRange?.timeRange ?? { from: null, to: null },
+              timezone:
+                eventRange?.timezone ??
+                Intl.DateTimeFormat().resolvedOptions().timeZone,
             },
       );
     }
@@ -90,7 +96,7 @@ export default function DateRangeSelector({
   }
 
   return (
-    <div className="flex gap-4 bg-amber-50 md:flex-row">
+    <div className="flex gap-4 md:flex-row">
       {select}
       {eventRange?.type === "specific" ? (
         <DateRangePopover
