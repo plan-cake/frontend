@@ -4,6 +4,27 @@ import { useState } from "react";
 import Link from "next/link";
 import useDarkMode from "@/app/utils/useTheme";
 
+const features = [
+	{
+		title: "Smart Planning",
+		description:
+			"Intelligently suggest optimal meeting times based on everyone's availability and preferences.",
+		icon: "🧠",
+	},
+	{
+		title: "Easy Polling",
+		description:
+			"Create polls for time slots and let participants vote on their preferences with visual feedback.",
+		icon: "📊",
+	},
+	{
+		title: "Seamless Sharing",
+		description:
+			"Share a simple link to collect availability from unlimited participants across time zones.",
+		icon: "🌍",
+	},
+];
+
 export default function Home() {
 	const { isDarkMode, toggleDarkMode } = useDarkMode();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -171,6 +192,60 @@ export default function Home() {
 						>
 							View Dashboard
 						</Link>
+					</div>
+				</div>
+			</section>
+
+			{/* Features Section */}
+			<section
+				className={`py-20 ${isDarkMode ? "bg-violet-700" : "bg-white"}`}
+			>
+				<div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+					<div className="text-center mb-16">
+						<h2
+							className={`text-4xl font-bold ${
+								isDarkMode ? "text-bone-100" : "text-violet-700"
+							} mb-4`}
+						>
+							Why Choose plancake?
+						</h2>
+						<p
+							className={`text-xl ${
+								isDarkMode ? "text-bone-300" : "text-violet-600"
+							} max-w-2xl mx-auto`}
+						>
+							Fluffy, simple planning that stacks up perfectly. No more burnt
+							schedules or half-baked meetings.
+						</p>
+					</div>
+
+					<div className="grid md:grid-cols-3 gap-8">
+						{features.map((feature, index) => (
+							<div
+								key={index}
+								className={`${
+									isDarkMode ? "bg-violet-600" : "bg-bone-100"
+								} p-8 rounded-xl shadow-lg hover:shadow-xl transition-shadow border ${
+									isDarkMode ? "border-violet-500" : "border-bone-200"
+								}`}
+							>
+								<div className="text-4xl mb-4">{feature.icon}</div>
+								<h3
+									className={`text-2xl font-semibold ${
+										isDarkMode ? "text-bone-100" : "text-violet-700"
+									} mb-4`}
+								>
+									{feature.title}
+								</h3>
+								<p
+									className={`${
+										isDarkMode ? "text-bone-300" : "text-violet-600"
+									} text-lg`}
+								>
+									{feature.description}
+								</p>
+							</div>
+						))}
 					</div>
 				</div>
 			</section>
