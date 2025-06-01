@@ -131,6 +131,49 @@ export default function Home() {
 					</div>
 				)}
 			</nav>
+
+			{/* Hero Section */}
+			<section className="py-20 px-4 sm:px-6 lg:px-8">
+				<div className="max-w-7xl mx-auto text-center">
+					<div className="mb-8">
+						<span className="text-6xl mb-4 block">🥞</span>
+					</div>
+					<h1
+						className={`text-5xl md:text-7xl font-bold ${
+							isDarkMode ? "text-bone-100" : "text-violet-700"
+						} mb-6`}
+					>
+						planning made
+						<span className="block text-coral-500">stack simple</span>
+					</h1>
+					<p
+						className={`text-xl md:text-2xl ${
+							isDarkMode ? "text-bone-300" : "text-violet-600"
+						} mb-8 max-w-3xl mx-auto`}
+					>
+						The fluffiest way to coordinate schedules and plan group events.
+						Stack up availability and serve the perfect meeting time.
+					</p>
+					<div className="flex flex-col sm:flex-row gap-4 justify-center">
+						<Link
+							href="/newevent"
+							className="bg-coral-500 hover:bg-coral-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors shadow-lg hover:shadow-xl"
+						>
+							Mix Your First Plan
+						</Link>
+						<Link
+							href="/dashboard"
+							className={`${
+								isDarkMode
+									? "bg-blue-600 hover:bg-blue-500 text-bone-100"
+									: "bg-blue-500 hover:bg-blue-600 text-white"
+							} font-semibold py-4 px-8 rounded-lg text-lg transition-colors shadow-lg hover:shadow-xl`}
+						>
+							View Dashboard
+						</Link>
+					</div>
+				</div>
+			</section>
 		</div>
 	);
 }
