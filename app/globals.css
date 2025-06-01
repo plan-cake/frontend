@@ -49,7 +49,7 @@ body {
   --color-dblue-1100: oklch(45.5% 0.029 235.2);
   --color-dblue-1200: oklch(24.1% 0.0255 235.2);
 
-  /* New color palette from image */
+  /* New color palette */
   --color-smoke: #F5F5F5;
   --color-violet: #3E3C53;
   --color-bone: #E9DECA;
@@ -80,6 +80,17 @@ body {
   --color-violet-800: #2E2B3F;
   --color-violet-900: #1F1D2B;
 
+  --color-bone-50: #FDFCF9;
+  --color-bone-100: #FAF8F3;
+  --color-bone-200: #F3F0E7;
+  --color-bone-300: #ECE8DB;
+  --color-bone-400: #E9DECA;
+  --color-bone-500: #DFD4B9;
+  --color-bone-600: #D5CAA8;
+  --color-bone-700: #CAB996;
+  --color-bone-800: #B8A584;
+  --color-bone-900: #A69172;
+
   --color-coral-50: #FFF5F5;
   --color-coral-100: #FFEBEB;
   --color-coral-200: #FFD1D1;
@@ -101,4 +112,15 @@ body {
   --color-blue-700: #1E4161;
   --color-blue-800: #0F2841;
   --color-blue-900: #081A2B;
+
+  --color-lion-50: #FDF9F6;
+  --color-lion-100: #FAF3ED;
+  --color-lion-200: #F2E7DB;
+  --color-lion-300: #EADAC8;
+  --color-lion-400: #DBC4A3;
+  --color-lion-500: #CBAD7E;
+  --color-lion-600: #C7966E;
+  --color-lion-700: #B8855C;
+  --color-lion-800: #A6744A;
+  --color-lion-900: #946338;
 }
