@@ -355,6 +355,33 @@ export default function Home() {
 					</Link>
 				</div>
 			</section>
+
+			{/* Footer */}
+			<footer
+				className={`${
+					isDarkMode ? "bg-violet-800" : "bg-bone-100"
+				} ${isDarkMode ? "border-violet-600" : "border-bone-200"} border-t`}
+			>
+				<div className="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+					<div className="text-center">
+						<h3
+							className={`text-2xl font-bold ${
+								isDarkMode ? "text-bone-100" : "text-violet-700"
+							} mb-4`}
+						>
+							🥞 plancake
+						</h3>
+						<p
+							className={`${
+								isDarkMode ? "text-bone-400" : "text-violet-500"
+							}`}
+						>
+							© 2025 plancake. Stacking up perfect plans, one pancake at a
+							time.
+						</p>
+					</div>
+				</div>
+			</footer>
 		</div>
 	);
 }
