@@ -25,6 +25,27 @@ const features = [
 	},
 ];
 
+const steps = [
+	{
+		step: "01",
+		title: "Mix Your Event",
+		description:
+			"Set up your meeting details, add time options, and customize your preferences",
+	},
+	{
+		step: "02",
+		title: "Share & Stack",
+		description:
+			"Send the link to participants and watch responses stack up in real-time",
+	},
+	{
+		step: "03",
+		title: "Flip & Serve",
+		description:
+			"Review the results, pick the best time, and serve up calendar invites to all",
+	},
+];
+
 export default function Home() {
 	const { isDarkMode, toggleDarkMode } = useDarkMode();
 	const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -243,6 +264,57 @@ export default function Home() {
 									} text-lg`}
 								>
 									{feature.description}
+								</p>
+							</div>
+						))}
+					</div>
+				</div>
+			</section>
+
+			{/* How It Works Section */}
+			<section className="py-20 px-4 sm:px-6 lg:px-8">
+				<div className="max-w-7xl mx-auto">
+					<div className="text-center mb-16">
+						<h2
+							className={`text-4xl font-bold ${
+								isDarkMode ? "text-bone-100" : "text-violet-700"
+							} mb-4`}
+						>
+							Golden Stack Recipe
+						</h2>
+						<p
+							className={`text-xl ${
+								isDarkMode ? "text-bone-300" : "text-violet-600"
+							} max-w-2xl mx-auto`}
+						>
+							Follow these simple steps to cook up the perfect schedule every
+							time.
+						</p>
+					</div>
+
+					<div className="grid md:grid-cols-3 gap-8">
+						{steps.map((step, index) => (
+							<div key={index} className="text-center">
+								<div
+									className={`w-16 h-16 ${
+										isDarkMode ? "bg-lion-600" : "bg-lion-500"
+									} text-white rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 shadow-lg`}
+								>
+									{step.step}
+								</div>
+								<h3
+									className={`text-2xl font-semibold ${
+										isDarkMode ? "text-bone-100" : "text-violet-700"
+									} mb-4`}
+								>
+									{step.title}
+								</h3>
+								<p
+									className={`${
+										isDarkMode ? "text-bone-300" : "text-violet-600"
+									} text-lg`}
+								>
+									{step.description}
 								</p>
 							</div>
 						))}
