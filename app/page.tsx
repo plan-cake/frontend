@@ -321,6 +321,40 @@ export default function Home() {
 					</div>
 				</div>
 			</section>
+
+			{/* CTA Section */}
+			<section
+				className={`py-20 ${
+					isDarkMode ? "bg-violet-700" : "bg-coral-50"
+				}`}
+			>
+				<div className="max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
+					<div className="mb-6">
+						<span className="text-5xl">🥞</span>
+					</div>
+					<h2
+						className={`text-4xl font-bold ${
+							isDarkMode ? "text-bone-100" : "text-violet-700"
+						} mb-6`}
+					>
+						Ready to Stack Up Success?
+					</h2>
+					<p
+						className={`text-xl ${
+							isDarkMode ? "text-bone-300" : "text-violet-600"
+						} mb-8`}
+					>
+						Join teams worldwide who discovered the fluffiest way to plan
+						together.
+					</p>
+					<Link
+						href="/newevent"
+						className="bg-coral-500 hover:bg-coral-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-colors shadow-lg hover:shadow-xl inline-block"
+					>
+						Start Cooking Today 🥞
+					</Link>
+				</div>
+			</section>
 		</div>
 	);
 }
