@@ -61,7 +61,7 @@ export default function Page() {
       <input
         type="text"
         placeholder="add event name"
-        className="w-full border-b-1 border-dblue p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
+        className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
       <div className="flex flex-1 auto-rows-fr grid-cols-12 flex-col place-content-stretch gap-x-2 gap-y-2 md:grid [&>*]:px-2">
         {/* Prompt */}
@@ -70,7 +70,7 @@ export default function Page() {
         </div>
 
         {/* Date range picker */}
-        <div className="col-span-4 flex items-center">
+        <div className="col-span-10 flex items-center">
           <DateRangeSelector
             eventRange={eventRange}
             onChangeEventRange={handleEventRangeChange}
@@ -119,7 +119,7 @@ export default function Page() {
           {/* <div className="mr-4 flex items-center justify-end space-x-2">
             <label className="text-sm font-medium">{timezone}</label>
             <label className="text-sm font-medium">Grid Preview</label>
-            <EnterFullScreenIcon className="h-5 w-5 cursor-pointer text-dblue hover:text-red" />
+            <EnterFullScreenIcon className="h-5 w-5 cursor-pointer text-violet hover:text-red" />
           </div>
           <ScheduleGrid
             eventRange={eventRange}

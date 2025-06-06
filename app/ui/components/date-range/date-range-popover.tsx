@@ -24,7 +24,7 @@ export default function DateRangePopover({
       <Popover.Portal>
         <Popover.Content
           sideOffset={10}
-          className="z-50 rounded-md border border-gray-300 bg-white p-4 shadow-lg data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade dark:border-gray-400 dark:bg-dblue"
+          className="z-50 rounded-md border border-gray-300 bg-white p-4 shadow-lg data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade dark:border-gray-400 dark:bg-violet"
           aria-label="Date range picker"
         >
           <Calendar

@@ -37,7 +37,7 @@ export default function CustomSelect({
     >
       <Select.Trigger
         className={cn(
-          "inline-flex items-center justify-between rounded-md border border-gray-300 px-4 py-2 text-sm focus:outline-none dark:border-gray-400",
+          "inline-flex items-center justify-between rounded-md border border-gray-400 px-4 py-2 text-sm focus:outline-none",
           className,
         )}
         aria-label="Custom select"
@@ -49,7 +49,7 @@ export default function CustomSelect({
       </Select.Trigger>
 
       <Select.Portal>
-        <Select.Content className="z-50 max-h-60 overflow-auto rounded-md border border-gray-200 bg-white shadow-sm dark:border-gray-400 dark:bg-dblue dark:shadow-dblue-1200">
+        <Select.Content className="z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:bg-violet dark:shadow-violet-700">
           <Select.Viewport className="p-1">
             {isGrouped
               ? (options as GroupedOption[]).map((group) => (
@@ -90,7 +90,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectProps>(
       <Select.Item
         ref={ref}
         value={value.toString()}
-        className="relative flex h-[30px] items-center rounded px-6 text-sm leading-none select-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:bg-red-300 data-[highlighted]:text-red-900 dark:data-[highlighted]:bg-red-1000 dark:data-[highlighted]:text-white"
+        className="relative flex h-[30px] items-center rounded px-6 text-sm leading-none select-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:bg-blue data-[highlighted]:text-white dark:data-[highlighted]:bg-red dark:data-[highlighted]:text-bone"
       >
         <Select.ItemText>{children}</Select.ItemText>
         <Select.ItemIndicator className="absolute left-2 inline-flex w-4 items-center justify-center">
@@ -110,7 +110,7 @@ const SelectGroup = forwardRef<HTMLDivElement, SelectProps>(
           {value}
         </Select.Label>
         {children}
-        <Select.Separator className="m-[5px] h-px bg-dblue dark:bg-white" />
+        <Select.Separator className="m-[5px] h-px bg-violet dark:bg-white" />
       </Select.Group>
     );
   },

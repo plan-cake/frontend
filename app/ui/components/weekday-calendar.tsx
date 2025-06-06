@@ -42,14 +42,14 @@ export default function WeekdayCalendar({
 
   return (
     <div className="flex space-y-2">
-      <div className="grid flex-1 grid-cols-7 divide-x-1 divide-solid divide-gray-300 rounded-lg border border-gray-300 text-sm dark:divide-gray-400 dark:border-gray-400 [&>*]:px-2">
+      <div className="grid flex-1 grid-cols-7 divide-x-1 divide-solid divide-gray-400 rounded-lg border border-gray-400 text-sm [&>*]:px-2">
         {days.map((day) => (
           <button
             key={day}
             onClick={() => handleRangeSelect(day as keyof WeekdayMap)}
             className={`min-h-9 ${
               selectedDays[day as keyof WeekdayMap] === 1
-                ? "bg-red-300 text-red dark:bg-red dark:text-white"
+                ? "bg-blue text-white dark:bg-red-300"
                 : ""
             } `}
           >

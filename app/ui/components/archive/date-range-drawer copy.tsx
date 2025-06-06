@@ -31,7 +31,7 @@ export default function DateRangeDrawer({
                 from: new Date(e.target.value),
               })
             }
-            className="rounded-l-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
+            className="rounded-l-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
             aria-label="Start date"
           />
           <input
@@ -43,7 +43,7 @@ export default function DateRangeDrawer({
                 to: new Date(e.target.value),
               })
             }
-            className="rounded-r-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
+            className="rounded-r-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
             aria-label="End date"
           />
         </form>
@@ -55,7 +55,7 @@ export default function DateRangeDrawer({
           className="fixed right-0 bottom-0 left-0 z-50 flex h-[500px] w-full flex-col"
           aria-label="Date range picker"
         >
-          <div className="flex-1 overflow-y-auto rounded-md rounded-t-[10px] bg-white p-4 shadow-lg dark:bg-dblue">
+          <div className="flex-1 overflow-y-auto rounded-md rounded-t-[10px] bg-white p-4 shadow-lg dark:bg-violet">
             <div
               aria-hidden
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
@@ -95,7 +95,7 @@ const DateRange = ({ specificRange, onChangeSpecific }: Props) => {
             from: new Date(e.target.value),
           })
         }
-        className="rounded-l-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
+        className="rounded-l-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
         aria-label="Start date"
       />
       <input
@@ -107,7 +107,7 @@ const DateRange = ({ specificRange, onChangeSpecific }: Props) => {
             to: new Date(e.target.value),
           })
         }
-        className="rounded-r-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
+        className="rounded-r-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none dark:border-gray-400"
         aria-label="End date"
       />
     </form>

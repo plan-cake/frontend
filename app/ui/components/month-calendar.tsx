@@ -9,7 +9,6 @@ import {
   SelectRangeEventHandler,
   getDefaultClassNames,
 } from "react-day-picker";
-import "react-day-picker/dist/style.css";
 
 type CalendarProps = {
   className?: string;

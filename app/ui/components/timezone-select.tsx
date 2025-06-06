@@ -16,10 +16,7 @@ export default function TimezoneSelect({
 }: TimezoneSelectProps) {
   return (
     <div className={className}>
-      <label
-        htmlFor="timezone"
-        className="mb-2 block text-sm font-medium text-gray-700 dark:text-gray-200"
-      >
+      <label htmlFor="timezone" className="mb-2 block text-sm font-medium">
         {label}
       </label>
       <CustomSelect

@@ -33,7 +33,7 @@ export default function GridPreviewDialog({
     <div className="h-full">
       {isOpen && (
         <div
-          className="fixed inset-0 z-50 bg-black/40"
+          className="fixed inset-0 z-50 bg-gray-700/40"
           onClick={() => {
             setIsOpen(false);
             setTimezone(eventRange.timezone);
@@ -42,7 +42,7 @@ export default function GridPreviewDialog({
       )}
       <motion.div
         layout
-        className={`flex flex-col space-y-4 rounded border border-transparent ${isOpen ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] rounded-lg bg-white p-8 dark:bg-dblue" : "h-full p-2 hover:border-dblue dark:hover:border-gray-400"}`}
+        className={`flex flex-col space-y-4 rounded border border-transparent ${isOpen ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] rounded-lg bg-white p-8 dark:bg-violet" : "h-full p-2 hover:border-violet dark:hover:border-gray-400"}`}
       >
         <motion.div
           layout
@@ -51,7 +51,7 @@ export default function GridPreviewDialog({
           <label className="text-sm font-medium">Grid Preview</label>
           {isOpen ? (
             <Cross2Icon
-              className="h-5 w-5 cursor-pointer hover:text-red"
+              className="h-5 w-5 cursor-pointer hover:text-blue dark:hover:text-red"
               onClick={() => {
                 setIsOpen(!isOpen);
                 setTimezone(eventRange.timezone);
@@ -59,7 +59,7 @@ export default function GridPreviewDialog({
             />
           ) : (
             <EnterFullScreenIcon
-              className="h-5 w-5 cursor-pointer hover:text-red"
+              className="h-5 w-5 cursor-pointer hover:text-blue dark:hover:text-red"
               onClick={() => setIsOpen(!isOpen)}
             />
           )}
@@ -86,7 +86,7 @@ export default function GridPreviewDialog({
               />
               <label className="mr-[20px] text-sm">
                 Original Event in{" "}
-                <span className="font-bold text-red">
+                <span className="font-bold text-blue dark:text-red">
                   {eventRange.timezone}
                 </span>
               </label>

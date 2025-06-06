@@ -85,14 +85,14 @@ export function Calendar({ className, onRangeSelect }: CalendarProps) {
             placeholder="Start Day"
             value={fromValue}
             onChange={handleFromChange}
-            className="rounded-l-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none"
+            className="rounded-l-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none"
           />
           <input
             size={10}
             placeholder="End Day"
             value={toValue}
             onChange={handleToChange}
-            className="rounded-r-full border-1 border-dblue-500 px-4 py-1 text-center hover:border-red focus:outline-none"
+            className="rounded-r-full border-1 border-violet-500 px-4 py-1 text-center hover:border-red focus:outline-none"
           />
         </form>
       </div> */}

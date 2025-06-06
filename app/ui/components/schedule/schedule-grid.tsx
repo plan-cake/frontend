@@ -112,7 +112,7 @@ export default function ScheduleGrid({
 
       {/* Grid */}
       <div
-        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-300 dark:divide-gray-400"
+        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400"
         style={{
           gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
           gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
@@ -130,7 +130,7 @@ export default function ScheduleGrid({
 
       {/* Time labels */}
       <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-dblue"
+        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
         style={{
           width: `${timeColWidth}px`,
           height: "100%",
@@ -201,7 +201,7 @@ export default function ScheduleGrid({
 
       {/* Right border */}
       <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-dblue"
+        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
         style={{
           width: `${rightArrowWidth}px`,
           height: "100%",
@@ -215,7 +215,7 @@ export default function ScheduleGrid({
 const GridError = ({ message }: { message: string }) => {
   return (
     <div className="flex h-full w-full items-center justify-center text-sm">
-      <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red dark:text-red-500" />
+      <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red" />
       {message}
     </div>
   );

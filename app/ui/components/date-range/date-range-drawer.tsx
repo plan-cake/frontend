@@ -39,17 +39,17 @@ export default function DateRangeDrawer({
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/40" />
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
           className="fixed right-0 bottom-0 left-0 z-50 flex h-[500px] w-full animate-slideUp flex-col data-[state=closed]:animate-slideDown"
           aria-label="Date range picker"
         >
-          <div className="flex-1 justify-center overflow-y-auto rounded-md rounded-t-[10px] bg-white p-4 shadow-lg dark:bg-dblue">
+          <div className="flex-1 justify-center overflow-y-auto rounded-md rounded-t-[10px] bg-white p-4 shadow-lg dark:bg-violet">
             <div
               aria-hidden
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
             />
-            <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold text-gray-900 dark:text-white">
+            <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
               Select Date Range
               {select}
             </Dialog.Title>

@@ -9,7 +9,7 @@ export default function Home() {
     <div className="flex h-full flex-col items-center justify-center gap-4 space-y-4 text-xl md:text-2xl">
       <button
         onClick={() => router("/newevent")}
-        className="pointer-events-auto h-1/4 w-3/4 rounded-xl bg-dblue p-4 text-white dark:bg-white dark:text-dblue"
+        className="pointer-events-auto h-1/4 w-3/4 rounded-xl bg-violet p-4 text-white dark:bg-white dark:text-violet"
       >
         create new event
       </button>
