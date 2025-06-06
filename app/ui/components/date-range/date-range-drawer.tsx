@@ -29,13 +29,13 @@ export default function DateRangeDrawer({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <div className="cursor-pointer">
+        <button className="cursor-pointer" aria-label="Open date range picker">
           <DateRangeDrawerSelector
             eventRange={eventRange}
             onChangeSpecific={onChangeSpecific}
             onChangeWeekday={onChangeWeekday}
           />
-        </div>
+        </button>
       </Dialog.Trigger>
 
       <Dialog.Portal>
