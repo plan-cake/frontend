@@ -24,7 +24,7 @@ export function Calendar({
   const defaultClassNames = getDefaultClassNames();
 
   const isMobile = useCheckMobile();
-  const numberOfMonths = isMobile ? 12 : 2;
+  const numberOfMonths = isMobile ? 6 : 2;
   const hideNavigation = isMobile ? true : false;
 
   const today = new Date();
