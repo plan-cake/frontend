@@ -42,9 +42,6 @@ export function isAvailable(
   key: string,
   hour: number,
 ): boolean {
-  console.log("Checking availability for key:", key, "hour:", hour);
-  console.log(user.selections[key]);
-  console.log(user.selections[key]?.has(hour));
   return user.selections[key]?.has(hour) ?? false;
 }
 
@@ -58,8 +55,6 @@ export function addAvailability(
   const hours = new Set(updated.selections[key] || []);
   hours.add(hour);
   updated.selections[key] = hours;
-
-  console.log("Updated availability:", updated);
   return updated;
 }
 
