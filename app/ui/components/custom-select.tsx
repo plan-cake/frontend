@@ -28,7 +28,6 @@ export default function CustomSelect({
     ? (options as GroupedOption[]).flatMap((g) => g.options)
     : (options as Option[]);
   const current = allOptions.find((o) => o.value === value);
-  const displayValue = current ? current.label : "Select";
 
   return (
     <Select.Root
