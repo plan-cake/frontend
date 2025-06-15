@@ -9,10 +9,12 @@ import {
 
 import {
   EventRange,
+  expandEventRange,
   getDateLabels,
-  getEnabledWeekdays,
 } from "@/app/_types/schedule-types";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
+import { toZonedTime } from "date-fns-tz";
+import { differenceInCalendarDays } from "date-fns";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -27,49 +29,73 @@ export default function ScheduleGrid({
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  let numHours = 0;
-  let numDays = 0;
-  let daysLabel: string[] = [];
-
-  const { timeRange } = eventRange;
-  numHours =
-    timeRange.to && timeRange.from
-      ? timeRange.to.getHours() - timeRange.from.getHours() + 1
-      : 0;
-
-  const hours = useMemo(() => {
-    const range: Date[] = [];
-    for (let i = 0; i < numHours; i++) {
-      const hour = timeRange.from
-        ? new Date(timeRange.from.getTime() + i * 3600000)
-        : new Date(); // Fallback to current time or handle appropriately
-      range.push(hour);
-    }
-    return range;
-  }, [timeRange, numHours]);
-
-  if (eventRange.type === "specific") {
-    const { dateRange } = eventRange;
-    if (!dateRange || !timeRange) {
-      return GridError({ message: "Invalid date or time range" });
+  const {
+    UTCTimeSlots,
+    numHours,
+    hourBreakEnd,
+    hourBreakStart,
+    numDays,
+    daysLabel,
+    hoursLabel,
+  } = useMemo(() => {
+    const expandedEventRange = expandEventRange(eventRange);
+    const expandedRange = expandedEventRange.expandedRange;
+    if (!expandedEventRange || expandedRange.length === 0) {
+      return {
+        UTCTimeSlots: [],
+        numHours: 0,
+        numDays: 0,
+        hourBreakEnd: -1,
+        hourBreakStart: -1,
+        daysLabel: [],
+        hoursLabel: [],
+      };
     }
 
-    numDays =
-      Math.ceil(
-        ((dateRange.to?.getTime() ?? 0) - (dateRange.from?.getTime() ?? 0)) /
-          (1000 * 60 * 60 * 24),
-      ) + 1;
-    daysLabel = getDateLabels(dateRange);
-  } else if (eventRange.type === "weekday") {
-    const { weekdays } = eventRange;
-    const enabledWeekdays = getEnabledWeekdays(weekdays);
-    if (!enabledWeekdays || !timeRange) {
-      return GridError({ message: "Invalid weekdays or time range" });
+    const localStartDate = toZonedTime(expandedRange[0].time, timezone);
+    const localEndDate = toZonedTime(
+      expandedRange[expandedRange.length - 1].time,
+      timezone,
+    );
+
+    let localStartHour = localStartDate.getHours();
+    let localEndHour = localEndDate.getHours();
+
+    let hourBreakStart = -1.25;
+    let hourBreakEnd = -1;
+
+    if (localEndHour < localStartHour) {
+      hourBreakStart = localEndHour + 1;
+      hourBreakEnd = localStartHour;
+
+      localStartHour = 0;
+      localEndHour = 23;
     }
 
-    numDays = enabledWeekdays.length;
-    daysLabel = enabledWeekdays.map((day) => day.toUpperCase());
-  }
+    const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
+    const daysLabel = getDateLabels(localStartDate, localEndDate);
+    const hoursLabel = Array.from(
+      { length: (localEndHour - localStartHour + 1) * 4 },
+      (_, i) => {
+        const hour24 = localStartHour + Math.floor(i / 4);
+        const hour12 = hour24 % 12 || 12; // Convert to 12-hour format
+        const period = hour24 < 12 ? "AM" : "PM";
+        return `${hour12} ${period}`;
+      },
+    );
+    const numHours =
+      hoursLabel.length - (hourBreakEnd - hourBreakStart) * 4 + 1;
+
+    return {
+      expandedRange,
+      numHours,
+      hourBreakEnd,
+      hourBreakStart,
+      numDays,
+      daysLabel,
+      hoursLabel,
+    };
+  }, [eventRange, timezone]);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -115,7 +141,7 @@ export default function ScheduleGrid({
         className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400"
         style={{
           gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
+          gridTemplateRows: `50px repeat(${numHours}, minmax(15px, 1fr))`,
         }}
       >
         {Array.from({
@@ -126,6 +152,16 @@ export default function ScheduleGrid({
             className={`${disableSelect ? "cursor-not-allowed" : ""}`}
           />
         ))}
+
+        {hourBreakEnd > -1 && hourBreakStart > -1 && (
+          <div
+            className="pointer-events-none col-span-full border-b-2 border-gray-300 opacity-60"
+            style={{
+              gridRowStart: hourBreakStart * 4 + 2, // +2 because row 1 = header, row 2 = first slot
+              gridRowEnd: hourBreakStart * 4 + 3,
+            }}
+          ></div>
+        )}
       </div>
 
       {/* Time labels */}
@@ -135,28 +171,38 @@ export default function ScheduleGrid({
           width: `${timeColWidth}px`,
           height: "100%",
           display: "grid",
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
+          gridTemplateRows: `50px repeat(${numHours}, minmax(15px, 1fr))`,
           left: 0,
         }}
       >
         <div />
-        {Array.from({ length: numHours }).map((_, i) => {
-          const hour = timeRange.from
-            ? new Date(timeRange.from.getTime() + i * 3600000)
-            : new Date(); // Fallback to current time or handle appropriately
-          const formatter = new Intl.DateTimeFormat("en-US", {
-            timeZone: timezone,
-            hour: "numeric",
-            hour12: true,
-          });
-          return (
-            <div
-              key={i}
-              className="relative flex items-start justify-end pr-2 text-right text-xs"
-            >
-              <span className="absolute -top-2">{formatter.format(hour)}</span>
-            </div>
-          );
+        {hoursLabel.map((hour, i) => {
+          if (i === hourBreakStart * 4) {
+            return (
+              <div
+                key={i}
+                className="flex items-start justify-end pr-2 text-right text-xs"
+              ></div>
+            );
+          } else if (i >= hourBreakStart * 4 && i < hourBreakEnd * 4) {
+            return null;
+          } else if (i % 4 === 0) {
+            return (
+              <div
+                key={i}
+                className="relative flex items-start justify-end pr-2 text-right text-xs"
+              >
+                <span className="absolute -top-2">{hour}</span>
+              </div>
+            );
+          } else {
+            return (
+              <div
+                key={i}
+                className="flex items-start justify-end pr-2 text-right text-xs"
+              ></div>
+            );
+          }
         })}
       </div>
 
