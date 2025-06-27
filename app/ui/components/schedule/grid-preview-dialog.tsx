@@ -65,7 +65,7 @@ export default function GridPreviewDialog({
           )}
         </motion.div>
         {isOpen ? (
-          <motion.div className="grow space-y-4">
+          <motion.div className="grow space-y-4 overflow-y-scroll pr-6">
             <ScheduleGrid
               eventRange={eventRange}
               // disableSelect={false}

@@ -15,6 +15,7 @@ import {
 import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
+import TimeBlock from "./time-block";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -22,22 +23,19 @@ interface ScheduleGridProps {
   disableSelect?: boolean;
 }
 
+interface TimeBlockListType {
+  startHour: number;
+  endHour: number;
+}
+
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
-  timezone, // current timezone of the user, not necessarily the original
+  timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const {
-    UTCTimeSlots,
-    numHours,
-    hourBreakEnd,
-    hourBreakStart,
-    numDays,
-    daysLabel,
-    hoursLabel,
-  } = useMemo(() => {
+  const { numHours, numDays, daysLabel, timeBlocks } = useMemo(() => {
     const expandedEventRange = expandEventRange(eventRange);
     const expandedRange = expandedEventRange.expandedRange;
     if (!expandedEventRange || expandedRange.length === 0) {
@@ -61,39 +59,27 @@ export default function ScheduleGrid({
     let localStartHour = localStartDate.getHours();
     let localEndHour = localEndDate.getHours();
 
-    let hourBreakStart = -1.25;
-    let hourBreakEnd = -1;
+    let timeBlocks: TimeBlockListType[] = [];
 
     if (localEndHour < localStartHour) {
-      hourBreakStart = localEndHour + 1;
-      hourBreakEnd = localStartHour;
-
-      localStartHour = 0;
-      localEndHour = 23;
+      timeBlocks.push({ startHour: 0, endHour: localEndHour });
+      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+    } else {
+      timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
     }
+
+    const numHours = timeBlocks.reduce((acc, block) => {
+      return acc + (block.endHour - block.startHour + 1);
+    }, 0);
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
     const daysLabel = getDateLabels(localStartDate, localEndDate);
-    const hoursLabel = Array.from(
-      { length: (localEndHour - localStartHour + 1) * 4 },
-      (_, i) => {
-        const hour24 = localStartHour + Math.floor(i / 4);
-        const hour12 = hour24 % 12 || 12; // Convert to 12-hour format
-        const period = hour24 < 12 ? "AM" : "PM";
-        return `${hour12} ${period}`;
-      },
-    );
-    const numHours =
-      hoursLabel.length - (hourBreakEnd - hourBreakStart) * 4 + 1;
 
     return {
-      expandedRange,
       numHours,
-      hourBreakEnd,
-      hourBreakStart,
       numDays,
       daysLabel,
-      hoursLabel,
+      timeBlocks,
     };
   }, [eventRange, timezone]);
 
@@ -109,121 +95,29 @@ export default function ScheduleGrid({
   const rightArrowWidth = 20;
 
   if (numHours <= 0) {
-    return GridError({ message: "Invalid time range" });
+    return <GridError message="Invalid time range" />;
   } else if (numDays <= 0) {
-    return GridError({ message: "Invalid or missing date range" });
+    return <GridError message="Invalid or missing date range" />;
   }
 
   return (
-    <div className="relative h-[90%] w-full">
-      {/* Arrows */}
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] text-xl"
-          style={{ width: `${timeColWidth}px` }}
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] text-xl"
-          style={{ width: `${rightArrowWidth}px` }}
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Grid */}
+    <div className="relative grid grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-y-2">
+      {/* Column Headers */}
+      <div style={{ width: `${timeColWidth}px` }} />
       <div
-        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400"
+        className="grid h-[50px] items-center bg-white dark:bg-violet"
         style={{
-          gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
-          gridTemplateRows: `50px repeat(${numHours}, minmax(15px, 1fr))`,
-        }}
-      >
-        {Array.from({
-          length: (numHours + 1) * (visibleDays.length + 2) + 1,
-        }).map((_, i) => (
-          <div
-            key={i}
-            className={`${disableSelect ? "cursor-not-allowed" : ""}`}
-          />
-        ))}
-
-        {hourBreakEnd > -1 && hourBreakStart > -1 && (
-          <div
-            className="pointer-events-none col-span-full border-b-2 border-gray-300 opacity-60"
-            style={{
-              gridRowStart: hourBreakStart * 4 + 2, // +2 because row 1 = header, row 2 = first slot
-              gridRowEnd: hourBreakStart * 4 + 3,
-            }}
-          ></div>
-        )}
-      </div>
-
-      {/* Time labels */}
-      <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${timeColWidth}px`,
-          height: "100%",
-          display: "grid",
-          gridTemplateRows: `50px repeat(${numHours}, minmax(15px, 1fr))`,
-          left: 0,
-        }}
-      >
-        <div />
-        {hoursLabel.map((hour, i) => {
-          if (i === hourBreakStart * 4) {
-            return (
-              <div
-                key={i}
-                className="flex items-start justify-end pr-2 text-right text-xs"
-              ></div>
-            );
-          } else if (i >= hourBreakStart * 4 && i < hourBreakEnd * 4) {
-            return null;
-          } else if (i % 4 === 0) {
-            return (
-              <div
-                key={i}
-                className="relative flex items-start justify-end pr-2 text-right text-xs"
-              >
-                <span className="absolute -top-2">{hour}</span>
-              </div>
-            );
-          } else {
-            return (
-              <div
-                key={i}
-                className="flex items-start justify-end pr-2 text-right text-xs"
-              ></div>
-            );
-          }
-        })}
-      </div>
-
-      {/* Column headers */}
-      <div
-        className="absolute top-0 grid h-[50px]"
-        style={{
-          left: `${timeColWidth}px`,
-          right: `${rightArrowWidth}px`,
+          gridColumn: "2",
           gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
         }}
       >
-        {visibleDays.map((day, dayIndex) => {
+        {visibleDays.map((day, i) => {
           const type = eventRange.type;
-
           if (type === "specific") {
-            // split the day string into date and month
             const [weekday, month, date] = day.split(" ");
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
               >
                 <div>{weekday}</div>
@@ -235,7 +129,7 @@ export default function ScheduleGrid({
           } else if (type === "weekday") {
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex items-center justify-center text-sm font-medium"
               >
                 {day.toUpperCase()}
@@ -245,15 +139,43 @@ export default function ScheduleGrid({
         })}
       </div>
 
-      {/* Right border */}
-      <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${rightArrowWidth}px`,
-          height: "100%",
-          right: 0,
-        }}
-      ></div>
+      {/* Left Arrow */}
+      {currentPage > 0 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+          className="absolute top-0 left-0 z-10 h-[50px] w-[50px] text-xl"
+        >
+          <ChevronLeftIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Right Arrow */}
+      {currentPage < totalPages - 1 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
+          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
+        >
+          <ChevronRightIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Grid Layer */}
+      <div className="col-span-2 flex flex-col gap-4">
+        {timeBlocks?.map((block, i) => (
+          <TimeBlock
+            key={i}
+            timeColWidth={timeColWidth}
+            rightArrowWidth={rightArrowWidth}
+            visibleDays={visibleDays}
+            startHour={block.startHour}
+            endHour={block.endHour}
+            splitBlocks={
+              timeBlocks.length > 1 && block.startHour !== block.endHour
+            }
+            blockNumber={i}
+          />
+        ))}
+      </div>
     </div>
   );
 }
