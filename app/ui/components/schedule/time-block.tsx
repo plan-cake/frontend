@@ -1,33 +1,53 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useRef, useEffect } from "react";
+import { getUtcIsoSlot, AvailabilitySet } from "@/app/_types/user-availability";
 
 interface TimeBlockProps {
+  disableSelect?: boolean;
   timeColWidth: number;
   rightArrowWidth: number;
   visibleDays: string[];
   startHour: number;
   endHour: number;
   splitBlocks?: boolean;
-  blockNumber?: number; // Optional prop to control block splitting
+  blockNumber?: number;
+  userTimezone: string; // user’s local timezone
+  availability: AvailabilitySet; // ISO UTC strings
+  onToggle: (slotIso: string) => void;
 }
 
 export default function TimeBlock({
+  disableSelect = false,
   timeColWidth,
   rightArrowWidth,
   startHour,
   endHour,
   visibleDays,
-  splitBlocks = false, // Optional prop to control block splitting
+  splitBlocks = false,
   blockNumber = 0,
+  userTimezone,
+  availability,
+  onToggle,
 }: TimeBlockProps) {
-  console.log("Rendering TimeBlock", {
-    timeColWidth,
-    rightArrowWidth,
-    visibleDays,
-    startHour,
-    endHour,
-  });
+  const [isDragging, setIsDragging] = useState(false);
+  const draggedSlots = useRef<Set<string>>(new Set());
+
+  useEffect(() => {
+    const stopDragging = () => {
+      setIsDragging(false);
+      draggedSlots.current.clear();
+    };
+
+    window.addEventListener("mouseup", stopDragging);
+    window.addEventListener("touchend", stopDragging);
+
+    return () => {
+      window.removeEventListener("mouseup", stopDragging);
+      window.removeEventListener("touchend", stopDragging);
+    };
+  }, []);
+
   const numHours = endHour - startHour;
   const numQuarterHours = numHours * 4; // 4 quarter hours per hour
 
@@ -84,15 +104,70 @@ export default function TimeBlock({
                 blockNumber === 1 &&
                 dayIdx === visibleDays.length - 1);
 
+            const isDashedBorder = quarterIdx % 4 !== 0; // Dashed border for 15, 30, and 45 minute marks
+
+            const hour = startHour + Math.floor(quarterIdx / 4);
+            const minute = (quarterIdx % 4) * 15;
+            const dateKey = visibleDays[dayIdx];
+            const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
+            const isSelected = availability.has(slotIso);
+
+            console.log(slotIso);
+
             return (
               <div
                 key={`slot-${quarterIdx}-${dayIdx}`}
-                className={`border-[0.5px] border-gray-300 hover:bg-blue-200 dark:hover:bg-red-200 ${
-                  isDisabled ? "pointer-events-none bg-gray-200" : ""
-                }`}
+                draggable={false}
+                onClick={() => {
+                  onToggle(slotIso);
+                }}
+                onMouseDown={() => {
+                  if (!isDisabled) {
+                    setIsDragging(true);
+                    onToggle(slotIso);
+                    draggedSlots.current.add(slotIso);
+                  }
+                }}
+                onMouseEnter={() => {
+                  if (
+                    isDragging &&
+                    !isDisabled &&
+                    !draggedSlots.current.has(slotIso)
+                  ) {
+                    onToggle(slotIso);
+                    draggedSlots.current.add(slotIso);
+                  }
+                }}
+                onTouchStart={() => {
+                  if (!isDisabled) {
+                    setIsDragging(true);
+                    onToggle(slotIso);
+                    draggedSlots.current.add(slotIso);
+                  }
+                }}
+                onTouchMove={(e) => {
+                  const touch = e.touches[0];
+                  const target = document.elementFromPoint(
+                    touch.clientX,
+                    touch.clientY,
+                  );
+                  if (
+                    target instanceof HTMLElement &&
+                    target.dataset.slotIso &&
+                    !draggedSlots.current.has(target.dataset.slotIso)
+                  ) {
+                    onToggle(target.dataset.slotIso);
+                    draggedSlots.current.add(target.dataset.slotIso);
+                  }
+                }}
+                data-slot-iso={slotIso}
+                className={`border-[0.5px] border-gray-300 ${isSelected ? "bg-blue-500" : "hover:bg-blue-200 dark:hover:bg-red-200"} ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${disableSelect ? "cursor-not-allowed" : ""}`}
                 style={{
                   gridColumn: dayIdx + 1,
                   gridRow: quarterIdx + 1,
+                  borderTopStyle: isDashedBorder ? "dashed" : "solid",
+                  touchAction: "none", // important for touch dragging
+                  userSelect: "none", // prevent text selection during drag
                 }}
               />
             );

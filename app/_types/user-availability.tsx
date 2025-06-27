@@ -1,12 +1,14 @@
+import { fromZonedTime } from "date-fns-tz";
+
 // keys are either weekdays or specific date strings:
 //    for specific days:  "2025-05-10"
 //    for weekdays: "Mon", "Tue", etc.
 // values are sets timeslots where the user is available
-export type AvailabilityMap = Record<string, Set<number>>;
+export type AvailabilitySet = Set<string>; // each string = ISO UTC datetime (start of timeslot)
 
 export type UserAvailability = {
   type: "specific" | "weekday";
-  selections: AvailabilityMap;
+  selections: AvailabilitySet;
 };
 
 // Initialize empty availability
@@ -14,59 +16,35 @@ export const createEmptyUserAvailability = (
   type: "specific" | "weekday" = "specific",
 ): UserAvailability => ({
   type,
-  selections: {},
+  selections: new Set<string>(),
 });
 
 // Toggle a cell's availability (add/remove hour from Set)
-export function toggleAvailability(
+export function toggleUtcSlot(
   prev: UserAvailability,
-  key: string,
-  hour: number,
+  iso: string,
 ): UserAvailability {
-  const updated = { ...prev, selections: { ...prev.selections } };
-  const hours = new Set(updated.selections[key] || []);
-
-  if (hours.has(hour)) {
-    hours.delete(hour);
+  const updated = new Set(prev.selections);
+  if (updated.has(iso)) {
+    updated.delete(iso);
   } else {
-    hours.add(hour);
+    updated.add(iso);
   }
-
-  updated.selections[key] = hours;
-  return updated;
+  return { ...prev, selections: updated };
 }
 
 // Check if a user is available at a specific key + hour
-export function isAvailable(
-  user: UserAvailability,
-  key: string,
-  hour: number,
-): boolean {
-  return user.selections[key]?.has(hour) ?? false;
+export function isAvailable(user: UserAvailability, iso: string): boolean {
+  return user.selections.has(iso);
 }
 
-// Add multiple hours for drag selection
-export function addAvailability(
-  prev: UserAvailability,
-  key: string,
+export function getUtcIsoSlot(
+  dateKey: string,
   hour: number,
-): UserAvailability {
-  const updated = { ...prev, selections: { ...prev.selections } };
-  const hours = new Set(updated.selections[key] || []);
-  hours.add(hour);
-  updated.selections[key] = hours;
-  return updated;
-}
-
-// Remove hours for drag deselection (optional if you want toggling behavior)
-export function removeAvailability(
-  prev: UserAvailability,
-  key: string,
-  hour: number,
-): UserAvailability {
-  const updated = { ...prev, selections: { ...prev.selections } };
-  const hours = new Set(updated.selections[key] || []);
-  hours.delete(hour);
-  updated.selections[key] = hours;
-  return updated;
+  minute: number,
+  timezone: string,
+): string {
+  const localDateTimeString = `${dateKey}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
+  const utcDate = fromZonedTime(localDateTimeString, timezone);
+  return utcDate.toISOString();
 }

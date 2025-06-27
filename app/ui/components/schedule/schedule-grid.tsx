@@ -11,7 +11,12 @@ import {
   EventRange,
   expandEventRange,
   getDateLabels,
+  getDateKeys,
 } from "@/app/_types/schedule-types";
+import {
+  AvailabilitySet,
+  createEmptyUserAvailability,
+} from "@/app/_types/user-availability";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
@@ -34,19 +39,33 @@ export default function ScheduleGrid({
   timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
+  const [availability, setAvailability] = useState<AvailabilitySet>(
+    createEmptyUserAvailability(eventRange.type).selections,
+  );
+  function handleToggle(slotIso: string) {
+    if (disableSelect) return;
+    setAvailability((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(slotIso)) {
+        updated.delete(slotIso);
+      } else {
+        updated.add(slotIso);
+      }
+      console.log("Updated availability:", updated);
+      return updated;
+    });
+  }
 
-  const { numHours, numDays, daysLabel, timeBlocks } = useMemo(() => {
+  const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
     const expandedEventRange = expandEventRange(eventRange);
     const expandedRange = expandedEventRange.expandedRange;
     if (!expandedEventRange || expandedRange.length === 0) {
       return {
-        UTCTimeSlots: [],
         numHours: 0,
         numDays: 0,
-        hourBreakEnd: -1,
-        hourBreakStart: -1,
         daysLabel: [],
-        hoursLabel: [],
+        dayKeys: [],
+        timeBlocks: [],
       };
     }
 
@@ -74,11 +93,13 @@ export default function ScheduleGrid({
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
     const daysLabel = getDateLabels(localStartDate, localEndDate);
+    const dayKeys = getDateKeys(localStartDate, localEndDate);
 
     return {
       numHours,
       numDays,
       daysLabel,
+      dayKeys,
       timeBlocks,
     };
   }, [eventRange, timezone]);
@@ -90,6 +111,7 @@ export default function ScheduleGrid({
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
   const visibleDays = daysLabel.slice(startIndex, endIndex);
+  const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
 
   const timeColWidth = 50;
   const rightArrowWidth = 20;
@@ -164,15 +186,19 @@ export default function ScheduleGrid({
         {timeBlocks?.map((block, i) => (
           <TimeBlock
             key={i}
+            disableSelect={disableSelect}
             timeColWidth={timeColWidth}
             rightArrowWidth={rightArrowWidth}
-            visibleDays={visibleDays}
+            visibleDays={visibleDayKeys}
             startHour={block.startHour}
             endHour={block.endHour}
             splitBlocks={
               timeBlocks.length > 1 && block.startHour !== block.endHour
             }
             blockNumber={i}
+            userTimezone={timezone}
+            availability={availability}
+            onToggle={handleToggle}
           />
         ))}
       </div>

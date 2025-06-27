@@ -196,3 +196,12 @@ export function getDateLabels(from: Date, to: Date): string[] {
   }
   return labels;
 }
+
+export function getDateKeys(from: Date, to: Date): string[] {
+  const dates = expandDateRange({ from, to });
+  return dates.map((d) =>
+    d.toLocaleDateString("en-CA", {
+      timeZone: "UTC",
+    }),
+  ); // "YYYY-MM-DD"
+}
