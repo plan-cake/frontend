@@ -8,10 +8,10 @@ export default function Logo() {
       
       {/* Text Container */}
       <div className="absolute left-4 top-4">
-        <div className="text-stone-400 text-5xl font-normal font-['Modak'] leading-[50px]">
+        <div className="w-32 justify-start text-[#C7966E] text-5xl font-normal font-['Modak'] leading-[50px] [-webkit-text-stroke:1px_white]">
           plan
         </div>
-        <div className="text-stone-400 text-5xl font-normal font-['Modak'] leading-[50px]">
+        <div className="w-40 justify-start text-[#C7966E] text-5xl font-normal font-['Modak'] leading-[50px] [-webkit-text-stroke:1px_#05121E]">
           cake
         </div>
         
@@ -19,11 +19,12 @@ export default function Logo() {
         <div 
           data-direction="down" 
           data-status="closed" 
-          className="w-8 h-8 relative"
+          className="mt-1 w-8 h-8"
         >
-          <div className="w-8 h-8 left-0 top-0 absolute bg-white/0">
-            <div className="w-6 h-3.5 left-[4.27px] top-[7px] absolute bg-[#E9DECA]"></div>
-            <div className="w-1 h-1 left-[14px] top-[1px] absolute bg-[#FF5C5C] rounded-full"></div>
+          <div className="w-8 h-8 relative bg-white/0">
+            <div className="w-6 h-[3px] absolute left-1 top-1.5 bg-stone-400" />
+            <div className="w-6 h-[3px] absolute left-1 top-3.5 bg-stone-400" />
+            <div className="w-6 h-[3px] absolute left-1 top-5.5 bg-stone-400" />
           </div>
         </div>
       </div>
