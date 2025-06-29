@@ -94,8 +94,8 @@ export default function ScheduleGrid({
       {currentPage > 0 && (
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] text-xl"
-          style={{ width: `${timeColWidth}px` }}
+          className="absolute top-0 left-6 z-10 h-[50px] text-xl w-[50px]"
+          aria-label="View previous days"
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
@@ -103,8 +103,8 @@ export default function ScheduleGrid({
       {currentPage < totalPages - 1 && (
         <button
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] text-xl"
-          style={{ width: `${rightArrowWidth}px` }}
+          className="absolute top-0 right-0 z-10 h-[50px] text-xl w-[20px]"
+          aria-label="View next days"
         >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
@@ -112,11 +112,7 @@ export default function ScheduleGrid({
 
       {/* Grid */}
       <div
-        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400"
-        style={{
-          gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
-        }}
+        className={`grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400 grid-cols-[50px_repeat(${visibleDays.length},1fr)_20px] grid-rows-[50px_repeat(${numHours},1fr)]`}
       >
         {Array.from({
           length: (numHours + 1) * (visibleDays.length + 2) + 1,
@@ -130,20 +126,13 @@ export default function ScheduleGrid({
 
       {/* Time labels */}
       <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${timeColWidth}px`,
-          height: "100%",
-          display: "grid",
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
-          left: 0,
-        }}
+        className={`pointer-events-none absolute top-0 bg-white dark:bg-violet w-[50px] h-full grid grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
       >
         <div />
         {Array.from({ length: numHours }).map((_, i) => {
           const hour = timeRange.from
             ? new Date(timeRange.from.getTime() + i * 3600000)
-            : new Date(); // Fallback to current time or handle appropriately
+            : new Date();
           const formatter = new Intl.DateTimeFormat("en-US", {
             timeZone: timezone,
             hour: "numeric",
@@ -162,18 +151,12 @@ export default function ScheduleGrid({
 
       {/* Column headers */}
       <div
-        className="absolute top-0 grid h-[50px]"
-        style={{
-          left: `${timeColWidth}px`,
-          right: `${rightArrowWidth}px`,
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
-        }}
+        className={`absolute top-0 grid h-[50px] left-[50px] right-[20px] grid-cols-${Math.min(visibleDays.length, 7)}`}
       >
         {visibleDays.map((day, dayIndex) => {
           const type = eventRange.type;
 
           if (type === "specific") {
-            // split the day string into date and month
             const [weekday, month, date] = day.split(" ");
             return (
               <div
@@ -200,14 +183,7 @@ export default function ScheduleGrid({
       </div>
 
       {/* Right border */}
-      <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${rightArrowWidth}px`,
-          height: "100%",
-          right: 0,
-        }}
-      ></div>
+      <div className="pointer-events-none absolute top-0 bg-white dark:bg-violet w-[20px] h-full right-0" />
     </div>
   );
 }
