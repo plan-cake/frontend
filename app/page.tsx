@@ -5,42 +5,35 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-[#3e3c53]">
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden px-4 pt-32 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
-          <div className="mb-8">
-            <Image
-              src="/plancake-light.png"
-              alt="Plancake Logo"
-              width={100}
-              height={75}
-              className="mx-auto block dark:hidden"
-            />
-            <Image
-              src="/plancake-dark.png"
-              alt="Plancake Logo"
-              width={100}
-              height={75}
-              className="mx-auto hidden dark:block"
-            />
-          </div>
-          <h1 className="mb-6 text-5xl text-violet dark:text-bone md:text-7xl">
-            planning made
-            <span className="mt-2 block bubble-text text-lion">stack simple</span>
+          <h1 className="mb-12">
+            <span className="block text-5xl font-light text-bone md:text-7xl">
+              planning made
+            </span>
+            <span className="mt-4 block text-center font-display text-6xl leading-none text-lion md:text-8xl">
+              stack
+              <br />
+              simple
+            </span>
           </h1>
-          <p className="mx-auto mb-8 max-w-3xl text-xl text-violet dark:text-bone md:text-2xl">
-            The fluffiest way to coordinate schedules and plan group events.
-            Stack up availability and serve the perfect meeting time.
+          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-bone">
+            The fluffiest way to
+            coordinate schedules and
+            plan group events. Stack
+            up availability and serve
+            the perfect meeting time.
           </p>
-          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+          <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/new-event"
-              className="rounded-lg bg-[#ff6b6b] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#ff5252] hover:shadow-xl"
+              className="rounded-2xl bg-[#ff6b6b] px-8 py-3 text-lg font-medium text-white transition-all hover:bg-[#ff5252] hover:shadow-lg"
             >
               Mix your first plan
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-lg bg-[#4d79e9] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#4d69e9] hover:shadow-xl"
+              className="rounded-2xl bg-[#4d79e9] px-8 py-3 text-lg font-medium text-white transition-all hover:bg-[#4d69e9] hover:shadow-lg"
             >
               View Dashboard
             </Link>
