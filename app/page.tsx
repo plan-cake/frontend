@@ -1,74 +1,68 @@
 import Link from "next/link";
+import Image from "next/image";
+import { FiSettings, FiShare2, FiCalendar } from "react-icons/fi";
 
 const features = [
   {
     title: "Smart Planning",
     description:
       "Intelligently suggest optimal meeting times based on everyone's availability and preferences.",
-    icon: "🧠",
+    icon: <FiSettings className="h-8 w-8" />,
   },
   {
-    title: "Easy Polling",
-    description:
-      "Create polls for time slots and let participants vote on their preferences with visual feedback.",
-    icon: "📊",
-  },
-  {
-    title: "Seamless Sharing",
-    description:
-      "Share a simple link to collect availability from unlimited participants across time zones.",
-    icon: "🌍",
-  },
-];
-
-const steps = [
-  {
-    step: "01",
-    title: "Mix Your Event",
-    description:
-      "Set up your meeting details, add time options, and customize your preferences",
-  },
-  {
-    step: "02",
     title: "Share & Stack",
     description:
-      "Send the link to participants and watch responses stack up in real-time",
+      "Send the link to participants and watch responses stack up in real-time.",
+    icon: <FiShare2 className="h-8 w-8" />,
   },
   {
-    step: "03",
     title: "Flip & Serve",
     description:
-      "Review the results, pick the best time, and serve up calendar invites to all",
+      "Review the results, pick the best time, and serve up calendar invites to all.",
+    icon: <FiCalendar className="h-8 w-8" />,
   },
 ];
 
 export default function Home() {
   return (
-    <div className={`bg-bone-50 min-h-screen transition-colors duration-300`}>
+    <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-[#3e3c53]">
       {/* Hero Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <div className="mb-8">
-            <span className="mb-4 block text-6xl">🥞</span>
+            <Image
+              src="/tomeeto-light.png"
+              alt="Plancake Logo"
+              width={100}
+              height={75}
+              className="mx-auto block dark:hidden"
+            />
+            <Image
+              src="/tomeeto-dark.png"
+              alt="Plancake Logo"
+              width={100}
+              height={75}
+              className="mx-auto hidden dark:block"
+            />
           </div>
-          <h1 className={`mb-6 text-5xl font-bold md:text-7xl`}>
+          <h1 className="mb-6 font-display text-5xl font-bold text-[#3e3c53] dark:text-[#e9deca] md:text-7xl">
             planning made
-            <span className="block text-red">stack simple</span>
+            <span className="mt-2 block font-display text-[#e9794d]">stack simple</span>
           </h1>
-          <p className={`mx-auto mb-8 max-w-3xl text-xl md:text-2xl`}>
+          <p className="mx-auto mb-8 max-w-3xl text-xl text-[#3e3c53] dark:text-[#e9deca] md:text-2xl">
             The fluffiest way to coordinate schedules and plan group events.
             Stack up availability and serve the perfect meeting time.
           </p>
           <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
-              href="/newevent"
-              className="rounded-lg bg-red-400 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-red hover:shadow-xl dark:hover:bg-red-500"
+              href="/new-event"
+              className="rounded-lg bg-[#e9794d] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#e9694d] hover:shadow-xl"
             >
-              Mix Your First Plan
+              Mix your first plan
             </Link>
             <Link
               href="/dashboard"
-              className={`rounded-lg bg-blue-500 px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-blue-400 hover:shadow-xl dark:hover:bg-blue-600`}
+              className="rounded-lg bg-[#4d79e9] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#4d69e9] hover:shadow-xl"
             >
               View Dashboard
             </Link>
@@ -76,95 +70,105 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className={`bg-bone py-20 dark:bg-violet-700`}>
+      {/* Why Plancake Section */}
+      <section className="bg-[#e9deca] py-20 dark:bg-[#2e2c43]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
-            <h2 className={`mb-4 text-4xl font-bold`}>Why Choose plancake?</h2>
-            <p className={`mx-auto max-w-2xl text-xl`}>
-              Fluffy, simple planning that stacks up perfectly. No more burnt
-              schedules or half-baked meetings.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className={`rounded-xl border border-gray-200 bg-white p-8 shadow-lg transition-shadow hover:shadow-xl dark:border-gray-700 dark:bg-violet-600`}
-              >
-                <div className="mb-4 text-4xl">{feature.icon}</div>
-                <h3 className={`mb-4 text-2xl font-semibold`}>
-                  {feature.title}
-                </h3>
-                <p className={`text-lg`}>{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="px-4 py-20 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-7xl">
-          <div className="mb-16 text-center">
-            <h2 className={`mb-4 text-4xl font-bold`}>Golden Stack Recipe</h2>
-            <p className={`mx-auto max-w-2xl text-xl`}>
-              Follow these simple steps to cook up the perfect schedule every
-              time.
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-3">
-            {steps.map((step, index) => (
-              <div key={index} className="text-center">
+            <h2 className="font-display text-4xl text-[#3e3c53] dark:text-[#e9deca]">
+              why plancake?
+            </h2>
+            <div className="mt-12 grid gap-8 md:grid-cols-3">
+              {features.map((feature, index) => (
                 <div
-                  className={`mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-lion-500 text-2xl font-bold text-white shadow-lg dark:bg-lion-600`}
+                  key={index}
+                  className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl dark:bg-[#3e3c53]"
                 >
-                  {step.step}
+                  <div className="mb-4 text-[#e9794d]">{feature.icon}</div>
+                  <h3 className="mb-4 text-2xl font-semibold text-[#3e3c53] dark:text-[#e9deca]">
+                    {feature.title}
+                  </h3>
+                  <p className="text-lg text-[#3e3c53] dark:text-[#e9deca]">
+                    {feature.description}
+                  </p>
                 </div>
-                <h3 className={`mb-4 text-2xl font-semibold`}>{step.title}</h3>
-                <p className={`text-lg`}>{step.description}</p>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Golden Stack Recipe */}
+      <section className="bg-white py-20 dark:bg-[#3e3c53]">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 text-center">
+            <h2 className="font-display text-4xl text-[#3e3c53] dark:text-[#e9deca]">
+              golden
+              <span className="block font-display text-[#e9794d]">stack recipe</span>
+            </h2>
+            <p className="mt-4 text-lg text-[#3e3c53] dark:text-[#e9deca]">
+              Follow these simple steps to cook up the perfect schedule every time.
+            </p>
+          </div>
+
+          <div className="mt-12 grid gap-8 md:grid-cols-3">
+            <div className="text-center">
+              <div className="mx-auto mb-6">
+                <FiSettings className="mx-auto h-16 w-16 text-[#e9794d]" />
               </div>
-            ))}
+              <h3 className="mb-4 text-2xl font-semibold text-[#3e3c53] dark:text-[#e9deca]">
+                Mix your event
+              </h3>
+              <p className="text-lg text-[#3e3c53] dark:text-[#e9deca]">
+                Set up your meeting details, add time options, and customize your preferences
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="mx-auto mb-6">
+                <FiShare2 className="mx-auto h-16 w-16 text-[#e9794d]" />
+              </div>
+              <h3 className="mb-4 text-2xl font-semibold text-[#3e3c53] dark:text-[#e9deca]">
+                Share & Stack
+              </h3>
+              <p className="text-lg text-[#3e3c53] dark:text-[#e9deca]">
+                Send the link to participants and watch responses stack up in real-time
+              </p>
+            </div>
+            <div className="text-center">
+              <div className="mx-auto mb-6">
+                <FiCalendar className="mx-auto h-16 w-16 text-[#e9794d]" />
+              </div>
+              <h3 className="mb-4 text-2xl font-semibold text-[#3e3c53] dark:text-[#e9deca]">
+                Flip & Serve
+              </h3>
+              <p className="text-lg text-[#3e3c53] dark:text-[#e9deca]">
+                Review the results, pick the best time, and serve up calendar invites to all
+              </p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className={`bg-bone py-20 dark:bg-violet-700`}>
-        <div className="mx-auto max-w-4xl px-4 text-center sm:px-6 lg:px-8">
-          <div className="mb-6">
-            <span className="text-5xl">🥞</span>
-          </div>
-          <h2 className={`mb-6 text-4xl font-bold`}>
-            Ready to Stack Up Success?
+      {/* Plan Today Section */}
+      <section className="bg-[#e9deca] py-20 dark:bg-[#2e2c43]">
+        <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
+          <h2 className="font-display text-6xl text-[#3e3c53] dark:text-[#e9deca] md:text-8xl">
+            PLAN TODAY
           </h2>
-          <p className={`mb-8 text-xl`}>
-            Join teams worldwide who discovered the fluffiest way to plan
-            together.
-          </p>
-          <Link
-            href="/newevent"
-            className="inline-block rounded-lg bg-red px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-red-400 hover:shadow-xl"
-          >
-            Start Cooking Today 🥞
-          </Link>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer>
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h3 className={`mb-4 text-2xl font-bold`}>🥞 plancake</h3>
-            <p>
-              © 2025 plancake. Stacking up perfect plans, one pancake at a
-              time.
+          <div className="mt-8">
+            <Link
+              href="/new-event"
+              className="inline-block rounded-lg bg-[#e9794d] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#e9694d] hover:shadow-xl"
+            >
+              Start Planning
+            </Link>
+          </div>
+          <div className="mt-12">
+            <p className="text-sm text-[#3e3c53] dark:text-[#e9deca]">
+              © 2025 plancake. Stacking up perfect plans, one pancake at a time.
             </p>
           </div>
         </div>
-      </footer>
-    </div>
+      </section>
+    </main>
   );
 }
