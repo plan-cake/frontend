@@ -31,6 +31,7 @@ export default function TimeBlock({
   onToggle,
 }: TimeBlockProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [didTouch, setDidTouch] = useState(false);
   const draggedSlots = useRef<Set<string>>(new Set());
 
   useEffect(() => {
@@ -118,14 +119,12 @@ export default function TimeBlock({
               <div
                 key={`slot-${quarterIdx}-${dayIdx}`}
                 draggable={false}
-                onClick={() => {
-                  onToggle(slotIso);
-                }}
                 onMouseDown={() => {
-                  if (!isDisabled) {
-                    setIsDragging(true);
+                  if (didTouch) return setDidTouch(false);
+                  if (!isDisabled && !isDragging) {
                     onToggle(slotIso);
-                    draggedSlots.current.add(slotIso);
+                    setIsDragging(true);
+                    draggedSlots.current = new Set([slotIso]);
                   }
                 }}
                 onMouseEnter={() => {
@@ -138,11 +137,13 @@ export default function TimeBlock({
                     draggedSlots.current.add(slotIso);
                   }
                 }}
-                onTouchStart={() => {
+                onTouchStart={(e) => {
+                  e.preventDefault();
+                  setDidTouch(true);
                   if (!isDisabled) {
                     setIsDragging(true);
                     onToggle(slotIso);
-                    draggedSlots.current.add(slotIso);
+                    draggedSlots.current = new Set([slotIso]);
                   }
                 }}
                 onTouchMove={(e) => {
@@ -161,13 +162,19 @@ export default function TimeBlock({
                   }
                 }}
                 data-slot-iso={slotIso}
-                className={`border-[0.5px] border-gray-300 ${isSelected ? "bg-blue-500" : "hover:bg-blue-200 dark:hover:bg-red-200"} ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${disableSelect ? "cursor-not-allowed" : ""}`}
+                className={`border-[0.5px] border-gray-300 ${
+                  isSelected
+                    ? "bg-blue-500"
+                    : "hover:bg-blue-200 dark:hover:bg-red-200"
+                } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
+                  disableSelect ? "cursor-not-allowed" : ""
+                }`}
                 style={{
                   gridColumn: dayIdx + 1,
                   gridRow: quarterIdx + 1,
                   borderTopStyle: isDashedBorder ? "dashed" : "solid",
-                  touchAction: "none", // important for touch dragging
-                  userSelect: "none", // prevent text selection during drag
+                  touchAction: "none",
+                  userSelect: "none",
                 }}
               />
             );
