@@ -182,7 +182,11 @@ export function getEnabledWeekdays(weekdays: WeekdayMap): string[] {
 }
 
 // Create a list of visible day labels from a specific date range
-export function getDateLabels(from: Date, to: Date): string[] {
+export function getDateLabels(
+  from: Date,
+  to: Date,
+  eventType: string,
+): string[] {
   const labels: string[] = [];
   const range = expandDateRange({ from, to });
   for (const date of range) {
@@ -192,7 +196,8 @@ export function getDateLabels(from: Date, to: Date): string[] {
     const monthDay = date
       .toLocaleDateString("en-US", { month: "short", day: "numeric" })
       .toUpperCase();
-    labels.push(`${weekday} ${monthDay}`);
+    const string = eventType === "weekday" ? weekday : `${weekday} ${monthDay}`;
+    labels.push(string);
   }
   return labels;
 }

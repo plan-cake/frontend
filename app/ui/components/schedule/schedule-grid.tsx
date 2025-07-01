@@ -92,7 +92,11 @@ export default function ScheduleGrid({
     }, 0);
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
-    const daysLabel = getDateLabels(localStartDate, localEndDate);
+    const daysLabel = getDateLabels(
+      localStartDate,
+      localEndDate,
+      eventRange.type,
+    );
     const dayKeys = getDateKeys(localStartDate, localEndDate);
 
     return {
