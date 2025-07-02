@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -39,6 +39,21 @@ export default function ScheduleGrid({
   timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    const handleScroll = () => {
+      setScrolled(el.scrollTop > 0);
+    };
+
+    el.addEventListener("scroll", handleScroll);
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
@@ -127,14 +142,17 @@ export default function ScheduleGrid({
   }
 
   return (
-    <div className="relative grid grid-cols-[auto_1fr] grid-rows-[auto_1fr] gap-y-2">
+    <div
+      className="relative grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
+      style={{ maxHeight: "80%" }}
+    >
       {/* Column Headers */}
       <div style={{ width: `${timeColWidth}px` }} />
       <div
-        className="grid h-[50px] items-center bg-white dark:bg-violet"
+        className={`grid h-[50px] items-center bg-white transition-shadow duration-200 dark:bg-violet`}
         style={{
           gridColumn: "2",
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
+          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,
         }}
       >
         {visibleDays.map((day, i) => {
@@ -163,6 +181,11 @@ export default function ScheduleGrid({
             );
           }
         })}
+
+        <div className="w-[16px]" aria-hidden />
+        {/* <div
+          className={`h-0.5 w-full ${scrolled ? "bg-gradient-to-r from-transparent via-gray-400 to-transparent" : "border-transparent"}`}
+        /> */}
       </div>
 
       {/* Left Arrow */}
@@ -186,7 +209,10 @@ export default function ScheduleGrid({
       )}
 
       {/* Grid Layer */}
-      <div className="col-span-2 flex flex-col gap-4">
+      <div
+        ref={scrollRef}
+        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-scroll pt-2`}
+      >
         {timeBlocks?.map((block, i) => (
           <TimeBlock
             key={i}

@@ -37,6 +37,7 @@ export default function TimeBlock({
   useEffect(() => {
     const stopDragging = () => {
       setIsDragging(false);
+      setDidTouch(false);
       draggedSlots.current.clear();
     };
 
