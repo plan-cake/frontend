@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link";
+import HamburgerMenu from "./ui/components/hamburger-menu"
 
 const features = [
   {
@@ -45,6 +48,9 @@ const steps = [
 export default function Home() {
   return (
     <div className={`bg-bone-50 min-h-screen transition-colors duration-300`}>
+      <nav className="flex justify-between items-center w-full p-4">
+        <HamburgerMenu />
+      </nav>
       {/* Hero Section */}
       <section className="px-4 py-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
