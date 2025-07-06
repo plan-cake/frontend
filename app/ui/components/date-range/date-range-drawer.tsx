@@ -41,7 +41,7 @@ export default function DateRangeDrawer({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
-          className="flex-coldata-[state=closed]:animate-slideDown fixed right-0 bottom-0 left-0 z-50 flex h-[500px] w-full animate-slideUp"
+          className="fixed right-0 bottom-0 left-0 z-50 flex h-[500px] w-full animate-slideUp flex-col data-[state=closed]:animate-slideDown"
           aria-label="Date range picker"
         >
           <div className="flex-1 justify-center overflow-y-auto rounded-t-4xl bg-white p-8 shadow-lg dark:bg-violet">
