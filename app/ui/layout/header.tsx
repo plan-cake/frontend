@@ -2,7 +2,7 @@ import Image from "next/image";
 import ToggleDarkMode from "./theme-toggle";
 export default function Header() {
   return (
-    <div className="grid w-full grid-cols-3 items-center">
+    <nav className="grid w-full grid-cols-3 items-center">
       <div className="relative col-start-2 h-[75px] w-[100px] md:col-start-1">
         <Image
           src="/tomeeto-light.png"
@@ -20,6 +20,6 @@ export default function Header() {
       <div className="col-start-3 inline-flex justify-end">
         <ToggleDarkMode />
       </div>
-    </div>
+    </nav>
   );
 }

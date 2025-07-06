@@ -114,7 +114,7 @@ export default function TimeBlock({
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
 
-            console.log(slotIso);
+            // Removed debug log to avoid noisy logs in production
 
             return (
               <div
