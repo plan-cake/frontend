@@ -31,7 +31,7 @@ export default function Page() {
     }));
   };
 
-  const duationOptions = [
+  const durationOptions = [
     { label: "30 minutes", value: 30 },
     { label: "45 minutes", value: 45 },
     { label: "1 hour", value: 60 },
@@ -122,7 +122,7 @@ export default function Page() {
           </label>
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <CustomSelect
-              options={duationOptions}
+              options={durationOptions}
               value={eventRange.duration}
               onValueChange={handleDurationChange}
             />
@@ -143,7 +143,7 @@ export default function Page() {
               />
               <label className="text-gray-400">Duration</label>
               <CustomSelect
-                options={duationOptions}
+                options={durationOptions}
                 value={eventRange.duration}
                 onValueChange={handleDurationChange}
               />
