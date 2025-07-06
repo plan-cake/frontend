@@ -2,7 +2,6 @@ import { groupedTimezones } from "@/app/_lib/grouped-timezones";
 import CustomSelect from "./custom-select";
 
 type TimezoneSelectProps = {
-  label?: string;
   value: string;
   onChange: (tz: string | number) => void;
   className?: string;
