@@ -34,28 +34,9 @@ body {
   --rdp-accent-background-color: var(--calendar-accent-background);
 }
 
-.text-stroke-white {
-  -webkit-text-stroke: 2px var(--color-white);
-}
-
-.text-stroke-violet {
-  -webkit-text-stroke: 2px var(--color-violet);
-}
-
-.text-stroke-bone {
-  -webkit-text-stroke: 2px var(--color-bone);
-}
-
-.text-stroke-blue {
-  -webkit-text-stroke: 2px var(--color-blue);
-}
-
-.text-stroke-red {
-  -webkit-text-stroke: 2px var(--color-red);
-}
-
-.text-stroke-lion {
-  -webkit-text-stroke: 2px var(--color-lion);
+.rdp-months {
+  display: flex;
+  justify-content: center;
 }
 
 @custom-variant dark (&:where(.dark, .dark *));

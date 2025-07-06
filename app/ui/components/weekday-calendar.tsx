@@ -42,21 +42,21 @@ export default function WeekdayCalendar({
 
   return (
     <div className="flex space-y-2">
-      <div className="grid flex-1 grid-cols-7 divide-x-1 divide-solid divide-gray-400 rounded-lg border border-gray-400 text-sm [&>*]:px-2">
-        {days.map((day) => (
-          <button
-            key={day}
-            onClick={() => handleRangeSelect(day as keyof WeekdayMap)}
-            className={`min-h-9 ${
-              selectedDays[day as keyof WeekdayMap] === 1
-                ? "bg-blue text-white dark:bg-red-300"
-                : ""
-            } `}
-          >
-            {day}
-          </button>
-        ))}
+      <div className="grid flex-1 grid-cols-7 gap-x-2">
+        {days.map((day) => {
+          const isSelected = selectedDays[day] === 1;
+          return (
+            <button
+              key={day}
+              onClick={() => handleRangeSelect(day)}
+              className={`flex aspect-square w-full items-center justify-center rounded-full p-1 text-center transition-all duration-200 ${isSelected ? "bg-blue-200 dark:bg-red" : "hover:bg-gray-200 dark:hover:bg-gray-800"} `}
+            >
+              {day}
+            </button>
+          );
+        })}
       </div>
+
       {/* 
       <Checkbox
         label="Start on Monday"

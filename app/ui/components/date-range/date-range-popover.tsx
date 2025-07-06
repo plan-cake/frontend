@@ -2,7 +2,6 @@
 
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar } from "../month-calendar";
-import { format } from "date-fns";
 import { DateRangeProps } from "@/app/_types/date-range-types";
 import DateRangeInput from "./date-range-input";
 

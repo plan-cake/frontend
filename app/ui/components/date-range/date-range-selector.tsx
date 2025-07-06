@@ -73,15 +73,18 @@ export default function DateRangeSelector({
   };
 
   const select = (
-    <CustomSelect
-      options={[
-        { label: "Specific Dates", value: "specific" },
-        { label: "Days of the Week", value: "weekday" },
-      ]}
-      value={rangeType === "specific" ? "specific" : "weekday"}
-      onValueChange={handleRangeTypeChange}
-      className="hidden min-h-9 min-w-[180px] md:flex"
-    />
+    <div className="flex flex-col gap-1">
+      <label htmlFor="date-range-type">Type</label>
+      <CustomSelect
+        options={[
+          { label: "Specific Dates", value: "specific" },
+          { label: "Days of the Week", value: "weekday" },
+        ]}
+        value={rangeType === "specific" ? "specific" : "weekday"}
+        onValueChange={handleRangeTypeChange}
+        className="hidden min-h-9 min-w-[180px] md:flex"
+      />
+    </div>
   );
 
   if (isMobile) {
@@ -96,29 +99,34 @@ export default function DateRangeSelector({
   }
 
   return (
-    <div className="flex gap-4 md:flex-row">
+    <div className="mb-4 flex flex-row gap-8">
       {select}
-      {eventRange?.type === "specific" ? (
-        <DateRangePopover
-          specificRange={eventRange.dateRange}
-          onChangeSpecific={updateSpecificRange}
-        />
-      ) : (
-        <WeekdayCalendar
-          selectedDays={
-            eventRange?.weekdays ?? {
-              Sun: 0,
-              Mon: 0,
-              Tue: 0,
-              Wed: 0,
-              Thu: 0,
-              Fri: 0,
-              Sat: 0,
+      <div className="flex flex-col justify-center gap-2">
+        {eventRange?.type === "specific" ? (
+          <>
+            <label htmlFor="date-range">Possible Dates</label>
+            <DateRangePopover
+              specificRange={eventRange.dateRange}
+              onChangeSpecific={updateSpecificRange}
+            />
+          </>
+        ) : (
+          <WeekdayCalendar
+            selectedDays={
+              eventRange?.weekdays ?? {
+                Sun: 0,
+                Mon: 0,
+                Tue: 0,
+                Wed: 0,
+                Thu: 0,
+                Fri: 0,
+                Sat: 0,
+              }
             }
-          }
-          onChange={updateWeekdayRange}
-        />
-      )}
+            onChange={updateWeekdayRange}
+          />
+        )}
+      </div>
     </div>
   );
 }
