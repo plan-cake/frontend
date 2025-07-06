@@ -39,20 +39,6 @@ export default function ScheduleGrid({
   timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const handleScroll = () => {
-      setScrolled(el.scrollTop > 0);
-    };
-
-    el.addEventListener("scroll", handleScroll);
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, []);
 
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
@@ -66,7 +52,9 @@ export default function ScheduleGrid({
       } else {
         updated.add(slotIso);
       }
-      console.log("Updated availability:", updated);
+      if (process.env.NODE_ENV === "development") {
+        console.log("Updated availability:", updated);
+      }
       return updated;
     });
   }
@@ -125,7 +113,7 @@ export default function ScheduleGrid({
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = Math.ceil(numDays / maxDaysVisible);
+  const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
@@ -183,9 +171,6 @@ export default function ScheduleGrid({
         })}
 
         <div className="w-[16px]" aria-hidden />
-        {/* <div
-          className={`h-0.5 w-full ${scrolled ? "bg-gradient-to-r from-transparent via-gray-400 to-transparent" : "border-transparent"}`}
-        /> */}
       </div>
 
       {/* Left Arrow */}
@@ -210,7 +195,6 @@ export default function ScheduleGrid({
 
       {/* Grid Layer */}
       <div
-        ref={scrollRef}
         className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-scroll pt-2`}
       >
         {timeBlocks?.map((block, i) => (
