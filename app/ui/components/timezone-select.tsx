@@ -9,16 +9,12 @@ type TimezoneSelectProps = {
 };
 
 export default function TimezoneSelect({
-  label = "Event Timezone",
   value,
   onChange,
   className,
 }: TimezoneSelectProps) {
   return (
     <div className={className}>
-      <label htmlFor="timezone" className="mb-2 block text-sm font-medium">
-        {label}
-      </label>
       <CustomSelect
         options={groupedTimezones}
         isGrouped

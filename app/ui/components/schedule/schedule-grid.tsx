@@ -144,12 +144,12 @@ export default function ScheduleGrid({
   return (
     <div
       className="relative grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
-      style={{ maxHeight: "80%" }}
+      style={{ maxHeight: "90%" }}
     >
       {/* Column Headers */}
       <div style={{ width: `${timeColWidth}px` }} />
       <div
-        className={`grid h-[50px] items-center bg-white transition-shadow duration-200 dark:bg-violet`}
+        className={`grid h-[50px] items-center transition-shadow duration-200`}
         style={{
           gridColumn: "2",
           gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,

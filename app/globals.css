@@ -35,6 +35,11 @@ body {
   --rdp-accent-background-color: var(--calendar-accent-background);
 }
 
+.rdp-months {
+  display: flex;
+  justify-content: center;
+}
+
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
