@@ -131,7 +131,7 @@ export default function ScheduleGrid({
 
   return (
     <div
-      className="relative grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
+      className="relative grid w-full grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
       {/* Column Headers */}
@@ -195,7 +195,7 @@ export default function ScheduleGrid({
 
       {/* Grid Layer */}
       <div
-        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-scroll pt-2`}
+        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-auto pt-2`}
       >
         {timeBlocks?.map((block, i) => (
           <TimeBlock

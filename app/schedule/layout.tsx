@@ -3,9 +3,5 @@ export default function ScheduleLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return (
-    <>
-      <main>{children}</main>
-    </>
-  );
+  return <main className="flex min-h-0 flex-1 flex-col">{children}</main>;
 }
