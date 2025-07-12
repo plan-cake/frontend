@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -9,10 +9,18 @@ import {
 
 import {
   EventRange,
+  expandEventRange,
   getDateLabels,
-  getEnabledWeekdays,
+  getDateKeys,
 } from "@/app/_types/schedule-types";
+import {
+  AvailabilitySet,
+  createEmptyUserAvailability,
+} from "@/app/_types/user-availability";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
+import { toZonedTime } from "date-fns-tz";
+import { differenceInCalendarDays } from "date-fns";
+import TimeBlock from "./time-block";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -20,164 +28,128 @@ interface ScheduleGridProps {
   disableSelect?: boolean;
 }
 
+interface TimeBlockListType {
+  startHour: number;
+  endHour: number;
+}
+
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
-  timezone, // current timezone of the user, not necessarily the original
+  timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  let numHours = 0;
-  let numDays = 0;
-  let daysLabel: string[] = [];
-
-  const { timeRange } = eventRange;
-  numHours =
-    timeRange.to && timeRange.from
-      ? timeRange.to.getHours() - timeRange.from.getHours() + 1
-      : 0;
-
-  const hours = useMemo(() => {
-    const range: Date[] = [];
-    for (let i = 0; i < numHours; i++) {
-      const hour = timeRange.from
-        ? new Date(timeRange.from.getTime() + i * 3600000)
-        : new Date(); // Fallback to current time or handle appropriately
-      range.push(hour);
-    }
-    return range;
-  }, [timeRange, numHours]);
-
-  if (eventRange.type === "specific") {
-    const { dateRange } = eventRange;
-    if (!dateRange || !timeRange) {
-      return GridError({ message: "Invalid date or time range" });
-    }
-
-    numDays =
-      Math.ceil(
-        ((dateRange.to?.getTime() ?? 0) - (dateRange.from?.getTime() ?? 0)) /
-          (1000 * 60 * 60 * 24),
-      ) + 1;
-    daysLabel = getDateLabels(dateRange);
-  } else if (eventRange.type === "weekday") {
-    const { weekdays } = eventRange;
-    const enabledWeekdays = getEnabledWeekdays(weekdays);
-    if (!enabledWeekdays || !timeRange) {
-      return GridError({ message: "Invalid weekdays or time range" });
-    }
-
-    numDays = enabledWeekdays.length;
-    daysLabel = enabledWeekdays.map((day) => day.toUpperCase());
+  const [availability, setAvailability] = useState<AvailabilitySet>(
+    createEmptyUserAvailability(eventRange.type).selections,
+  );
+  function handleToggle(slotIso: string) {
+    if (disableSelect) return;
+    setAvailability((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(slotIso)) {
+        updated.delete(slotIso);
+      } else {
+        updated.add(slotIso);
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("Updated availability:", updated);
+      }
+      return updated;
+    });
   }
+
+  const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
+    const expandedEventRange = expandEventRange(eventRange);
+    const expandedRange = expandedEventRange.expandedRange;
+    if (!expandedEventRange || expandedRange.length === 0) {
+      return {
+        numHours: 0,
+        numDays: 0,
+        daysLabel: [],
+        dayKeys: [],
+        timeBlocks: [],
+      };
+    }
+
+    const localStartDate = toZonedTime(expandedRange[0].time, timezone);
+    const localEndDate = toZonedTime(
+      expandedRange[expandedRange.length - 1].time,
+      timezone,
+    );
+
+    let localStartHour = localStartDate.getHours();
+    let localEndHour = localEndDate.getHours();
+
+    let timeBlocks: TimeBlockListType[] = [];
+
+    if (localEndHour < localStartHour) {
+      timeBlocks.push({ startHour: 0, endHour: localEndHour });
+      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+    } else {
+      timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
+    }
+
+    const numHours = timeBlocks.reduce((acc, block) => {
+      return acc + (block.endHour - block.startHour + 1);
+    }, 0);
+
+    const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
+    const daysLabel = getDateLabels(
+      localStartDate,
+      localEndDate,
+      eventRange.type,
+    );
+    const dayKeys = getDateKeys(localStartDate, localEndDate);
+
+    return {
+      numHours,
+      numDays,
+      daysLabel,
+      dayKeys,
+      timeBlocks,
+    };
+  }, [eventRange, timezone]);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = Math.ceil(numDays / maxDaysVisible);
+  const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
   const visibleDays = daysLabel.slice(startIndex, endIndex);
+  const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
 
   const timeColWidth = 50;
   const rightArrowWidth = 20;
 
   if (numHours <= 0) {
-    return GridError({ message: "Invalid time range" });
+    return <GridError message="Invalid time range" />;
   } else if (numDays <= 0) {
-    return GridError({ message: "Invalid or missing date range" });
+    return <GridError message="Invalid or missing date range" />;
   }
 
   return (
-    <div className="relative h-[90%] w-full">
-      {/* Arrows */}
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] text-xl"
-          style={{ width: `${timeColWidth}px` }}
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] text-xl"
-          style={{ width: `${rightArrowWidth}px` }}
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Grid */}
+    <div
+      className="relative grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
+      style={{ maxHeight: "90%" }}
+    >
+      {/* Column Headers */}
+      <div style={{ width: `${timeColWidth}px` }} />
       <div
-        className="grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400"
+        className={`grid h-[50px] items-center transition-shadow duration-200`}
         style={{
-          gridTemplateColumns: `${timeColWidth}px repeat(${visibleDays.length}, 1fr) ${rightArrowWidth}px`,
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
+          gridColumn: "2",
+          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,
         }}
       >
-        {Array.from({
-          length: (numHours + 1) * (visibleDays.length + 2) + 1,
-        }).map((_, i) => (
-          <div
-            key={i}
-            className={`${disableSelect ? "cursor-not-allowed" : ""}`}
-          />
-        ))}
-      </div>
-
-      {/* Time labels */}
-      <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${timeColWidth}px`,
-          height: "100%",
-          display: "grid",
-          gridTemplateRows: `50px repeat(${numHours}, 1fr)`,
-          left: 0,
-        }}
-      >
-        <div />
-        {Array.from({ length: numHours }).map((_, i) => {
-          const hour = timeRange.from
-            ? new Date(timeRange.from.getTime() + i * 3600000)
-            : new Date(); // Fallback to current time or handle appropriately
-          const formatter = new Intl.DateTimeFormat("en-US", {
-            timeZone: timezone,
-            hour: "numeric",
-            hour12: true,
-          });
-          return (
-            <div
-              key={i}
-              className="relative flex items-start justify-end pr-2 text-right text-xs"
-            >
-              <span className="absolute -top-2">{formatter.format(hour)}</span>
-            </div>
-          );
-        })}
-      </div>
-
-      {/* Column headers */}
-      <div
-        className="absolute top-0 grid h-[50px]"
-        style={{
-          left: `${timeColWidth}px`,
-          right: `${rightArrowWidth}px`,
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
-        }}
-      >
-        {visibleDays.map((day, dayIndex) => {
+        {visibleDays.map((day, i) => {
           const type = eventRange.type;
-
           if (type === "specific") {
-            // split the day string into date and month
             const [weekday, month, date] = day.split(" ");
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
               >
                 <div>{weekday}</div>
@@ -189,7 +161,7 @@ export default function ScheduleGrid({
           } else if (type === "weekday") {
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex items-center justify-center text-sm font-medium"
               >
                 {day.toUpperCase()}
@@ -197,17 +169,53 @@ export default function ScheduleGrid({
             );
           }
         })}
+
+        <div className="w-[16px]" aria-hidden />
       </div>
 
-      {/* Right border */}
+      {/* Left Arrow */}
+      {currentPage > 0 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+          className="absolute top-0 left-0 z-10 h-[50px] w-[50px] text-xl"
+        >
+          <ChevronLeftIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Right Arrow */}
+      {currentPage < totalPages - 1 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
+          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
+        >
+          <ChevronRightIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Grid Layer */}
       <div
-        className="pointer-events-none absolute top-0 bg-white dark:bg-violet"
-        style={{
-          width: `${rightArrowWidth}px`,
-          height: "100%",
-          right: 0,
-        }}
-      ></div>
+        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-scroll pt-2`}
+      >
+        {timeBlocks?.map((block, i) => (
+          <TimeBlock
+            key={i}
+            disableSelect={disableSelect}
+            timeColWidth={timeColWidth}
+            rightArrowWidth={rightArrowWidth}
+            visibleDays={visibleDayKeys}
+            startHour={block.startHour}
+            endHour={block.endHour}
+            splitBlocks={
+              timeBlocks.length > 1 && block.startHour !== block.endHour
+            }
+            blockNumber={i}
+            userTimezone={timezone}
+            availability={availability}
+            onToggle={handleToggle}
+          />
+        ))}
+      </div>
     </div>
   );
 }
