@@ -40,7 +40,7 @@ export default function Page() {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex justify-between">
+      <div className="flex flex-col justify-between space-y-4 md:flex-row">
         <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
         <div className="flex items-center gap-2">
           <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
@@ -52,7 +52,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col gap-4 md:flex-row">
         {/* Left Panel - Fixed Event Info */}
         <div className="w-80 shrink-0 overflow-y-auto">
           <div className="mb-6">

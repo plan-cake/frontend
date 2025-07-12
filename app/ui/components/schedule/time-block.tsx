@@ -165,7 +165,7 @@ export default function TimeBlock({
                 data-slot-iso={slotIso}
                 className={`border-[0.5px] border-gray-300 ${
                   isSelected
-                    ? "bg-blue-500"
+                    ? "bg-blue-500 dark:bg-red"
                     : "hover:bg-blue-200 dark:hover:bg-red-200"
                 } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
                   disableSelect ? "cursor-not-allowed" : ""
