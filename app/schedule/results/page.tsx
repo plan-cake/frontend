@@ -118,7 +118,7 @@ export default function Page() {
         </div>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex flex-col-reverse gap-4 md:flex-row">
         <ScheduleGrid
           eventRange={eventRange}
           timezone={eventRange.timezone}
@@ -128,10 +128,10 @@ export default function Page() {
           setHoveredSlot={setHoveredSlot}
         />
 
-        <div className="w-80 shrink-0 overflow-y-auto">
-          <div className="space-y-6 rounded-3xl bg-[#FFFFFF] p-6 dark:bg-[#343249]">
+        <div className="w-full shrink-0 md:w-80">
+          <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
-            <ul className="space-y-1 text-gray-700 dark:text-gray-200">
+            <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 md:flex-col md:space-y-1 md:space-x-0 dark:text-gray-200">
               {fillerAttendees.map((attendee) => {
                 const isAvailable = hoveredSlot
                   ? attendee.availability.has(hoveredSlot)
