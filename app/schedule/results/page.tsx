@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import { getUtcIsoSlot } from "@/app/_types/user-availability";
 
@@ -72,47 +72,75 @@ const fillerAttendees = [
 
 export default function Page() {
   const [userName, setUserName] = useState("John Doe");
-  const eventName = "Sample Event";
-  const today = new Date("2025-07-11T00:00:00");
-  const startOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    9,
-    0,
-    0,
-  );
-  const endOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    16,
-    0,
-    0,
-  );
+  const [eventName, setEventName] = useState("Event Name");
+  const [attendees, setAttendees] = useState(fillerAttendees);
+  const [eventCode, setEventCode] = useState<string>("");
+  const [isOwner, setIsOwner] = useState<boolean>(true);
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+  useEffect(() => {
+    // Simulate fetching from backend
+    const fetchEventData = async () => {
+      try {
+        const res = await fetch("/api/event/12345"); // Replace with actual event ID or dynamic routing
+        const data = await res.json();
+
+        setEventName(data.eventName);
+        setEventCode(data.eventCode);
+        setAttendees(
+          data.attendees.map((a: any) => ({
+            name: a.name,
+            availability: new Set(a.availability),
+          })),
+        );
+        setIsOwner(data.owner === userName);
+      } catch (error) {
+        console.error("Failed to load event data:", error);
+      }
+    };
+
+    // fetchEventData();
+  }, [userName]);
+
+  const handleCopyLink = () => {
+    const link = `${window.location.origin}/event/${eventCode}`;
+    navigator.clipboard.writeText(link).then(() => {
+      alert("Event link copied!");
+    });
+  };
+
+  // Placeholder eventRange
+  const today = new Date("2025-07-11T00:00:00");
   const eventRange = {
     type: "specific" as const,
     duration: 60 * 7,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    timezone,
     dateRange: {
       from: today,
       to: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
     },
     timeRange: {
-      from: startOfDay,
-      to: endOfDay,
+      from: new Date(today.setHours(9, 0, 0, 0)),
+      to: new Date(today.setHours(16, 0, 0, 0)),
     },
   };
-
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex justify-between">
         <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
         <div className="flex items-center gap-2">
-          <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
+          {isOwner && (
+            <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
+              Edit Event
+            </button>
+          )}
+          <button
+            onClick={handleCopyLink}
+            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
+          >
             Copy Link
           </button>
         </div>
