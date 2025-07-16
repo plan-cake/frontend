@@ -208,7 +208,9 @@ export default function TimeBlock({
                 className={`border-[0.5px] border-gray-300 transition-all ${
                   disableSelect ? "cursor-not-allowed" : "cursor-pointer"
                 } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
-                  isHovered ? "ring-2 ring-blue dark:ring-red" : ""
+                  isHovered
+                    ? "inset-ring-1 inset-ring-blue dark:inset-ring-red"
+                    : ""
                 }`}
                 style={{
                   gridColumn: dayIdx + 1,
