@@ -7,7 +7,7 @@ export default function HamburgerMenu() {
 
   return (
     <div className="relative">
-      <button onClick={toggleMenu} className="p-2 focus:outline-none">
+      <button onClick={toggleMenu} className="focus:outline-none">
         {!isOpen ? (
           // Hamburger Icon
           <svg
@@ -19,7 +19,7 @@ export default function HamburgerMenu() {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={1}
               d="M4 6h16M4 12h16M4 18h16"
             />
           </svg>
@@ -34,34 +34,37 @@ export default function HamburgerMenu() {
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
-              strokeWidth={2}
+              strokeWidth={1}
               d="M6 18L18 6M6 6l12 12"
             />
           </svg>
         )}
       </button>
 
+      {/* Vertical Line */}
+      {isOpen && <div className="absolute left-3 h-38 w-1 rounded bg-lion" />}
+
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute z-50 ml-8 w-60 text-2xl">
-          <ul className="flex flex-col space-y-2 p-4">
+        <div className="absolute ml-4 w-60 text-xl">
+          <ul className="flex flex-col space-y-1 p-4">
             <li>
-              <a href="#" className="text-violet dark:text-bone">
+              <a href="#" className="tracking-wide text-violet dark:text-bone">
                 Mix Your First Plan
               </a>
             </li>
             <li>
-              <a href="#" className="text-violet dark:text-bone">
+              <a href="#" className="tracking-wide text-violet dark:text-bone">
                 Dashboard
               </a>
             </li>
             <li>
-              <a href="#" className="text-violet dark:text-bone">
+              <a href="#" className="tracking-wide text-violet dark:text-bone">
                 About Plancake
               </a>
             </li>
             <li>
-              <a href="#" className="text-violet dark:text-bone">
+              <a href="#" className="tracking-wide text-violet dark:text-bone">
                 Login/Signup
               </a>
             </li>
