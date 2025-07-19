@@ -42,18 +42,12 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="min-h-screen flex items-center bg-bone py-20 dark:bg-violet-700">
+      <section className="min-h-screen flex items-center bg-bone py-20 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center">
               <div className="relative">
-                <Image
-                  src="/pancake-stack.png"
-                  alt="Pancake Stack"
-                  width={300}
-                  height={300}
-                  className="mx-auto"
-                />
+                <div className="text-8xl">🥞</div>
               </div>
             </div>
             <div>
@@ -63,7 +57,7 @@ export default function Home() {
                 <span className="text-violet dark:text-bone">plancake?</span>
               </h2>
               <div className="space-y-6">
-                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
                   <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
                     Smart Planning
                   </h3>
@@ -71,7 +65,7 @@ export default function Home() {
                     Intelligently suggest optimal meeting times based on everyone's availability and preferences.
                   </p>
                 </div>
-                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
                   <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
                     Smart Planning
                   </h3>
@@ -79,7 +73,7 @@ export default function Home() {
                     Intelligently suggest optimal meeting times based on everyone's availability and preferences.
                   </p>
                 </div>
-                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
                   <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
                     Smart Planning
                   </h3>
@@ -107,17 +101,11 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-12 bg-bone dark:bg-violet-700 rounded-3xl p-8">
+          <div className="mt-12 bg-bone dark:bg-violet-600 rounded-3xl p-8">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
                 <div className="mx-auto mb-6 bg-red w-20 h-20 rounded-full flex items-center justify-center">
-                  <Image
-                    src="/mixer.png"
-                    alt="Mix your event"
-                    width={50}
-                    height={50}
-                    className="mx-auto"
-                  />
+                  <span className="text-3xl">🍳</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Mix your event
@@ -128,13 +116,7 @@ export default function Home() {
               </div>
               <div className="text-center">
                 <div className="mx-auto mb-6 bg-violet w-20 h-20 rounded-full flex items-center justify-center">
-                  <Image
-                    src="/pan.png"
-                    alt="Share & Stack"
-                    width={50}
-                    height={50}
-                    className="mx-auto"
-                  />
+                  <span className="text-3xl">📤</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Share & Stack
@@ -145,13 +127,7 @@ export default function Home() {
               </div>
               <div className="text-center">
                 <div className="mx-auto mb-6 bg-lion w-20 h-20 rounded-full flex items-center justify-center">
-                  <Image
-                    src="/pancakes.png"
-                    alt="Flip & Serve"
-                    width={50}
-                    height={50}
-                    className="mx-auto"
-                  />
+                  <span className="text-3xl">🥞</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Flip & Serve
@@ -166,9 +142,9 @@ export default function Home() {
       </section>
 
       {/* Plan Today Section */}
-      <section className="min-h-screen flex items-center justify-center bg-bone py-20 dark:bg-violet-700">
+      <section className="min-h-screen flex items-center justify-center bg-bone py-20 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text text-6xl text-violet dark:text-outline-light md:text-8xl mb-8">
+          <h2 className="bubble-text text-6xl text-violet dark:text-bone md:text-8xl mb-8">
             PLAN TODAY
           </h2>
           <div className="mt-8">
