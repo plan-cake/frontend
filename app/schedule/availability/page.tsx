@@ -4,10 +4,10 @@ import { useState } from "react";
 
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+import CopyToast from "@/app/ui/components/copy-toast";
 
 import { EventRange } from "@/app/_types/schedule-types";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { CopyIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
   const [userName, setUserName] = useState("John Doe");
@@ -54,15 +54,9 @@ export default function Page() {
           <EventInfoDrawer eventRange={eventRange} />
         </div>
 
-        <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 md:hidden dark:border-red dark:hover:bg-red/25">
-          <CopyIcon width={16} height={16} />
-        </button>
-
-        <div className="hidden items-center gap-2 md:flex">
-          <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
-            Copy Link
-          </button>
-          <button className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+        <div className="flex items-center gap-2">
+          <CopyToast label="Copy Link" />
+          <button className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
             Submit Availability
           </button>
         </div>

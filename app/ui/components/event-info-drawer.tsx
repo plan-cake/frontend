@@ -41,42 +41,22 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
 
       <div className="space-y-4 overflow-y-auto">
         {eventRange.type === "specific" ? (
-          <>
-            <InfoRow label="Possible Dates">
-              {eventRange.dateRange.from?.toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })}{" "}
-              –{" "}
-              {eventRange.dateRange.to?.toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              })}
-            </InfoRow>
-          </>
+          <InfoRow label="Possible Dates">
+            {prettyDate(eventRange.dateRange.from!, "date")} –{" "}
+            {prettyDate(eventRange.dateRange.to!, "date")}
+          </InfoRow>
         ) : (
-          <>
-            <InfoRow label="Days of the Week">
-              {Object.entries(eventRange.weekdays)
-                .filter(([_, val]) => val === 1)
-                .map(([day]) => day)
-                .join(", ")}
-            </InfoRow>
-          </>
+          <InfoRow label="Days of the Week">
+            {Object.entries(eventRange.weekdays)
+              .filter(([_, val]) => val === 1)
+              .map(([day]) => day)
+              .join(", ")}
+          </InfoRow>
         )}
 
         <InfoRow label="Possible Times">
-          {eventRange.timeRange.from?.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}{" "}
-          –{" "}
-          {eventRange.timeRange.to?.toLocaleTimeString([], {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          {prettyDate(eventRange.timeRange.from!, "time")} –{" "}
+          {prettyDate(eventRange.timeRange.to!, "time")}
         </InfoRow>
 
         <InfoRow label="Timezone">{formatLabel(eventRange.timezone)}</InfoRow>
@@ -101,4 +81,16 @@ function InfoRow({
       <div className="">{children}</div>
     </div>
   );
+}
+
+function prettyDate(date: Date, type?: "date" | "time") {
+  return new Intl.DateTimeFormat("en-US", {
+    weekday: type === "date" ? "short" : undefined,
+    month: type === "date" ? "long" : undefined,
+    day: type === "date" ? "numeric" : undefined,
+    year: type === "date" ? undefined : undefined,
+    hour: type === "time" ? "numeric" : undefined,
+    minute: type === "time" ? "numeric" : undefined,
+    hour12: true,
+  }).format(date);
 }

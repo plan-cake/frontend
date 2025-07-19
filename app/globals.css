@@ -53,14 +53,42 @@ body {
   --text-stroke-lion: var(--text-stroke-lion);
 
   --animate-slideUpAndFade: slideUpAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slideRightAndFade: slideRightAndFade 400ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slideDownAndFade: slideDownAndFade 400ms
-    cubic-bezier(0.16, 1, 0.3, 1);
-  --animate-slideLeftAndFade: slideLeftAndFade 400ms
-    cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slideRightAndFade: slideRightAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slideDownAndFade: slideDownAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slideLeftAndFade: slideLeftAndFade 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slideUp: slideUp 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slideDown: slideDown 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-hide: hide 100ms ease-in;
+  --animate-slideIn: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-swipeOut: swipeOut 100ms ease-out;
+
+  @keyframes hide {
+    0% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes slideIn {
+    0% {
+      transform: translateX(calc(100% + var(--viewport-padding)));
+    }
+    100% {
+      transform: translateX(0); 
+    }
+  }
+
+  @keyframes swipeOut {
+    0% {
+      transform: translateX(var(--radix-toast-swipe-end-x));
+    }
+
+    100% {
+      transform: translateX(calc(100% + var(--viewport-padding)));
+    }
+  }
 
   @keyframes slideUpAndFade {
     0% {
