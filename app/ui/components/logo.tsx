@@ -8,10 +8,10 @@ export default function Logo() {
       
       {/* Text Container */}
       <div className="absolute left-2 top-2">
-        <div className="text-white text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_white]">
+        <div className="text-lion text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_white]">
           plan
         </div>
-        <div className="text-white text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_violet]">
+        <div className="text-lion text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_black]">
           cake
         </div>
         
@@ -22,7 +22,7 @@ export default function Logo() {
           className="mt-1 w-6 h-6"
         >
           <div className="w-6 h-6 relative bg-white/0">
-            <div className="w-4 h-[2px] absolute left-1 top-1 bg-white" />
+            <div className="w-4 h-[2px] absolute left-1 top-1 bg-red" />
             <div className="w-4 h-[2px] absolute left-1 top-2.5 bg-white" />
             <div className="w-4 h-[2px] absolute left-1 top-4 bg-white" />
           </div>
