@@ -2,16 +2,16 @@
 
 export default function Logo() {
   return (
-    <div className="relative">
+    <div className="fixed top-4 left-4 z-50">
       {/* Background shape */}
-      <div className="h-36 w-44 bg-lion rounded-br-[100px]" />
+      <div className="h-20 w-28 bg-lion rounded-br-[60px] shadow-lg" />
       
       {/* Text Container */}
-      <div className="absolute left-4 top-4">
-        <div className="w-32 justify-start text-[#C7966E] text-5xl font-normal font-['Modak'] leading-[50px] [-webkit-text-stroke:1px_white]">
+      <div className="absolute left-2 top-2">
+        <div className="text-white text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_white]">
           plan
         </div>
-        <div className="w-40 justify-start text-[#C7966E] text-5xl font-normal font-['Modak'] leading-[50px] [-webkit-text-stroke:1px_#05121E]">
+        <div className="text-white text-2xl font-normal font-display leading-[20px] [-webkit-text-stroke:1px_violet]">
           cake
         </div>
         
@@ -19,15 +19,15 @@ export default function Logo() {
         <div 
           data-direction="down" 
           data-status="closed" 
-          className="mt-1 w-8 h-8"
+          className="mt-1 w-6 h-6"
         >
-          <div className="w-8 h-8 relative bg-white/0">
-            <div className="w-6 h-[3px] absolute left-1 top-1.5 bg-stone-400" />
-            <div className="w-6 h-[3px] absolute left-1 top-3.5 bg-stone-400" />
-            <div className="w-6 h-[3px] absolute left-1 top-5.5 bg-stone-400" />
+          <div className="w-6 h-6 relative bg-white/0">
+            <div className="w-4 h-[2px] absolute left-1 top-1 bg-white" />
+            <div className="w-4 h-[2px] absolute left-1 top-2.5 bg-white" />
+            <div className="w-4 h-[2px] absolute left-1 top-4 bg-white" />
           </div>
         </div>
       </div>
     </div>
   );
-} 
+}

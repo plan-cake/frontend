@@ -3,12 +3,12 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-[#3e3c53]">
+    <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-violet">
       {/* Hero Section */}
-      <section className="relative overflow-hidden px-4 pt-32 sm:px-6 lg:px-8">
+      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-12">
-            <span className="block text-5xl font-light text-bone md:text-7xl">
+            <span className="block text-5xl font-light text-violet dark:text-bone md:text-7xl">
               planning made
             </span>
             <span className="mt-4 block text-center font-display text-6xl leading-none text-lion md:text-8xl">
@@ -17,7 +17,7 @@ export default function Home() {
               simple
             </span>
           </h1>
-          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-bone">
+          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-violet dark:text-bone">
             The fluffiest way to
             coordinate schedules and
             plan group events. Stack
@@ -27,13 +27,13 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/new-event"
-              className="rounded-2xl bg-[#ff6b6b] px-8 py-3 text-lg font-medium text-white transition-all hover:bg-[#ff5252] hover:shadow-lg"
+              className="rounded-2xl bg-red px-8 py-3 text-lg font-medium text-white transition-all hover:bg-red-400 hover:shadow-lg"
             >
               Mix your first plan
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-2xl bg-[#4d79e9] px-8 py-3 text-lg font-medium text-white transition-all hover:bg-[#4d69e9] hover:shadow-lg"
+              className="rounded-2xl bg-blue px-8 py-3 text-lg font-medium text-white transition-all hover:bg-blue-400 hover:shadow-lg"
             >
               View Dashboard
             </Link>
@@ -42,57 +42,51 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="bg-bone py-20 dark:bg-[#2e2c43]">
+      <section className="min-h-screen flex items-center bg-bone py-20 dark:bg-violet-700">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 text-center">
-            <h2 className="bubble-text text-4xl text-violet dark:text-outline-light md:text-6xl">
-              why plancake?
-            </h2>
-            <div className="mt-12 grid gap-8 md:grid-cols-3">
-              <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl dark:bg-[#3e3c53]">
+          <div className="grid md:grid-cols-2 gap-12 items-center">
+            <div className="flex justify-center">
+              <div className="relative">
                 <Image
                   src="/pancake-stack.png"
-                  alt="Smart Planning"
-                  width={64}
-                  height={64}
-                  className="mx-auto mb-4"
+                  alt="Pancake Stack"
+                  width={300}
+                  height={300}
+                  className="mx-auto"
                 />
-                <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                  Smart Planning
-                </h3>
-                <p className="text-lg text-violet dark:text-bone">
-                  Intelligently suggest optimal meeting times based on everyone's availability and preferences.
-                </p>
               </div>
-              <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl dark:bg-[#3e3c53]">
-                <Image
-                  src="/pancake-stack.png"
-                  alt="Smart Planning"
-                  width={64}
-                  height={64}
-                  className="mx-auto mb-4"
-                />
-                <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                  Smart Planning
-                </h3>
-                <p className="text-lg text-violet dark:text-bone">
-                  Intelligently suggest optimal meeting times based on everyone's availability and preferences.
-                </p>
-              </div>
-              <div className="rounded-xl bg-white p-8 shadow-lg transition-shadow hover:shadow-xl dark:bg-[#3e3c53]">
-                <Image
-                  src="/pancake-stack.png"
-                  alt="Smart Planning"
-                  width={64}
-                  height={64}
-                  className="mx-auto mb-4"
-                />
-                <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                  Smart Planning
-                </h3>
-                <p className="text-lg text-violet dark:text-bone">
-                  Intelligently suggest optimal meeting times based on everyone's availability and preferences.
-                </p>
+            </div>
+            <div>
+              <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl mb-8">
+                why
+                <br />
+                <span className="text-violet dark:text-bone">plancake?</span>
+              </h2>
+              <div className="space-y-6">
+                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                    Smart Planning
+                  </h3>
+                  <p className="text-violet dark:text-bone">
+                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                  </p>
+                </div>
+                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                    Smart Planning
+                  </h3>
+                  <p className="text-violet dark:text-bone">
+                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                  </p>
+                </div>
+                <div className="bg-white/50 dark:bg-violet/50 p-6 rounded-xl">
+                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                    Smart Planning
+                  </h3>
+                  <p className="text-violet dark:text-bone">
+                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -100,89 +94,93 @@ export default function Home() {
       </section>
 
       {/* Golden Stack Recipe */}
-      <section className="bg-white py-20 dark:bg-[#3e3c53]">
+      <section className="min-h-screen flex items-center bg-white py-20 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-16 text-center">
             <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl">
               golden
-              <span className="block text-lion">stack recipe</span>
+              <br />
+              <span className="text-lion">stack recipe</span>
             </h2>
-            <p className="mt-4 text-lg text-violet dark:text-bone">
+            <p className="mt-6 text-lg text-violet dark:text-bone max-w-2xl mx-auto">
               Follow these simple steps to cook up the perfect schedule every time.
             </p>
           </div>
 
-          <div className="mt-12 grid gap-8 md:grid-cols-3">
-            <div className="text-center">
-              <div className="mx-auto mb-6">
-                <Image
-                  src="/mixer.png"
-                  alt="Mix your event"
-                  width={100}
-                  height={100}
-                  className="mx-auto"
-                />
+          <div className="mt-12 bg-bone dark:bg-violet-700 rounded-3xl p-8">
+            <div className="grid gap-8 md:grid-cols-3">
+              <div className="text-center">
+                <div className="mx-auto mb-6 bg-red w-20 h-20 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/mixer.png"
+                    alt="Mix your event"
+                    width={50}
+                    height={50}
+                    className="mx-auto"
+                  />
+                </div>
+                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
+                  Mix your event
+                </h3>
+                <p className="text-sm text-violet dark:text-bone">
+                  Set up your meeting details, add time options, and customize your preferences
+                </p>
               </div>
-              <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                Mix your event
-              </h3>
-              <p className="text-lg text-violet dark:text-bone">
-                Set up your meeting details, add time options, and customize your preferences
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="mx-auto mb-6">
-                <Image
-                  src="/pan.png"
-                  alt="Share & Stack"
-                  width={100}
-                  height={100}
-                  className="mx-auto"
-                />
+              <div className="text-center">
+                <div className="mx-auto mb-6 bg-violet w-20 h-20 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/pan.png"
+                    alt="Share & Stack"
+                    width={50}
+                    height={50}
+                    className="mx-auto"
+                  />
+                </div>
+                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
+                  Share & Stack
+                </h3>
+                <p className="text-sm text-violet dark:text-bone">
+                  Send the link to participants and watch responses stack up in real-time
+                </p>
               </div>
-              <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                Share & Stack
-              </h3>
-              <p className="text-lg text-violet dark:text-bone">
-                Send the link to participants and watch responses stack up in real-time
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="mx-auto mb-6">
-                <Image
-                  src="/pancakes.png"
-                  alt="Flip & Serve"
-                  width={100}
-                  height={100}
-                  className="mx-auto"
-                />
+              <div className="text-center">
+                <div className="mx-auto mb-6 bg-lion w-20 h-20 rounded-full flex items-center justify-center">
+                  <Image
+                    src="/pancakes.png"
+                    alt="Flip & Serve"
+                    width={50}
+                    height={50}
+                    className="mx-auto"
+                  />
+                </div>
+                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
+                  Flip & Serve
+                </h3>
+                <p className="text-sm text-violet dark:text-bone">
+                  Review the results, pick the best time, and serve up calendar invites to all
+                </p>
               </div>
-              <h3 className="mb-4 text-2xl font-semibold text-violet dark:text-bone">
-                Flip & Serve
-              </h3>
-              <p className="text-lg text-violet dark:text-bone">
-                Review the results, pick the best time, and serve up calendar invites to all
-              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Plan Today Section */}
-      <section className="bg-bone py-20 dark:bg-[#2e2c43]">
+      <section className="min-h-screen flex items-center justify-center bg-bone py-20 dark:bg-violet-700">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text text-6xl text-violet dark:text-outline-light md:text-8xl">
+          <h2 className="bubble-text text-6xl text-violet dark:text-outline-light md:text-8xl mb-8">
             PLAN TODAY
           </h2>
           <div className="mt-8">
             <Link
               href="/new-event"
-              className="inline-block rounded-lg bg-[#ff6b6b] px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-[#ff5252] hover:shadow-xl"
+              className="inline-block rounded-lg bg-red px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-red-400 hover:shadow-xl"
             >
               Start Planning
             </Link>
           </div>
           <div className="mt-12">
+            <div className="text-lion font-display text-2xl mb-2">plancake</div>
             <p className="text-sm text-violet dark:text-bone">
               © 2025 plancake. Stacking up perfect plans, one pancake at a time.
             </p>
