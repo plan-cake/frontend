@@ -1,11 +1,10 @@
 import Link from "next/link";
-import Image from "next/image";
 
 export default function Home() {
   return (
     <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-violet">
       {/* Hero Section */}
-      <section className="relative min-h-screen flex items-center justify-center overflow-hidden px-4 pt-20 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden px-4 pt-32 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-12">
             <span className="block text-5xl font-light text-violet dark:text-bone md:text-7xl">
@@ -18,11 +17,7 @@ export default function Home() {
             </span>
           </h1>
           <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-violet dark:text-bone">
-            The fluffiest way to
-            coordinate schedules and
-            plan group events. Stack
-            up availability and serve
-            the perfect meeting time.
+            The fluffiest way to coordinate schedules and plan group events. Stack up availability and serve the perfect meeting time.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
@@ -42,13 +37,11 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="min-h-screen flex items-center bg-bone py-20 dark:bg-violet">
+      <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="flex justify-center">
-              <div className="relative">
-                <div className="text-8xl">🥞</div>
-              </div>
+              <div className="text-8xl">🥞</div>
             </div>
             <div>
               <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl mb-8">
@@ -62,23 +55,23 @@ export default function Home() {
                     Smart Planning
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                    Intelligently suggest optimal meeting times based on everyone&apos;s availability and preferences.
                   </p>
                 </div>
                 <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
                   <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
-                    Smart Planning
+                    Easy Coordination
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                    Share a simple link and watch as responses stack up in real-time without the back-and-forth.
                   </p>
                 </div>
                 <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
                   <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
-                    Smart Planning
+                    Perfect Results
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Intelligently suggest optimal meeting times based on everyone's availability and preferences.
+                    Get the ideal meeting time that works for everyone with automatic calendar integration.
                   </p>
                 </div>
               </div>
@@ -88,9 +81,9 @@ export default function Home() {
       </section>
 
       {/* Golden Stack Recipe */}
-      <section className="min-h-screen flex items-center bg-white py-20 dark:bg-violet">
+      <section className="bg-white py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 text-center">
+          <div className="mb-12 text-center">
             <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl">
               golden
               <br />
@@ -101,7 +94,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="mt-12 bg-bone dark:bg-violet-600 rounded-3xl p-8">
+          <div className="bg-bone dark:bg-violet-600 rounded-3xl p-8">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
                 <div className="mx-auto mb-6 bg-red w-20 h-20 rounded-full flex items-center justify-center">
@@ -142,7 +135,7 @@ export default function Home() {
       </section>
 
       {/* Plan Today Section */}
-      <section className="min-h-screen flex items-center justify-center bg-bone py-20 dark:bg-violet">
+      <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="bubble-text text-6xl text-violet dark:text-bone md:text-8xl mb-8">
             PLAN TODAY
