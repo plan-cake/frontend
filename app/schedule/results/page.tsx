@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import { getUtcIsoSlot } from "@/app/_types/user-availability";
+import { CopyIcon, Pencil1Icon } from "@radix-ui/react-icons";
 
 const fillerAttendees = [
   {
@@ -134,14 +135,16 @@ export default function Page() {
         <div className="flex items-center gap-2">
           {isOwner && (
             <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
-              Edit Event
+              <span className="hidden md:block">Edit Event</span>
+              <Pencil1Icon width={16} height={16} className="md:hidden" />
             </button>
           )}
           <button
             onClick={handleCopyLink}
             className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           >
-            Copy Link
+            <span className="hidden md:block">Copy Link</span>
+            <CopyIcon width={16} height={16} className="md:hidden" />
           </button>
         </div>
       </div>
