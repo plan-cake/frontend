@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import { EventRange } from "@/app/_types/schedule-types";
+import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+import { EventInfo } from "@/app/ui/components/event-info-drawer";
+import { CopyIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
   const [userName, setUserName] = useState("John Doe");
+
   const eventName = "Sample Event";
   const today = new Date();
   const startOfDay = new Date(
@@ -24,8 +29,8 @@ export default function Page() {
     0,
   );
 
-  const eventRange = {
-    type: "specific" as const,
+  const eventRange: EventRange = {
+    type: "specific",
     duration: 60 * 7,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     dateRange: {
@@ -40,22 +45,32 @@ export default function Page() {
 
   return (
     <div className="flex flex-col space-y-4">
-      <div className="flex flex-col justify-between space-y-4 md:flex-row">
-        <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
-        <div className="flex items-center gap-2">
+      {/* Header and Button Row */}
+      <div className="flex justify-between md:flex-row">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+          <EventInfoDrawer eventRange={eventRange} />
+        </div>
+
+        <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 md:hidden dark:border-red dark:hover:bg-red/25">
+          <CopyIcon width={16} height={16} />
+        </button>
+
+        <div className="hidden items-center gap-2 md:flex">
           <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
             Copy Link
           </button>
-          <button className="rounded-full bg-blue px-4 py-2 text-sm text-white dark:bg-red">
+          <button className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
             Submit Availability
           </button>
         </div>
       </div>
 
+      {/* Main Content */}
       <div className="flex flex-col gap-4 md:flex-row">
-        {/* Left Panel - Fixed Event Info */}
-        <div className="w-80 shrink-0 overflow-y-auto">
-          <div className="mb-6">
+        {/* Left Panel */}
+        <div className="w-full shrink-0 overflow-y-auto md:w-80">
+          <div className="md:mb-6">
             <span className="text-lg">
               Hi,{" "}
               <input
@@ -71,51 +86,18 @@ export default function Page() {
             </span>
           </div>
 
-          <div className="space-y-6 rounded-3xl bg-[#FFFFFF] p-6 dark:bg-[#343249]">
-            <h2 className="mb-2 text-lg font-semibold">Event Details</h2>
-            <div>
-              <span className="font-medium text-blue dark:text-red">
-                Possible Dates:
-              </span>
-              <div className="">
-                {eventRange.dateRange.from.toLocaleDateString()} –{" "}
-                {eventRange.dateRange.to.toLocaleDateString()}
-              </div>
-            </div>
-            <div>
-              <span className="font-medium text-blue dark:text-red">
-                Possible Times:
-              </span>
-              <div className="">
-                {eventRange.timeRange.from.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}{" "}
-                –{" "}
-                {eventRange.timeRange.to.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
-            </div>
-            <div>
-              <span className="font-medium text-blue dark:text-red">
-                Original Event Timezone:
-              </span>
-              <div className="">{eventRange.timezone}</div>
-            </div>
-
-            <div>
-              <span className="font-medium text-blue dark:text-red">
-                Intended Duration:
-              </span>
-              <div className="">{eventRange.duration} minutes</div>
-            </div>
+          {/* Desktop-only Event Info */}
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
+            <EventInfo eventRange={eventRange} />
           </div>
         </div>
 
-        {/* Right Panel - Scrollable Schedule */}
+        {/* Right Panel */}
         <ScheduleGrid eventRange={eventRange} timezone={eventRange.timezone} />
+
+        <button className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:hidden dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+          Submit Availability
+        </button>
       </div>
     </div>
   );
