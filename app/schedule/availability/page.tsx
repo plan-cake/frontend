@@ -67,7 +67,7 @@ export default function Page() {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="mb-8 flex flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="w-full shrink-0 overflow-y-auto md:w-80">
           <div className="md:mb-6">
@@ -94,10 +94,12 @@ export default function Page() {
 
         {/* Right Panel */}
         <ScheduleGrid eventRange={eventRange} timezone={eventRange.timezone} />
+      </div>
 
-        <button className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:hidden dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+      <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
+        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
           Submit Availability
-        </button>
+        </div>
       </div>
     </div>
   );
