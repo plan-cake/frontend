@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import { EventRange } from "@/app/_types/schedule-types";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+
+import { EventRange } from "@/app/_types/schedule-types";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { CopyIcon } from "@radix-ui/react-icons";
 
@@ -31,7 +33,7 @@ export default function Page() {
 
   const eventRange: EventRange = {
     type: "specific",
-    duration: 60 * 7,
+    duration: 60,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     dateRange: {
       from: today,

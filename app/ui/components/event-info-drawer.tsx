@@ -1,8 +1,9 @@
 "use client";
 
-import * as Dialog from "@radix-ui/react-dialog";
 import { EventRange } from "@/app/_types/schedule-types";
+import { formatLabel } from "@/app/_utils/timezone-file-generator";
 
+import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
 export default function EventInfoDrawer({
@@ -78,7 +79,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
           })}
         </InfoRow>
 
-        <InfoRow label="Timezone">{eventRange.timezone}</InfoRow>
+        <InfoRow label="Timezone">{formatLabel(eventRange.timezone)}</InfoRow>
         <InfoRow label="Intended Duration">
           {eventRange.duration} minutes
         </InfoRow>
