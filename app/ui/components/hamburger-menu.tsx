@@ -41,34 +41,48 @@ export default function HamburgerMenu() {
         )}
       </button>
 
-      {/* Vertical Line */}
-      {isOpen && <div className="absolute left-3 h-38 w-1 rounded bg-lion" />}
-
-      {/* Dropdown Menu */}
       {isOpen && (
-        <div className="absolute ml-4 w-60 text-xl">
-          <ul className="flex flex-col space-y-1 p-4">
-            <li>
-              <a href="#" className="tracking-wide text-violet dark:text-bone">
-                Mix Your First Plan
-              </a>
-            </li>
-            <li>
-              <a href="#" className="tracking-wide text-violet dark:text-bone">
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a href="#" className="tracking-wide text-violet dark:text-bone">
-                About Plancake
-              </a>
-            </li>
-            <li>
-              <a href="#" className="tracking-wide text-violet dark:text-bone">
-                Login/Signup
-              </a>
-            </li>
-          </ul>
+        <div className="absolute left-4 flex">
+          {/* Vertical Line */}
+          <div className="h-38 w-1 rounded bg-lion" />
+
+          {/* Dropdown Menu */}
+          <div className="w-60 text-xl">
+            <ul className="flex flex-col space-y-1 p-4">
+              <li>
+                <a
+                  href="#"
+                  className="tracking-wide text-violet dark:text-bone"
+                >
+                  Mix Your First Plan
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="tracking-wide text-violet dark:text-bone"
+                >
+                  Dashboard
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="tracking-wide text-violet dark:text-bone"
+                >
+                  About Plancake
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="tracking-wide text-violet dark:text-bone"
+                >
+                  Login/Signup
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
       )}
     </div>
