@@ -42,7 +42,6 @@ export default function TimeBlock({
     };
 
     window.addEventListener("mouseup", stopDragging);
-    window.addEventListener("touchend", stopDragging);
 
     return () => {
       window.removeEventListener("mouseup", stopDragging);
@@ -139,7 +138,6 @@ export default function TimeBlock({
                   }
                 }}
                 onTouchStart={(e) => {
-                  e.preventDefault();
                   setDidTouch(true);
                   if (!isDisabled) {
                     setIsDragging(true);
