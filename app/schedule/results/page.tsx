@@ -124,7 +124,7 @@ export default function Page() {
     },
     timeRange: {
       from: new Date(today.setHours(9, 0, 0, 0)),
-      to: new Date(today.setHours(16, 0, 0, 0)),
+      to: new Date(today.setHours(20, 0, 0, 0)),
     },
   };
 
@@ -159,8 +159,9 @@ export default function Page() {
           setHoveredSlot={setHoveredSlot}
         />
 
+        {/* Sidebar for attendees */}
         <div className="w-full shrink-0 md:w-80">
-          <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
+          <div className="sticky top-8 space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 md:flex-col md:space-y-1 md:space-x-0 dark:text-gray-200">
               {fillerAttendees.map((attendee) => {

@@ -131,17 +131,26 @@ export default function ScheduleGrid({
 
   return (
     <div
-      className="relative grid w-full grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
+      className="relative grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
-      <div style={{ width: "50px" }} />
       <div
-        className="grid h-[50px] items-center"
+        className="sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center bg-white dark:bg-violet"
         style={{
-          gridColumn: "2",
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,
+          gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
         }}
       >
+        {currentPage > 0 ? (
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+            className="flex h-[50px] w-[50px] items-center justify-center text-xl"
+          >
+            <ChevronLeftIcon className="h-5 w-5" />
+          </button>
+        ) : (
+          <div style={{ width: "50px" }} />
+        )}
+
         {visibleDays.map((day, i) => {
           const [weekday, month, date] = day.split(" ");
           return (
@@ -156,28 +165,22 @@ export default function ScheduleGrid({
             </div>
           );
         })}
-        <div className="w-[16px]" aria-hidden />
+
+        {currentPage < totalPages - 1 ? (
+          <button
+            onClick={() =>
+              setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
+            }
+            className="h-[50px] w-[20px] text-xl"
+          >
+            <ChevronRightIcon className="h-5 w-5" />
+          </button>
+        ) : (
+          <div style={{ width: "20px" }} />
+        )}
       </div>
 
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-0 z-10 h-[50px] w-[50px] text-xl"
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      <div className="col-span-2 flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
+      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
         {timeBlocks.map((block, i) => (
           <TimeBlock
             key={i}
