@@ -134,8 +134,12 @@ export default function TimeBlock({
             const backgroundColor =
               mode === "view"
                 ? isDark
-                  ? `rgba(225, 92, 92, ${opacity})`
-                  : `rgba(61, 115, 163, ${opacity})`
+                  ? opacity === 1
+                    ? `rgb(226, 0, 0)`
+                    : `rgba(225, 92, 92, ${opacity})`
+                  : opacity === 1
+                    ? `rgb(0, 107, 188)`
+                    : `rgba(61, 115, 163, ${opacity})`
                 : isSelected
                   ? isDark
                     ? "rgba(225, 92, 92, 1)"
@@ -206,13 +210,14 @@ export default function TimeBlock({
                 data-slot-iso={slotIso}
                 className={cn(
                   "border-[0.5px] border-gray-300 transition-all",
-                  disableSelect ? "cursor-not-allowed" : "cursor-pointer",
+                  disableSelect
+                    ? "cursor-not-allowed"
+                    : isSelected
+                      ? "bg-blue dark:bg-red"
+                      : "hover:bg-blue-200 dark:hover:bg-red-200",
                   isDisabled && "pointer-events-none bg-gray-200",
                   isHovered &&
                     "inset-ring-1 inset-ring-blue dark:inset-ring-red",
-                  isSelected
-                    ? "bg-blue dark:bg-red"
-                    : "hover:bg-blue-200 dark:hover:bg-red-200",
                 )}
                 style={{
                   gridColumn: dayIdx + 1,
