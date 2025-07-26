@@ -1,12 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
-
+import { useState, useMemo } from "react";
 import {
   EventRange,
   expandEventRange,
@@ -20,40 +14,50 @@ import {
 import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
 import TimeBlock from "./time-block";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
   timezone: string;
   disableSelect?: boolean;
-}
+  attendees?: {
+    name: string;
+    availability: AvailabilitySet;
+  }[];
+  mode: "paint" | "view";
 
-interface TimeBlockListType {
-  startHour: number;
-  endHour: number;
+  hoveredSlot?: string | null;
+  setHoveredSlot?: (slotIso: string | null) => void;
 }
 
 export default function ScheduleGrid({
-  disableSelect = false,
   eventRange,
   timezone,
+  disableSelect = false,
+  attendees = [],
+  mode,
+  hoveredSlot,
+  setHoveredSlot = () => {},
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
+
   function handleToggle(slotIso: string) {
-    if (disableSelect) return;
+    if (disableSelect || mode !== "paint") return;
     setAvailability((prev) => {
       const updated = new Set(prev);
       if (updated.has(slotIso)) {
         updated.delete(slotIso);
       } else {
         updated.add(slotIso);
-      }
-      if (process.env.NODE_ENV === "development") {
-        console.log("Updated availability:", updated);
       }
       return updated;
     });
@@ -81,7 +85,7 @@ export default function ScheduleGrid({
     let localStartHour = localStartDate.getHours();
     let localEndHour = localEndDate.getHours();
 
-    let timeBlocks: TimeBlockListType[] = [];
+    let timeBlocks = [];
 
     if (localEndHour < localStartHour) {
       timeBlocks.push({ startHour: 0, endHour: localEndHour });
@@ -90,9 +94,10 @@ export default function ScheduleGrid({
       timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
     }
 
-    const numHours = timeBlocks.reduce((acc, block) => {
-      return acc + (block.endHour - block.startHour + 1);
-    }, 0);
+    const numHours = timeBlocks.reduce(
+      (acc, block) => acc + (block.endHour - block.startHour + 1),
+      0,
+    );
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
     const daysLabel = getDateLabels(
@@ -120,99 +125,80 @@ export default function ScheduleGrid({
   const visibleDays = daysLabel.slice(startIndex, endIndex);
   const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
 
-  const timeColWidth = 50;
-  const rightArrowWidth = 20;
-
-  if (numHours <= 0) {
-    return <GridError message="Invalid time range" />;
-  } else if (numDays <= 0) {
+  if (numHours <= 0) return <GridError message="Invalid time range" />;
+  if (numDays <= 0)
     return <GridError message="Invalid or missing date range" />;
-  }
 
   return (
     <div
-      className="relative grid w-full grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
+      className="relative grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
-      {/* Column Headers */}
-      <div style={{ width: `${timeColWidth}px` }} />
       <div
-        className={`grid h-[50px] items-center transition-shadow duration-200`}
+        className="sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center bg-white dark:bg-violet"
         style={{
-          gridColumn: "2",
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,
+          gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
         }}
       >
+        {currentPage > 0 ? (
+          <button
+            onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+            className="flex h-[50px] w-[50px] items-center justify-center text-xl"
+          >
+            <ChevronLeftIcon className="h-5 w-5" />
+          </button>
+        ) : (
+          <div style={{ width: "50px" }} />
+        )}
+
         {visibleDays.map((day, i) => {
-          const type = eventRange.type;
-          if (type === "specific") {
-            const [weekday, month, date] = day.split(" ");
-            return (
-              <div
-                key={i}
-                className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
-              >
-                <div>{weekday}</div>
-                <div>
-                  {month} {date}
-                </div>
+          const [weekday, month, date] = day.split(" ");
+          return (
+            <div
+              key={i}
+              className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
+            >
+              <div>{weekday}</div>
+              <div>
+                {month} {date}
               </div>
-            );
-          } else if (type === "weekday") {
-            return (
-              <div
-                key={i}
-                className="flex items-center justify-center text-sm font-medium"
-              >
-                {day.toUpperCase()}
-              </div>
-            );
-          }
+            </div>
+          );
         })}
 
-        <div className="w-[16px]" aria-hidden />
+        {currentPage < totalPages - 1 ? (
+          <button
+            onClick={() =>
+              setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
+            }
+            className="h-[50px] w-[20px] text-xl"
+          >
+            <ChevronRightIcon className="h-5 w-5" />
+          </button>
+        ) : (
+          <div style={{ width: "20px" }} />
+        )}
       </div>
 
-      {/* Left Arrow */}
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-0 z-10 h-[50px] w-[50px] text-xl"
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Right Arrow */}
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Grid Layer */}
-      <div
-        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-auto pt-2`}
-      >
-        {timeBlocks?.map((block, i) => (
+      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
+        {timeBlocks.map((block, i) => (
           <TimeBlock
             key={i}
+            mode={mode}
             disableSelect={disableSelect}
-            timeColWidth={timeColWidth}
-            rightArrowWidth={rightArrowWidth}
+            timeColWidth={50}
+            rightArrowWidth={20}
             visibleDays={visibleDayKeys}
             startHour={block.startHour}
             endHour={block.endHour}
-            splitBlocks={
-              timeBlocks.length > 1 && block.startHour !== block.endHour
-            }
+            splitBlocks={timeBlocks.length > 1}
             blockNumber={i}
             userTimezone={timezone}
             availability={availability}
             onToggle={handleToggle}
+            allAvailabilities={attendees.map((a) => a.availability)}
+            onHoverSlot={setHoveredSlot}
+            hoveredSlot={hoveredSlot}
           />
         ))}
       </div>
@@ -220,11 +206,9 @@ export default function ScheduleGrid({
   );
 }
 
-const GridError = ({ message }: { message: string }) => {
-  return (
-    <div className="flex h-full w-full items-center justify-center text-sm">
-      <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red" />
-      {message}
-    </div>
-  );
-};
+const GridError = ({ message }: { message: string }) => (
+  <div className="flex h-full w-full items-center justify-center text-sm">
+    <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red" />
+    {message}
+  </div>
+);
