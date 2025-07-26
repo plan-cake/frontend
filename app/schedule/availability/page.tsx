@@ -26,7 +26,7 @@ export default function Page() {
     today.getFullYear(),
     today.getMonth(),
     today.getDate(),
-    16,
+    20,
     0,
     0,
   );
@@ -63,9 +63,9 @@ export default function Page() {
       </div>
 
       {/* Main Content */}
-      <div className="mb-8 flex flex-col gap-4 md:mb-0 md:flex-row">
+      <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="w-full shrink-0 overflow-y-auto md:w-80">
+        <div className="h-fit w-full shrink-0 overflow-y-auto md:sticky md:top-8 md:w-80">
           <div className="md:mb-6">
             <span className="text-lg">
               Hi,{" "}

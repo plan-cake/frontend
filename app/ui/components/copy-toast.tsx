@@ -17,17 +17,24 @@ export default function CopyToast({
     return () => clearTimeout(timerRef.current);
   }, []);
 
+  const copyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(eventLink);
+      setOpen(true);
+      window.clearTimeout(timerRef.current);
+      timerRef.current = window.setTimeout(() => {
+        setOpen(false);
+      }, 2000);
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+    }
+  };
+
   return (
     <Toast.Provider swipeDirection="right">
       <button
         className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
-        onClick={() => {
-          setOpen(false);
-          window.clearTimeout(timerRef.current);
-          timerRef.current = window.setTimeout(() => {
-            setOpen(true);
-          }, 100);
-        }}
+        onClick={copyToClipboard}
       >
         <span className="hidden md:block">{label}</span>
         <span className="md:hidden">

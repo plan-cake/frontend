@@ -131,7 +131,7 @@ export default function ScheduleGrid({
 
   return (
     <div
-      className="relative grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
+      className="relative mb-8 grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
       <div

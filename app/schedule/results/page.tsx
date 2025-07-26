@@ -1,9 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+import CopyToast from "@/app/ui/components/copy-toast";
+
+import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { getUtcIsoSlot } from "@/app/_types/user-availability";
-import { CopyIcon, Pencil1Icon } from "@radix-ui/react-icons";
+import { Pencil1Icon } from "@radix-ui/react-icons";
 
 const fillerAttendees = [
   {
@@ -105,13 +110,6 @@ export default function Page() {
     // fetchEventData();
   }, [userName]);
 
-  const handleCopyLink = () => {
-    const link = `${window.location.origin}/event/${eventCode}`;
-    navigator.clipboard.writeText(link).then(() => {
-      alert("Event link copied!");
-    });
-  };
-
   // Placeholder eventRange
   const today = new Date("2025-07-11T00:00:00");
   const eventRange = {
@@ -131,7 +129,10 @@ export default function Page() {
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex justify-between">
-        <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+          <EventInfoDrawer eventRange={eventRange} />
+        </div>
         <div className="flex items-center gap-2">
           {isOwner && (
             <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
@@ -139,17 +140,14 @@ export default function Page() {
               <Pencil1Icon width={16} height={16} className="md:hidden" />
             </button>
           )}
-          <button
-            onClick={handleCopyLink}
-            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
-          >
-            <span className="hidden md:block">Copy Link</span>
-            <CopyIcon width={16} height={16} className="md:hidden" />
-          </button>
+          <CopyToast
+            label="Copy Link"
+            eventLink={`${window.location.origin}/event/${eventCode}`}
+          />
         </div>
       </div>
 
-      <div className="flex flex-col-reverse gap-4 md:flex-row">
+      <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           eventRange={eventRange}
           timezone={eventRange.timezone}
@@ -160,10 +158,10 @@ export default function Page() {
         />
 
         {/* Sidebar for attendees */}
-        <div className="w-full shrink-0 md:w-80">
-          <div className="sticky top-8 space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
+        <div className="sticky bottom-8 h-fit w-full shrink-0 space-y-3 md:top-8 md:w-80">
+          <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
-            <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 md:flex-col md:space-y-1 md:space-x-0 dark:text-gray-200">
+            <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
               {fillerAttendees.map((attendee) => {
                 const isAvailable = hoveredSlot
                   ? attendee.availability.has(hoveredSlot)
@@ -182,6 +180,10 @@ export default function Page() {
                 );
               })}
             </ul>
+          </div>
+
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
+            <EventInfo eventRange={eventRange} />
           </div>
         </div>
       </div>
