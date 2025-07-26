@@ -40,10 +40,13 @@ export default function Home() {
       <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="flex justify-center">
+            {/* Pancake emoji - centered on mobile */}
+            <div className="flex justify-center order-1 md:order-1">
               <div className="text-8xl">🥞</div>
             </div>
-            <div>
+            
+            {/* Content - centered on mobile, left-aligned on desktop */}
+            <div className="text-center md:text-left order-2 md:order-2">
               <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl mb-8">
                 why
                 <br />
