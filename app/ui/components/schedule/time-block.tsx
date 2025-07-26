@@ -3,6 +3,7 @@
 import { useMemo, useState, useRef, useEffect } from "react";
 import { getUtcIsoSlot, AvailabilitySet } from "@/app/_types/user-availability";
 import { useTheme } from "next-themes";
+import { cn } from "@/app/_lib/classname";
 
 interface TimeBlockProps {
   mode: "paint" | "view";
@@ -203,18 +204,21 @@ export default function TimeBlock({
                   }
                 }}
                 data-slot-iso={slotIso}
-                className={`border-[0.5px] border-gray-300 transition-all ${
-                  disableSelect ? "cursor-not-allowed" : "cursor-pointer"
-                } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
-                  isHovered
-                    ? "inset-ring-1 inset-ring-blue dark:inset-ring-red"
-                    : ""
-                }`}
+                className={cn(
+                  "border-[0.5px] border-gray-300 transition-all",
+                  disableSelect ? "cursor-not-allowed" : "cursor-pointer",
+                  isDisabled && "pointer-events-none bg-gray-200",
+                  isHovered &&
+                    "inset-ring-1 inset-ring-blue dark:inset-ring-red",
+                  isSelected
+                    ? "bg-blue dark:bg-red"
+                    : "hover:bg-blue-200 dark:hover:bg-red-200",
+                )}
                 style={{
                   gridColumn: dayIdx + 1,
                   gridRow: quarterIdx + 1,
                   borderTopStyle: isDashedBorder ? "dashed" : "solid",
-                  backgroundColor,
+                  backgroundColor: mode === "view" ? backgroundColor : "none",
                   touchAction: "none",
                   // Prevent text selection for interactive time blocks
                   userSelect: "none",

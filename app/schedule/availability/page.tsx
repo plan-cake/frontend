@@ -89,7 +89,11 @@ export default function Page() {
         </div>
 
         {/* Right Panel */}
-        <ScheduleGrid eventRange={eventRange} timezone={eventRange.timezone} />
+        <ScheduleGrid
+          mode="paint"
+          eventRange={eventRange}
+          timezone={eventRange.timezone}
+        />
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
