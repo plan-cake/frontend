@@ -3,32 +3,42 @@
 import { FiSun, FiMoon } from "react-icons/fi";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
-import Image from "next/image";
 
-export default function ToggleDarkMode() {
+export default function FixedThemeToggle() {
   const [mounted, setMounted] = useState(false);
   const { setTheme, resolvedTheme } = useTheme();
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  if (!mounted)
+  // Don't render anything until mounted to prevent hydration mismatch
+  if (!mounted) {
     return (
-      <Image
-        src="data:image/svg+xml;base64,PHN2ZyBzdHJva2U9IiNGRkZGRkYiIGZpbGw9IiNGRkZGRkYiIHN0cm9rZS13aWR0aD0iMCIgdmlld0JveD0iMCAwIDI0IDI0IiBoZWlnaHQ9IjIwMHB4IiB3aWR0aD0iMjAwcHgiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PHJlY3Qgd2lkdGg9IjIwIiBoZWlnaHQ9IjIwIiB4PSIyIiB5PSIyIiBmaWxsPSJub25lIiBzdHJva2Utd2lkdGg9IjIiIHJ4PSIyIj48L3JlY3Q+PC9zdmc+Cg=="
-        width={36}
-        height={36}
-        sizes="36x36"
-        alt="Loading Light/Dark Toggle"
-        priority={false}
-        title="Loading Light/Dark Toggle"
-      />
+      <div className="fixed top-4 right-4 z-50">
+        <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center">
+          <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+        </div>
+      </div>
     );
-
-  if (resolvedTheme === "dark") {
-    return <FiSun size={20} onClick={() => setTheme("light")} />;
   }
 
-  if (resolvedTheme === "light") {
-    return <FiMoon size={20} onClick={() => setTheme("dark")} />;
-  }
+  const toggleTheme = () => {
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={toggleTheme}
+      className="fixed top-4 right-4 z-50 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-violet dark:text-bone hover:bg-white/20 transition-all duration-300 border border-white/20"
+      aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
+    >
+      {resolvedTheme === "dark" ? (
+        <FiSun size={20} className="text-yellow-400" />
+      ) : (
+        <FiMoon size={20} className="text-violet" />
+      )}
+    </button>
+  );
 }
