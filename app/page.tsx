@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import HamburgerMenu from "./ui/components/hamburger-menu";
 
 export default function Home() {
   return (
@@ -10,17 +9,18 @@ export default function Home() {
       <section className="relative overflow-hidden px-4 pt-32 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-12">
-            <span className="block text-5xl font-light text-violet dark:text-bone md:text-7xl">
+            <span className="block text-5xl font-light text-violet md:text-7xl dark:text-bone">
               planning made
             </span>
-            <span className="mt-4 block text-center font-display text-6xl leading-none text-lion md:text-8xl">
+            <span className="font-display mt-4 block text-center text-6xl leading-none text-lion md:text-8xl">
               stack
               <br />
               simple
             </span>
           </h1>
           <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-violet dark:text-bone">
-            The fluffiest way to coordinate schedules and plan group events. Stack up availability and serve the perfect meeting time.
+            The fluffiest way to coordinate schedules and plan group events.
+            Stack up availability and serve the perfect meeting time.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
@@ -42,42 +42,45 @@ export default function Home() {
       {/* Why Plancake Section */}
       <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="grid items-center gap-12 md:grid-cols-2">
             {/* Pancake emoji - centered on mobile */}
-            <div className="flex justify-center order-1 md:order-1">
+            <div className="order-1 flex justify-center md:order-1">
               <div className="text-8xl">🥞</div>
             </div>
-            
+
             {/* Content - centered on mobile, left-aligned on desktop */}
-            <div className="text-center md:text-left order-2 md:order-2">
-              <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl mb-8">
+            <div className="order-2 text-center md:order-2 md:text-left">
+              <h2 className="bubble-text mb-8 text-4xl text-violet md:text-6xl dark:text-bone">
                 why
                 <br />
                 <span className="text-violet dark:text-bone">plancake?</span>
               </h2>
               <div className="space-y-6">
-                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
-                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Smart Planning
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Intelligently suggest optimal meeting times based on everyone&apos;s availability and preferences.
+                    Intelligently suggest optimal meeting times based on
+                    everyone&apos;s availability and preferences.
                   </p>
                 </div>
-                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
-                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Easy Coordination
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Share a simple link and watch as responses stack up in real-time without the back-and-forth.
+                    Share a simple link and watch as responses stack up in
+                    real-time without the back-and-forth.
                   </p>
                 </div>
-                <div className="bg-white/80 dark:bg-violet-600/80 p-6 rounded-xl backdrop-blur">
-                  <h3 className="text-xl font-semibold text-violet dark:text-bone mb-2">
+                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Perfect Results
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Get the ideal meeting time that works for everyone with automatic calendar integration.
+                    Get the ideal meeting time that works for everyone with
+                    automatic calendar integration.
                   </p>
                 </div>
               </div>
@@ -90,49 +93,53 @@ export default function Home() {
       <section className="bg-white py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="bubble-text text-4xl text-violet dark:text-bone md:text-6xl">
+            <h2 className="bubble-text text-4xl text-violet md:text-6xl dark:text-bone">
               golden
               <br />
               <span className="text-lion">stack recipe</span>
             </h2>
-            <p className="mt-6 text-lg text-violet dark:text-bone max-w-2xl mx-auto">
-              Follow these simple steps to cook up the perfect schedule every time.
+            <p className="mx-auto mt-6 max-w-2xl text-lg text-violet dark:text-bone">
+              Follow these simple steps to cook up the perfect schedule every
+              time.
             </p>
           </div>
 
-          <div className="bg-bone dark:bg-violet-600 rounded-3xl p-8">
+          <div className="rounded-3xl bg-bone p-8 dark:bg-violet-600">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="mx-auto mb-6 bg-red w-20 h-20 rounded-full flex items-center justify-center">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red">
                   <span className="text-3xl">🍳</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Mix your event
                 </h3>
                 <p className="text-sm text-violet dark:text-bone">
-                  Set up your meeting details, add time options, and customize your preferences
+                  Set up your meeting details, add time options, and customize
+                  your preferences
                 </p>
               </div>
               <div className="text-center">
-                <div className="mx-auto mb-6 bg-violet w-20 h-20 rounded-full flex items-center justify-center">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-violet">
                   <span className="text-3xl">📤</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Share & Stack
                 </h3>
                 <p className="text-sm text-violet dark:text-bone">
-                  Send the link to participants and watch responses stack up in real-time
+                  Send the link to participants and watch responses stack up in
+                  real-time
                 </p>
               </div>
               <div className="text-center">
-                <div className="mx-auto mb-6 bg-lion w-20 h-20 rounded-full flex items-center justify-center">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
                   <span className="text-3xl">🥞</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
                   Flip & Serve
                 </h3>
                 <p className="text-sm text-violet dark:text-bone">
-                  Review the results, pick the best time, and serve up calendar invites to all
+                  Review the results, pick the best time, and serve up calendar
+                  invites to all
                 </p>
               </div>
             </div>
@@ -143,7 +150,7 @@ export default function Home() {
       {/* Plan Today Section */}
       <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text text-6xl text-violet dark:text-bone md:text-8xl mb-8">
+          <h2 className="bubble-text mb-8 text-6xl text-violet md:text-8xl dark:text-bone">
             PLAN TODAY
           </h2>
           <div className="mt-8">
@@ -155,9 +162,10 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-12">
-            <div className="text-lion font-display text-2xl mb-2">plancake</div>
+            <div className="font-display mb-2 text-2xl text-lion">plancake</div>
             <p className="text-sm text-violet dark:text-bone">
-              © 2025 plancake. Stacking up perfect plans, one pancake at a time.
+              © 2025 plancake. Stacking up perfect plans, one pancake at a
+              time.
             </p>
           </div>
         </div>

@@ -135,7 +135,7 @@ export default function ScheduleGrid({
       {currentPage > 0 && (
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] text-xl w-[50px]"
+          className="absolute top-0 left-6 z-10 h-[50px] w-[50px] text-xl"
           aria-label="View previous days"
         >
           <ChevronLeftIcon className="h-5 w-5" />
@@ -144,7 +144,7 @@ export default function ScheduleGrid({
       {currentPage < totalPages - 1 && (
         <button
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] text-xl w-[20px]"
+          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
           aria-label="View next days"
         >
           <ChevronRightIcon className="h-5 w-5" />
@@ -167,7 +167,7 @@ export default function ScheduleGrid({
 
       {/* Time labels */}
       <div
-        className={`pointer-events-none absolute top-0 bg-white dark:bg-violet w-[50px] h-full grid grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
+        className={`pointer-events-none absolute top-0 grid h-full w-[50px] bg-white dark:bg-violet grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
       >
         <div />
         {Array.from({ length: numHours }).map((_, i) => {
@@ -192,7 +192,7 @@ export default function ScheduleGrid({
 
       {/* Column headers */}
       <div
-        className={`absolute top-0 grid h-[50px] left-[50px] right-[20px] grid-cols-${Math.min(visibleDays.length, 7)}`}
+        className={`absolute top-0 right-[20px] left-[50px] grid h-[50px] grid-cols-${Math.min(visibleDays.length, 7)}`}
       >
         {visibleDays.map((day, i) => {
           const type = eventRange.type;
@@ -225,7 +225,7 @@ export default function ScheduleGrid({
       </div>
 
       {/* Right border */}
-      <div className="pointer-events-none absolute top-0 bg-white dark:bg-violet w-[20px] h-full right-0" />
+      <div className="pointer-events-none absolute top-0 right-0 h-full w-[20px] bg-white dark:bg-violet" />
     </div>
   );
 }
