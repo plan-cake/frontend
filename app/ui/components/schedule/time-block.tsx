@@ -223,7 +223,11 @@ export default function TimeBlock({
                   gridColumn: dayIdx + 1,
                   gridRow: quarterIdx + 1,
                   borderTopStyle: isDashedBorder ? "dashed" : "solid",
-                  backgroundColor: mode === "view" ? backgroundColor : "none",
+                  backgroundColor: isDisabled
+                    ? "rgb(209, 204, 204)"
+                    : mode === "view"
+                      ? backgroundColor
+                      : "",
                   touchAction: "none",
                   // Prevent text selection for interactive time blocks
                   userSelect: "none",

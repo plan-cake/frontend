@@ -128,8 +128,8 @@ export default function Page() {
       to: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
     },
     timeRange: {
-      from: new Date(today.setHours(9, 0, 0, 0)),
-      to: new Date(today.setHours(20, 0, 0, 0)),
+      from: new Date(today.setHours(0, 0, 0, 0)),
+      to: new Date(today.setHours(23, 0, 0, 0)),
     },
   };
 
