@@ -5,11 +5,20 @@ import { useState } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/copy-toast";
+import TimezoneSelect from "@/app/ui/components/timezone-select";
 
 import { EventRange } from "@/app/_types/schedule-types";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 
 export default function Page() {
+  const [timezone, setTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
+
+  const handleTZChange = (newTZ: string | number) => {
+    setTimezone(newTZ.toString());
+  };
+
   const [userName, setUserName] = useState("John Doe");
 
   const eventName = "Sample Event";
@@ -65,8 +74,8 @@ export default function Page() {
       {/* Main Content */}
       <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="h-fit w-full shrink-0 overflow-y-auto md:sticky md:top-8 md:w-80">
-          <div className="md:mb-6">
+        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-8 md:w-80">
+          <div>
             <span className="text-lg">
               Hi,{" "}
               <input
@@ -86,13 +95,20 @@ export default function Page() {
           <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
             <EventInfo eventRange={eventRange} />
           </div>
+
+          <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
+            Displaying event in
+            <span className="ml-1 font-bold text-blue dark:text-red">
+              <TimezoneSelect value={timezone} onChange={handleTZChange} />
+            </span>
+          </div>
         </div>
 
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
           eventRange={eventRange}
-          timezone={eventRange.timezone}
+          timezone={timezone}
         />
       </div>
 

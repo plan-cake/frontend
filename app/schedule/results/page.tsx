@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/copy-toast";
+import TimezoneSelect from "@/app/ui/components/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { getUtcIsoSlot } from "@/app/_types/user-availability";
@@ -77,14 +78,20 @@ const fillerAttendees = [
 ];
 
 export default function Page() {
+  const [timezone, setTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
+
+  const handleTZChange = (newTZ: string | number) => {
+    setTimezone(newTZ.toString());
+  };
+
   const [userName, setUserName] = useState("John Doe");
   const [eventName, setEventName] = useState("Event Name");
   const [attendees, setAttendees] = useState(fillerAttendees);
   const [eventCode, setEventCode] = useState<string>("");
   const [isOwner, setIsOwner] = useState<boolean>(true);
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
-
-  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   useEffect(() => {
     // Simulate fetching from backend
@@ -150,7 +157,7 @@ export default function Page() {
       <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           eventRange={eventRange}
-          timezone={eventRange.timezone}
+          timezone={timezone}
           mode="view"
           attendees={fillerAttendees}
           hoveredSlot={hoveredSlot}
@@ -184,6 +191,13 @@ export default function Page() {
 
           <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
             <EventInfo eventRange={eventRange} />
+          </div>
+
+          <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
+            Displaying event in
+            <span className="ml-1 font-bold text-blue dark:text-red">
+              <TimezoneSelect value={timezone} onChange={handleTZChange} />
+            </span>
           </div>
         </div>
       </div>

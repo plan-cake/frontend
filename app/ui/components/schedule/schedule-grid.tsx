@@ -29,7 +29,7 @@ interface ScheduleGridProps {
     name: string;
     availability: AvailabilitySet;
   }[];
-  mode: "paint" | "view";
+  mode?: "paint" | "view" | "preview";
 
   hoveredSlot?: string | null;
   setHoveredSlot?: (slotIso: string | null) => void;
@@ -40,7 +40,7 @@ export default function ScheduleGrid({
   timezone,
   disableSelect = false,
   attendees = [],
-  mode,
+  mode = "preview",
   hoveredSlot,
   setHoveredSlot = () => {},
 }: ScheduleGridProps) {

@@ -6,7 +6,7 @@ import { useTheme } from "next-themes";
 import { cn } from "@/app/_lib/classname";
 
 interface TimeBlockProps {
-  mode: "paint" | "view";
+  mode: "paint" | "view" | "preview";
   disableSelect?: boolean;
   timeColWidth: number;
   rightArrowWidth: number;
