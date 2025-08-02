@@ -94,7 +94,7 @@ function prettyDate(date: Date, type?: "date" | "time") {
     weekday: type === "date" ? "short" : undefined,
     month: type === "date" ? "long" : undefined,
     day: type === "date" ? "numeric" : undefined,
-    year: type === "date" ? undefined : undefined,
+    year: undefined,
     hour: type === "time" ? "numeric" : undefined,
     minute: type === "time" ? "numeric" : undefined,
     hour12: true,
