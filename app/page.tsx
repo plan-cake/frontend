@@ -4,12 +4,12 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen bg-white transition-colors duration-300 dark:bg-violet">
+    <main className="min-h-screen transition-colors duration-300">
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 pt-32 pb-20 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
           <h1 className="mb-12">
-            <span className="block text-5xl font-light text-violet md:text-7xl dark:text-bone">
+            <span className="block text-5xl font-light md:text-7xl">
               planning made
             </span>
             <span className="font-display mt-4 block text-center text-6xl leading-none text-lion md:text-8xl">
@@ -18,7 +18,7 @@ export default function Home() {
               simple
             </span>
           </h1>
-          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed text-violet dark:text-bone">
+          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed">
             The fluffiest way to coordinate schedules and plan group events.
             Stack up availability and serve the perfect meeting time.
           </p>
@@ -40,7 +40,7 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="bg-bone py-16 dark:bg-violet">
+      <section className="bg-bone py-16 dark:bg-gray-300">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid items-center gap-12 md:grid-cols-2">
             {/* Pancake emoji - centered on mobile */}
@@ -56,7 +56,7 @@ export default function Home() {
                 <span className="text-violet dark:text-bone">plancake?</span>
               </h2>
               <div className="space-y-6">
-                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                <div>
                   <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Smart Planning
                   </h3>
@@ -65,7 +65,7 @@ export default function Home() {
                     everyone&apos;s availability and preferences.
                   </p>
                 </div>
-                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                <div>
                   <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Easy Coordination
                   </h3>
@@ -74,7 +74,7 @@ export default function Home() {
                     real-time without the back-and-forth.
                   </p>
                 </div>
-                <div className="rounded-xl bg-white/80 p-6 backdrop-blur dark:bg-violet-600/80">
+                <div>
                   <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
                     Perfect Results
                   </h3>
@@ -93,12 +93,12 @@ export default function Home() {
       <section className="bg-white py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h2 className="bubble-text text-4xl text-violet md:text-6xl dark:text-bone">
+            <h2 className="bubble-text text-4xl md:text-6xl">
               golden
               <br />
               <span className="text-lion">stack recipe</span>
             </h2>
-            <p className="mx-auto mt-6 max-w-2xl text-lg text-violet dark:text-bone">
+            <p className="mx-auto mt-6 max-w-2xl text-lg">
               Follow these simple steps to cook up the perfect schedule every
               time.
             </p>
@@ -110,10 +110,8 @@ export default function Home() {
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red">
                   <span className="text-3xl">🍳</span>
                 </div>
-                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
-                  Mix your event
-                </h3>
-                <p className="text-sm text-violet dark:text-bone">
+                <h3 className="mb-4 text-xl font-semibold">Mix your event</h3>
+                <p className="text-sm">
                   Set up your meeting details, add time options, and customize
                   your preferences
                 </p>
@@ -122,10 +120,8 @@ export default function Home() {
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-violet">
                   <span className="text-3xl">📤</span>
                 </div>
-                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
-                  Share & Stack
-                </h3>
-                <p className="text-sm text-violet dark:text-bone">
+                <h3 className="mb-4 text-xl font-semibold">Share & Stack</h3>
+                <p className="text-sm">
                   Send the link to participants and watch responses stack up in
                   real-time
                 </p>
@@ -134,10 +130,8 @@ export default function Home() {
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
                   <span className="text-3xl">🥞</span>
                 </div>
-                <h3 className="mb-4 text-xl font-semibold text-violet dark:text-bone">
-                  Flip & Serve
-                </h3>
-                <p className="text-sm text-violet dark:text-bone">
+                <h3 className="mb-4 text-xl font-semibold">Flip & Serve</h3>
+                <p className="text-sm">
                   Review the results, pick the best time, and serve up calendar
                   invites to all
                 </p>
@@ -150,9 +144,7 @@ export default function Home() {
       {/* Plan Today Section */}
       <section className="bg-bone py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text mb-8 text-6xl text-violet md:text-8xl dark:text-bone">
-            PLAN TODAY
-          </h2>
+          <h2 className="bubble-text mb-8 text-6xl md:text-8xl">PLAN TODAY</h2>
           <div className="mt-8">
             <Link
               href="/new-event"
@@ -163,7 +155,7 @@ export default function Home() {
           </div>
           <div className="mt-12">
             <div className="font-display mb-2 text-2xl text-lion">plancake</div>
-            <p className="text-sm text-violet dark:text-bone">
+            <p className="text-sm">
               © 2025 plancake. Stacking up perfect plans, one pancake at a
               time.
             </p>
