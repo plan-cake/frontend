@@ -62,7 +62,7 @@ export default function TimeBlock({
     };
   }, []);
 
-  const numHours = endHour - startHour;
+  const numHours = endHour - startHour + 1;
   const numQuarterHours = numHours * 4;
 
   const hoursLabel = useMemo(() => {
