@@ -35,8 +35,15 @@ export default function EventInfoDrawer({
 export function EventInfo({ eventRange }: { eventRange: EventRange }) {
   return (
     <section>
-      <div className="sticky top-0 mb-4 flex items-center justify-between">
-        <div className="text-lg font-semibold">Event Details</div>
+      <div className="sticky top-0 mb-4 items-center justify-between">
+        <h1 className="font-semibold">Event Details</h1>
+        <p className="text-xs">
+          Please note that these details are presented in respect to the{" "}
+          <span className="font-bold">original event's timezone</span> which is{" "}
+          <span className="font-bold text-blue dark:text-red">
+            {formatLabel(eventRange.timezone)}
+          </span>
+        </p>
       </div>
 
       <div className="space-y-4 overflow-y-auto">
@@ -59,7 +66,6 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
           {prettyDate(eventRange.timeRange.to!, "time")}
         </InfoRow>
 
-        <InfoRow label="Timezone">{formatLabel(eventRange.timezone)}</InfoRow>
         <InfoRow label="Intended Duration">
           {eventRange.duration} minutes
         </InfoRow>
@@ -77,8 +83,8 @@ function InfoRow({
 }) {
   return (
     <div>
-      <div className="font-medium text-blue dark:text-red">{label}</div>
-      <div className="">{children}</div>
+      <div className="text-sm font-medium text-gray-400">{label}</div>
+      <div className="text-blue dark:text-red">{children}</div>
     </div>
   );
 }
