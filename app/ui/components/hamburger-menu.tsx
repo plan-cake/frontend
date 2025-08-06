@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from "next/link";
 
 export default function HamburgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -50,36 +51,24 @@ export default function HamburgerMenu() {
           <div className="w-60 text-xl">
             <ul className="flex flex-col space-y-1 p-4">
               <li>
-                <a
-                  href="#"
-                  className="tracking-wide text-violet dark:text-bone"
-                >
+                <Link href="temp" className="tracking-wide">
                   Mix Your First Plan
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="tracking-wide text-violet dark:text-bone"
-                >
+                <Link href="temp" className="tracking-wide">
                   Dashboard
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="tracking-wide text-violet dark:text-bone"
-                >
+                <Link href="temp" className="tracking-wide">
                   About Plancake
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#"
-                  className="tracking-wide text-violet dark:text-bone"
-                >
+                <Link href="temp" className="tracking-wide">
                   Login/Signup
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
