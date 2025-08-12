@@ -27,11 +27,7 @@ export default function Logo() {
         <div className="font-display text-2xl leading-[20px] font-normal text-lion [-webkit-text-stroke:1px_black]">
           cake
         </div>
-
-        {/* Menu icon */}
-        <nav className="flex w-full items-center justify-between">
-          <HamburgerMenu />
-        </nav>
+        <HamburgerMenu />
       </div>
     </div>
   );
