@@ -36,7 +36,7 @@ export default function CustomSelect({
     >
       <Select.Trigger
         className={cn(
-          "inline-flex items-center justify-between rounded-md border border-gray-400 px-4 py-2 text-sm focus:outline-none",
+          "inline-flex items-center justify-between rounded-md text-blue focus:outline-none dark:text-red",
           className,
         )}
         aria-label="Custom select"
@@ -89,7 +89,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectProps>(
       <Select.Item
         ref={ref}
         value={value.toString()}
-        className="relative flex h-[30px] items-center rounded px-6 text-sm leading-none select-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:bg-blue data-[highlighted]:text-white dark:data-[highlighted]:bg-red dark:data-[highlighted]:text-bone"
+        className="relative flex h-[30px] items-center rounded px-6 leading-none select-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:bg-blue data-[highlighted]:text-white dark:data-[highlighted]:bg-red dark:data-[highlighted]:text-bone"
       >
         <Select.ItemText>{children}</Select.ItemText>
         <Select.ItemIndicator className="absolute left-2 inline-flex w-4 items-center justify-center">

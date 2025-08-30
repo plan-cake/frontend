@@ -16,8 +16,8 @@ export default function FixedThemeToggle() {
   if (!mounted) {
     return (
       <div className="fixed top-4 right-4 z-50">
-        <div className="w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center">
-          <div className="w-5 h-5 bg-gray-300 rounded animate-pulse" />
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white/10 backdrop-blur-sm">
+          <div className="h-5 w-5 animate-pulse rounded bg-gray-300" />
         </div>
       </div>
     );
@@ -31,7 +31,7 @@ export default function FixedThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="fixed top-4 right-4 z-50 w-12 h-12 bg-white/10 backdrop-blur-sm rounded-full flex items-center justify-center text-violet dark:text-bone hover:bg-white/20 transition-all duration-300 border border-white/20"
+      className="fixed top-4 right-4 z-50 flex h-12 w-12 items-center justify-center rounded-full border border-white/20 bg-white/10 text-violet backdrop-blur-sm transition-all duration-300 hover:bg-white/20 dark:text-bone"
       aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
     >
       {resolvedTheme === "dark" ? (

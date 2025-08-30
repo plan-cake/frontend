@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -9,10 +9,18 @@ import {
 
 import {
   EventRange,
+  expandEventRange,
   getDateLabels,
-  getEnabledWeekdays,
+  getDateKeys,
 } from "@/app/_types/schedule-types";
+import {
+  AvailabilitySet,
+  createEmptyUserAvailability,
+} from "@/app/_types/user-availability";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
+import { toZonedTime } from "date-fns-tz";
+import { differenceInCalendarDays } from "date-fns";
+import TimeBlock from "./time-block";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -20,72 +28,105 @@ interface ScheduleGridProps {
   disableSelect?: boolean;
 }
 
+interface TimeBlockListType {
+  startHour: number;
+  endHour: number;
+}
+
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
-  timezone, // current timezone of the user, not necessarily the original
+  timezone,
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  let numHours = 0;
-  let numDays = 0;
-  let daysLabel: string[] = [];
-
-  const { timeRange } = eventRange;
-  numHours =
-    timeRange.to && timeRange.from
-      ? timeRange.to.getHours() - timeRange.from.getHours() + 1
-      : 0;
-
-  const hours = useMemo(() => {
-    const range: Date[] = [];
-    for (let i = 0; i < numHours; i++) {
-      const hour = timeRange.from
-        ? new Date(timeRange.from.getTime() + i * 3600000)
-        : new Date(); // Fallback to current time or handle appropriately
-      range.push(hour);
-    }
-    return range;
-  }, [timeRange, numHours]);
-
-  if (eventRange.type === "specific") {
-    const { dateRange } = eventRange;
-    if (!dateRange || !timeRange) {
-      return GridError({ message: "Invalid date or time range" });
-    }
-
-    numDays =
-      Math.ceil(
-        ((dateRange.to?.getTime() ?? 0) - (dateRange.from?.getTime() ?? 0)) /
-          (1000 * 60 * 60 * 24),
-      ) + 1;
-    daysLabel = getDateLabels(dateRange);
-  } else if (eventRange.type === "weekday") {
-    const { weekdays } = eventRange;
-    const enabledWeekdays = getEnabledWeekdays(weekdays);
-    if (!enabledWeekdays || !timeRange) {
-      return GridError({ message: "Invalid weekdays or time range" });
-    }
-
-    numDays = enabledWeekdays.length;
-    daysLabel = enabledWeekdays.map((day) => day.toUpperCase());
+  const [availability, setAvailability] = useState<AvailabilitySet>(
+    createEmptyUserAvailability(eventRange.type).selections,
+  );
+  function handleToggle(slotIso: string) {
+    if (disableSelect) return;
+    setAvailability((prev) => {
+      const updated = new Set(prev);
+      if (updated.has(slotIso)) {
+        updated.delete(slotIso);
+      } else {
+        updated.add(slotIso);
+      }
+      if (process.env.NODE_ENV === "development") {
+        console.log("Updated availability:", updated);
+      }
+      return updated;
+    });
   }
+
+  const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
+    const expandedEventRange = expandEventRange(eventRange);
+    const expandedRange = expandedEventRange.expandedRange;
+    if (!expandedEventRange || expandedRange.length === 0) {
+      return {
+        numHours: 0,
+        numDays: 0,
+        daysLabel: [],
+        dayKeys: [],
+        timeBlocks: [],
+      };
+    }
+
+    const localStartDate = toZonedTime(expandedRange[0].time, timezone);
+    const localEndDate = toZonedTime(
+      expandedRange[expandedRange.length - 1].time,
+      timezone,
+    );
+
+    let localStartHour = localStartDate.getHours();
+    let localEndHour = localEndDate.getHours();
+
+    let timeBlocks: TimeBlockListType[] = [];
+
+    if (localEndHour < localStartHour) {
+      timeBlocks.push({ startHour: 0, endHour: localEndHour });
+      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+    } else {
+      timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
+    }
+
+    const numHours = timeBlocks.reduce((acc, block) => {
+      return acc + (block.endHour - block.startHour + 1);
+    }, 0);
+
+    const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
+    const daysLabel = getDateLabels(
+      localStartDate,
+      localEndDate,
+      eventRange.type,
+    );
+    const dayKeys = getDateKeys(localStartDate, localEndDate);
+
+    return {
+      numHours,
+      numDays,
+      daysLabel,
+      dayKeys,
+      timeBlocks,
+    };
+  }, [eventRange, timezone]);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = Math.ceil(numDays / maxDaysVisible);
+  const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
   const visibleDays = daysLabel.slice(startIndex, endIndex);
+  const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
 
   const timeColWidth = 50;
   const rightArrowWidth = 20;
 
   if (numHours <= 0) {
-    return GridError({ message: "Invalid time range" });
+    return <GridError message="Invalid time range" />;
   } else if (numDays <= 0) {
-    return GridError({ message: "Invalid or missing date range" });
+    return <GridError message="Invalid or missing date range" />;
   }
 
   return (
@@ -94,7 +135,7 @@ export default function ScheduleGrid({
       {currentPage > 0 && (
         <button
           onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] text-xl w-[50px]"
+          className="absolute top-0 left-6 z-10 h-[50px] w-[50px] text-xl"
           aria-label="View previous days"
         >
           <ChevronLeftIcon className="h-5 w-5" />
@@ -103,7 +144,7 @@ export default function ScheduleGrid({
       {currentPage < totalPages - 1 && (
         <button
           onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] text-xl w-[20px]"
+          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
           aria-label="View next days"
         >
           <ChevronRightIcon className="h-5 w-5" />
@@ -126,7 +167,7 @@ export default function ScheduleGrid({
 
       {/* Time labels */}
       <div
-        className={`pointer-events-none absolute top-0 bg-white dark:bg-violet w-[50px] h-full grid grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
+        className={`pointer-events-none absolute top-0 grid h-full w-[50px] bg-white dark:bg-violet grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
       >
         <div />
         {Array.from({ length: numHours }).map((_, i) => {
@@ -151,16 +192,15 @@ export default function ScheduleGrid({
 
       {/* Column headers */}
       <div
-        className={`absolute top-0 grid h-[50px] left-[50px] right-[20px] grid-cols-${Math.min(visibleDays.length, 7)}`}
+        className={`absolute top-0 right-[20px] left-[50px] grid h-[50px] grid-cols-${Math.min(visibleDays.length, 7)}`}
       >
-        {visibleDays.map((day, dayIndex) => {
+        {visibleDays.map((day, i) => {
           const type = eventRange.type;
-
           if (type === "specific") {
             const [weekday, month, date] = day.split(" ");
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
               >
                 <div>{weekday}</div>
@@ -172,7 +212,7 @@ export default function ScheduleGrid({
           } else if (type === "weekday") {
             return (
               <div
-                key={dayIndex}
+                key={i}
                 className="flex items-center justify-center text-sm font-medium"
               >
                 {day.toUpperCase()}
@@ -180,10 +220,12 @@ export default function ScheduleGrid({
             );
           }
         })}
+
+        <div className="w-[16px]" aria-hidden />
       </div>
 
       {/* Right border */}
-      <div className="pointer-events-none absolute top-0 bg-white dark:bg-violet w-[20px] h-full right-0" />
+      <div className="pointer-events-none absolute top-0 right-0 h-full w-[20px] bg-white dark:bg-violet" />
     </div>
   );
 }
