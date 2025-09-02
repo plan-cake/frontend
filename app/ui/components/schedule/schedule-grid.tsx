@@ -130,18 +130,69 @@ export default function ScheduleGrid({
   }
 
   return (
-    <div
-      className="relative grid grid-cols-[auto_1fr_auto] grid-rows-[auto_1fr]"
-      style={{ maxHeight: "90%" }}
-    >
-      {/* Column Headers */}
-      <div style={{ width: `${timeColWidth}px` }} />
+    <div className="relative h-[90%] w-full">
+      {/* Arrows */}
+      {currentPage > 0 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+          className="absolute top-0 left-6 z-10 h-[50px] w-[50px] text-xl"
+          aria-label="View previous days"
+        >
+          <ChevronLeftIcon className="h-5 w-5" />
+        </button>
+      )}
+      {currentPage < totalPages - 1 && (
+        <button
+          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
+          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
+          aria-label="View next days"
+        >
+          <ChevronRightIcon className="h-5 w-5" />
+        </button>
+      )}
+
+      {/* Grid */}
       <div
-        className={`grid h-[50px] items-center transition-shadow duration-200`}
-        style={{
-          gridColumn: "2",
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr) auto`,
-        }}
+        className={`grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400 grid-cols-[50px_repeat(${visibleDays.length},1fr)_20px] grid-rows-[50px_repeat(${numHours},1fr)]`}
+      >
+        {Array.from({
+          length: (numHours + 1) * (visibleDays.length + 2) + 1,
+        }).map((_, i) => (
+          <div
+            key={i}
+            className={`${disableSelect ? "cursor-not-allowed" : ""}`}
+          />
+        ))}
+      </div>
+
+      {/* Time labels */}
+      <div
+        className={`pointer-events-none absolute top-0 grid h-full w-[50px] bg-white dark:bg-violet grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
+      >
+        <div />
+        {Array.from({ length: numHours }).map((_, i) => {
+          const hour = timeRange.from
+            ? new Date(timeRange.from.getTime() + i * 3600000)
+            : new Date();
+          const formatter = new Intl.DateTimeFormat("en-US", {
+            timeZone: timezone,
+            hour: "numeric",
+            hour12: true,
+          });
+          return (
+            <div
+              key={i}
+              className="relative flex items-start justify-end pr-2 text-right text-xs"
+            >
+              <span className="absolute -top-2">{formatter.format(hour)}</span>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Column headers */}
+      <div
+        className={`absolute top-0 right-[20px] left-[50px] grid h-[50px] grid-cols-${Math.min(visibleDays.length, 7)}`}
       >
         {visibleDays.map((day, i) => {
           const type = eventRange.type;
@@ -173,49 +224,8 @@ export default function ScheduleGrid({
         <div className="w-[16px]" aria-hidden />
       </div>
 
-      {/* Left Arrow */}
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-0 z-10 h-[50px] w-[50px] text-xl"
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Right Arrow */}
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
-
-      {/* Grid Layer */}
-      <div
-        className={`col-span-2 flex flex-grow flex-col gap-4 overflow-y-scroll pt-2`}
-      >
-        {timeBlocks?.map((block, i) => (
-          <TimeBlock
-            key={i}
-            disableSelect={disableSelect}
-            timeColWidth={timeColWidth}
-            rightArrowWidth={rightArrowWidth}
-            visibleDays={visibleDayKeys}
-            startHour={block.startHour}
-            endHour={block.endHour}
-            splitBlocks={
-              timeBlocks.length > 1 && block.startHour !== block.endHour
-            }
-            blockNumber={i}
-            userTimezone={timezone}
-            availability={availability}
-            onToggle={handleToggle}
-          />
-        ))}
-      </div>
+      {/* Right border */}
+      <div className="pointer-events-none absolute top-0 right-0 h-full w-[20px] bg-white dark:bg-violet" />
     </div>
   );
 }
