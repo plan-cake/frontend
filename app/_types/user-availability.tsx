@@ -1,4 +1,5 @@
 import { fromZonedTime } from "date-fns-tz";
+import { EventRange } from "./schedule-types";
 
 // keys are either weekdays or specific date strings:
 //    for specific days:  "2025-05-10"
@@ -43,8 +44,26 @@ export function getUtcIsoSlot(
   hour: number,
   minute: number,
   timezone: string,
-): string {
+): { utcDate: Date; isoString: string } {
   const localDateTimeString = `${dateKey}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
   const utcDate = fromZonedTime(localDateTimeString, timezone);
-  return utcDate.toISOString();
+  return { utcDate, isoString: utcDate.toISOString() };
+}
+
+export function checkDateInRange(date: Date, eventRange: EventRange): boolean {
+  if (eventRange.type === "specific") {
+    const { from, to } = eventRange.dateRange;
+    if (!from || !to) {
+      return false;
+    }
+    return date >= from && date <= to;
+  } else if (eventRange.type === "weekday") {
+    const weekdays = eventRange.weekdays;
+
+    const weekday = date.toLocaleDateString("en-US", {
+      weekday: "short",
+    }) as keyof typeof weekdays;
+    return weekdays[weekday] == 0 ? false : true;
+  }
+  return false;
 }

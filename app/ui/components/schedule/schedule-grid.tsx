@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import {
-  EventRange,
-  expandEventRange,
-  getDateLabels,
-  getDateKeys,
-} from "@/app/_types/schedule-types";
+import { EventRange, expandEventRange } from "@/app/_types/schedule-types";
 import {
   AvailabilitySet,
   createEmptyUserAvailability,
@@ -63,22 +58,27 @@ export default function ScheduleGrid({
     });
   }
 
-  const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
-    const expandedEventRange = expandEventRange(eventRange);
-    const expandedRange = expandedEventRange.expandedRange;
-    if (!expandedEventRange || expandedRange.length === 0) {
+  const {
+    numHours,
+    numDays,
+    timeBlocks,
+    daySlots = [],
+  } = useMemo(() => {
+    const daySlots = expandEventRange(eventRange);
+    const numDaySlots = daySlots.length;
+    if (numDaySlots === 0) {
       return {
         numHours: 0,
         numDays: 0,
-        daysLabel: [],
-        dayKeys: [],
         timeBlocks: [],
+        daySlots: [],
       };
     }
 
-    const localStartDate = toZonedTime(expandedRange[0].time, timezone);
+    const numTimeSlotsPerDay = daySlots[0].timeslots.length;
+    const localStartDate = toZonedTime(daySlots[0].timeslots[0].time, timezone);
     const localEndDate = toZonedTime(
-      expandedRange[expandedRange.length - 1].time,
+      daySlots[numDaySlots - 1].timeslots[numTimeSlotsPerDay - 1].time,
       timezone,
     );
 
@@ -100,19 +100,12 @@ export default function ScheduleGrid({
     );
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
-    const daysLabel = getDateLabels(
-      localStartDate,
-      localEndDate,
-      eventRange.type,
-    );
-    const dayKeys = getDateKeys(localStartDate, localEndDate);
 
     return {
       numHours,
       numDays,
-      daysLabel,
-      dayKeys,
       timeBlocks,
+      daySlots,
     };
   }, [eventRange, timezone]);
 
@@ -122,8 +115,7 @@ export default function ScheduleGrid({
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-  const visibleDays = daysLabel.slice(startIndex, endIndex);
-  const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
+  const visibleDays = daySlots.slice(startIndex, endIndex);
 
   if (numHours <= 0) return <GridError message="Invalid time range" />;
   if (numDays <= 0)
@@ -152,7 +144,7 @@ export default function ScheduleGrid({
         )}
 
         {visibleDays.map((day, i) => {
-          const [weekday, month, date] = day.split(" ");
+          const [weekday, month, date] = day.dayLabel.split(" ");
           return (
             <div
               key={i}
@@ -188,17 +180,16 @@ export default function ScheduleGrid({
             disableSelect={disableSelect}
             timeColWidth={50}
             rightArrowWidth={20}
-            visibleDays={visibleDayKeys}
+            visibleDays={visibleDays.map((d) => d.dayKey)}
             startHour={block.startHour}
             endHour={block.endHour}
-            splitBlocks={timeBlocks.length > 1}
-            blockNumber={i}
             userTimezone={timezone}
             availability={availability}
             onToggle={handleToggle}
             allAvailabilities={attendees.map((a) => a.availability)}
             onHoverSlot={setHoveredSlot}
             hoveredSlot={hoveredSlot}
+            eventRange={eventRange}
           />
         ))}
       </div>

@@ -1,9 +1,14 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { getUtcIsoSlot, AvailabilitySet } from "@/app/_types/user-availability";
+import {
+  getUtcIsoSlot,
+  AvailabilitySet,
+  checkDateInRange,
+} from "@/app/_types/user-availability";
 import { useTheme } from "next-themes";
 import { cn } from "@/app/_lib/classname";
+import { EventRange } from "@/app/_types/schedule-types";
 
 interface TimeBlockProps {
   mode: "paint" | "view" | "preview";
@@ -13,14 +18,13 @@ interface TimeBlockProps {
   visibleDays: string[];
   startHour: number;
   endHour: number;
-  splitBlocks?: boolean;
-  blockNumber?: number;
   userTimezone: string;
   availability: AvailabilitySet;
   onToggle?: (slotIso: string) => void;
   allAvailabilities?: AvailabilitySet[];
   onHoverSlot?: (iso: string | null) => void;
   hoveredSlot?: string | null;
+  eventRange: EventRange;
 }
 
 export default function TimeBlock({
@@ -31,14 +35,13 @@ export default function TimeBlock({
   startHour,
   endHour,
   visibleDays,
-  splitBlocks = false,
-  blockNumber = 0,
   userTimezone,
   availability,
   onToggle,
   allAvailabilities = [],
   onHoverSlot,
   hoveredSlot,
+  eventRange,
 }: TimeBlockProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -62,6 +65,7 @@ export default function TimeBlock({
     };
   }, []);
 
+  console.log(startHour, endHour);
   const numHours = endHour - startHour + 1;
   const numQuarterHours = numHours * 4;
 
@@ -109,18 +113,19 @@ export default function TimeBlock({
       >
         {Array.from({ length: numQuarterHours }).map((_, quarterIdx) =>
           visibleDays.map((_, dayIdx) => {
-            const isDisabled =
-              (splitBlocks && blockNumber === 0 && dayIdx === 0) ||
-              (splitBlocks &&
-                blockNumber === 1 &&
-                dayIdx === visibleDays.length - 1);
-
             const isDashedBorder = quarterIdx % 4 !== 0;
 
             const hour = startHour + Math.floor(quarterIdx / 4);
             const minute = (quarterIdx % 4) * 15;
             const dateKey = visibleDays[dayIdx];
-            const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
+            const { utcDate: date, isoString: slotIso } = getUtcIsoSlot(
+              dateKey,
+              hour,
+              minute,
+              userTimezone,
+            );
+
+            const isDisabled = checkDateInRange(date, eventRange) === false;
 
             const matchCount = allAvailabilities.reduce(
               (acc, set) => acc + (set.has(slotIso) ? 1 : 0),

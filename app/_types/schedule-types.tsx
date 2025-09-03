@@ -41,6 +41,13 @@ export type TimeSlot = {
   day: string; // abbreviated day name (e.g., "Mon", "Tue")
 };
 
+export type DaySlot = {
+  date: Date;
+  dayLabel: string;
+  dayKey: string;
+  timeslots: TimeSlot[];
+};
+
 // Combine a date and a time-only object into a full Date object
 export function combineDateAndTime(date: Date, time: Date): Date {
   const result = new Date(date);
@@ -48,28 +55,25 @@ export function combineDateAndTime(date: Date, time: Date): Date {
   return result;
 }
 
-// Expand an event range into a list of time slots in UTC
-export function expandEventRange(range: EventRange): {
-  expandedRange: TimeSlot[];
-  timezone: string;
-} {
-  let expandedRange: TimeSlot[] = [];
+/**
+ * GENERATE TIME SLOTS
+ * timeslots are 15 minutes time intervals generated in UTC time
+ */
+
+export function expandEventRange(range: EventRange): DaySlot[] {
   if (range.type === "specific") {
-    expandedRange = generateConcreteInstancesForSpecificRange(range);
+    return generateConcreteInstancesForSpecificRange(range);
   } else if (range.type === "weekday") {
-    expandedRange = generateConcreteInstancesForWeek(range);
+    return generateConcreteInstancesForWeek(range);
   }
 
-  return {
-    expandedRange: expandedRange,
-    timezone: "UTC",
-  };
+  return [];
 }
 
 function generateConcreteInstancesForSpecificRange(
   range: SpecificDateRange,
-): TimeSlot[] {
-  const slots: TimeSlot[] = [];
+): DaySlot[] {
+  const daySlots: DaySlot[] = [];
   const { dateRange, timeRange } = range;
 
   if (!dateRange.from || !dateRange.to || !timeRange.from || !timeRange.to) {
@@ -86,19 +90,25 @@ function generateConcreteInstancesForSpecificRange(
 
   let current = new Date(startDate);
   while (current <= endDate) {
+    // get the weekday and month/day labels
+    const weekday = current
+      .toLocaleDateString("en-US", { weekday: "short" })
+      .toUpperCase();
+    const monthDay = current
+      .toLocaleDateString("en-US", { month: "short", day: "numeric" })
+      .toUpperCase();
+    const dayKey = current.toLocaleDateString("en-CA", {
+      timeZone: "UTC",
+    });
+
+    // generate 15-minute time slots
+    let slots: TimeSlot[] = [];
     let currentTime = new Date(current);
     currentTime.setHours(startHour, 0, 0, 0);
 
     const endTime = new Date(current);
     endTime.setHours(endHour, 0, 0, 0);
     while (currentTime.getTime() <= endTime.getTime()) {
-      const weekday = current
-        .toLocaleDateString("en-US", { weekday: "short" })
-        .toUpperCase();
-      const monthDay = current
-        .toLocaleDateString("en-US", { month: "short", day: "numeric" })
-        .toUpperCase();
-
       const timeSlot: TimeSlot = {
         date: new Date(current),
         time: new Date(currentTime),
@@ -109,15 +119,20 @@ function generateConcreteInstancesForSpecificRange(
       currentTime.setMinutes(currentTime.getMinutes() + 15);
     }
 
+    daySlots.push({
+      date: new Date(current),
+      dayLabel: `${weekday} ${monthDay}`,
+      dayKey: dayKey,
+      timeslots: slots,
+    });
     current.setDate(current.getDate() + 1);
   }
 
-  return slots;
+  return daySlots;
 }
 
-// Generate all concrete weekday instances for a given reference week
-function generateConcreteInstancesForWeek(range: WeekdayRange): TimeSlot[] {
-  const slots: TimeSlot[] = [];
+function generateConcreteInstancesForWeek(range: WeekdayRange): DaySlot[] {
+  const daySlots: DaySlot[] = [];
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   if (!range.timeRange.from || !range.timeRange.to) return [];
@@ -135,6 +150,18 @@ function generateConcreteInstancesForWeek(range: WeekdayRange): TimeSlot[] {
       date.setDate(weekStart.getDate() + i);
       date.setHours(baseFrom, 0, 0, 0);
 
+      // get the weekday and month/day labels
+      const dayKey = date.toLocaleDateString("en-US");
+      const weekday = date
+        .toLocaleDateString("en-US", { weekday: "short" })
+        .toUpperCase();
+      const monthDay = date
+        .toLocaleDateString("en-US", { month: "short", day: "numeric" })
+        .toUpperCase();
+
+      // generate 15-minute time slots
+      let slots: TimeSlot[] = [];
+
       const endTime = new Date(date);
       endTime.setHours(baseTo, 59, 59, 999);
 
@@ -148,65 +175,15 @@ function generateConcreteInstancesForWeek(range: WeekdayRange): TimeSlot[] {
 
         date.setMinutes(date.getMinutes() + 15);
       }
+
+      daySlots.push({
+        date: new Date(date),
+        dayLabel: `${weekday} ${monthDay}`,
+        dayKey: dayKey,
+        timeslots: slots,
+      });
     }
   }
 
-  return slots;
-}
-
-// Expand a specific date range into a list of dates (e.g., for previewing day-by-day)
-export function expandDateRange(range: TimeDateRange): Date[] {
-  const { from, to } = range;
-  if (!from || !to) return [];
-  const days: Date[] = [];
-
-  let current = new Date(from);
-  current.setHours(0, 0, 0, 0);
-
-  const end = new Date(to);
-  end.setHours(0, 0, 0, 0);
-
-  while (current <= end) {
-    days.push(new Date(current));
-    current.setDate(current.getDate() + 1);
-  }
-
-  return days;
-}
-
-// Format a weekday map into a list of active days (e.g., ["Mon", "Wed"])
-export function getEnabledWeekdays(weekdays: WeekdayMap): string[] {
-  return Object.entries(weekdays)
-    .filter(([, v]) => v === 1)
-    .map(([k]) => k);
-}
-
-// Create a list of visible day labels from a specific date range
-export function getDateLabels(
-  from: Date,
-  to: Date,
-  eventType: string,
-): string[] {
-  const labels: string[] = [];
-  const range = expandDateRange({ from, to });
-  for (const date of range) {
-    const weekday = date
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-    const monthDay = date
-      .toLocaleDateString("en-US", { month: "short", day: "numeric" })
-      .toUpperCase();
-    const string = eventType === "weekday" ? weekday : `${weekday} ${monthDay}`;
-    labels.push(string);
-  }
-  return labels;
-}
-
-export function getDateKeys(from: Date, to: Date): string[] {
-  const dates = expandDateRange({ from, to });
-  return dates.map((d) =>
-    d.toLocaleDateString("en-CA", {
-      timeZone: "UTC",
-    }),
-  ); // "YYYY-MM-DD"
+  return daySlots;
 }

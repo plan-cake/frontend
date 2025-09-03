@@ -125,7 +125,7 @@ export default function Page() {
     timezone,
     dateRange: {
       from: today,
-      to: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
+      to: new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000),
     },
     timeRange: {
       from: new Date(today.setHours(0, 0, 0, 0)),
