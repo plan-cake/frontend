@@ -1,6 +1,6 @@
 // _types/date-range-types.ts
 
-import { EventRange, WeekdayMap } from "@/app/_types/schedule-types";
+import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
 
 export type DateRangeProps = {
   eventRange?: EventRange;

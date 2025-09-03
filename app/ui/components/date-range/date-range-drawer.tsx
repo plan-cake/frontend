@@ -3,7 +3,7 @@ import { Calendar } from "../month-calendar";
 import CustomSelect from "../custom-select";
 import WeekdayCalendar from "../weekday-calendar";
 import DateRangeInput from "./date-range-input";
-import { DateRangeProps } from "@/app/_types/date-range-types";
+import { DateRangeProps } from "@/app/_lib/types/date-range-props";
 
 export default function DateRangeDrawer({
   eventRange,

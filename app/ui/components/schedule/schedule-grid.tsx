@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { EventRange, expandEventRange } from "@/app/_types/schedule-types";
-import {
-  AvailabilitySet,
-  createEmptyUserAvailability,
-} from "@/app/_types/user-availability";
-import useCheckMobile from "@/app/_utils/use-check-mobile";
+import { EventRange } from "@/app/_lib/schedule/types";
+import { expandEventRange } from "@/app/_lib/schedule/utils";
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
+
+import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
 import {

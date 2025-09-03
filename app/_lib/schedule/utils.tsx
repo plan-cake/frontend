@@ -1,78 +1,50 @@
-export type TimeDateRange = {
-  from: Date | null; // stored in UTC
-  to: Date | null; // stored in UTC
-};
+// app/_lib/schedule.ts
 
-// generic weekday mode map
-export type WeekdayMap = {
-  [day in "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat"]: 0 | 1;
-};
+import {
+  DaySlot,
+  EventRange,
+  SpecificDateRange,
+  WeekdayRange,
+  TimeSlot,
+  WeekdayMap,
+} from "@/app/_lib/schedule/types";
 
-// specific date mode
-export type SpecificDateRange = {
-  type: "specific";
-  duration: number;
-  timezone: string;
-  dateRange: TimeDateRange;
-  timeRange: TimeDateRange;
-};
+export function checkDateInRange(date: Date, eventRange: EventRange): boolean {
+  if (eventRange.type === "specific") {
+    const { from, to } = eventRange.dateRange;
+    if (!from || !to) {
+      return false;
+    }
+    return date >= from && date <= to;
+  } else if (eventRange.type === "weekday") {
+    const weekdays = eventRange.weekdays;
 
-// generic weekday mode
-export type WeekdayRange = {
-  type: "weekday";
-  duration: number;
-  timezone: string;
-  weekdays: WeekdayMap;
-  timeRange: TimeDateRange;
-};
-
-// unified type
-export type EventRange = SpecificDateRange | WeekdayRange;
-
-export type DateTimeSlot = {
-  day: string;
-  from: Date; // full date with time
-  to: Date; // full date with time
-};
-
-export type TimeSlot = {
-  date: Date; // date with time set to 00:00
-  time: Date; // time-only object (hours and minutes)
-  day: string; // abbreviated day name (e.g., "Mon", "Tue")
-};
-
-export type DaySlot = {
-  date: Date;
-  dayLabel: string;
-  dayKey: string;
-  timeslots: TimeSlot[];
-};
-
-// Combine a date and a time-only object into a full Date object
-export function combineDateAndTime(date: Date, time: Date): Date {
-  const result = new Date(date);
-  result.setHours(time.getHours(), time.getMinutes(), 0, 0);
-  return result;
+    const weekday = date.toLocaleDateString("en-US", {
+      weekday: "short",
+    }) as keyof typeof weekdays;
+    return weekdays[weekday] == 0 ? false : true;
+  }
+  return false;
 }
 
 /**
- * GENERATE TIME SLOTS
- * timeslots are 15 minutes time intervals generated in UTC time
+ * expands a high-level EventRange into a concrete list of days and time slots.
+ *
+ * this is the main entry point for generating the data needed for the UI.
+ * @param range The EventRange object.
+ * @returns An array of DaySlot objects.
  */
-
 export function expandEventRange(range: EventRange): DaySlot[] {
   if (range.type === "specific") {
-    return generateConcreteInstancesForSpecificRange(range);
-  } else if (range.type === "weekday") {
-    return generateConcreteInstancesForWeek(range);
+    return generateSlotsForSpecificRange(range);
   }
-
+  if (range.type === "weekday") {
+    return generateSlotsForWeekdayRange(range);
+  }
   return [];
 }
 
-function generateConcreteInstancesForSpecificRange(
-  range: SpecificDateRange,
-): DaySlot[] {
+function generateSlotsForSpecificRange(range: SpecificDateRange): DaySlot[] {
   const daySlots: DaySlot[] = [];
   const { dateRange, timeRange } = range;
 
@@ -131,7 +103,7 @@ function generateConcreteInstancesForSpecificRange(
   return daySlots;
 }
 
-function generateConcreteInstancesForWeek(range: WeekdayRange): DaySlot[] {
+function generateSlotsForWeekdayRange(range: WeekdayRange): DaySlot[] {
   const daySlots: DaySlot[] = [];
 
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

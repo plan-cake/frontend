@@ -8,7 +8,7 @@ import CopyToast from "@/app/ui/components/copy-toast";
 import TimezoneSelect from "@/app/ui/components/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { getUtcIsoSlot } from "@/app/_types/user-availability";
+import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 
 const fillerAttendees = [

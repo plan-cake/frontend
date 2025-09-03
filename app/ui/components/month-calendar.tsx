@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import useCheckMobile from "@/app/_utils/use-check-mobile";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
 
 import {
   DateRange,

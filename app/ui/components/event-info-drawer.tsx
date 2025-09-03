@@ -1,7 +1,7 @@
 "use client";
 
-import { EventRange } from "@/app/_types/schedule-types";
-import { formatLabel } from "@/app/_utils/timezone-file-generator";
+import { EventRange } from "@/app/_lib/schedule/types";
+import { formatLabel } from "@/app/_lib/timezone-file-generator";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
