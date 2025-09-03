@@ -2,7 +2,6 @@
 
 import { useEffect, useRef, useState } from "react";
 import * as Toast from "@radix-ui/react-toast";
-
 import { CopyIcon } from "@radix-ui/react-icons";
 
 export default function CopyToast({

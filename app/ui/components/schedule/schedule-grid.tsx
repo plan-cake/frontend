@@ -1,12 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { EventRange } from "@/app/_lib/schedule/types";
-import { expandEventRange } from "@/app/_lib/schedule/utils";
-import { AvailabilitySet } from "@/app/_lib/availability/types";
-import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
 
-import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
 import {
@@ -14,7 +9,14 @@ import {
   ChevronRightIcon,
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
-import TimeBlock from "./time-block";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
+import { expandEventRange } from "@/app/_lib/schedule/utils";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
+
+import TimeBlock from "@/app/ui/components/schedule/time-block";
 
 interface ScheduleGridProps {
   eventRange: EventRange;

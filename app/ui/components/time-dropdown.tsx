@@ -1,5 +1,6 @@
-import CustomSelect from "./custom-select";
 import { fromZonedTime } from "date-fns-tz";
+
+import CustomSelect from "@/app/ui/components/custom-select";
 
 type TimeDropdownProps = {
   onChange: (time: Date) => void;

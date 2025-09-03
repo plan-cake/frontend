@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Checkbox from "./checkbox";
 
-import { WeekdayMap } from "@/app/_types/schedule-types";
+import { WeekdayMap } from "@/app/_lib/schedule/types";
+import Checkbox from "@/app/ui/components/checkbox";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;

@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 
-import TimeDropdown from "../ui/components/time-dropdown";
-import DateRangeSelector from "../ui/components/date-range/date-range-selector";
-import TimezoneSelect from "../ui/components/timezone-select";
-import CustomSelect from "../ui/components/custom-select";
-import GridPreviewDialog from "../ui/components/schedule/grid-preview-dialog";
+import { EventRange } from "@/app/_lib/schedule/types";
 
-import { EventRange } from "../_lib/types/schedule-types";
+import TimeDropdown from "@/app/ui/components/time-dropdown";
+import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
+import TimezoneSelect from "@/app/ui/components/timezone-select";
+import CustomSelect from "@/app/ui/components/custom-select";
+import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;

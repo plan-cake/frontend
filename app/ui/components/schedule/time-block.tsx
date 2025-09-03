@@ -1,14 +1,14 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import {
-  getUtcIsoSlot,
-  AvailabilitySet,
-  checkDateInRange,
-} from "@/app/_types/user-availability";
+
 import { useTheme } from "next-themes";
 import { cn } from "@/app/_lib/classname";
-import { EventRange } from "@/app/_types/schedule-types";
+
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { EventRange } from "@/app/_lib/schedule/types";
+import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
+import { checkDateInRange } from "@/app/_lib/schedule/utils";
 
 interface TimeBlockProps {
   mode: "paint" | "view" | "preview";

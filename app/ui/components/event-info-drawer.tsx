@@ -1,10 +1,10 @@
 "use client";
 
-import { EventRange } from "@/app/_lib/schedule/types";
-import { formatLabel } from "@/app/_lib/timezone-file-generator";
-
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+import { formatLabel } from "@/app/_lib/timezone-file-generator";
 
 export default function EventInfoDrawer({
   eventRange,

@@ -1,11 +1,14 @@
 "use client";
 
-import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
-import ScheduleGrid from "./schedule-grid";
-import { EventRange } from "@/app/_types/schedule-types";
 import { useState } from "react";
-import TimezoneSelect from "../timezone-select";
+
+import { motion } from "framer-motion";
+import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import TimezoneSelect from "@/app/ui/components/timezone-select";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;

@@ -1,9 +1,10 @@
 "use client";
 
-import * as Popover from "@radix-ui/react-popover";
-import { Calendar } from "../month-calendar";
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
-import DateRangeInput from "./date-range-input";
+
+import * as Popover from "@radix-ui/react-popover";
+import { Calendar } from "@/app/ui/components/month-calendar";
+import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 
 export default function DateRangePopover({
   specificRange,

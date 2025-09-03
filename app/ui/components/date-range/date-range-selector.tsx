@@ -1,11 +1,11 @@
-import CustomSelect from "../custom-select";
-import DateRangeDrawer from "./date-range-drawer";
-import DateRangePopover from "./date-range-popover";
-import WeekdayCalendar from "../weekday-calendar";
-import { DateRangeProps } from "@/app/_lib/types/date-range-props";
-import { WeekdayMap } from "@/app/_types/schedule-types";
-
 import useCheckMobile from "@/app/_lib/use-check-mobile";
+import { DateRangeProps } from "@/app/_lib/types/date-range-props";
+import { WeekdayMap } from "@/app/_lib/schedule/types";
+
+import CustomSelect from "@/app/ui/components/custom-select";
+import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
+import DateRangeDrawer from "@/app/ui/components/date-range/date-range-drawer";
+import DateRangePopover from "@/app/ui/components/date-range/date-range-popover";
 
 export default function DateRangeSelector({
   eventRange,

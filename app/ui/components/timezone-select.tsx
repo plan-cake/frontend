@@ -1,5 +1,5 @@
 import { groupedTimezones } from "@/app/_lib/grouped-timezones";
-import CustomSelect from "./custom-select";
+import CustomSelect from "@/app/ui/components/custom-select";
 
 type TimezoneSelectProps = {
   value: string;

@@ -1,9 +1,11 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { Calendar } from "../month-calendar";
-import CustomSelect from "../custom-select";
-import WeekdayCalendar from "../weekday-calendar";
-import DateRangeInput from "./date-range-input";
+
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
+
+import { Calendar } from "@/app/ui/components/month-calendar";
+import CustomSelect from "@/app/ui/components/custom-select";
+import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
+import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 
 export default function DateRangeDrawer({
   eventRange,
