@@ -45,8 +45,15 @@ export default function Page() {
     duration: 60,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     dateRange: {
-      from: today,
-      to: new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000),
+      from: startOfDay,
+      to: new Date(
+        today.getFullYear(),
+        today.getMonth(),
+        today.getDate() + 7,
+        20,
+        0,
+        0,
+      ),
     },
     timeRange: {
       from: startOfDay,

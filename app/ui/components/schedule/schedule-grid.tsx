@@ -66,7 +66,7 @@ export default function ScheduleGrid({
     timeBlocks,
     daySlots = [],
   } = useMemo(() => {
-    const daySlots = expandEventRange(eventRange);
+    const daySlots = expandEventRange(eventRange, timezone);
     const numDaySlots = daySlots.length;
     if (numDaySlots === 0) {
       return {
@@ -102,6 +102,14 @@ export default function ScheduleGrid({
     );
 
     const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
+    console.log({
+      numDays,
+      numDaySlots,
+      localStartDate,
+      localEndDate,
+      timezone,
+      daySlots,
+    });
 
     return {
       numHours,
