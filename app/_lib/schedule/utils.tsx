@@ -5,7 +5,6 @@ import {
   EventRange,
   SpecificDateRange,
   WeekdayRange,
-  TimeSlot,
   WeekdayMap,
 } from "@/app/_lib/schedule/types";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
@@ -43,9 +42,8 @@ function combineDateAndTime(date: Date, time: Date): Date {
 }
 
 /**
- * expands a high-level EventRange into a concrete list of days and time slots.
- *
- * this is the main entry point for generating the data needed for the UI.
+ * expands a high-level EventRange into a concrete list of days and time slots
+ * for the user's local timezone
  */
 export function expandEventRange(
   range: EventRange,
@@ -102,18 +100,14 @@ function generateSlotsForSpecificRange(
     ).toLocaleDateString("en-CA");
 
     // generate 15-minute time slots
-    let slots: TimeSlot[] = [];
+    let slots: Date[] = [];
     let currentTime = new Date(currentDay);
     currentTime.setHours(startHour, 0, 0, 0);
 
     const endTime = new Date(currentDay);
     endTime.setHours(endHour, 0, 0, 0);
     while (currentTime.getTime() <= endTime.getTime()) {
-      const timeSlot: TimeSlot = {
-        date: new Date(currentDay),
-        time: new Date(currentTime),
-        day: `${weekday} ${monthDay}`,
-      };
+      const timeSlot = new Date(currentTime);
       slots.push(timeSlot);
 
       currentTime.setMinutes(currentTime.getMinutes() + 15);
@@ -214,11 +208,7 @@ export function generateSlotsForWeekdayRange(
 
         // Add the current slot to the correct day
         const daySlot = daySlotsMap.get(dayKey)!;
-        daySlot.timeslots.push({
-          date: new Date(currentSlotTime),
-          time: new Date(currentSlotTime),
-          day: dayName,
-        });
+        daySlot.timeslots.push(new Date(currentSlotTime));
 
         currentSlotTime.setMinutes(currentSlotTime.getMinutes() + 15);
       }

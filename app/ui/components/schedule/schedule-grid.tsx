@@ -47,7 +47,7 @@ export default function ScheduleGrid({
     createEmptyUserAvailability(eventRange.type).selections,
   );
 
-  function handleToggle(slotIso: string) {
+  function handleToggle(slotIso: Date) {
     if (disableSelect || mode !== "paint") return;
     setAvailability((prev) => {
       const updated = new Set(prev);
@@ -67,6 +67,7 @@ export default function ScheduleGrid({
     daySlots = [],
   } = useMemo(() => {
     const daySlots = expandEventRange(eventRange, timezone);
+    console.log("userTimezone:", timezone, "daySlots:", daySlots);
     const numDaySlots = daySlots.length;
     if (numDaySlots === 0) {
       return {
@@ -78,9 +79,9 @@ export default function ScheduleGrid({
     }
 
     const numTimeSlotsPerDay = daySlots[0].timeslots.length;
-    const localStartDate = toZonedTime(daySlots[0].timeslots[0].time, timezone);
+    const localStartDate = toZonedTime(daySlots[0].timeslots[0], timezone);
     const localEndDate = toZonedTime(
-      daySlots[numDaySlots - 1].timeslots[numTimeSlotsPerDay - 1].time,
+      daySlots[numDaySlots - 1].timeslots[numTimeSlotsPerDay - 1],
       timezone,
     );
 
@@ -189,7 +190,6 @@ export default function ScheduleGrid({
             mode={mode}
             disableSelect={disableSelect}
             timeColWidth={50}
-            rightArrowWidth={20}
             visibleDays={visibleDays.map((d) => d.dayKey)}
             startHour={block.startHour}
             endHour={block.endHour}
