@@ -9,19 +9,19 @@ export const createEmptyUserAvailability = (
   type: "specific" | "weekday" = "specific",
 ): UserAvailability => ({
   type,
-  selections: new Set<string>(),
+  selections: new Set<Date>(),
 });
 
 // Toggles a single time slot in the user's availability
 export function toggleUtcSlot(
   prev: UserAvailability,
-  isoString: string,
+  timeSlot: Date,
 ): UserAvailability {
   const updated = new Set(prev.selections);
-  if (updated.has(isoString)) {
-    updated.delete(isoString);
+  if (updated.has(timeSlot)) {
+    updated.delete(timeSlot);
   } else {
-    updated.add(isoString);
+    updated.add(timeSlot);
   }
   return { ...prev, selections: updated };
 }
@@ -29,9 +29,9 @@ export function toggleUtcSlot(
 // Checks if a specific time slot is in the user's availability
 export function isSlotSelected(
   availability: UserAvailability,
-  isoString: string,
+  timeSlot: Date,
 ): boolean {
-  return availability.selections.has(isoString);
+  return availability.selections.has(timeSlot);
 }
 
 // Converts a local time representation to a UTC ISO string
