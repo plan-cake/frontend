@@ -1,37 +1,43 @@
 "use client";
 
-import { useMemo, useState, useRef, useEffect } from "react";
-
+import { useMemo } from "react";
 import { useTheme } from "next-themes";
-import { cn } from "@/app/_lib/classname";
 
 import { AvailabilitySet } from "@/app/_lib/availability/types";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
 import { checkDateInRange } from "@/app/_lib/schedule/utils";
 
+import TimeSlot from "./time-slot";
+import useScheduleDrag from "@/app/_lib/use-schedule-drag";
+
 interface TimeBlockProps {
+  // "paint": enables drag-to-select for availability painting
+  // "view": shows results
+  // "preview": shows preview during event creation
   mode: "paint" | "view" | "preview";
-  disableSelect?: boolean;
+
   timeColWidth: number;
-  rightArrowWidth: number;
   visibleDays: string[];
   startHour: number;
   endHour: number;
   userTimezone: string;
+
+  disableSelect?: boolean;
   availability: AvailabilitySet;
-  onToggle?: (slotIso: string) => void;
   allAvailabilities?: AvailabilitySet[];
-  onHoverSlot?: (iso: string | null) => void;
+
   hoveredSlot?: string | null;
   eventRange: EventRange;
+
+  onToggle?: (slotIso: string) => void;
+  onHoverSlot?: (iso: string | null) => void;
 }
 
 export default function TimeBlock({
   mode,
   disableSelect = false,
   timeColWidth,
-  rightArrowWidth,
   startHour,
   endHour,
   visibleDays,
@@ -46,28 +52,10 @@ export default function TimeBlock({
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
-  const [isDragging, setIsDragging] = useState(false);
-  const [didTouch, setDidTouch] = useState(false);
-  const draggedSlots = useRef<Set<string>>(new Set());
-
-  useEffect(() => {
-    const stopDragging = () => {
-      setIsDragging(false);
-      setDidTouch(false);
-      draggedSlots.current.clear();
-    };
-
-    window.addEventListener("mouseup", stopDragging);
-
-    return () => {
-      window.removeEventListener("mouseup", stopDragging);
-      window.removeEventListener("touchend", stopDragging);
-    };
-  }, []);
+  const dragHandlers = useScheduleDrag(onToggle ?? (() => {}), mode);
 
   const numHours = endHour - startHour;
   const numQuarterHours = numHours * 4;
-
   const hoursLabel = useMemo(() => {
     return Array.from({ length: numQuarterHours }, (_, i) => {
       const hour24 = startHour + Math.floor(i / 4);
@@ -151,91 +139,28 @@ export default function TimeBlock({
                   : "transparent";
 
             return (
-              <div
+              <TimeSlot
                 key={`slot-${quarterIdx}-${dayIdx}`}
-                draggable={false}
-                onMouseDown={() => {
-                  if (mode === "paint") {
-                    if (didTouch) return setDidTouch(false);
-                    if (!isDisabled && !isDragging) {
-                      onToggle?.(slotIso);
-                      setIsDragging(true);
-                      draggedSlots.current = new Set([slotIso]);
-                    }
-                  }
-                }}
+                slotIso={slotIso}
+                isSelected={isSelected}
+                isHovered={isHovered}
+                isDisabled={isDisabled}
+                disableSelect={disableSelect}
+                isDashedBorder={isDashedBorder}
+                backgroundColor={backgroundColor}
+                gridColumn={dayIdx + 1}
+                gridRow={quarterIdx + 1}
+                onMouseDown={() =>
+                  dragHandlers.onMouseDown(slotIso, isDisabled)
+                }
                 onMouseEnter={() => {
-                  if (mode === "paint") {
-                    if (
-                      isDragging &&
-                      !isDisabled &&
-                      !draggedSlots.current.has(slotIso)
-                    ) {
-                      onToggle?.(slotIso);
-                      draggedSlots.current.add(slotIso);
-                    }
-                  }
-                  if (mode === "view") {
-                    onHoverSlot?.(slotIso);
-                  }
+                  dragHandlers.onMouseEnter(slotIso, isDisabled);
+                  if (mode === "view") onHoverSlot?.(slotIso);
                 }}
-                onMouseLeave={() => {
-                  if (mode === "view") {
-                    onHoverSlot?.(null);
-                  }
-                }}
-                onTouchStart={(e) => {
-                  if (mode === "paint") {
-                    setDidTouch(true);
-                    if (!isDisabled) {
-                      setIsDragging(true);
-                      onToggle?.(slotIso);
-                      draggedSlots.current = new Set([slotIso]);
-                    }
-                  }
-                }}
-                onTouchMove={(e) => {
-                  if (mode === "paint") {
-                    const touch = e.touches[0];
-                    const target = document.elementFromPoint(
-                      touch.clientX,
-                      touch.clientY,
-                    );
-                    if (
-                      target instanceof HTMLElement &&
-                      target.dataset.slotIso &&
-                      !draggedSlots.current.has(target.dataset.slotIso)
-                    ) {
-                      onToggle?.(target.dataset.slotIso);
-                      draggedSlots.current.add(target.dataset.slotIso);
-                    }
-                  }
-                }}
-                data-slot-iso={slotIso}
-                className={cn(
-                  "border-[0.5px] border-gray-300 transition-all",
-                  disableSelect
-                    ? "cursor-not-allowed"
-                    : isSelected
-                      ? "bg-blue dark:bg-red"
-                      : "hover:bg-blue-200 dark:hover:bg-red-200",
-                  isDisabled && "pointer-events-none bg-gray-200",
-                  isHovered &&
-                    "inset-ring-1 inset-ring-blue dark:inset-ring-red",
-                )}
-                style={{
-                  gridColumn: dayIdx + 1,
-                  gridRow: quarterIdx + 1,
-                  borderTopStyle: isDashedBorder ? "dashed" : "solid",
-                  backgroundColor: isDisabled
-                    ? "rgb(209, 204, 204)"
-                    : mode === "view"
-                      ? backgroundColor
-                      : "",
-                  touchAction: "none",
-                  // Prevent text selection for interactive time blocks
-                  userSelect: "none",
-                }}
+                onTouchStart={() =>
+                  dragHandlers.onTouchStart(slotIso, isDisabled)
+                }
+                onTouchMove={dragHandlers.onTouchMove}
               />
             );
           }),

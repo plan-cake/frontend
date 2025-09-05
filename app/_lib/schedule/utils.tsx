@@ -46,8 +46,6 @@ function combineDateAndTime(date: Date, time: Date): Date {
  * expands a high-level EventRange into a concrete list of days and time slots.
  *
  * this is the main entry point for generating the data needed for the UI.
- * @param range The EventRange object.
- * @returns An array of DaySlot objects.
  */
 export function expandEventRange(
   range: EventRange,
@@ -145,7 +143,9 @@ export function generateSlotsForWeekdayRange(
   // anchor date to user's current week
   const nowInViewerTz = toZonedTime(new Date(), userTimezone);
   const startOfWeekInViewerTz = new Date(nowInViewerTz);
-  startOfWeekInViewerTz.setDate(nowInViewerTz.getDate() - nowInViewerTz.getDay());
+  startOfWeekInViewerTz.setDate(
+    nowInViewerTz.getDate() - nowInViewerTz.getDay(),
+  );
 
   // iterate through the next 7 days
   for (let i = 0; i < 7; i++) {
@@ -187,14 +187,25 @@ export function generateSlotsForWeekdayRange(
         // If we haven't seen this day before, create a new DaySlot entry
         if (!daySlotsMap.has(dayKey)) {
           const weekday = viewerDay
-            .toLocaleDateString("en-US", { weekday: "short", timeZone: userTimezone })
+            .toLocaleDateString("en-US", {
+              weekday: "short",
+              timeZone: userTimezone,
+            })
             .toUpperCase();
           const monthDay = viewerDay
-            .toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: userTimezone })
+            .toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              timeZone: userTimezone,
+            })
             .toUpperCase();
 
           daySlotsMap.set(dayKey, {
-            date: new Date(viewerDay.getFullYear(), viewerDay.getMonth(), viewerDay.getDate()),
+            date: new Date(
+              viewerDay.getFullYear(),
+              viewerDay.getMonth(),
+              viewerDay.getDate(),
+            ),
             dayLabel: `${weekday} ${monthDay}`,
             dayKey: dayKey,
             timeslots: [],
@@ -215,5 +226,7 @@ export function generateSlotsForWeekdayRange(
   }
 
   // Convert the map to a sorted array
-  return Array.from(daySlotsMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+  return Array.from(daySlotsMap.values()).sort(
+    (a, b) => a.date.getTime() - b.date.getTime(),
+  );
 }
