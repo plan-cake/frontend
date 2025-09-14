@@ -81,7 +81,7 @@ function generateSlotsForSpecificRange(
   // 3. Set up a loop that iterates through the calendar days in the local timezone
   let currentDay = new Date(localStartDate);
   currentDay.setHours(0, 0, 0, 0); // Start the loop at the beginning of the local start day
-
+  console.log({ localStartDate, localEndDate, currentDay });
   const startHour = timeRange.from.getHours();
   const endHour = timeRange.to.getHours();
 
@@ -107,7 +107,7 @@ function generateSlotsForSpecificRange(
     const endTime = new Date(currentDay);
     endTime.setHours(endHour, 0, 0, 0);
     while (currentTime.getTime() <= endTime.getTime()) {
-      const timeSlot = new Date(currentTime);
+      let timeSlot = fromZonedTime(new Date(currentTime), userTimezone);
       slots.push(timeSlot);
 
       currentTime.setMinutes(currentTime.getMinutes() + 15);

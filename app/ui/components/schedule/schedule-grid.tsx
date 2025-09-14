@@ -47,14 +47,16 @@ export default function ScheduleGrid({
     createEmptyUserAvailability(eventRange.type).selections,
   );
 
-  function handleToggle(slotIso: Date) {
+  function handleToggle(slotDate: Date) {
     if (disableSelect || mode !== "paint") return;
+
+    const slotIsoString = slotDate.toISOString();
     setAvailability((prev) => {
       const updated = new Set(prev);
-      if (updated.has(slotIso)) {
-        updated.delete(slotIso);
+      if (updated.has(slotIsoString)) {
+        updated.delete(slotIsoString);
       } else {
-        updated.add(slotIso);
+        updated.add(slotIsoString);
       }
       return updated;
     });

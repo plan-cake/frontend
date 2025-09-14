@@ -30,7 +30,7 @@ interface TimeBlockProps {
   hoveredSlot?: string | null;
   eventRange: EventRange;
 
-  onToggle?: (slotIso: string) => void;
+  onToggle?: (slotIso: Date) => void;
   onHoverSlot?: (iso: string | null) => void;
 }
 
@@ -52,7 +52,10 @@ export default function TimeBlock({
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
 
-  const dragHandlers = useScheduleDrag(onToggle ?? (() => {}), mode);
+  const dragHandlers = useScheduleDrag((slotIso: string) => {
+    const date = new Date(slotIso);
+    onToggle?.(date);
+  }, mode);
 
   const numHours = endHour - startHour;
   const numQuarterHours = numHours * 4;
@@ -112,6 +115,7 @@ export default function TimeBlock({
               userTimezone,
             );
 
+            // console.log({ dateKey, slotIso, date });
             const isDisabled = checkDateInRange(date, eventRange) === false;
 
             const matchCount = allAvailabilities.reduce(
