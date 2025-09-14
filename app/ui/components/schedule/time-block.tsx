@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { useTheme } from "next-themes";
 
 import { AvailabilitySet } from "@/app/_lib/availability/types";
-import { EventRange } from "@/app/_lib/schedule/types";
+import { DaySlot, EventRange } from "@/app/_lib/schedule/types";
 import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
 import { checkDateInRange } from "@/app/_lib/schedule/utils";
 
@@ -18,7 +18,7 @@ interface TimeBlockProps {
   mode: "paint" | "view" | "preview";
 
   timeColWidth: number;
-  visibleDays: string[];
+  visibleDays: DaySlot[];
   startHour: number;
   endHour: number;
   userTimezone: string;
@@ -101,21 +101,12 @@ export default function TimeBlock({
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
         }}
       >
-        {Array.from({ length: numQuarterHours }).map((_, quarterIdx) =>
-          visibleDays.map((_, dayIdx) => {
-            const isDashedBorder = quarterIdx % 4 !== 0;
+        {visibleDays.map((day, dayIdx) =>
+          day.timeslots.map((timeslot, timeslotIdx) => {
+            const isDashedBorder = timeslot.getMinutes() !== 0;
+            const slotIso = timeslot.toISOString();
+            const date = new Date(slotIso);
 
-            const hour = startHour + Math.floor(quarterIdx / 4);
-            const minute = (quarterIdx % 4) * 15;
-            const dateKey = visibleDays[dayIdx];
-            const { utcDate: date, isoString: slotIso } = getUtcIsoSlot(
-              dateKey,
-              hour,
-              minute,
-              userTimezone,
-            );
-
-            // console.log({ dateKey, slotIso, date });
             const isDisabled = checkDateInRange(date, eventRange) === false;
 
             const matchCount = allAvailabilities.reduce(
@@ -144,7 +135,7 @@ export default function TimeBlock({
 
             return (
               <TimeSlot
-                key={`slot-${quarterIdx}-${dayIdx}`}
+                key={`slot-${dayIdx}-${timeslotIdx}`}
                 slotIso={slotIso}
                 isSelected={isSelected}
                 isHovered={isHovered}
@@ -153,7 +144,7 @@ export default function TimeBlock({
                 isDashedBorder={isDashedBorder}
                 backgroundColor={backgroundColor}
                 gridColumn={dayIdx + 1}
-                gridRow={quarterIdx + 1}
+                gridRow={timeslotIdx + 1}
                 onMouseDown={() =>
                   dragHandlers.onMouseDown(slotIso, isDisabled)
                 }

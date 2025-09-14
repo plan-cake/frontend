@@ -129,6 +129,7 @@ export default function ScheduleGrid({
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
   const visibleDays = daySlots.slice(startIndex, endIndex);
+  // console.log({ visibleDays });
 
   if (numHours <= 0) return <GridError message="Invalid time range" />;
   if (numDays <= 0)
@@ -192,7 +193,7 @@ export default function ScheduleGrid({
             mode={mode}
             disableSelect={disableSelect}
             timeColWidth={50}
-            visibleDays={visibleDays.map((d) => d.dayKey)}
+            visibleDays={visibleDays}
             startHour={block.startHour}
             endHour={block.endHour}
             userTimezone={timezone}
@@ -202,6 +203,7 @@ export default function ScheduleGrid({
             onHoverSlot={setHoveredSlot}
             hoveredSlot={hoveredSlot}
             eventRange={eventRange}
+            // daySlots={daySlots}
           />
         ))}
       </div>
