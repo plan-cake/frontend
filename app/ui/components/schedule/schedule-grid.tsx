@@ -33,6 +33,12 @@ interface TimeBlockListType {
   endHour: number;
 }
 
+interface DragRangeInfo {
+  startSlot: string;
+  toggleStatus: boolean; // true = deselecting, false = selecting
+  endSlot: string;
+}
+
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
@@ -50,16 +56,20 @@ export default function ScheduleGrid({
   useEffect(() => {
     togglingBlocksRef.current = togglingBlocks;
   }, [togglingBlocks]);
-  const [dragRange, setDragRange] = useState<[string, string] | null>(null);
+  const [dragRange, setDragRange] = useState<DragRangeInfo | null>(null);
+  const dragRangeRef = useRef(dragRange);
+  useEffect(() => {
+    dragRangeRef.current = dragRange;
+  }, [dragRange]);
 
-  function handleDragStart(slotIso: string) {
+  function handleDragStart(toggleStatus: boolean, slotIso: string) {
     if (disableSelect) return;
-    setDragRange([slotIso, slotIso]);
+    setDragRange({ startSlot: slotIso, toggleStatus, endSlot: slotIso });
   }
 
   function handleDragEnter(slotIso: string) {
     if (disableSelect) return;
-    setDragRange((prev) => (prev ? [prev[0], slotIso] : null));
+    setDragRange((prev) => (prev ? { ...prev, endSlot: slotIso } : null));
   }
 
   function handleDragEnd() {
@@ -67,9 +77,12 @@ export default function ScheduleGrid({
     setAvailability((prev) => {
       const updated = new Set(prev);
       togglingBlocksRef.current.forEach((slot) => {
-        if (updated.has(slot)) {
+        if (dragRangeRef.current?.toggleStatus === true && prev.has(slot)) {
           updated.delete(slot);
-        } else {
+        } else if (
+          dragRangeRef.current?.toggleStatus === false &&
+          !prev.has(slot)
+        ) {
           updated.add(slot);
         }
       });
@@ -86,7 +99,10 @@ export default function ScheduleGrid({
     if (dragRange) {
       // Separate the date and time components to get the proper grid range
       // I apologize for this ugly code but it works
-      const [startBlock, endBlock] = dragRange.map((date) => new Date(date));
+      const [startBlock, endBlock] = [
+        new Date(dragRange.startSlot),
+        new Date(dragRange.endSlot),
+      ];
       let startDate = new Date(
         startBlock.getFullYear(),
         startBlock.getMonth(),

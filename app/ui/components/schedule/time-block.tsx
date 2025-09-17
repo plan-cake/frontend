@@ -15,7 +15,7 @@ interface TimeBlockProps {
   userTimezone: string; // user’s local timezone
   availability: AvailabilitySet; // ISO UTC strings
   toggling: AvailabilitySet;
-  onDragStart: (slotIso: string) => void;
+  onDragStart: (toggleStatus: boolean, slotIso: string) => void;
   onDragEnter: (slotIso: string) => void;
   onDragEnd: () => void;
 }
@@ -40,7 +40,7 @@ export default function TimeBlock({
 
   useEffect(() => {
     const stopDragging = () => {
-      if (!isDragging) return;
+      // if (!isDragging) return;
       setIsDragging(false);
       onDragEnd();
     };
@@ -127,7 +127,7 @@ export default function TimeBlock({
                 onMouseDown={() => {
                   if (!isDisabled && !isDragging) {
                     setIsDragging(true);
-                    onDragStart(slotIso);
+                    onDragStart(isSelected, slotIso);
                   }
                 }}
                 onMouseEnter={() => {
@@ -138,7 +138,7 @@ export default function TimeBlock({
                 onTouchStart={(e) => {
                   if (!isDisabled) {
                     setIsDragging(true);
-                    onDragStart(slotIso);
+                    onDragStart(isSelected, slotIso);
                   }
                 }}
                 onTouchMove={(e) => {
