@@ -46,6 +46,7 @@ export default function TimeBlock({
     };
 
     window.addEventListener("mouseup", stopDragging);
+    window.addEventListener("touchend", stopDragging);
 
     return () => {
       window.removeEventListener("mouseup", stopDragging);
