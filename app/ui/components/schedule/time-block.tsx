@@ -37,6 +37,7 @@ export default function TimeBlock({
   onDragEnd,
 }: TimeBlockProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   useEffect(() => {
     const stopDragging = () => {
@@ -118,6 +119,7 @@ export default function TimeBlock({
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
             const isToggling = toggling.has(slotIso);
+            const isHovered = hoveredSlot === slotIso;
 
             // Removed debug log to avoid noisy logs in production
 
@@ -132,9 +134,15 @@ export default function TimeBlock({
                   }
                 }}
                 onMouseEnter={() => {
-                  if (isDragging && !isDisabled) {
+                  if (isDisabled) return;
+                  if (isDragging) {
                     onDragEnter(slotIso);
+                  } else {
+                    setHoveredSlot(slotIso);
                   }
+                }}
+                onMouseLeave={() => {
+                  setHoveredSlot(null);
                 }}
                 onTouchStart={(e) => {
                   if (!isDisabled) {
@@ -158,7 +166,9 @@ export default function TimeBlock({
                     ? "bg-blue-200 dark:bg-red-200"
                     : isSelected
                       ? "bg-blue-500 dark:bg-red"
-                      : "hover:bg-blue-200 dark:hover:bg-red-200"
+                      : isHovered
+                        ? "bg-blue-200 dark:bg-red-200"
+                        : ""
                 } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
                   disableSelect ? "cursor-not-allowed" : ""
                 }`}
