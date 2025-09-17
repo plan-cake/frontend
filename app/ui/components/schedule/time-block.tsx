@@ -37,18 +37,20 @@ export default function TimeBlock({
   onDragEnd,
 }: TimeBlockProps) {
   const [isDragging, setIsDragging] = useState(false);
+  const [isTapping, setIsTapping] = useState(false);
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
+  const setIsMobile = () => {
+    setIsTapping(true);
+    window.removeEventListener("mouseup", stopDragging);
+  };
+
+  const stopDragging = () => {
+    setIsDragging(false);
+    onDragEnd();
+  };
+
   useEffect(() => {
-    const stopDragging = () => {
-      // if (!isDragging) return;
-      setIsDragging(false);
-      onDragEnd();
-    };
-
-    window.addEventListener("mouseup", stopDragging);
-    window.addEventListener("touchend", stopDragging);
-
     return () => {
       window.removeEventListener("mouseup", stopDragging);
       window.removeEventListener("touchend", stopDragging);
@@ -119,7 +121,7 @@ export default function TimeBlock({
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
             const isToggling = toggling.has(slotIso);
-            const isHovered = hoveredSlot === slotIso;
+            const isHovered = !isTapping && hoveredSlot === slotIso;
 
             // Removed debug log to avoid noisy logs in production
 
@@ -128,13 +130,14 @@ export default function TimeBlock({
                 key={`slot-${quarterIdx}-${dayIdx}`}
                 draggable={false}
                 onMouseDown={() => {
-                  if (!isDisabled && !isDragging) {
+                  if (!isDisabled && !isDragging && !isTapping) {
                     setIsDragging(true);
                     onDragStart(isSelected, slotIso);
+                    window.addEventListener("mouseup", stopDragging);
                   }
                 }}
                 onMouseEnter={() => {
-                  if (isDisabled) return;
+                  if (isDisabled || isTapping) return;
                   if (isDragging) {
                     onDragEnter(slotIso);
                   } else {
@@ -146,8 +149,10 @@ export default function TimeBlock({
                 }}
                 onTouchStart={(e) => {
                   if (!isDisabled) {
+                    setIsMobile();
                     setIsDragging(true);
                     onDragStart(isSelected, slotIso);
+                    window.addEventListener("touchend", stopDragging);
                   }
                 }}
                 onTouchMove={(e) => {
