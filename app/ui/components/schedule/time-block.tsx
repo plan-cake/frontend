@@ -131,10 +131,7 @@ export default function TimeBlock({
                   }
                 }}
                 onMouseEnter={() => {
-                  if (
-                    isDragging &&
-                    !isDisabled
-                  ) {
+                  if (isDragging && !isDisabled) {
                     onDragEnter(slotIso);
                   }
                 }}
@@ -150,10 +147,7 @@ export default function TimeBlock({
                     touch.clientX,
                     touch.clientY,
                   );
-                  if (
-                    target instanceof HTMLElement &&
-                    target.dataset.slotIso
-                  ) {
+                  if (target instanceof HTMLElement && target.dataset.slotIso) {
                     onDragEnter(target.dataset.slotIso);
                   }
                 }}

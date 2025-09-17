@@ -43,9 +43,13 @@ export default function ScheduleGrid({
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
-  const [togglingBlocks, setTogglingBlocks] = useState<AvailabilitySet>(new Set());
+  const [togglingBlocks, setTogglingBlocks] = useState<AvailabilitySet>(
+    new Set(),
+  );
   const togglingBlocksRef = useRef(togglingBlocks);
-  useEffect(() => { togglingBlocksRef.current = togglingBlocks; }, [togglingBlocks]);
+  useEffect(() => {
+    togglingBlocksRef.current = togglingBlocks;
+  }, [togglingBlocks]);
   const [dragRange, setDragRange] = useState<[string, string] | null>(null);
 
   function handleDragStart(slotIso: string) {
@@ -83,10 +87,30 @@ export default function ScheduleGrid({
       // Separate the date and time components to get the proper grid range
       // I apologize for this ugly code but it works
       const [startBlock, endBlock] = dragRange.map((date) => new Date(date));
-      let startDate = new Date(startBlock.getFullYear(), startBlock.getMonth(), startBlock.getDate());
-      let endDate = new Date(endBlock.getFullYear(), endBlock.getMonth(), endBlock.getDate());
-      let startTime = new Date(1970, 0, 0, startBlock.getHours(), startBlock.getMinutes());
-      let endTime = new Date(1970, 0, 0, endBlock.getHours(), endBlock.getMinutes());
+      let startDate = new Date(
+        startBlock.getFullYear(),
+        startBlock.getMonth(),
+        startBlock.getDate(),
+      );
+      let endDate = new Date(
+        endBlock.getFullYear(),
+        endBlock.getMonth(),
+        endBlock.getDate(),
+      );
+      let startTime = new Date(
+        1970,
+        0,
+        0,
+        startBlock.getHours(),
+        startBlock.getMinutes(),
+      );
+      let endTime = new Date(
+        1970,
+        0,
+        0,
+        endBlock.getHours(),
+        endBlock.getMinutes(),
+      );
       if (endDate < startDate) {
         const temp = startDate;
         startDate = endDate;
@@ -109,13 +133,15 @@ export default function ScheduleGrid({
           time <= endTime;
           time = new Date(time.getTime() + 15 * 60 * 1000)
         ) {
-          togglingSlots.add(new Date(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            time.getHours(),
-            time.getMinutes(),
-          ).toISOString());
+          togglingSlots.add(
+            new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate(),
+              time.getHours(),
+              time.getMinutes(),
+            ).toISOString(),
+          );
         }
       }
       setTogglingBlocks(togglingSlots);
