@@ -16,6 +16,7 @@ import {
 import {
   AvailabilitySet,
   createEmptyUserAvailability,
+  DragRangeInfo,
 } from "@/app/_types/user-availability";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
@@ -33,64 +34,6 @@ interface TimeBlockListType {
   endHour: number;
 }
 
-class DragRangeInfo {
-  startSlot: string;
-  toggled: boolean; // true = deselecting, false = selecting
-  endSlot: string;
-
-  constructor(startSlot: string, toggled: boolean, endSlot: string) {
-    this.startSlot = startSlot;
-    this.toggled = toggled;
-    this.endSlot = endSlot;
-  }
-
-  get blocks(): Set<string> {
-    const [start, end] = [new Date(this.startSlot), new Date(this.endSlot)];
-    let startDate = new Date(
-      start.getFullYear(),
-      start.getMonth(),
-      start.getDate(),
-    );
-    let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-    let startTime = new Date(1970, 0, 0, start.getHours(), start.getMinutes());
-    let endTime = new Date(1970, 0, 0, end.getHours(), end.getMinutes());
-    if (endDate < startDate) {
-      const temp = startDate;
-      startDate = endDate;
-      endDate = temp;
-    }
-    if (endTime < startTime) {
-      const temp = startTime;
-      startTime = endTime;
-      endTime = temp;
-    }
-
-    const togglingBlocks = new Set<string>();
-    for (
-      let date = startDate;
-      date <= endDate;
-      date = new Date(date.getTime() + 24 * 60 * 60 * 1000)
-    ) {
-      for (
-        let time = startTime;
-        time <= endTime;
-        time = new Date(time.getTime() + 15 * 60 * 1000)
-      ) {
-        togglingBlocks.add(
-          new Date(
-            date.getFullYear(),
-            date.getMonth(),
-            date.getDate(),
-            time.getHours(),
-            time.getMinutes(),
-          ).toISOString(),
-        );
-      }
-    }
-    return togglingBlocks;
-  }
-}
-
 export default function ScheduleGrid({
   disableSelect = false,
   eventRange,
@@ -101,7 +44,9 @@ export default function ScheduleGrid({
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
-  const [dragRange, setDragRange] = useState<DragRangeInfo | null>(null);
+  const [dragRange, setDragRange] = useState<DragRangeInfo>(
+    DragRangeInfo.empty(),
+  );
   const dragRangeRef = useRef(dragRange);
   useEffect(() => {
     dragRangeRef.current = dragRange;
@@ -109,15 +54,13 @@ export default function ScheduleGrid({
 
   function handleDragStart(toggled: boolean, slotIso: string) {
     if (disableSelect) return;
-    setDragRange(new DragRangeInfo(slotIso, toggled, slotIso));
+    setDragRange(new DragRangeInfo(slotIso, !toggled, slotIso));
   }
 
   function handleDragEnter(slotIso: string) {
     if (disableSelect) return;
     setDragRange((prev) => {
-      return prev
-        ? new DragRangeInfo(prev.startSlot, prev.toggled, slotIso)
-        : null;
+      return new DragRangeInfo(prev.startSlot, prev.toggling, slotIso);
     });
   }
 
@@ -125,8 +68,8 @@ export default function ScheduleGrid({
     if (disableSelect) return;
     setAvailability((prev) => {
       const updated = new Set(prev);
-      const toggling = !dragRangeRef.current?.toggled;
-      dragRangeRef.current?.blocks.forEach((slot) => {
+      const toggling = dragRangeRef.current?.toggling;
+      dragRangeRef.current?.slots.forEach((slot) => {
         if (!toggling && prev.has(slot)) {
           updated.delete(slot);
         } else if (toggling && !prev.has(slot)) {
@@ -138,7 +81,7 @@ export default function ScheduleGrid({
       }
       return updated;
     });
-    setDragRange(null);
+    setDragRange(DragRangeInfo.empty());
   }
 
   const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
@@ -294,7 +237,7 @@ export default function ScheduleGrid({
             blockNumber={i}
             userTimezone={timezone}
             availability={availability}
-            toggling={dragRange?.blocks || new Set()}
+            dragInfo={dragRange}
             onDragStart={handleDragStart}
             onDragEnter={handleDragEnter}
             onDragEnd={handleDragEnd}

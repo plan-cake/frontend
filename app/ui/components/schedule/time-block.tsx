@@ -1,7 +1,11 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import { getUtcIsoSlot, AvailabilitySet } from "@/app/_types/user-availability";
+import {
+  getUtcIsoSlot,
+  AvailabilitySet,
+  DragRangeInfo,
+} from "@/app/_types/user-availability";
 
 interface TimeBlockProps {
   disableSelect?: boolean;
@@ -14,7 +18,7 @@ interface TimeBlockProps {
   blockNumber?: number;
   userTimezone: string; // user’s local timezone
   availability: AvailabilitySet; // ISO UTC strings
-  toggling: AvailabilitySet;
+  dragInfo: DragRangeInfo;
   onDragStart: (toggleStatus: boolean, slotIso: string) => void;
   onDragEnter: (slotIso: string) => void;
   onDragEnd: () => void;
@@ -31,7 +35,7 @@ export default function TimeBlock({
   blockNumber = 0,
   userTimezone,
   availability,
-  toggling,
+  dragInfo,
   onDragStart,
   onDragEnter,
   onDragEnd,
@@ -120,7 +124,7 @@ export default function TimeBlock({
             const dateKey = visibleDays[dayIdx];
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
-            const isToggling = toggling.has(slotIso);
+            const isToggling = dragInfo.slots.has(slotIso);
             const isHovered = !isTapping && hoveredSlot === slotIso;
 
             // Removed debug log to avoid noisy logs in production
