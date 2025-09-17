@@ -14,7 +14,10 @@ interface TimeBlockProps {
   blockNumber?: number;
   userTimezone: string; // user’s local timezone
   availability: AvailabilitySet; // ISO UTC strings
-  onToggle: (slotIso: string) => void;
+  toggling: AvailabilitySet;
+  onDragStart: (slotIso: string) => void;
+  onDragEnter: (slotIso: string) => void;
+  onDragEnd: () => void;
 }
 
 export default function TimeBlock({
@@ -28,17 +31,18 @@ export default function TimeBlock({
   blockNumber = 0,
   userTimezone,
   availability,
-  onToggle,
+  toggling,
+  onDragStart,
+  onDragEnter,
+  onDragEnd,
 }: TimeBlockProps) {
   const [isDragging, setIsDragging] = useState(false);
-  const [didTouch, setDidTouch] = useState(false);
-  const draggedSlots = useRef<Set<string>>(new Set());
 
   useEffect(() => {
     const stopDragging = () => {
+      if (!isDragging) return;
       setIsDragging(false);
-      setDidTouch(false);
-      draggedSlots.current.clear();
+      onDragEnd();
     };
 
     window.addEventListener("mouseup", stopDragging);
@@ -112,6 +116,7 @@ export default function TimeBlock({
             const dateKey = visibleDays[dayIdx];
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
+            const isToggling = toggling.has(slotIso);
 
             // Removed debug log to avoid noisy logs in production
 
@@ -120,29 +125,23 @@ export default function TimeBlock({
                 key={`slot-${quarterIdx}-${dayIdx}`}
                 draggable={false}
                 onMouseDown={() => {
-                  if (didTouch) return setDidTouch(false);
                   if (!isDisabled && !isDragging) {
-                    onToggle(slotIso);
                     setIsDragging(true);
-                    draggedSlots.current = new Set([slotIso]);
+                    onDragStart(slotIso);
                   }
                 }}
                 onMouseEnter={() => {
                   if (
                     isDragging &&
-                    !isDisabled &&
-                    !draggedSlots.current.has(slotIso)
+                    !isDisabled
                   ) {
-                    onToggle(slotIso);
-                    draggedSlots.current.add(slotIso);
+                    onDragEnter(slotIso);
                   }
                 }}
                 onTouchStart={(e) => {
-                  setDidTouch(true);
                   if (!isDisabled) {
                     setIsDragging(true);
-                    onToggle(slotIso);
-                    draggedSlots.current = new Set([slotIso]);
+                    onDragStart(slotIso);
                   }
                 }}
                 onTouchMove={(e) => {
@@ -153,18 +152,18 @@ export default function TimeBlock({
                   );
                   if (
                     target instanceof HTMLElement &&
-                    target.dataset.slotIso &&
-                    !draggedSlots.current.has(target.dataset.slotIso)
+                    target.dataset.slotIso
                   ) {
-                    onToggle(target.dataset.slotIso);
-                    draggedSlots.current.add(target.dataset.slotIso);
+                    onDragEnter(target.dataset.slotIso);
                   }
                 }}
                 data-slot-iso={slotIso}
                 className={`border-[0.5px] border-gray-300 ${
-                  isSelected
-                    ? "bg-blue-500 dark:bg-red"
-                    : "hover:bg-blue-200 dark:hover:bg-red-200"
+                  isToggling
+                    ? "bg-blue-200 dark:bg-red-200"
+                    : isSelected
+                      ? "bg-blue-500 dark:bg-red"
+                      : "hover:bg-blue-200 dark:hover:bg-red-200"
                 } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
                   disableSelect ? "cursor-not-allowed" : ""
                 }`}
