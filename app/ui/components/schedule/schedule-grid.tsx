@@ -33,10 +33,62 @@ interface TimeBlockListType {
   endHour: number;
 }
 
-interface DragRangeInfo {
+class DragRangeInfo {
   startSlot: string;
   toggled: boolean; // true = deselecting, false = selecting
   endSlot: string;
+
+  constructor(startSlot: string, toggled: boolean, endSlot: string) {
+    this.startSlot = startSlot;
+    this.toggled = toggled;
+    this.endSlot = endSlot;
+  }
+
+  get blocks(): Set<string> {
+    const [start, end] = [new Date(this.startSlot), new Date(this.endSlot)];
+    let startDate = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate(),
+    );
+    let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    let startTime = new Date(1970, 0, 0, start.getHours(), start.getMinutes());
+    let endTime = new Date(1970, 0, 0, end.getHours(), end.getMinutes());
+    if (endDate < startDate) {
+      const temp = startDate;
+      startDate = endDate;
+      endDate = temp;
+    }
+    if (endTime < startTime) {
+      const temp = startTime;
+      startTime = endTime;
+      endTime = temp;
+    }
+
+    const togglingBlocks = new Set<string>();
+    for (
+      let date = startDate;
+      date <= endDate;
+      date = new Date(date.getTime() + 24 * 60 * 60 * 1000)
+    ) {
+      for (
+        let time = startTime;
+        time <= endTime;
+        time = new Date(time.getTime() + 15 * 60 * 1000)
+      ) {
+        togglingBlocks.add(
+          new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            time.getHours(),
+            time.getMinutes(),
+          ).toISOString(),
+        );
+      }
+    }
+    return togglingBlocks;
+  }
 }
 
 export default function ScheduleGrid({
@@ -49,11 +101,6 @@ export default function ScheduleGrid({
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
-  const [dragBlocks, setDragBlocks] = useState<AvailabilitySet>(new Set());
-  const dragBlocksRef = useRef(dragBlocks);
-  useEffect(() => {
-    dragBlocksRef.current = dragBlocks;
-  }, [dragBlocks]);
   const [dragRange, setDragRange] = useState<DragRangeInfo | null>(null);
   const dragRangeRef = useRef(dragRange);
   useEffect(() => {
@@ -62,12 +109,16 @@ export default function ScheduleGrid({
 
   function handleDragStart(toggled: boolean, slotIso: string) {
     if (disableSelect) return;
-    setDragRange({ startSlot: slotIso, toggled, endSlot: slotIso });
+    setDragRange(new DragRangeInfo(slotIso, toggled, slotIso));
   }
 
   function handleDragEnter(slotIso: string) {
     if (disableSelect) return;
-    setDragRange((prev) => (prev ? { ...prev, endSlot: slotIso } : null));
+    setDragRange((prev) => {
+      return prev
+        ? new DragRangeInfo(prev.startSlot, prev.toggled, slotIso)
+        : null;
+    });
   }
 
   function handleDragEnd() {
@@ -75,7 +126,7 @@ export default function ScheduleGrid({
     setAvailability((prev) => {
       const updated = new Set(prev);
       const toggling = !dragRangeRef.current?.toggled;
-      dragBlocksRef.current.forEach((slot) => {
+      dragRangeRef.current?.blocks.forEach((slot) => {
         if (!toggling && prev.has(slot)) {
           updated.delete(slot);
         } else if (toggling && !prev.has(slot)) {
@@ -87,68 +138,8 @@ export default function ScheduleGrid({
       }
       return updated;
     });
-    setDragBlocks(new Set());
     setDragRange(null);
   }
-
-  useEffect(() => {
-    if (dragRange) {
-      // Separate the date and time components to get the proper grid range
-      // I apologize for this ugly code but it works
-      const [start, end] = [
-        new Date(dragRange.startSlot),
-        new Date(dragRange.endSlot),
-      ];
-      let startDate = new Date(
-        start.getFullYear(),
-        start.getMonth(),
-        start.getDate(),
-      );
-      let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
-      let startTime = new Date(
-        1970,
-        0,
-        0,
-        start.getHours(),
-        start.getMinutes(),
-      );
-      let endTime = new Date(1970, 0, 0, end.getHours(), end.getMinutes());
-      if (endDate < startDate) {
-        const temp = startDate;
-        startDate = endDate;
-        endDate = temp;
-      }
-      if (endTime < startTime) {
-        const temp = startTime;
-        startTime = endTime;
-        endTime = temp;
-      }
-
-      const togglingBlocks = new Set<string>();
-      for (
-        let date = startDate;
-        date <= endDate;
-        date = new Date(date.getTime() + 24 * 60 * 60 * 1000)
-      ) {
-        for (
-          let time = startTime;
-          time <= endTime;
-          time = new Date(time.getTime() + 15 * 60 * 1000)
-        ) {
-          togglingBlocks.add(
-            new Date(
-              date.getFullYear(),
-              date.getMonth(),
-              date.getDate(),
-              time.getHours(),
-              time.getMinutes(),
-            ).toISOString(),
-          );
-        }
-      }
-      setDragBlocks(togglingBlocks);
-    }
-  }, [dragRange]);
 
   const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
     const expandedEventRange = expandEventRange(eventRange);
@@ -303,7 +294,7 @@ export default function ScheduleGrid({
             blockNumber={i}
             userTimezone={timezone}
             availability={availability}
-            toggling={dragBlocks}
+            toggling={dragRange?.blocks || new Set()}
             onDragStart={handleDragStart}
             onDragEnter={handleDragEnter}
             onDragEnd={handleDragEnd}
