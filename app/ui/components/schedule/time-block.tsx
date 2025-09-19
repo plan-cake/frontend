@@ -52,6 +52,8 @@ export default function TimeBlock({
   const stopDragging = () => {
     setIsDragging(false);
     onDragEnd();
+    window.removeEventListener("mouseup", stopDragging);
+    window.removeEventListener("touchend", stopDragging);
   };
 
   useEffect(() => {
