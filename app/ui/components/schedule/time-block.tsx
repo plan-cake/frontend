@@ -1,11 +1,7 @@
 "use client";
 
 import { useMemo, useState, useRef, useEffect } from "react";
-import {
-  getUtcIsoSlot,
-  AvailabilitySet,
-  DragRangeInfo,
-} from "@/app/_types/user-availability";
+import { getUtcIsoSlot, AvailabilitySet } from "@/app/_types/user-availability";
 
 interface TimeBlockProps {
   disableSelect?: boolean;
@@ -18,10 +14,10 @@ interface TimeBlockProps {
   blockNumber?: number;
   userTimezone: string; // user’s local timezone
   availability: AvailabilitySet; // ISO UTC strings
-  dragInfo: DragRangeInfo;
-  onDragStart: (toggleStatus: boolean, slotIso: string) => void;
-  onDragEnter: (slotIso: string) => void;
-  onDragEnd: () => void;
+  highlights: AvailabilitySet;
+  onClick: (toggleStatus: boolean, slotIso: string) => void;
+  onHover: (slotIso: string) => void;
+  onRelease: () => void;
 }
 
 export default function TimeBlock({
@@ -35,31 +31,28 @@ export default function TimeBlock({
   blockNumber = 0,
   userTimezone,
   availability,
-  dragInfo,
-  onDragStart,
-  onDragEnter,
-  onDragEnd,
+  highlights,
+  onClick,
+  onHover,
+  onRelease,
 }: TimeBlockProps) {
-  const [isDragging, setIsDragging] = useState(false);
   const [isTapping, setIsTapping] = useState(false);
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   const setIsMobile = () => {
     setIsTapping(true);
-    window.removeEventListener("mouseup", stopDragging);
+    window.removeEventListener("mouseup", release);
   };
 
-  const stopDragging = () => {
-    setIsDragging(false);
-    onDragEnd();
-    window.removeEventListener("mouseup", stopDragging);
-    window.removeEventListener("touchend", stopDragging);
+  const release = () => {
+    onRelease();
+    window.removeEventListener("mouseup", release);
+    window.removeEventListener("touchend", release);
   };
 
   useEffect(() => {
     return () => {
-      window.removeEventListener("mouseup", stopDragging);
-      window.removeEventListener("touchend", stopDragging);
+      window.removeEventListener("mouseup", release);
+      window.removeEventListener("touchend", release);
     };
   }, []);
 
@@ -126,8 +119,7 @@ export default function TimeBlock({
             const dateKey = visibleDays[dayIdx];
             const slotIso = getUtcIsoSlot(dateKey, hour, minute, userTimezone);
             const isSelected = availability.has(slotIso);
-            const isToggling = dragInfo.slots.has(slotIso);
-            const isHovered = !isTapping && hoveredSlot === slotIso;
+            const isHighlighted = highlights.has(slotIso);
 
             // Removed debug log to avoid noisy logs in production
 
@@ -136,30 +128,18 @@ export default function TimeBlock({
                 key={`slot-${quarterIdx}-${dayIdx}`}
                 draggable={false}
                 onMouseDown={() => {
-                  if (!isDisabled && !isDragging && !isTapping) {
-                    setIsDragging(true);
-                    onDragStart(isSelected, slotIso);
-                    window.addEventListener("mouseup", stopDragging);
-                  }
+                  if (isTapping) return;
+                  onClick(isSelected, slotIso);
+                  window.addEventListener("mouseup", release);
                 }}
                 onMouseEnter={() => {
-                  if (isDisabled || isTapping) return;
-                  if (isDragging) {
-                    onDragEnter(slotIso);
-                  } else {
-                    setHoveredSlot(slotIso);
-                  }
-                }}
-                onMouseLeave={() => {
-                  setHoveredSlot(null);
+                  if (isTapping) return;
+                  onHover(slotIso);
                 }}
                 onTouchStart={(e) => {
-                  if (!isDisabled) {
-                    setIsMobile();
-                    setIsDragging(true);
-                    onDragStart(isSelected, slotIso);
-                    window.addEventListener("touchend", stopDragging);
-                  }
+                  setIsMobile();
+                  onClick(isSelected, slotIso);
+                  window.addEventListener("touchend", release);
                 }}
                 onTouchMove={(e) => {
                   const touch = e.touches[0];
@@ -168,18 +148,16 @@ export default function TimeBlock({
                     touch.clientY,
                   );
                   if (target instanceof HTMLElement && target.dataset.slotIso) {
-                    onDragEnter(target.dataset.slotIso);
+                    onHover(target.dataset.slotIso);
                   }
                 }}
                 data-slot-iso={slotIso}
                 className={`border-[0.5px] border-gray-300 ${
-                  isToggling
+                  isHighlighted
                     ? "bg-blue-200 dark:bg-red-200"
                     : isSelected
                       ? "bg-blue-500 dark:bg-red"
-                      : isHovered
-                        ? "bg-blue-200 dark:bg-red-200"
-                        : ""
+                      : ""
                 } ${isDisabled ? "pointer-events-none bg-gray-200" : ""} ${
                   disableSelect ? "cursor-not-allowed" : ""
                 }`}

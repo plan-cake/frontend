@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, use } from "react";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -16,7 +16,6 @@ import {
 import {
   AvailabilitySet,
   createEmptyUserAvailability,
-  DragRangeInfo,
 } from "@/app/_types/user-availability";
 import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
@@ -44,45 +43,143 @@ export default function ScheduleGrid({
   const [availability, setAvailability] = useState<AvailabilitySet>(
     createEmptyUserAvailability(eventRange.type).selections,
   );
-  const [dragRange, setDragRange] = useState<DragRangeInfo>(
-    DragRangeInfo.empty(),
-  );
-  const dragRangeRef = useRef(dragRange);
+  const [hlStart, setHlStart] = useState<string | null>(null);
+  const [hlEnd, setHlEnd] = useState<string | null>(null);
+  const hlEndRef = useRef<string | null>(null);
   useEffect(() => {
-    dragRangeRef.current = dragRange;
-  }, [dragRange]);
+    hlEndRef.current = hlEnd;
+  }, [hlEnd]);
+  const isToggling = useRef<boolean>(true);
+  const lastToggled = useRef<string | null>(null);
+  const lastToggledStatus = useRef<boolean>(false);
+  const currentHover = useRef<string | null>(null);
+  const [isShifting, setIsShifting] = useState(false);
+  const isShiftHighlighting = useRef(false);
+  const highlightsRef = useRef<AvailabilitySet>(new Set());
 
-  function handleDragStart(toggled: boolean, slotIso: string) {
+  function handleClick(toggled: boolean, slotIso: string) {
     if (disableSelect) return;
-    setDragRange(new DragRangeInfo(slotIso, !toggled, slotIso));
+    if (lastToggled.current && isShifting) return;
+    setHlStart(slotIso);
+    setHlEnd(slotIso);
+    isToggling.current = !toggled;
   }
 
-  function handleDragEnter(slotIso: string) {
+  function handleHover(slotIso: string) {
     if (disableSelect) return;
-    setDragRange((prev) => {
-      return new DragRangeInfo(prev.startSlot, prev.toggling, slotIso);
-    });
+    currentHover.current = slotIso;
+    if (!hlStart) return;
+    setHlEnd(slotIso);
   }
 
-  function handleDragEnd() {
+  function handleRelease() {
     if (disableSelect) return;
     setAvailability((prev) => {
-      const updated = new Set(prev);
-      const toggling = dragRangeRef.current?.toggling;
-      dragRangeRef.current?.slots.forEach((slot) => {
-        if (!toggling && prev.has(slot)) {
-          updated.delete(slot);
-        } else if (toggling && !prev.has(slot)) {
-          updated.add(slot);
-        }
-      });
-      if (process.env.NODE_ENV === "development") {
-        console.log("Updated availability:", updated);
+      let updated = prev;
+      if (isToggling.current) {
+        updated = new Set([...prev, ...highlightsRef.current]);
+      } else {
+        updated = new Set(
+          [...prev].filter((slot) => !highlightsRef.current.has(slot)),
+        );
       }
       return updated;
     });
-    setDragRange(DragRangeInfo.empty());
+    lastToggled.current = hlEndRef.current;
+    lastToggledStatus.current = isToggling.current;
+    setHlStart(null);
+    setHlEnd(null);
   }
+
+  // Track Shift key status
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        setIsShifting(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift") {
+        setIsShifting(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  // Handle Shift key status changes
+  useEffect(() => {
+    if (isShifting) {
+      if (hlEndRef.current) return;
+      if (!lastToggled.current) return;
+      setHlStart(lastToggled.current);
+      setHlEnd(currentHover.current);
+      isShiftHighlighting.current = true;
+    } else {
+      if (!isShiftHighlighting.current) return;
+      isShiftHighlighting.current = false;
+      setHlStart(null);
+      setHlEnd(null);
+    }
+  }, [isShifting]);
+
+  const highlights = useMemo(() => {
+    if (!hlStart) {
+      return new Set<string>();
+    } else if (!hlEnd || hlStart === hlEnd) {
+      return new Set<string>([hlStart]);
+    }
+    const [start, end] = [new Date(hlStart), new Date(hlEnd)];
+    let startDate = new Date(
+      start.getFullYear(),
+      start.getMonth(),
+      start.getDate(),
+    );
+    let endDate = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+    let startTime = new Date(1970, 0, 0, start.getHours(), start.getMinutes());
+    let endTime = new Date(1970, 0, 0, end.getHours(), end.getMinutes());
+    if (endDate < startDate) {
+      const temp = startDate;
+      startDate = endDate;
+      endDate = temp;
+    }
+    if (endTime < startTime) {
+      const temp = startTime;
+      startTime = endTime;
+      endTime = temp;
+    }
+
+    const togglingBlocks = new Set<string>();
+    for (
+      let date = startDate;
+      date <= endDate;
+      date = new Date(date.getTime() + 24 * 60 * 60 * 1000)
+    ) {
+      for (
+        let time = startTime;
+        time <= endTime;
+        time = new Date(time.getTime() + 15 * 60 * 1000)
+      ) {
+        togglingBlocks.add(
+          new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate(),
+            time.getHours(),
+            time.getMinutes(),
+          ).toISOString(),
+        );
+      }
+    }
+    return togglingBlocks;
+  }, [hlStart, hlEnd]);
+  useEffect(() => {
+    highlightsRef.current = highlights;
+  }, [hlStart, hlEnd]);
 
   const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
     const expandedEventRange = expandEventRange(eventRange);
@@ -237,10 +334,10 @@ export default function ScheduleGrid({
             blockNumber={i}
             userTimezone={timezone}
             availability={availability}
-            dragInfo={dragRange}
-            onDragStart={handleDragStart}
-            onDragEnter={handleDragEnter}
-            onDragEnd={handleDragEnd}
+            highlights={highlights}
+            onClick={handleClick}
+            onHover={handleHover}
+            onRelease={handleRelease}
           />
         ))}
       </div>
