@@ -10,6 +10,9 @@ import { checkDateInRange } from "@/app/_lib/schedule/utils";
 
 import TimeSlot from "./time-slot";
 import useScheduleDrag from "@/app/_lib/use-schedule-drag";
+import { toZonedTime } from "date-fns-tz";
+import { start } from "repl";
+import { time } from "console";
 
 interface TimeBlockProps {
   // "paint": enables drag-to-select for availability painting
@@ -18,7 +21,9 @@ interface TimeBlockProps {
   mode: "paint" | "view" | "preview";
 
   timeColWidth: number;
-  visibleDays: DaySlot[];
+  timeslots: Date[];
+  numVisibleDays: number;
+  visibleDayKeys: string[];
   startHour: number;
   endHour: number;
   userTimezone: string;
@@ -40,7 +45,9 @@ export default function TimeBlock({
   timeColWidth,
   startHour,
   endHour,
-  visibleDays,
+  timeslots,
+  numVisibleDays,
+  visibleDayKeys,
   userTimezone,
   availability,
   onToggle,
@@ -67,8 +74,6 @@ export default function TimeBlock({
       return `${hour12} ${period}`;
     });
   }, [startHour, numQuarterHours]);
-
-  if (numHours <= 0 || visibleDays.length === 0) return null;
 
   return (
     <div className="flex grow flex-row">
@@ -97,69 +102,82 @@ export default function TimeBlock({
       <div
         className="grid w-full border border-gray-400 dark:border-gray-600"
         style={{
-          gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
+          gridTemplateColumns: `repeat(${numVisibleDays}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
         }}
       >
-        {visibleDays.map((day, dayIdx) =>
-          day.timeslots.map((timeslot, timeslotIdx) => {
-            const isDashedBorder = timeslot.getMinutes() !== 0;
-            const slotIso = timeslot.toISOString();
-            const date = new Date(slotIso);
+        {timeslots.map((timeslot, timeslotIdx) => {
+          const slotIso = timeslot.toISOString();
+          const localSlot = toZonedTime(timeslot, userTimezone);
 
-            const isDisabled = checkDateInRange(date, eventRange) === false;
+          if (
+            localSlot.getHours() < startHour ||
+            localSlot.getHours() >= endHour
+          ) {
+            return null;
+          }
 
-            const matchCount = allAvailabilities.reduce(
-              (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
-              0,
-            );
-            const total = allAvailabilities.length || 1;
-            const opacity = matchCount / total;
-            const isHovered = hoveredSlot === slotIso;
-            const isSelected = availability.has(slotIso);
+          const currentDayKey = localSlot.toLocaleDateString("en-CA");
+          const dayIndex = visibleDayKeys.indexOf(currentDayKey);
+          if (dayIndex === -1) return null;
 
-            const backgroundColor =
-              mode === "view"
+          const gridColumn = dayIndex + 1;
+          const gridRow =
+            (localSlot.getHours() - startHour) * 4 +
+            Math.floor(localSlot.getMinutes() / 15) +
+            1;
+
+          const matchCount = allAvailabilities.reduce(
+            (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
+            0,
+          );
+          const total = allAvailabilities.length || 1;
+          const opacity = matchCount / total;
+          const isHovered = hoveredSlot === slotIso;
+          const isSelected = availability.has(slotIso);
+
+          const backgroundColor =
+            mode === "view"
+              ? isDark
+                ? opacity === 1
+                  ? `rgb(226, 0, 0)`
+                  : `rgba(225, 92, 92, ${opacity})`
+                : opacity === 1
+                  ? `rgb(0, 107, 188)`
+                  : `rgba(61, 115, 163, ${opacity})`
+              : isSelected
                 ? isDark
-                  ? opacity === 1
-                    ? `rgb(226, 0, 0)`
-                    : `rgba(225, 92, 92, ${opacity})`
-                  : opacity === 1
-                    ? `rgb(0, 107, 188)`
-                    : `rgba(61, 115, 163, ${opacity})`
-                : isSelected
-                  ? isDark
-                    ? "rgba(225, 92, 92, 1)"
-                    : "rgba(61, 115, 163, 1)"
-                  : "transparent";
+                  ? "rgba(225, 92, 92, 1)"
+                  : "rgba(61, 115, 163, 1)"
+                : "transparent";
 
-            return (
-              <TimeSlot
-                key={`slot-${dayIdx}-${timeslotIdx}`}
-                slotIso={slotIso}
-                isSelected={isSelected}
-                isHovered={isHovered}
-                isDisabled={isDisabled}
-                disableSelect={disableSelect}
-                isDashedBorder={isDashedBorder}
-                backgroundColor={backgroundColor}
-                gridColumn={dayIdx + 1}
-                gridRow={timeslotIdx + 1}
-                onMouseDown={() =>
-                  dragHandlers.onMouseDown(slotIso, isDisabled)
-                }
-                onMouseEnter={() => {
-                  dragHandlers.onMouseEnter(slotIso, isDisabled);
-                  if (mode === "view") onHoverSlot?.(slotIso);
-                }}
-                onTouchStart={() =>
-                  dragHandlers.onTouchStart(slotIso, isDisabled)
-                }
-                onTouchMove={dragHandlers.onTouchMove}
-              />
-            );
-          }),
-        )}
+          const isDashedBorder = timeslot.getMinutes() !== 0;
+          const isDisabled = checkDateInRange(timeslot, eventRange) === false;
+
+          return (
+            <TimeSlot
+              key={`slot-${timeslotIdx}`}
+              slotIso={slotIso}
+              isSelected={isSelected}
+              isHovered={isHovered}
+              isDisabled={isDisabled}
+              disableSelect={disableSelect}
+              isDashedBorder={isDashedBorder}
+              backgroundColor={backgroundColor}
+              gridColumn={gridColumn}
+              gridRow={gridRow}
+              onMouseDown={() => dragHandlers.onMouseDown(slotIso, isDisabled)}
+              onMouseEnter={() => {
+                dragHandlers.onMouseEnter(slotIso, isDisabled);
+                if (mode === "view") onHoverSlot?.(slotIso);
+              }}
+              onTouchStart={() =>
+                dragHandlers.onTouchStart(slotIso, isDisabled)
+              }
+              onTouchMove={dragHandlers.onTouchMove}
+            />
+          );
+        })}
       </div>
     </div>
   );

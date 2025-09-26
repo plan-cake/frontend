@@ -45,178 +45,208 @@ function combineDateAndTime(date: Date, time: Date): Date {
  * expands a high-level EventRange into a concrete list of days and time slots
  * for the user's local timezone
  */
-export function expandEventRange(
-  range: EventRange,
-  userTimezone: string,
-): DaySlot[] {
-  console.log("expandEventRange", range, userTimezone);
+export function expandEventRange(range: EventRange): Date[] {
   if (range.type === "specific") {
-    return generateSlotsForSpecificRange(range, userTimezone);
+    return generateSlotsForSpecificRange(range);
   }
-  if (range.type === "weekday") {
-    return generateSlotsForWeekdayRange(range, userTimezone);
-  }
+  // if (range.type === "weekday") {
+  //   return generateSlotsForWeekdayRange(range);
+  // }
   return [];
 }
 
-function generateSlotsForSpecificRange(
-  range: SpecificDateRange,
-  userTimezone: string,
-): DaySlot[] {
-  const daySlots: DaySlot[] = [];
-  const { dateRange, timeRange } = range;
-
-  if (!dateRange.from || !dateRange.to || !timeRange.from || !timeRange.to) {
+export function generateSlotsForSpecificRange(range: EventRange): Date[] {
+  const slots: Date[] = [];
+  if (
+    range.type !== "specific" ||
+    !range.dateRange.from ||
+    !range.dateRange.to
+  ) {
     return [];
   }
 
-  // 1. Get the absolute start and end times in UTC
-  const absoluteStartUTC = combineDateAndTime(dateRange.from, timeRange.from);
-  const absoluteEndUTC = combineDateAndTime(dateRange.to, timeRange.to);
+  const eventStartUTC = range.dateRange.from;
+  const eventEndUTC = range.dateRange.to;
 
-  // 2. Convert these UTC times to the viewer's local timezone
-  const localStartDate = toZonedTime(absoluteStartUTC, userTimezone);
-  const localEndDate = toZonedTime(absoluteEndUTC, userTimezone);
+  // Get the valid time range for any given day in UTC
+  const validTimeStartUTC = range.timeRange.from!;
+  const validTimeEndUTC = range.timeRange.to!;
 
-  // 3. Set up a loop that iterates through the calendar days in the local timezone
-  let currentDay = new Date(localStartDate);
-  currentDay.setHours(0, 0, 0, 0); // Start the loop at the beginning of the local start day
-  console.log({ localStartDate, localEndDate, currentDay });
-  const startHour = timeRange.from.getHours();
-  const endHour = timeRange.to.getHours();
+  let current = new Date(eventStartUTC);
 
-  while (currentDay <= localEndDate) {
-    // get the weekday and month/day labels
-    const weekday = currentDay
-      .toLocaleDateString("en-US", { weekday: "short" })
-      .toUpperCase();
-    const monthDay = currentDay
-      .toLocaleDateString("en-US", { month: "short", day: "numeric" })
-      .toUpperCase();
-    const dayKey = new Date(
-      currentDay.getFullYear(),
-      currentDay.getMonth(),
-      currentDay.getDate(),
-    ).toLocaleDateString("en-CA");
+  while (current < eventEndUTC) {
+    // Get the time-of-day part of the current date
+    const timeOfDay = new Date(
+      Date.UTC(1970, 0, 1, current.getUTCHours(), current.getUTCMinutes()),
+    );
 
-    // generate 15-minute time slots
-    let slots: Date[] = [];
-    let currentTime = new Date(currentDay);
-    currentTime.setHours(startHour, 0, 0, 0);
-
-    const endTime = new Date(currentDay);
-    endTime.setHours(endHour, 0, 0, 0);
-    while (currentTime.getTime() <= endTime.getTime()) {
-      let timeSlot = fromZonedTime(new Date(currentTime), userTimezone);
-      slots.push(timeSlot);
-
-      currentTime.setMinutes(currentTime.getMinutes() + 15);
+    // Check if the time-of-day is within the valid range
+    if (timeOfDay >= validTimeStartUTC && timeOfDay < validTimeEndUTC) {
+      slots.push(new Date(current));
     }
 
-    daySlots.push({
-      date: currentDay,
-      dayLabel: `${weekday} ${monthDay}`,
-      dayKey: dayKey,
-      timeslots: slots,
-    });
-    currentDay.setDate(currentDay.getDate() + 1);
+    // Advance to the next 15-minute slot
+    current.setUTCMinutes(current.getUTCMinutes() + 15);
   }
 
-  return daySlots;
+  return slots;
 }
 
-export function generateSlotsForWeekdayRange(
-  range: WeekdayRange,
-  userTimezone: string,
-): DaySlot[] {
-  if (!range.timeRange.from || !range.timeRange.to) return [];
+// function generateSlotsForSpecificRange(
+//   range: SpecificDateRange,
+//   userTimezone: string,
+// ): DaySlot[] {
+//   const daySlots: DaySlot[] = [];
+//   const { dateRange, timeRange } = range;
 
-  const daySlotsMap = new Map<string, DaySlot>();
-  const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+//   if (!dateRange.from || !dateRange.to || !timeRange.from || !timeRange.to) {
+//     return [];
+//   }
 
-  // anchor date to user's current week
-  const nowInViewerTz = toZonedTime(new Date(), userTimezone);
-  const startOfWeekInViewerTz = new Date(nowInViewerTz);
-  startOfWeekInViewerTz.setDate(
-    nowInViewerTz.getDate() - nowInViewerTz.getDay(),
-  );
+//   // 1. Get the absolute start and end times in UTC
+//   const absoluteStartUTC = combineDateAndTime(dateRange.from, timeRange.from);
+//   const absoluteEndUTC = combineDateAndTime(dateRange.to, timeRange.to);
 
-  // iterate through the next 7 days
-  for (let i = 0; i < 7; i++) {
-    const currentDay = new Date(startOfWeekInViewerTz);
-    currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
+//   // 2. Convert these UTC times to the viewer's local timezone
+//   const localStartDate = toZonedTime(absoluteStartUTC, userTimezone);
+//   const localEndDate = toZonedTime(absoluteEndUTC, userTimezone);
 
-    const dayName = daysOfWeek[currentDay.getDay()] as keyof WeekdayMap;
+//   // 3. Set up a loop that iterates through the calendar days in the local timezone
+//   let currentDay = new Date(localStartDate);
+//   currentDay.setHours(0, 0, 0, 0); // Start the loop at the beginning of the local start day
+//   console.log({ localStartDate, localEndDate, currentDay });
+//   const startHour = timeRange.from.getHours();
+//   const endHour = timeRange.to.getHours();
 
-    // if the current weekday is selected in the event range, generate its slots
-    if (range.weekdays[dayName]) {
-      const dateString = currentDay.toLocaleDateString("en-CA"); // YYYY-MM-DD
+//   while (currentDay <= localEndDate) {
+//     // get the weekday and month/day labels
+//     const weekday = currentDay
+//       .toLocaleDateString("en-US", { weekday: "short" })
+//       .toUpperCase();
+//     const monthDay = currentDay
+//       .toLocaleDateString("en-US", { month: "short", day: "numeric" })
+//       .toUpperCase();
+//     const dayKey = new Date(
+//       currentDay.getFullYear(),
+//       currentDay.getMonth(),
+//       currentDay.getDate(),
+//     ).toLocaleDateString("en-CA");
 
-      // get event's start/end times (as UTC hours/minutes)
-      const startHour = range.timeRange.from.getUTCHours();
-      const startMinute = range.timeRange.from.getUTCMinutes();
-      const endHour = range.timeRange.to.getUTCHours();
-      const endMinute = range.timeRange.to.getUTCMinutes();
+//     // generate 15-minute time slots
+//     let slots: Date[] = [];
+//     let currentTime = new Date(currentDay);
+//     currentTime.setHours(startHour, 0, 0, 0);
 
-      // create absolute start/end times by combining the viewer's current day
-      // with the event's time, interpreted in the event's original timezone.
-      const eventStartString = `${dateString}T${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(2, "0")}:00`;
-      const eventEndString = `${dateString}T${String(endHour).padStart(2, "0")}:${String(endMinute).padStart(2, "0")}:00`;
+//     const endTime = new Date(currentDay);
+//     endTime.setHours(endHour, 0, 0, 0);
+//     while (currentTime.getTime() <= endTime.getTime()) {
+//       let timeSlot = new Date(currentTime);
+//       slots.push(timeSlot);
 
-      let slotStartUTC = fromZonedTime(eventStartString, range.timezone);
-      let slotEndUTC = fromZonedTime(eventEndString, range.timezone);
+//       currentTime.setMinutes(currentTime.getMinutes() + 15);
+//     }
 
-      // Handle overnight time ranges (e.g., 10 PM to 2 AM)
-      if (slotEndUTC <= slotStartUTC) {
-        slotEndUTC.setDate(slotEndUTC.getDate() + 1);
-      }
+//     daySlots.push({
+//       date: currentDay,
+//       dayLabel: `${weekday} ${monthDay}`,
+//       dayKey: dayKey,
+//       timeslots: slots,
+//     });
+//     currentDay.setDate(currentDay.getDate() + 1);
+//   }
 
-      // 5. Generate 15-minute time slots between the absolute start and end times
-      let currentSlotTime = new Date(slotStartUTC);
-      while (currentSlotTime < slotEndUTC) {
-        // Determine which day this slot falls on in the *viewer's* timezone
-        const viewerDay = toZonedTime(currentSlotTime, userTimezone);
-        const dayKey = viewerDay.toLocaleDateString("en-CA");
+//   return daySlots;
+// }
 
-        // If we haven't seen this day before, create a new DaySlot entry
-        if (!daySlotsMap.has(dayKey)) {
-          const weekday = viewerDay
-            .toLocaleDateString("en-US", {
-              weekday: "short",
-              timeZone: userTimezone,
-            })
-            .toUpperCase();
-          const monthDay = viewerDay
-            .toLocaleDateString("en-US", {
-              month: "short",
-              day: "numeric",
-              timeZone: userTimezone,
-            })
-            .toUpperCase();
+// export function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
+//   if (!range.timeRange.from || !range.timeRange.to) return [];
 
-          daySlotsMap.set(dayKey, {
-            date: new Date(
-              viewerDay.getFullYear(),
-              viewerDay.getMonth(),
-              viewerDay.getDate(),
-            ),
-            dayLabel: `${weekday} ${monthDay}`,
-            dayKey: dayKey,
-            timeslots: [],
-          });
-        }
+//   const daySlotsMap = new Map<string, DaySlot>();
+//   const daysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-        // Add the current slot to the correct day
-        const daySlot = daySlotsMap.get(dayKey)!;
-        daySlot.timeslots.push(new Date(currentSlotTime));
+//   // anchor date to user's current week
+//   const nowInViewerTz = toZonedTime(new Date(), userTimezone);
+//   const startOfWeekInViewerTz = new Date(nowInViewerTz);
+//   startOfWeekInViewerTz.setDate(
+//     nowInViewerTz.getDate() - nowInViewerTz.getDay(),
+//   );
 
-        currentSlotTime.setMinutes(currentSlotTime.getMinutes() + 15);
-      }
-    }
-  }
+//   // iterate through the next 7 days
+//   for (let i = 0; i < 7; i++) {
+//     const currentDay = new Date(startOfWeekInViewerTz);
+//     currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
 
-  // Convert the map to a sorted array
-  return Array.from(daySlotsMap.values()).sort(
-    (a, b) => a.date.getTime() - b.date.getTime(),
-  );
-}
+//     const dayName = daysOfWeek[currentDay.getDay()] as keyof WeekdayMap;
+
+//     // if the current weekday is selected in the event range, generate its slots
+//     if (range.weekdays[dayName]) {
+//       const dateString = currentDay.toLocaleDateString("en-CA"); // YYYY-MM-DD
+
+//       // get event's start/end times (as UTC hours/minutes)
+//       const startHour = range.timeRange.from.getUTCHours();
+//       const startMinute = range.timeRange.from.getUTCMinutes();
+//       const endHour = range.timeRange.to.getUTCHours();
+//       const endMinute = range.timeRange.to.getUTCMinutes();
+
+//       // create absolute start/end times by combining the viewer's current day
+//       // with the event's time, interpreted in the event's original timezone.
+//       const eventStartString = `${dateString}T${String(startHour).padStart(2, "0")}:${String(startMinute).padStart(2, "0")}:00`;
+//       const eventEndString = `${dateString}T${String(endHour).padStart(2, "0")}:${String(endMinute).padStart(2, "0")}:00`;
+
+//       let slotStartUTC = fromZonedTime(eventStartString, range.timezone);
+//       let slotEndUTC = fromZonedTime(eventEndString, range.timezone);
+
+//       // Handle overnight time ranges (e.g., 10 PM to 2 AM)
+//       if (slotEndUTC <= slotStartUTC) {
+//         slotEndUTC.setDate(slotEndUTC.getDate() + 1);
+//       }
+
+//       // 5. Generate 15-minute time slots between the absolute start and end times
+//       let currentSlotTime = new Date(slotStartUTC);
+//       while (currentSlotTime < slotEndUTC) {
+//         // Determine which day this slot falls on in the *viewer's* timezone
+//         const viewerDay = toZonedTime(currentSlotTime, userTimezone);
+//         const dayKey = viewerDay.toLocaleDateString("en-CA");
+
+//         // If we haven't seen this day before, create a new DaySlot entry
+//         if (!daySlotsMap.has(dayKey)) {
+//           const weekday = viewerDay
+//             .toLocaleDateString("en-US", {
+//               weekday: "short",
+//               timeZone: userTimezone,
+//             })
+//             .toUpperCase();
+//           const monthDay = viewerDay
+//             .toLocaleDateString("en-US", {
+//               month: "short",
+//               day: "numeric",
+//               timeZone: userTimezone,
+//             })
+//             .toUpperCase();
+
+//           daySlotsMap.set(dayKey, {
+//             date: new Date(
+//               viewerDay.getFullYear(),
+//               viewerDay.getMonth(),
+//               viewerDay.getDate(),
+//             ),
+//             dayLabel: `${weekday} ${monthDay}`,
+//             dayKey: dayKey,
+//             timeslots: [],
+//           });
+//         }
+
+//         // Add the current slot to the correct day
+//         const daySlot = daySlotsMap.get(dayKey)!;
+//         daySlot.timeslots.push(new Date(currentSlotTime));
+
+//         currentSlotTime.setMinutes(currentSlotTime.getMinutes() + 15);
+//       }
+//     }
+//   }
+
+//   // Convert the map to a sorted array
+//   return Array.from(daySlotsMap.values()).sort(
+//     (a, b) => a.date.getTime() - b.date.getTime(),
+//   );
+// }

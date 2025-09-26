@@ -67,8 +67,10 @@ export default function ScheduleGrid({
     numDays,
     timeBlocks,
     daySlots = [],
+    localStartTimeBlock,
+    localEndTimeBlock,
   } = useMemo(() => {
-    const daySlots = expandEventRange(eventRange, timezone);
+    const daySlots = expandEventRange(eventRange);
     console.log("userTimezone:", timezone, "daySlots:", daySlots);
     const numDaySlots = daySlots.length;
     if (numDaySlots === 0) {
@@ -80,15 +82,11 @@ export default function ScheduleGrid({
       };
     }
 
-    const numTimeSlotsPerDay = daySlots[0].timeslots.length;
-    const localStartDate = toZonedTime(daySlots[0].timeslots[0], timezone);
-    const localEndDate = toZonedTime(
-      daySlots[numDaySlots - 1].timeslots[numTimeSlotsPerDay - 1],
-      timezone,
-    );
+    const localStartTimeBlock = toZonedTime(daySlots[0], timezone);
+    const localEndTimeBlock = toZonedTime(daySlots[numDaySlots - 1], timezone);
 
-    let localStartHour = localStartDate.getHours();
-    let localEndHour = localEndDate.getHours();
+    const localStartHour = localStartTimeBlock.getHours();
+    const localEndHour = localEndTimeBlock.getHours();
 
     let timeBlocks = [];
 
@@ -104,21 +102,16 @@ export default function ScheduleGrid({
       0,
     );
 
-    const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
-    console.log({
-      numDays,
-      numDaySlots,
-      localStartDate,
-      localEndDate,
-      timezone,
-      daySlots,
-    });
+    const numDays =
+      differenceInCalendarDays(localEndTimeBlock, localStartTimeBlock) + 1;
 
     return {
       numHours,
       numDays,
       timeBlocks,
       daySlots,
+      localStartTimeBlock,
+      localEndTimeBlock,
     };
   }, [eventRange, timezone]);
 
@@ -128,12 +121,43 @@ export default function ScheduleGrid({
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-  const visibleDays = daySlots.slice(startIndex, endIndex);
-  // console.log({ visibleDays });
 
   if (numHours <= 0) return <GridError message="Invalid time range" />;
   if (numDays <= 0)
     return <GridError message="Invalid or missing date range" />;
+  if (!localStartTimeBlock) return <GridError message="Invalid start time" />;
+
+  const visibleTimeSlots = daySlots.slice(
+    startIndex * numHours * 4,
+    endIndex * numHours * 4,
+  );
+
+  const visibleDays = Array.from(
+    visibleTimeSlots
+      .reduce((daysMap, slot) => {
+        const zonedDate = toZonedTime(slot, timezone);
+        const dayKey = zonedDate.toLocaleDateString("en-CA");
+
+        if (!daysMap.has(dayKey)) {
+          const dayLabel = zonedDate.toLocaleDateString("en-US", {
+            weekday: "short",
+            month: "short",
+            day: "numeric",
+          });
+          daysMap.set(dayKey, { dayKey, dayLabel, date: zonedDate });
+        }
+        return daysMap;
+      }, new Map())
+      .values(),
+  );
+
+  console.log({
+    visibleDays,
+    daySlots,
+    startIndex,
+    endIndex,
+    visibleTimeSlots,
+  });
 
   return (
     <div
@@ -143,7 +167,7 @@ export default function ScheduleGrid({
       <div
         className="sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center bg-white dark:bg-violet"
         style={{
-          gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
+          gridTemplateColumns: `auto repeat(${endIndex - startIndex}, 1fr) auto`,
         }}
       >
         {currentPage > 0 ? (
@@ -187,25 +211,28 @@ export default function ScheduleGrid({
       </div>
 
       <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
-        {timeBlocks.map((block, i) => (
-          <TimeBlock
-            key={i}
-            mode={mode}
-            disableSelect={disableSelect}
-            timeColWidth={50}
-            visibleDays={visibleDays}
-            startHour={block.startHour}
-            endHour={block.endHour}
-            userTimezone={timezone}
-            availability={availability}
-            onToggle={handleToggle}
-            allAvailabilities={attendees.map((a) => a.availability)}
-            onHoverSlot={setHoveredSlot}
-            hoveredSlot={hoveredSlot}
-            eventRange={eventRange}
-            // daySlots={daySlots}
-          />
-        ))}
+        {timeBlocks.map((block, i) => {
+          return (
+            <TimeBlock
+              key={i}
+              mode={mode}
+              disableSelect={disableSelect}
+              timeColWidth={50}
+              timeslots={visibleTimeSlots}
+              numVisibleDays={visibleDays.length}
+              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+              startHour={block.startHour}
+              endHour={block.endHour}
+              userTimezone={timezone}
+              availability={availability}
+              onToggle={handleToggle}
+              allAvailabilities={attendees.map((a) => a.availability)}
+              onHoverSlot={setHoveredSlot}
+              hoveredSlot={hoveredSlot}
+              eventRange={eventRange}
+            />
+          );
+        })}
       </div>
     </div>
   );

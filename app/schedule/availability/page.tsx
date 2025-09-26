@@ -22,20 +22,23 @@ export default function Page() {
   const [userName, setUserName] = useState("John Doe");
 
   const eventName = "Sample Event";
+
+  // --- CORRECTED ---
+  // 1. Create dates in UTC to avoid browser timezone issues.
   const today = new Date();
-  const startOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    9,
+  const startOfDayUTC = Date.UTC(
+    today.getUTCFullYear(),
+    today.getUTCMonth(),
+    today.getUTCDate(),
+    13, // 9 AM in New York (EDT is UTC-4) is 1 PM UTC
     0,
     0,
   );
-  const endOfDay = new Date(
-    today.getFullYear(),
-    today.getMonth(),
-    today.getDate(),
-    20,
+  const endOfDayUTC = Date.UTC(
+    today.getUTCFullYear(),
+    today.getUTCMonth(),
+    today.getUTCDate() + 7, // Event ends 7 days later
+    0, // 8 PM in New York (EDT is UTC-4) is 12 AM UTC the next day
     0,
     0,
   );
@@ -43,21 +46,16 @@ export default function Page() {
   const eventRange: EventRange = {
     type: "specific",
     duration: 60,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    // 2. Set the event's *original* timezone, not the user's.
+    timezone: "America/New_York",
     dateRange: {
-      from: startOfDay,
-      to: new Date(
-        today.getFullYear(),
-        today.getMonth(),
-        today.getDate() + 7,
-        20,
-        0,
-        0,
-      ),
+      from: new Date(startOfDayUTC),
+      to: new Date(endOfDayUTC),
     },
+    // This timeRange is for the valid times within a day
     timeRange: {
-      from: startOfDay,
-      to: endOfDay,
+      from: new Date(Date.UTC(1970, 0, 1, 13, 0, 0)), // 9 AM NY -> 1 PM UTC
+      to: new Date(Date.UTC(1970, 0, 1, 24, 0, 0)), // 8 PM NY -> 12 AM UTC
     },
   };
 
