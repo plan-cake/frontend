@@ -2,18 +2,13 @@
 
 import { useMemo } from "react";
 import { useTheme } from "next-themes";
-import { cn } from "@/app/_lib/classname";
 
 import { AvailabilitySet } from "@/app/_lib/availability/types";
 import { DaySlot, EventRange } from "@/app/_lib/schedule/types";
-import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
-import { checkDateInRange } from "@/app/_lib/schedule/utils";
 
 import TimeSlot from "./time-slot";
 import useScheduleDrag from "@/app/_lib/use-schedule-drag";
 import { toZonedTime } from "date-fns-tz";
-import { start } from "repl";
-import { time } from "console";
 
 interface TimeBlockProps {
   // "paint": enables drag-to-select for availability painting
@@ -34,7 +29,6 @@ interface TimeBlockProps {
   allAvailabilities?: AvailabilitySet[];
 
   hoveredSlot?: string | null;
-  eventRange: EventRange;
 
   onToggle?: (slotIso: Date) => void;
   onHoverSlot?: (iso: string | null) => void;
@@ -55,7 +49,6 @@ export default function TimeBlock({
   allAvailabilities = [],
   onHoverSlot,
   hoveredSlot,
-  eventRange,
 }: TimeBlockProps) {
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";

@@ -17,7 +17,6 @@ import { expandEventRange } from "@/app/_lib/schedule/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 
 import TimeBlock from "@/app/ui/components/schedule/time-block";
-import { formatDynamicAPIAccesses } from "next/dist/server/app-render/dynamic-rendering";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -63,50 +62,55 @@ export default function ScheduleGrid({
     });
   }
 
-  const {
-    numHours,
-    numDays,
-    timeBlocks,
-    daySlots = [],
-    localStartTimeBlock,
-    localEndTimeBlock,
-    dayGroupedSlots,
-  } = useMemo(() => {
-    const daySlots = expandEventRange(eventRange);
-    console.log("userTimezone:", timezone, "daySlots:", daySlots);
-    const numDaySlots = daySlots.length;
-    if (numDaySlots === 0) {
+  const { numHours, numDays, timeBlocks, daySlots, localStartTimeBlock } =
+    useMemo(() => {
+      const daySlots = expandEventRange(eventRange);
+      const numDaySlots = daySlots.length;
+      if (numDaySlots === 0) {
+        return {
+          numHours: 0,
+          numDays: 0,
+          timeBlocks: [],
+          daySlots: [],
+        };
+      }
+
+      const localStartTimeBlock = toZonedTime(daySlots[0], timezone);
+      const localEndTimeBlock = toZonedTime(
+        daySlots[numDaySlots - 1],
+        timezone,
+      );
+
+      const localStartHour = localStartTimeBlock.getHours();
+      const localEndHour = localEndTimeBlock.getHours();
+
+      let timeBlocks = [];
+
+      if (localEndHour < localStartHour) {
+        timeBlocks.push({ startHour: 0, endHour: localEndHour });
+        timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+      } else {
+        timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
+      }
+
+      const numHours = timeBlocks.reduce(
+        (acc, block) => acc + (block.endHour - block.startHour + 1),
+        0,
+      );
+
+      const numDays =
+        differenceInCalendarDays(localEndTimeBlock, localStartTimeBlock) + 1;
+
       return {
-        numHours: 0,
-        numDays: 0,
-        timeBlocks: [],
-        daySlots: [],
+        numHours,
+        numDays,
+        timeBlocks,
+        daySlots,
+        localStartTimeBlock,
       };
-    }
+    }, [eventRange, timezone]);
 
-    const localStartTimeBlock = toZonedTime(daySlots[0], timezone);
-    const localEndTimeBlock = toZonedTime(daySlots[numDaySlots - 1], timezone);
-
-    const localStartHour = localStartTimeBlock.getHours();
-    const localEndHour = localEndTimeBlock.getHours();
-
-    let timeBlocks = [];
-
-    if (localEndHour < localStartHour) {
-      timeBlocks.push({ startHour: 0, endHour: localEndHour });
-      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
-    } else {
-      timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
-    }
-
-    const numHours = timeBlocks.reduce(
-      (acc, block) => acc + (block.endHour - block.startHour + 1),
-      0,
-    );
-
-    const numDays =
-      differenceInCalendarDays(localEndTimeBlock, localStartTimeBlock) + 1;
-
+  const { dayGroupedSlots } = useMemo(() => {
     const dayGroupedSlots = Array.from(
       daySlots
         .reduce((daysMap, slot) => {
@@ -136,15 +140,9 @@ export default function ScheduleGrid({
     );
 
     return {
-      numHours,
-      numDays,
-      timeBlocks,
-      daySlots,
-      localStartTimeBlock,
-      localEndTimeBlock,
       dayGroupedSlots,
     };
-  }, [eventRange, timezone]);
+  }, [timezone, daySlots]);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -160,14 +158,6 @@ export default function ScheduleGrid({
 
   const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
   const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
-
-  // console.log({
-  //   visibleDays,
-  //   daySlots,
-  //   startIndex,
-  //   endIndex,
-  //   visibleTimeSlots,
-  // });
 
   return (
     <div
@@ -239,7 +229,6 @@ export default function ScheduleGrid({
               allAvailabilities={attendees.map((a) => a.availability)}
               onHoverSlot={setHoveredSlot}
               hoveredSlot={hoveredSlot}
-              eventRange={eventRange}
             />
           );
         })}
