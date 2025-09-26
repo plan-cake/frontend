@@ -13,6 +13,8 @@ interface TimeSlotProps {
   gridColumn: number;
   gridRow: number;
 
+  cellClasses?: string;
+
   // Event handlers
   onMouseDown: () => void;
   onMouseEnter: () => void;
@@ -28,6 +30,7 @@ function TimeSlot({
   backgroundColor,
   gridColumn,
   gridRow,
+  cellClasses = "",
   ...eventHandlers
 }: TimeSlotProps) {
   return (
@@ -35,7 +38,8 @@ function TimeSlot({
       data-slot-iso={slotIso}
       draggable={false}
       className={cn(
-        "bg-white transition-all hover:cursor-pointer dark:bg-violet",
+        cellClasses,
+        "transition-colors hover:cursor-pointer",
         disableSelect
           ? "cursor-not-allowed"
           : isSelected
@@ -44,7 +48,7 @@ function TimeSlot({
         isHovered && "ring-2 ring-blue ring-inset dark:ring-red",
       )}
       style={{
-        // backgroundColor,
+        backgroundColor,
         gridColumn,
         gridRow,
         touchAction: "none",

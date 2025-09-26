@@ -101,10 +101,7 @@ export default function TimeBlock({
       </div>
 
       <div
-        className={cn(
-          "dark:border-gray grid w-full divide-y divide-dashed divide-gray-400 border border-gray-400 dark:divide-gray-400",
-          "bg-gray-200 dark:bg-gray-400",
-        )}
+        className="grid w-full gap-x-[1px] border border-gray-400 bg-gray-400 dark:divide-gray-600 dark:border-gray-600"
         style={{
           gridTemplateColumns: `repeat(${numVisibleDays}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
@@ -113,6 +110,13 @@ export default function TimeBlock({
         {timeslots.map((timeslot, timeslotIdx) => {
           const slotIso = timeslot.toISOString();
           const localSlot = toZonedTime(timeslot, userTimezone);
+
+          if (
+            localSlot.getHours() < startHour ||
+            localSlot.getHours() >= endHour
+          ) {
+            return null;
+          }
 
           const currentDayKey = localSlot.toLocaleDateString("en-CA");
           const dayIndex = visibleDayKeys.indexOf(currentDayKey);
@@ -124,11 +128,16 @@ export default function TimeBlock({
             Math.floor(localSlot.getMinutes() / 15) +
             1;
 
-          if (
-            localSlot.getHours() < startHour ||
-            localSlot.getHours() >= endHour
-          ) {
-            return null;
+          // borders
+          const cellClasses: string[] = [];
+          if (gridRow < numQuarterHours) {
+            cellClasses.push("border-b");
+
+            if (gridRow % 4 === 0) {
+              cellClasses.push("border-solid border-gray-400");
+            } else {
+              cellClasses.push("border-dashed border-gray-400");
+            }
           }
 
           const matchCount = allAvailabilities.reduce(
@@ -140,37 +149,42 @@ export default function TimeBlock({
           const isHovered = hoveredSlot === slotIso;
           const isSelected = availability.has(slotIso);
 
-          const backgroundColor =
-            mode === "view"
-              ? isDark
-                ? opacity === 1
-                  ? `rgb(226, 0, 0)`
-                  : `rgba(225, 92, 92, ${opacity})`
-                : opacity === 1
-                  ? `rgb(0, 107, 188)`
-                  : `rgba(61, 115, 163, ${opacity})`
-              : isSelected
-                ? isDark
-                  ? "rgba(225, 92, 92, 1)"
-                  : "rgba(61, 115, 163, 1)"
-                : "transparent";
+          let backgroundColor;
+          if (mode === "view") {
+            backgroundColor = isDark
+              ? `rgba(225, 92, 92, ${opacity})`
+              : `rgba(61, 115, 163, ${opacity})`;
+          } else {
+            if (isSelected) {
+              backgroundColor = isDark
+                ? "rgba(225, 92, 92, 1)"
+                : "rgba(61, 115, 163, 1)";
+            } else if (isHovered && !disableSelect) {
+              backgroundColor = isDark
+                ? "rgba(225, 92, 92, 0.5)"
+                : "rgba(61, 115, 163, 0.5)";
+            } else {
+              backgroundColor = isDark ? "rgb(31 41 55)" : "rgb(255 255 255)";
+            }
+          }
 
           return (
             <TimeSlot
               key={`slot-${timeslotIdx}`}
               slotIso={slotIso}
+              cellClasses={cellClasses.join(" ")}
               isSelected={isSelected}
               isHovered={isHovered}
               disableSelect={disableSelect}
               backgroundColor={backgroundColor}
               gridColumn={gridColumn}
               gridRow={gridRow}
-              onMouseDown={() => dragHandlers.onMouseDown(slotIso, true)}
+              onMouseDown={() => dragHandlers.onMouseDown(slotIso, false)}
               onMouseEnter={() => {
-                dragHandlers.onMouseEnter(slotIso, true);
+                dragHandlers.onMouseEnter(slotIso, false);
                 if (mode === "view") onHoverSlot?.(slotIso);
               }}
-              onTouchStart={() => dragHandlers.onTouchStart(slotIso, true)}
+              onTouchStart={() => dragHandlers.onTouchStart(slotIso, false)}
               onTouchMove={dragHandlers.onTouchMove}
             />
           );
