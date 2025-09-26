@@ -212,13 +212,20 @@ export default function ScheduleGrid({
 
       <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
         {timeBlocks.map((block, i) => {
+          // filter visibleTimeSlots to those within this block's hours
+          const blockTimeSlots = visibleTimeSlots.filter((slot) => {
+            const localSlot = toZonedTime(slot, timezone);
+            const hour = localSlot.getHours();
+            return hour >= block.startHour && hour < block.endHour;
+          });
+
           return (
             <TimeBlock
               key={i}
               mode={mode}
               disableSelect={disableSelect}
+              timeslots={blockTimeSlots}
               timeColWidth={50}
-              timeslots={visibleTimeSlots}
               numVisibleDays={visibleDays.length}
               visibleDayKeys={visibleDays.map((d) => d.dayKey)}
               startHour={block.startHour}

@@ -104,13 +104,6 @@ export default function TimeBlock({
           const slotIso = timeslot.toISOString();
           const localSlot = toZonedTime(timeslot, userTimezone);
 
-          if (
-            localSlot.getHours() < startHour ||
-            localSlot.getHours() >= endHour
-          ) {
-            return null;
-          }
-
           const currentDayKey = localSlot.toLocaleDateString("en-CA");
           const dayIndex = visibleDayKeys.indexOf(currentDayKey);
           if (dayIndex === -1) return null;
