@@ -1,22 +1,18 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 
 import { toZonedTime } from "date-fns-tz";
-import { differenceInCalendarDays } from "date-fns";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 import { EventRange } from "@/app/_lib/schedule/types";
 import { AvailabilitySet } from "@/app/_lib/availability/types";
 import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
-import { expandEventRange } from "@/app/_lib/schedule/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
+import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
 
 import TimeBlock from "@/app/ui/components/schedule/time-block";
+import ScheduleHeader from "./schedule-header";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -62,87 +58,10 @@ export default function ScheduleGrid({
     });
   }
 
-  const { numHours, numDays, timeBlocks, daySlots, localStartTimeBlock } =
-    useMemo(() => {
-      const daySlots = expandEventRange(eventRange);
-      const numDaySlots = daySlots.length;
-      if (numDaySlots === 0) {
-        return {
-          numHours: 0,
-          numDays: 0,
-          timeBlocks: [],
-          daySlots: [],
-        };
-      }
-
-      const localStartTimeBlock = toZonedTime(daySlots[0], timezone);
-      const localEndTimeBlock = toZonedTime(
-        daySlots[numDaySlots - 1],
-        timezone,
-      );
-
-      const localStartHour = localStartTimeBlock.getHours();
-      const localEndHour = localEndTimeBlock.getHours();
-
-      let timeBlocks = [];
-
-      if (localEndHour < localStartHour) {
-        timeBlocks.push({ startHour: 0, endHour: localEndHour });
-        timeBlocks.push({ startHour: localStartHour, endHour: 24 });
-      } else {
-        timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
-      }
-
-      const numHours = timeBlocks.reduce(
-        (acc, block) => acc + (block.endHour - block.startHour + 1),
-        0,
-      );
-
-      const numDays =
-        differenceInCalendarDays(localEndTimeBlock, localStartTimeBlock) + 1;
-
-      return {
-        numHours,
-        numDays,
-        timeBlocks,
-        daySlots,
-        localStartTimeBlock,
-      };
-    }, [eventRange, timezone]);
-
-  const { dayGroupedSlots } = useMemo(() => {
-    const dayGroupedSlots = Array.from(
-      daySlots
-        .reduce((daysMap, slot) => {
-          const zonedDate = toZonedTime(slot, timezone);
-          const dayKey = zonedDate.toLocaleDateString("en-CA");
-
-          if (!daysMap.has(dayKey)) {
-            const dayLabel = zonedDate.toLocaleDateString("en-US", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            });
-            daysMap.set(dayKey, {
-              dayKey,
-              dayLabel,
-              date: zonedDate,
-              timeslots: [],
-            });
-          }
-
-          // Add the current slot to this day's timeslots
-          daysMap.get(dayKey)!.timeslots.push(slot);
-
-          return daysMap;
-        }, new Map())
-        .values(),
-    );
-
-    return {
-      dayGroupedSlots,
-    };
-  }, [timezone, daySlots]);
+  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
+    eventRange,
+    timezone,
+  );
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -151,64 +70,27 @@ export default function ScheduleGrid({
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
 
-  if (numHours <= 0) return <GridError message="Invalid time range" />;
-  if (numDays <= 0)
-    return <GridError message="Invalid or missing date range" />;
-  if (!localStartTimeBlock) return <GridError message="Invalid start time" />;
-
   const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
   const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
+
+  if (numDays <= 0)
+    return <GridError message="Invalid or missing date range" />;
+  if (error) return <GridError message={error} />;
 
   return (
     <div
       className="relative mb-8 grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
-      <div
-        className="sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center bg-white dark:bg-violet"
-        style={{
-          gridTemplateColumns: `auto repeat(${endIndex - startIndex}, 1fr) auto`,
-        }}
-      >
-        {currentPage > 0 ? (
-          <button
-            onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-            className="flex h-[50px] w-[50px] items-center justify-center text-xl"
-          >
-            <ChevronLeftIcon className="h-5 w-5" />
-          </button>
-        ) : (
-          <div style={{ width: "50px" }} />
-        )}
-
-        {visibleDays.map((day, i) => {
-          const [weekday, month, date] = day.dayLabel.split(" ");
-          return (
-            <div
-              key={i}
-              className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
-            >
-              <div>{weekday}</div>
-              <div>
-                {month} {date}
-              </div>
-            </div>
-          );
-        })}
-
-        {currentPage < totalPages - 1 ? (
-          <button
-            onClick={() =>
-              setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
-            }
-            className="h-[50px] w-[20px] text-xl"
-          >
-            <ChevronRightIcon className="h-5 w-5" />
-          </button>
-        ) : (
-          <div style={{ width: "20px" }} />
-        )}
-      </div>
+      <ScheduleHeader
+        visibleDays={visibleDays}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPrevPage={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+        onNextPage={() =>
+          setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
+        }
+      />
 
       <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
         {timeBlocks.map((block, i) => {
