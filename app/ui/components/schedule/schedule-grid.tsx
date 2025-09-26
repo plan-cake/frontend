@@ -11,7 +11,7 @@ import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
 
-import TimeBlock from "@/app/ui/components/schedule/time-block";
+// import TimeBlock from "@/app/ui/components/schedule/time-block";
 import ScheduleHeader from "./schedule-header";
 import PreviewTimeBlock from "./timeblocks/preview-timeblock";
 import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
@@ -46,10 +46,9 @@ export default function ScheduleGrid({
     createEmptyUserAvailability(eventRange.type).selections,
   );
 
-  function handleToggle(slotDate: Date) {
+  function handleToggle(slotIsoString: string) {
     if (disableSelect || mode !== "paint") return;
 
-    const slotIsoString = slotDate.toISOString();
     setAvailability((prev) => {
       const updated = new Set(prev);
       if (updated.has(slotIsoString)) {
@@ -61,10 +60,8 @@ export default function ScheduleGrid({
     });
   }
 
-  const { timeBlocks, dayGroupedSlots, numDays, numHours, error } = useGenerateTimeSlots(
-    eventRange,
-    timezone,
-  );
+  const { timeBlocks, dayGroupedSlots, numDays, numHours, error } =
+    useGenerateTimeSlots(eventRange, timezone);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -106,48 +103,48 @@ export default function ScheduleGrid({
 
           if (mode === "preview") {
             return (
-              <PreviewTimeBlock 
-              timeColWidth={50}
-              numQuarterHours={numHours * 4}
-              startHour={block.startHour}
-              timeslots={blockTimeSlots}
-              numVisibleDays={visibleDays.length}
-              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-              userTimezone={timezone}
+              <PreviewTimeBlock
+                key={i}
+                timeColWidth={50}
+                numQuarterHours={numHours * 4}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
               />
-            )
+            );
           } else if (mode === "paint") {
             return (
-              <InteractiveTimeBlock 
-                              timeColWidth={50}
-              numQuarterHours={numHours * 4}
-              startHour={block.startHour}
-              timeslots={blockTimeSlots}
-              numVisibleDays={visibleDays.length}
-              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-              userTimezone={timezone}
-
-              availability={availability}
-              onToggle={handleToggle}
+              <InteractiveTimeBlock
+                key={i}
+                timeColWidth={50}
+                numQuarterHours={numHours * 4}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
+                availability={availability}
+                onToggle={handleToggle}
               />
-            )
+            );
           } else if (mode === "view") {
             return (
-              <ResultsTimeBlock 
-               timeColWidth={50}
-              numQuarterHours={numHours * 4}
-              startHour={block.startHour}
-              timeslots={blockTimeSlots}
-              numVisibleDays={visibleDays.length}
-              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-              userTimezone={timezone}
-
-              hoveredSlot={hoveredSlot}
-
-              allAvailabilities={attendees.map((a) => a.availability)}
-              onHoverSlot={setHoveredSlot}
+              <ResultsTimeBlock
+                key={i}
+                timeColWidth={50}
+                numQuarterHours={numHours * 4}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
+                hoveredSlot={hoveredSlot}
+                allAvailabilities={attendees.map((a) => a.availability)}
+                onHoverSlot={setHoveredSlot}
               />
-            )
+            );
           }
 
           // return (

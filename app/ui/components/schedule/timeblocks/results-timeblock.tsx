@@ -13,7 +13,9 @@ interface ResultsTimeBlockProps {
   timeslots: Date[];
   numVisibleDays: number;
   visibleDayKeys: string[];
-  hoveredSlot: string | null;
+  hoveredSlot: string | null | undefined;
+
+  allAvailabilities?: AvailabilitySet[];
 
   userTimezone: string;
   onHoverSlot?: (iso: string | null) => void;
@@ -27,6 +29,7 @@ export default function ResultsTimeBlock({
   numVisibleDays,
   visibleDayKeys,
   userTimezone,
+  allAvailabilities = [],
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
@@ -67,15 +70,12 @@ export default function ResultsTimeBlock({
         }
 
         // REPLACE THIS WITH API DATA !!!!!!!!!
-        // const matchCount = allAvailabilities.reduce(
-        //   (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
-        //   0,
-        // );
-        // const total = allAvailabilities.length || 1;
-        // const opacity = matchCount / total;
-        // const isHovered = hoveredSlot === slotIso;
-        // const isSelected = availability.has(slotIso);
-
+        const matchCount = allAvailabilities.reduce(
+          (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
+          0,
+        );
+        const total = allAvailabilities.length || 1;
+        const opacity = matchCount / total;
         const isHovered = hoveredSlot === slotIso;
 
         let backgroundColor;
