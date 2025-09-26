@@ -28,6 +28,7 @@ export default function Page() {
         <h1 className="font-display mb-4 block text-5xl leading-none text-lion md:text-8xl">
           login
         </h1>
+
         {/* Username */}
         <input
           type="text"
@@ -52,7 +53,7 @@ export default function Page() {
             Forgot Password?
           </Link>
 
-          {/* Login button */}
+          {/* Login Button */}
           <button
             type="submit"
             className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
