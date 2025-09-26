@@ -9,8 +9,6 @@ interface TimeSlotProps {
   isHovered: boolean;
 
   disableSelect: boolean;
-  isDisabled: boolean;
-  isDashedBorder: boolean;
   backgroundColor: string;
   gridColumn: number;
   gridRow: number;
@@ -26,9 +24,7 @@ function TimeSlot({
   slotIso,
   isSelected,
   isHovered,
-  isDisabled,
   disableSelect,
-  isDashedBorder,
   backgroundColor,
   gridColumn,
   gridRow,
@@ -39,19 +35,18 @@ function TimeSlot({
       data-slot-iso={slotIso}
       draggable={false}
       className={cn(
-        "border-[0.5px] border-gray-300 transition-all hover:cursor-pointer dark:border-gray-600",
+        "bg-white transition-all hover:cursor-pointer dark:bg-violet",
         disableSelect
           ? "cursor-not-allowed"
           : isSelected
             ? "bg-blue dark:bg-red"
             : "hover:bg-blue-200 dark:hover:bg-red-200",
-        isDisabled && "pointer-events-none bg-gray-200",
         isHovered && "ring-2 ring-blue ring-inset dark:ring-red",
       )}
       style={{
+        // backgroundColor,
         gridColumn,
         gridRow,
-        borderTopStyle: isDashedBorder ? "dashed" : "solid",
         touchAction: "none",
         userSelect: "none",
       }}

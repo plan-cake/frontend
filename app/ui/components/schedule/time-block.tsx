@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { useTheme } from "next-themes";
+import { cn } from "@/app/_lib/classname";
 
 import { AvailabilitySet } from "@/app/_lib/availability/types";
 import { DaySlot, EventRange } from "@/app/_lib/schedule/types";
@@ -100,7 +101,10 @@ export default function TimeBlock({
       </div>
 
       <div
-        className="grid w-full border border-gray-400 dark:border-gray-600"
+        className={cn(
+          "dark:border-gray grid w-full divide-y divide-dashed divide-gray-400 border border-gray-400 dark:divide-gray-400",
+          "bg-gray-200 dark:bg-gray-400",
+        )}
         style={{
           gridTemplateColumns: `repeat(${numVisibleDays}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
@@ -109,13 +113,6 @@ export default function TimeBlock({
         {timeslots.map((timeslot, timeslotIdx) => {
           const slotIso = timeslot.toISOString();
           const localSlot = toZonedTime(timeslot, userTimezone);
-
-          if (
-            localSlot.getHours() < startHour ||
-            localSlot.getHours() >= endHour
-          ) {
-            return null;
-          }
 
           const currentDayKey = localSlot.toLocaleDateString("en-CA");
           const dayIndex = visibleDayKeys.indexOf(currentDayKey);
@@ -126,6 +123,13 @@ export default function TimeBlock({
             (localSlot.getHours() - startHour) * 4 +
             Math.floor(localSlot.getMinutes() / 15) +
             1;
+
+          if (
+            localSlot.getHours() < startHour ||
+            localSlot.getHours() >= endHour
+          ) {
+            return null;
+          }
 
           const matchCount = allAvailabilities.reduce(
             (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
@@ -151,29 +155,22 @@ export default function TimeBlock({
                   : "rgba(61, 115, 163, 1)"
                 : "transparent";
 
-          const isDashedBorder = timeslot.getMinutes() !== 0;
-          const isDisabled = checkDateInRange(timeslot, eventRange) === false;
-
           return (
             <TimeSlot
               key={`slot-${timeslotIdx}`}
               slotIso={slotIso}
               isSelected={isSelected}
               isHovered={isHovered}
-              isDisabled={isDisabled}
               disableSelect={disableSelect}
-              isDashedBorder={isDashedBorder}
               backgroundColor={backgroundColor}
               gridColumn={gridColumn}
               gridRow={gridRow}
-              onMouseDown={() => dragHandlers.onMouseDown(slotIso, isDisabled)}
+              onMouseDown={() => dragHandlers.onMouseDown(slotIso, true)}
               onMouseEnter={() => {
-                dragHandlers.onMouseEnter(slotIso, isDisabled);
+                dragHandlers.onMouseEnter(slotIso, true);
                 if (mode === "view") onHoverSlot?.(slotIso);
               }}
-              onTouchStart={() =>
-                dragHandlers.onTouchStart(slotIso, isDisabled)
-              }
+              onTouchStart={() => dragHandlers.onTouchStart(slotIso, true)}
               onTouchMove={dragHandlers.onTouchMove}
             />
           );
