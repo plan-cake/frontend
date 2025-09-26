@@ -17,6 +17,7 @@ import { expandEventRange } from "@/app/_lib/schedule/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 
 import TimeBlock from "@/app/ui/components/schedule/time-block";
+import { formatDynamicAPIAccesses } from "next/dist/server/app-render/dynamic-rendering";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -69,6 +70,7 @@ export default function ScheduleGrid({
     daySlots = [],
     localStartTimeBlock,
     localEndTimeBlock,
+    dayGroupedSlots,
   } = useMemo(() => {
     const daySlots = expandEventRange(eventRange);
     console.log("userTimezone:", timezone, "daySlots:", daySlots);
@@ -105,6 +107,34 @@ export default function ScheduleGrid({
     const numDays =
       differenceInCalendarDays(localEndTimeBlock, localStartTimeBlock) + 1;
 
+    const dayGroupedSlots = Array.from(
+      daySlots
+        .reduce((daysMap, slot) => {
+          const zonedDate = toZonedTime(slot, timezone);
+          const dayKey = zonedDate.toLocaleDateString("en-CA");
+
+          if (!daysMap.has(dayKey)) {
+            const dayLabel = zonedDate.toLocaleDateString("en-US", {
+              weekday: "short",
+              month: "short",
+              day: "numeric",
+            });
+            daysMap.set(dayKey, {
+              dayKey,
+              dayLabel,
+              date: zonedDate,
+              timeslots: [],
+            });
+          }
+
+          // Add the current slot to this day's timeslots
+          daysMap.get(dayKey)!.timeslots.push(slot);
+
+          return daysMap;
+        }, new Map())
+        .values(),
+    );
+
     return {
       numHours,
       numDays,
@@ -112,6 +142,7 @@ export default function ScheduleGrid({
       daySlots,
       localStartTimeBlock,
       localEndTimeBlock,
+      dayGroupedSlots,
     };
   }, [eventRange, timezone]);
 
@@ -127,37 +158,16 @@ export default function ScheduleGrid({
     return <GridError message="Invalid or missing date range" />;
   if (!localStartTimeBlock) return <GridError message="Invalid start time" />;
 
-  const visibleTimeSlots = daySlots.slice(
-    startIndex * numHours * 4,
-    endIndex * numHours * 4,
-  );
+  const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
+  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
 
-  const visibleDays = Array.from(
-    visibleTimeSlots
-      .reduce((daysMap, slot) => {
-        const zonedDate = toZonedTime(slot, timezone);
-        const dayKey = zonedDate.toLocaleDateString("en-CA");
-
-        if (!daysMap.has(dayKey)) {
-          const dayLabel = zonedDate.toLocaleDateString("en-US", {
-            weekday: "short",
-            month: "short",
-            day: "numeric",
-          });
-          daysMap.set(dayKey, { dayKey, dayLabel, date: zonedDate });
-        }
-        return daysMap;
-      }, new Map())
-      .values(),
-  );
-
-  console.log({
-    visibleDays,
-    daySlots,
-    startIndex,
-    endIndex,
-    visibleTimeSlots,
-  });
+  // console.log({
+  //   visibleDays,
+  //   daySlots,
+  //   startIndex,
+  //   endIndex,
+  //   visibleTimeSlots,
+  // });
 
   return (
     <div
