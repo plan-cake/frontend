@@ -5,10 +5,10 @@ import { cn } from "@/app/_lib/classname";
 
 interface TimeSlotProps {
   slotIso: string;
-  isSelected: boolean;
-  isHovered: boolean;
+  isSelected?: boolean;
+  isHovered?: boolean;
 
-  disableSelect: boolean;
+  disableSelect?: boolean;
   backgroundColor: string;
   gridColumn: number;
   gridRow: number;
@@ -16,10 +16,10 @@ interface TimeSlotProps {
   cellClasses?: string;
 
   // Event handlers
-  onMouseDown: () => void;
-  onMouseEnter: () => void;
-  onTouchStart: (e: React.TouchEvent<HTMLDivElement>) => void;
-  onTouchMove: (e: React.TouchEvent<HTMLDivElement>) => void;
+  onMouseDown?: () => void;
+  onMouseEnter?: () => void;
+  onTouchStart?: (e: React.TouchEvent<HTMLDivElement>) => void;
+  onTouchMove?: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
 function TimeSlot({

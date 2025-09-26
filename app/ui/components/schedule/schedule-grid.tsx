@@ -13,6 +13,9 @@ import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
 
 import TimeBlock from "@/app/ui/components/schedule/time-block";
 import ScheduleHeader from "./schedule-header";
+import PreviewTimeBlock from "./timeblocks/preview-timeblock";
+import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
+import ResultsTimeBlock from "./timeblocks/results-timeblock";
 
 interface ScheduleGridProps {
   eventRange: EventRange;
@@ -58,7 +61,7 @@ export default function ScheduleGrid({
     });
   }
 
-  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
+  const { timeBlocks, dayGroupedSlots, numDays, numHours, error } = useGenerateTimeSlots(
     eventRange,
     timezone,
   );
@@ -101,25 +104,71 @@ export default function ScheduleGrid({
             return hour >= block.startHour && hour < block.endHour;
           });
 
-          return (
-            <TimeBlock
-              key={i}
-              mode={mode}
-              disableSelect={disableSelect}
-              timeslots={blockTimeSlots}
+          if (mode === "preview") {
+            return (
+              <PreviewTimeBlock 
               timeColWidth={50}
+              numQuarterHours={numHours * 4}
+              startHour={block.startHour}
+              timeslots={blockTimeSlots}
               numVisibleDays={visibleDays.length}
               visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-              startHour={block.startHour}
-              endHour={block.endHour}
               userTimezone={timezone}
+              />
+            )
+          } else if (mode === "paint") {
+            return (
+              <InteractiveTimeBlock 
+                              timeColWidth={50}
+              numQuarterHours={numHours * 4}
+              startHour={block.startHour}
+              timeslots={blockTimeSlots}
+              numVisibleDays={visibleDays.length}
+              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+              userTimezone={timezone}
+
               availability={availability}
               onToggle={handleToggle}
+              />
+            )
+          } else if (mode === "view") {
+            return (
+              <ResultsTimeBlock 
+               timeColWidth={50}
+              numQuarterHours={numHours * 4}
+              startHour={block.startHour}
+              timeslots={blockTimeSlots}
+              numVisibleDays={visibleDays.length}
+              visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+              userTimezone={timezone}
+
+              hoveredSlot={hoveredSlot}
+
               allAvailabilities={attendees.map((a) => a.availability)}
               onHoverSlot={setHoveredSlot}
-              hoveredSlot={hoveredSlot}
-            />
-          );
+              />
+            )
+          }
+
+          // return (
+          //   <TimeBlock
+          //     key={i}
+          //     mode={mode}
+          //     disableSelect={disableSelect}
+          //     timeslots={blockTimeSlots}
+          //     timeColWidth={50}
+          //     numVisibleDays={visibleDays.length}
+          //     visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+          //     startHour={block.startHour}
+          //     endHour={block.endHour}
+          //     userTimezone={timezone}
+          //     availability={availability}
+          //     onToggle={handleToggle}
+          //     allAvailabilities={attendees.map((a) => a.availability)}
+          //     onHoverSlot={setHoveredSlot}
+          //     hoveredSlot={hoveredSlot}
+          //   />
+          // );
         })}
       </div>
     </div>

@@ -15,6 +15,7 @@ export default function useGenerateTimeSlots(
         timeBlocks: [],
         dayGroupedSlots: [],
         numDays: 0,
+        numHours: 0,
         error: "Invalid or missing date range",
       };
     }
@@ -26,12 +27,16 @@ export default function useGenerateTimeSlots(
     const localEndHour = localEndTime.getHours();
 
     let timeBlocks = [];
+    let numHours = 0;
     // Handle overnight ranges
     if (localEndHour < localStartHour) {
       timeBlocks.push({ startHour: 0, endHour: localEndHour });
       timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+      numHours += localEndHour;
+      numHours += 24 - localStartHour;
     } else {
       timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
+      numHours += localEndHour - localStartHour;
     }
 
     const dayGroupedSlots = Array.from(
@@ -61,6 +66,6 @@ export default function useGenerateTimeSlots(
 
     const numDays = differenceInCalendarDays(localEndTime, localStartTime) + 1;
 
-    return { timeBlocks, dayGroupedSlots, numDays, error: null };
+    return { timeBlocks, dayGroupedSlots, numDays, numHours, error: null };
   }, [eventRange, timezone]);
 }
