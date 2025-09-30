@@ -10,72 +10,7 @@ import TimezoneSelect from "@/app/ui/components/timezone-select";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-
-const fillerAttendees = [
-  {
-    name: "Alice",
-    availability: new Set([
-      getUtcIsoSlot(
-        "2025-07-17",
-        10,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-      getUtcIsoSlot(
-        "2025-07-16",
-        11,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-      getUtcIsoSlot(
-        "2025-07-11",
-        14,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-    ]),
-  },
-  {
-    name: "Bob",
-    availability: new Set([
-      getUtcIsoSlot(
-        "2025-07-17",
-        10,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-      getUtcIsoSlot(
-        "2025-07-11",
-        14,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-      getUtcIsoSlot(
-        "2025-07-12",
-        9,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-    ]),
-  },
-  {
-    name: "Carol",
-    availability: new Set([
-      getUtcIsoSlot(
-        "2025-07-17",
-        10,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-      getUtcIsoSlot(
-        "2025-07-12",
-        9,
-        0,
-        Intl.DateTimeFormat().resolvedOptions().timeZone,
-      ),
-    ]),
-  },
-];
+import { EventRange } from "@/app/_lib/schedule/types";
 
 export default function Page() {
   const [timezone, setTimezone] = useState(
@@ -88,48 +23,24 @@ export default function Page() {
 
   const [userName, setUserName] = useState("John Doe");
   const [eventName, setEventName] = useState("Event Name");
-  const [attendees, setAttendees] = useState(fillerAttendees);
+  const [attendees, setAttendees] = useState("");
   const [eventCode, setEventCode] = useState<string>("");
   const [isOwner, setIsOwner] = useState<boolean>(true);
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Simulate fetching from backend
-    const fetchEventData = async () => {
-      try {
-        const res = await fetch("/api/event/12345"); // Replace with actual event ID or dynamic routing
-        const data = await res.json();
-
-        setEventName(data.eventName);
-        setEventCode(data.eventCode);
-        setAttendees(
-          data.attendees.map((a: any) => ({
-            name: a.name,
-            availability: new Set(a.availability),
-          })),
-        );
-        setIsOwner(data.owner === userName);
-      } catch (error) {
-        console.error("Failed to load event data:", error);
-      }
-    };
-
-    // fetchEventData();
-  }, [userName]);
-
   // Placeholder eventRange
   const today = new Date("2025-07-11T00:00:00");
-  const eventRange = {
-    type: "specific" as const,
+  const eventRange: EventRange = {
+    type: "specific",
     duration: 60 * 7,
-    timezone,
+    timezone: "America/New_York",
     dateRange: {
       from: today,
       to: new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000),
     },
     timeRange: {
-      from: new Date(today.setHours(0, 0, 0, 0)),
-      to: new Date(today.setHours(23, 0, 0, 0)),
+      from: new Date(Date.UTC(1970, 0, 1, 13, 0, 0)),
+      to: new Date(Date.UTC(1970, 0, 1, 24, 0, 0)),
     },
   };
 
@@ -159,7 +70,6 @@ export default function Page() {
           eventRange={eventRange}
           timezone={timezone}
           mode="view"
-          attendees={fillerAttendees}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
         />
@@ -169,7 +79,7 @@ export default function Page() {
           <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
-              {fillerAttendees.map((attendee) => {
+              {/* {attendees.map((attendee) => {
                 const isAvailable = hoveredSlot
                   ? attendee.availability.has(hoveredSlot)
                   : true;
@@ -185,7 +95,7 @@ export default function Page() {
                     {attendee.name}
                   </li>
                 );
-              })}
+              })} */}
             </ul>
           </div>
 
