@@ -5,19 +5,19 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", { username, password });
+    console.log("Login attempt:", { email, password });
 
     // TODO: Replace with real authentication
-    if (username === "test" && password === "1234") {
+    if (email === "test" && password === "1234") {
       router.push("/dashboard");
     } else {
-      alert("Invalid username or password");
+      alert("Invalid email or password");
     }
   };
 
@@ -29,12 +29,12 @@ export default function Page() {
           login
         </h1>
 
-        {/* Username */}
+        {/* Email */}
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
         />
 
@@ -62,11 +62,11 @@ export default function Page() {
           </button>
         </div>
 
-        {/* Signup Link */}
+        {/* Sign up Link */}
         <div className="w-full text-right text-xs">
           No account?{" "}
           <Link href="/sign-up" className="cursor-pointer">
-            Signup!
+            Sign up!
           </Link>
         </div>
       </form>

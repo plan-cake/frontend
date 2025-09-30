@@ -6,16 +6,14 @@ import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [email, setEmail] = useState("");
-  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup attempt:", {
+    console.log("Sign up attempt:", {
       email,
-      username,
       password,
       confirmPassword,
     });
@@ -23,7 +21,6 @@ export default function Page() {
     // TODO: Replace with real sign up information
     if (
       email === "test" &&
-      username === "test" &&
       password === "1234" &&
       confirmPassword === password
     ) {
@@ -38,7 +35,7 @@ export default function Page() {
       <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display mb-4 block text-5xl leading-none text-lion md:text-8xl">
-          signup
+          sign up
         </h1>
 
         {/* Email */}
@@ -47,15 +44,6 @@ export default function Page() {
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
-        />
-
-        {/* Username */}
-        <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
           className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
         />
 
@@ -76,14 +64,14 @@ export default function Page() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
         />
-
+        
+        {/* Sign Up Button */}
         <div className="flex w-full">
-          {/* Sign Up Button */}
           <button
             type="submit"
             className="mb-2 ml-auto cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            Sign Up
+            sign up
           </button>
         </div>
 
