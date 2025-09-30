@@ -65,8 +65,27 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
     return [];
   }
 
-  const eventStartUTC = range.dateRange.from;
-  const eventEndUTC = range.dateRange.to;
+  const dateRangeTo = Date.UTC(
+    range.dateRange.to.getUTCFullYear(),
+    range.dateRange.to.getUTCMonth(),
+    range.dateRange.to.getUTCDate(),
+    range.timeRange.to!.getUTCHours(),
+    range.timeRange.to!.getUTCMinutes(),
+    range.timeRange.to!.getUTCSeconds(),
+  );
+
+  const dateRangeFrom = Date.UTC(
+    range.dateRange.from.getUTCFullYear(),
+    range.dateRange.from.getUTCMonth(),
+    range.dateRange.from.getUTCDate(),
+    range.timeRange.from!.getUTCHours(),
+    range.timeRange.from!.getUTCMinutes(),
+    range.timeRange.from!.getUTCSeconds(),
+  );
+
+  // Get the absolute start and end times in UTC
+  const eventStartUTC = new Date(dateRangeFrom);
+  const eventEndUTC = new Date(dateRangeTo);
 
   // Get the valid time range for any given day in UTC
   const validTimeStartUTC = range.timeRange.from!;

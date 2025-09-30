@@ -13,14 +13,24 @@ import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog"
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+  const today = new Date();
+  const todayUTC = Date.UTC(
+    today.getUTCFullYear(),
+    today.getUTCMonth(),
+    today.getUTCDate(),
+    0,
+    0,
+    0,
+  );
+
   const [eventRange, setEventRange] = useState<EventRange>({
     type: "specific",
     duration: 60,
     timezone: defaultTZ,
-    dateRange: { from: new Date(), to: new Date() },
+    dateRange: { from: new Date(todayUTC), to: new Date(todayUTC) },
     timeRange: {
-      from: new Date(),
-      to: new Date(Date.now() + 3 * 60 * 60 * 1000), // 3 hours later
+      from: new Date(Date.UTC(1970, 0, 1, today.getUTCHours(), 0, 0)), // start of day UTC
+      to: new Date(Date.UTC(1970, 0, 1, today.getUTCHours() + 3, 0, 0)), // 3 hours later
     },
   });
 
