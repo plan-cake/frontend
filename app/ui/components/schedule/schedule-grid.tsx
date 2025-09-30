@@ -101,12 +101,14 @@ export default function ScheduleGrid({
             return hour >= block.startHour && hour < block.endHour;
           });
 
+          const numQuarterHours = (block.endHour - block.startHour) * 4;
+
           if (mode === "preview") {
             return (
               <PreviewTimeBlock
                 key={i}
                 timeColWidth={50}
-                numQuarterHours={numHours * 4}
+                numQuarterHours={numQuarterHours}
                 startHour={block.startHour}
                 timeslots={blockTimeSlots}
                 numVisibleDays={visibleDays.length}
@@ -119,7 +121,7 @@ export default function ScheduleGrid({
               <InteractiveTimeBlock
                 key={i}
                 timeColWidth={50}
-                numQuarterHours={numHours * 4}
+                numQuarterHours={numQuarterHours}
                 startHour={block.startHour}
                 timeslots={blockTimeSlots}
                 numVisibleDays={visibleDays.length}
@@ -134,7 +136,7 @@ export default function ScheduleGrid({
               <ResultsTimeBlock
                 key={i}
                 timeColWidth={50}
-                numQuarterHours={numHours * 4}
+                numQuarterHours={numQuarterHours}
                 startHour={block.startHour}
                 timeslots={blockTimeSlots}
                 numVisibleDays={visibleDays.length}

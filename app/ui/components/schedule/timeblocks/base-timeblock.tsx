@@ -20,13 +20,12 @@ export default function BaseTimeBlock({
   // generate hour labels for the time column
   const hoursLabel = useMemo(() => {
     return Array.from({ length: numQuarterHours }, (_, i) => {
-      const hour = Math.floor(i / 4) + startHour;
-      const minute = (i % 4) * 15;
-      return `${hour.toString().padStart(2, "0")}:${minute
-        .toString()
-        .padStart(2, "0")}`;
+      const hour24 = startHour + Math.floor(i / 4);
+      const hour12 = hour24 % 12 || 12;
+      const period = hour24 < 12 ? "AM" : "PM";
+      return `${hour12} ${period}`;
     });
-  }, [numQuarterHours, startHour]);
+  }, [startHour, numQuarterHours]);
 
   return (
     <div className="flex grow flex-row">

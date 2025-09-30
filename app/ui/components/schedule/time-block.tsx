@@ -94,7 +94,7 @@ export default function TimeBlock({
       </div>
 
       <div
-        className="grid w-full gap-x-[1px] border border-gray-400 bg-gray-400 dark:divide-gray-600 dark:border-gray-600"
+        className="grid w-full gap-x-[1px] border border-gray-400 dark:divide-gray-600 dark:border-gray-600"
         style={{
           gridTemplateColumns: `repeat(${numVisibleDays}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
@@ -136,10 +136,11 @@ export default function TimeBlock({
           const isSelected = availability.has(slotIso);
 
           let backgroundColor;
+          console.log("HERE");
           if (mode === "view") {
             backgroundColor = isDark
-              ? `rgba(225, 92, 92, ${opacity})`
-              : `rgba(61, 115, 163, ${opacity})`;
+              ? `rgba(225, 92, 92, 0.5)`
+              : `rgba(61, 115, 163, 0.5)`;
           } else {
             if (isSelected) {
               backgroundColor = isDark
