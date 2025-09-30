@@ -64,7 +64,7 @@ export default function Page() {
           onChange={(e) => setConfirmPassword(e.target.value)}
           className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
         />
-        
+
         {/* Sign Up Button */}
         <div className="flex w-full">
           <button
