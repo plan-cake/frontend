@@ -83,6 +83,7 @@ export default function ScheduleGrid({
       style={{ maxHeight: "90%" }}
     >
       <ScheduleHeader
+        preview={mode === "preview"}
         visibleDays={visibleDays}
         currentPage={currentPage}
         totalPages={totalPages}

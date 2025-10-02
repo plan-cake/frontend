@@ -39,8 +39,8 @@ function TimeSlot({
       draggable={false}
       className={cn(
         cellClasses,
-        "relative bg-white transition-colors hover:cursor-pointer",
-        isHovered && "ring-2 ring-blue ring-inset dark:ring-red",
+        "relative bg-white transition-colors hover:cursor-pointer dark:bg-violet",
+        isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
       )}
       style={{
         gridColumn,

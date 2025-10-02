@@ -39,7 +39,7 @@ export default function GridPreviewDialog({
         layout
         className={`flex flex-col space-y-4 overflow-hidden rounded-3xl border border-transparent bg-[#FFFFFF] dark:bg-[#343249] ${
           isOpen
-            ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] bg-white p-8 dark:bg-violet"
+            ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] p-8"
             : "absolute inset-0 h-full w-full pt-4 pr-4 pb-4 pl-2"
         } `}
       >

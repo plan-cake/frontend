@@ -1,3 +1,4 @@
+import { cn } from "@/app/_lib/classname";
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
 interface Day {
@@ -6,6 +7,7 @@ interface Day {
 }
 
 interface ScheduleHeaderProps {
+  preview?: boolean;
   visibleDays: Day[];
   currentPage: number;
   totalPages: number;
@@ -14,6 +16,7 @@ interface ScheduleHeaderProps {
 }
 
 export default function ScheduleHeader({
+  preview = false,
   visibleDays,
   currentPage,
   totalPages,
@@ -22,7 +25,10 @@ export default function ScheduleHeader({
 }: ScheduleHeaderProps) {
   return (
     <div
-      className="sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center bg-white dark:bg-violet"
+      className={cn(
+        preview ? "bg-[#FFFFFF] dark:bg-[#343248]" : "bg-white dark:bg-violet",
+        "sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center",
+      )}
       style={{
         gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
       }}
