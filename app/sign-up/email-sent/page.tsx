@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import MessagePage from "../../ui/components/message-page";
+import MessagePage from "../../ui/layout/message-page";
 import { useEffect } from "react";
 
 export default function Page() {

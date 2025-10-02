@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import MessagePage from "../ui/components/message-page";
+import MessagePage from "../ui/layout/message-page";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);

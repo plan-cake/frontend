@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import MessagePage from "../ui/components/message-page";
+import MessagePage from "../ui/layout/message-page";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
