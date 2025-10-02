@@ -2,14 +2,28 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordReset, setPasswordReset] = useState(false);
 
+  const searchParams = useSearchParams();
+  const pwdResetToken = searchParams.get("token");
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!pwdResetToken) {
+      alert("Invalid or missing password reset token.");
+      return;
+    }
+
+    if (!newPassword || !confirmPassword) {
+      alert("Please fill in all fields.");
+      return;
+    }
 
     // TODO: Replace with real sign up information
     if (newPassword !== confirmPassword) {
