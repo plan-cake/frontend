@@ -1,4 +1,8 @@
-import { ButtonType } from "@/app/_types/button-type";
+enum ButtonTypeEnum {
+  primary = "primary",
+  secondary = "secondary",
+}
+type ButtonType = keyof typeof ButtonTypeEnum;
 
 type ButtonData = { type: ButtonType; label: string; onClick: () => void };
 
