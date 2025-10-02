@@ -39,8 +39,7 @@ function TimeSlot({
       draggable={false}
       className={cn(
         cellClasses,
-        "bg-white transition-colors hover:cursor-pointer",
-        disableSelect && "cursor-not-allowed",
+        "relative bg-white transition-colors hover:cursor-pointer",
         isHovered && "ring-2 ring-blue ring-inset dark:ring-red",
       )}
       style={{
@@ -52,9 +51,12 @@ function TimeSlot({
       {...eventHandlers}
     >
       <div
-        style={{
-          backgroundColor,
-        }}
+        className={cn(
+          "h-full w-full",
+          disableSelect && "cursor-not-allowed",
+          "hover:bg-blue-200 dark:hover:bg-red-200",
+        )}
+        style={{ backgroundColor }}
       />
     </div>
   );

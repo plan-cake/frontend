@@ -77,7 +77,7 @@ export default function InteractiveTimeBlock({
             ? "rgba(225, 92, 92, 1)"
             : "rgba(61, 115, 163, 1)";
         } else {
-          backgroundColor = isDark ? "rgb(31 41 55)" : "rgb(255 255 255)";
+          backgroundColor = "";
         }
 
         return (
