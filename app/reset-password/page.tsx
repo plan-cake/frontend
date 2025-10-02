@@ -1,13 +1,15 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import MessagePage from "../ui/components/message-page";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordReset, setPasswordReset] = useState(false);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
@@ -36,15 +38,17 @@ export default function Page() {
   return (
     <div className="flex h-screen items-center justify-center">
       {passwordReset ? (
-        <div className="text-center">
-          <h2 className="mb-6 text-4xl font-bold">Password Reset Successful</h2>
-          <Link
-            href="/login"
-            className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
-          >
-            back to login
-          </Link>
-        </div>
+        <MessagePage
+          title="Password Reset Successful"
+          description=""
+          buttons={[
+            {
+              type: "primary",
+              label: "back to login",
+              onClick: () => router.push("/login"),
+            },
+          ]}
+        />
       ) : (
         <form
           onSubmit={handleSubmit}

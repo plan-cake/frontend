@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import MessagePage from "../ui/components/message-page";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);
   const [emailVerified, setEmailVerified] = useState(false);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const token = searchParams.get("code");
@@ -37,31 +39,29 @@ export default function Page() {
           <h2 className="mb-6">Verifying...</h2>
         </div>
       ) : emailVerified ? (
-        <div className="text-center">
-          <h2 className="mb-4 text-4xl font-bold">Email Verified</h2>
-          <p className="mb-6">Welcome to Plancake!</p>
-          <div className="flex justify-center gap-6">
-            <Link
-              href="/login"
-              className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
-            >
-              go to login
-            </Link>
-          </div>
-        </div>
+        <MessagePage
+          title="Email Verified"
+          description="Welcome to Plancake!"
+          buttons={[
+            {
+              type: "primary",
+              label: "go to login",
+              onClick: () => router.push("/login"),
+            },
+          ]}
+        />
       ) : (
-        <div className="text-center">
-          <h2 className="mb-4 text-4xl font-bold">Failed to Verify Email</h2>
-          <p className="mb-6">This link is invalid or has expired.</p>
-          <div className="flex justify-center gap-6">
-            <Link
-              href="/sign-up"
-              className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
-            >
-              back to sign up
-            </Link>
-          </div>
-        </div>
+        <MessagePage
+          title="Failed to Verify Email"
+          description="This link is invalid or has expired."
+          buttons={[
+            {
+              type: "secondary",
+              label: "back to sign up",
+              onClick: () => router.push("/sign-up"),
+            },
+          ]}
+        />
       )}
     </div>
   );

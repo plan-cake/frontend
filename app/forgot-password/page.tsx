@@ -2,10 +2,13 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import MessagePage from "../ui/components/message-page";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,19 +23,17 @@ export default function Page() {
   return (
     <div className="flex h-screen items-center justify-center">
       {emailSent ? (
-        <div className="text-center">
-          <h2 className="mb-4 text-4xl font-bold">Check your email</h2>
-          <p className="mb-6">
-            A password reset link was sent to{" "}
-            <span className="font-bold">{email}</span>.
-          </p>
-          <Link
-            href="/login"
-            className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
-          >
-            back to login
-          </Link>
-        </div>
+        <MessagePage
+          title="Check your email"
+          description={`A password reset link was sent to ${email}.`}
+          buttons={[
+            {
+              type: "primary",
+              label: "back to login",
+              onClick: () => router.push("/login"),
+            },
+          ]}
+        />
       ) : (
         <form
           onSubmit={handleSubmit}

@@ -1,13 +1,16 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
+import MessagePage from "../ui/components/message-page";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const router = useRouter();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,27 +36,22 @@ export default function Page() {
   return (
     <div className="flex h-screen items-center justify-center">
       {emailSent ? (
-        <div className="text-center">
-          <h2 className="mb-4 text-4xl font-bold">Check your email</h2>
-          <p className="mb-6">
-            A verification link was sent to{" "}
-            <span className="font-bold">{email}</span>.
-          </p>
-          <div className="flex justify-center gap-6">
-            <button
-              onClick={handleResendEmail}
-              className="mb-2 cursor-pointer rounded-full px-4 py-2 outline-2 outline-blue transition"
-            >
-              resend email
-            </button>
-            <Link
-              href="/login"
-              className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
-            >
-              go to login
-            </Link>
-          </div>
-        </div>
+        <MessagePage
+          title="Check your email"
+          description={`A verification link was sent to ${email}.`}
+          buttons={[
+            {
+              type: "secondary",
+              label: "resend email",
+              onClick: handleResendEmail,
+            },
+            {
+              type: "primary",
+              label: "go to login",
+              onClick: () => router.push("/login"),
+            },
+          ]}
+        />
       ) : (
         <form
           onSubmit={handleSubmit}
