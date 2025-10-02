@@ -7,6 +7,7 @@ import { useEffect } from "react";
 export default function Page() {
   const router = useRouter();
   const email = sessionStorage.getItem("sign_up_email");
+  let lastEmailResend = Date.now();
 
   useEffect(() => {
     if (!email) {
@@ -23,8 +24,17 @@ export default function Page() {
   }
 
   const handleResendEmail = () => {
-    console.log("Resending email to:", email);
+    const emailResendCooldown = 30000; // 30 seconds
+    let timeLeft =
+      (emailResendCooldown - (Date.now() - lastEmailResend)) / 1000;
+    timeLeft = Math.ceil(timeLeft);
+    if (timeLeft > 0) {
+      alert(`Slow down! ${timeLeft} seconds until you can send again.`);
+      return;
+    }
     // TODO: Replace with real resend email API logic
+    console.log("Resending email to:", email);
+    lastEmailResend = Date.now();
   };
 
   return (
