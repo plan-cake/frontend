@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import MessagePage from "../ui/components/message-page";
 
 export default function Page() {
@@ -15,6 +14,9 @@ export default function Page() {
 
   useEffect(() => {
     const verifyEmail = async () => {
+      // simulate network delay
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       if (!token) {
         setVerifying(false);
         setEmailVerified(false);
@@ -22,11 +24,8 @@ export default function Page() {
       }
 
       // TODO: Replace with an actual API call
-      // randomly choose an outcome after a delay for now
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const success = Math.random() > 0.5;
       setVerifying(false);
-      setEmailVerified(success);
+      setEmailVerified(true);
     };
 
     verifyEmail();
