@@ -80,8 +80,8 @@ export default function ResultsTimeBlock({
 
         let backgroundColor;
         backgroundColor = isDark
-          ? `rgba(225, 92, 92, .10)`
-          : `rgba(61, 115, 163, .10)`;
+          ? `rgba(225, 92, 92, ${opacity})`
+          : `rgba(61, 115, 163, ${opacity})`;
 
         return (
           <TimeSlot
