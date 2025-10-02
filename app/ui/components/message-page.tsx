@@ -20,8 +20,8 @@ export default function MessagePage({
   return (
     <div className="text-center">
       <h2 className="mb-4 text-4xl font-bold">{title}</h2>
-      <p className="mb-6">{description}</p>
-      <div className="flex justify-center gap-6">
+      <p className="mb-4">{description}</p>
+      <div className="flex justify-center gap-4">
         {buttons.map((button, index) => (
           <button
             key={index}
