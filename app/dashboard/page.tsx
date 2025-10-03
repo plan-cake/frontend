@@ -60,6 +60,10 @@ export default function Page() {
     );
   };
 
+  const logout = async () => {
+    alert("Logging out...");
+  };
+
   return (
     <div className="min-h-screen p-6">
       {/* Events You Joined */}
@@ -95,6 +99,16 @@ export default function Page() {
           ))}
         </div>
       </section>
+
+      {/* Logout Button */}
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={logout}
+          className="mb-2 cursor-pointer rounded-full bg-blue px-4 py-2 font-medium transition dark:bg-red"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }
