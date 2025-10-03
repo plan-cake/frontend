@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
 import MessagePage from "../../ui/layout/message-page";
-import { useEffect } from "react";
 
 export default function Page() {
   const router = useRouter();
   const email = sessionStorage.getItem("sign_up_email");
-  let lastEmailResend = Date.now();
+  const lastEmailResend = useRef(Date.now());
 
   useEffect(() => {
     if (!email) {
@@ -26,7 +26,7 @@ export default function Page() {
   const handleResendEmail = () => {
     const emailResendCooldown = 30000; // 30 seconds
     let timeLeft =
-      (emailResendCooldown - (Date.now() - lastEmailResend)) / 1000;
+      (emailResendCooldown - (Date.now() - lastEmailResend.current)) / 1000;
     timeLeft = Math.ceil(timeLeft);
     if (timeLeft > 0) {
       alert(`Slow down! ${timeLeft} seconds until you can send again.`);
@@ -34,7 +34,7 @@ export default function Page() {
     }
     // TODO: Replace with real resend email API logic
     console.log("Resending email to:", email);
-    lastEmailResend = Date.now();
+    lastEmailResend.current = Date.now();
   };
 
   return (
