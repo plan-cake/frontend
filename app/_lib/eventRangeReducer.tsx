@@ -3,7 +3,7 @@ import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
 export type EventRangeAction =
   | { type: "SET_RANGE_TYPE"; payload: "specific" | "weekday" }
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
-  | { type: "SET_TIME_RANGE"; payload: { from: string; to: string } }
+  | { type: "SET_TIME_RANGE"; payload: { from: number; to: number } }
   | {
       type: "SET_WEEKDAYS";
       payload: { weekdays: Partial<Record<keyof WeekdayMap, 0 | 1>> };
@@ -108,7 +108,7 @@ export function EventRangeReducer(
             from: new Date().toISOString(),
             to: new Date().toISOString(),
           },
-          timeRange: { from: "09:00", to: "17:00" },
+          timeRange: { from: 9, to: 17 },
         };
       } else {
         return {
@@ -116,7 +116,7 @@ export function EventRangeReducer(
           duration: 30,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
-          timeRange: { from: "09:00", to: "17:00" },
+          timeRange: { from: 9, to: 17 },
         };
       }
     }

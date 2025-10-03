@@ -1,18 +1,14 @@
-import { fromZonedTime } from "date-fns-tz";
 import CustomSelect from "@/app/ui/components/custom-select";
+import { time } from "console";
 
 type TimeDropdownProps = {
-  onChange: (time: Date) => void;
-  value: string;
+  onChange: (time: number) => void;
+  value: number;
   defaultTZ: string;
   duration: number;
 };
 
-export default function TimeDropdown({
-  onChange,
-  value,
-  defaultTZ,
-}: TimeDropdownProps) {
+export default function TimeDropdown({ onChange, value }: TimeDropdownProps) {
   const options = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
     const period = i < 12 ? "am" : "pm";
@@ -21,10 +17,7 @@ export default function TimeDropdown({
 
   const handleValueChange = (selectedValue: string | number) => {
     const hour = Number(selectedValue);
-
-    const zonedSelectedTime = new Date();
-    zonedSelectedTime.setHours(hour, 0, 0, 0);
-    onChange(fromZonedTime(zonedSelectedTime, defaultTZ));
+    onChange(hour);
   };
 
   return (

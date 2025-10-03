@@ -6,12 +6,6 @@ export type EventInformation = {
   eventRange: EventRange;
 };
 
-// defines a time range, stored in UTC
-export type TimeDateRange = {
-  from: string;
-  to: string;
-};
-
 // represents selected weekdays
 export type WeekdayMap = {
   [day in "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat"]: 0 | 1;
@@ -23,8 +17,14 @@ export type SpecificDateRange = {
   type: "specific";
   duration: number;
   timezone: string;
-  dateRange: TimeDateRange;
-  timeRange: TimeDateRange;
+  dateRange: {
+    from: string;
+    to: string;
+  };
+  timeRange: {
+    from: number; // hour in 24h format, e.g., 9 for 9:00 AM
+    to: number; // hour in 24h format, e.g., 17 for 5:00 PM
+  };
 };
 
 export type WeekdayRange = {
@@ -32,7 +32,10 @@ export type WeekdayRange = {
   duration: number;
   timezone: string;
   weekdays: WeekdayMap;
-  timeRange: TimeDateRange;
+  timeRange: {
+    from: number; // hour in 24h format, e.g., 9 for 9:00 AM
+    to: number; // hour in 24h format, e.g., 17 for 5:00 PM
+  };
 };
 
 // discriminated union for event ranges - this is your single source of truth

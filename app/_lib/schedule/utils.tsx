@@ -67,24 +67,27 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
   // Get the absolute start and end times in UTC
   const startDateString = range.dateRange.from.split("T")[0];
   const endDateString = range.dateRange.to.split("T")[0];
+  const startTimeString = String(range.timeRange.from).padStart(2, "0");
+  const endTimeString = String(range.timeRange.to).padStart(2, "0");
+  console.log({ range, startDateString, endDateString });
+  console.log(`${startDateString}T${range.timeRange.from}`);
+
   const eventStartUTC = fromZonedTime(
-    `${startDateString}T${range.timeRange.from}`,
+    `${startDateString}T${startTimeString}`,
     range.timezone,
   );
   const eventEndUTC = fromZonedTime(
-    `${endDateString}T${range.timeRange.to}`,
+    `${endDateString}T${endTimeString}`,
     range.timezone,
   );
 
   // Get the valid time range for any given day in UTC
-  const [validStartHour, validStartMinute] = range.timeRange.from
-    .split(":")
-    .map(Number);
-  const [validEndHour, validEndMinute] = range.timeRange.to
-    .split(":")
-    .map(Number);
+  const validStartHour = range.timeRange.from;
+  const validEndHour = range.timeRange.to;
 
   let currentUTC = new Date(eventStartUTC);
+
+  console.log({ eventStartUTC, eventEndUTC });
 
   while (currentUTC <= eventEndUTC) {
     // Get the time-of-day part of the current date
@@ -95,11 +98,11 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
 
     const isAfterStartTime =
       currentHour > validStartHour ||
-      (currentHour === validStartHour && currentMinute >= validStartMinute);
+      (currentHour === validStartHour && currentMinute >= 0);
 
     const isBeforeEndTime =
       currentHour < validEndHour ||
-      (currentHour === validEndHour && currentMinute < validEndMinute);
+      (currentHour === validEndHour && currentMinute < 0);
 
     if (isAfterStartTime && isBeforeEndTime) {
       slots.push(new Date(currentUTC));

@@ -19,8 +19,8 @@ const initialEventRange: EventRange = {
     to: new Date().toISOString(),
   },
   timeRange: {
-    from: "09:00",
-    to: "17:00",
+    from: 9,
+    to: 17,
   },
 };
 
@@ -49,10 +49,13 @@ export default function Page() {
     dispatch({ type: "SET_DURATION", payload: new_duration });
   };
 
-  const handleTimeChange = (key: "from" | "to", value: string) => {
+  const handleTimeChange = (key: "from" | "to", value: number) => {
     dispatch({
       type: "SET_TIME_RANGE",
-      payload: { ...eventRange.timeRange, [key]: value },
+      payload: {
+        ...eventRange.timeRange,
+        [key]: value,
+      },
     });
   };
 
@@ -77,9 +80,7 @@ export default function Page() {
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.from}
-            onChange={(from) =>
-              handleTimeChange("from", from.getHours().toString())
-            }
+            onChange={(from) => handleTimeChange("from", from)}
           />
         </div>
         <div className="flex space-x-4 md:col-start-1 md:row-start-4">
@@ -88,7 +89,7 @@ export default function Page() {
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.to}
-            onChange={(to) => handleTimeChange("to", to.getHours().toString())}
+            onChange={(to) => handleTimeChange("to", to)}
           />
         </div>
 

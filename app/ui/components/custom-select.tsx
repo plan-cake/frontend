@@ -24,7 +24,7 @@ export default function CustomSelect({
   onValueChange,
   className,
 }: CustomSelectProps) {
-  // flatten options if they are grouped and fine the current selected option
+  // flatten options if they are grouped and find the current selected option
   const allOptions = isGrouped
     ? (options as GroupedOption[]).flatMap((g) => g.options)
     : (options as Option[]);
