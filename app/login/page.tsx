@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
@@ -8,10 +8,14 @@ import formatApiError from "../_utils/format-api-error";
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const isSubmitting = useRef(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
 
     if (!email) {
       alert("Missing email");
@@ -38,6 +42,8 @@ export default function Page() {
         console.error("Fetch error:", err);
         alert("An error occurred. Please try again.");
       });
+
+    isSubmitting.current = false;
   };
 
   return (
