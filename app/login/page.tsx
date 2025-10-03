@@ -19,10 +19,12 @@ export default function Page() {
 
     if (!email) {
       alert("Missing email");
+      isSubmitting.current = false;
       return;
     }
     if (!password) {
       alert("Missing password");
+      isSubmitting.current = false;
       return;
     }
 
