@@ -65,12 +65,14 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
   }
 
   // Get the absolute start and end times in UTC
+  const startDateString = range.dateRange.from.split("T")[0];
+  const endDateString = range.dateRange.to.split("T")[0];
   const eventStartUTC = fromZonedTime(
-    `${range.dateRange.from}T${range.timeRange.from}`,
+    `${startDateString}T${range.timeRange.from}`,
     range.timezone,
   );
   const eventEndUTC = fromZonedTime(
-    `${range.dateRange.to}T${range.timeRange.to}`,
+    `${endDateString}T${range.timeRange.to}`,
     range.timezone,
   );
 
@@ -85,7 +87,6 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
   let currentUTC = new Date(eventStartUTC);
 
   while (currentUTC <= eventEndUTC) {
-    // console.log({ current });
     // Get the time-of-day part of the current date
     const zonedCurrent = toZonedTime(currentUTC, range.timezone);
 
