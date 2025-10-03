@@ -26,22 +26,12 @@ export default function Page() {
   // --- CORRECTED ---
   // 1. Create dates in UTC to avoid browser timezone issues.
   const today = new Date();
-  const startOfDayUTC = Date.UTC(
-    today.getUTCFullYear(),
-    today.getUTCMonth(),
-    today.getUTCDate(),
-    13, // 9 AM in New York (EDT is UTC-4) is 1 PM UTC
-    0,
-    0,
-  );
-  const endOfDayUTC = Date.UTC(
-    today.getUTCFullYear(),
-    today.getUTCMonth(),
-    today.getUTCDate() + 7, // Event ends 7 days later
-    0, // 8 PM in New York (EDT is UTC-4) is 12 AM UTC the next day
-    0,
-    0,
-  );
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   const eventRange: EventRange = {
     type: "specific",
@@ -49,13 +39,13 @@ export default function Page() {
     // 2. Set the event's *original* timezone, not the user's.
     timezone: "America/New_York",
     dateRange: {
-      from: new Date(startOfDayUTC),
-      to: new Date(endOfDayUTC),
+      from: formatDate(today),
+      to: formatDate(today),
     },
     // This timeRange is for the valid times within a day
     timeRange: {
-      from: new Date(Date.UTC(1970, 0, 1, 13, 0, 0)), // 9 AM NY -> 1 PM UTC
-      to: new Date(Date.UTC(1970, 0, 1, 24, 0, 0)), // 8 PM NY -> 12 AM UTC
+      from: "09:00",
+      to: "20:00",
     },
   };
 

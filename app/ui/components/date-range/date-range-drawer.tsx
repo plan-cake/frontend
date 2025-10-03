@@ -1,6 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 import { Calendar } from "@/app/ui/components/month-calendar";
 import CustomSelect from "@/app/ui/components/custom-select";
@@ -9,33 +10,21 @@ import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 
 export default function DateRangeDrawer({
   eventRange,
-  onChangeRangeType,
-  onChangeSpecific,
-  onChangeWeekday,
+  dispatch,
 }: DateRangeProps) {
   const rangeType = eventRange?.type ?? "specific";
 
-  const select = (
-    <CustomSelect
-      options={[
-        { label: "Specific Dates", value: "specific" },
-        { label: "Days of the Week", value: "weekday" },
-      ]}
-      value={rangeType === "specific" ? "Specific Dates" : "Days of the Week"}
-      onValueChange={(value) =>
-        onChangeRangeType?.(value === "Specific Dates" ? "specific" : "weekday")
-      }
-      className="min-h-9 min-w-[100px] border-none px-2"
-    />
-  );
+  const handleRangeTypeChange = (value: "specific" | "weekday") => {
+    dispatch({ type: "SET_RANGE_TYPE", payload: value });
+  };
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button className="cursor-pointer" aria-label="Open date range picker">
           <DateRangeDrawerSelector
             eventRange={eventRange}
-            onChangeSpecific={onChangeSpecific}
-            onChangeWeekday={onChangeWeekday}
+            dispatch={dispatch}
           />
         </button>
       </Dialog.Trigger>
@@ -52,14 +41,25 @@ export default function DateRangeDrawer({
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
             />
             <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              Select Date Range
-              {select}
+              <label htmlFor="date-range-type">Select Date Range</label>
+              <CustomSelect
+                options={[
+                  { label: "Specific Dates", value: "specific" },
+                  { label: "Days of the Week", value: "weekday" },
+                ]}
+                value={rangeType === "specific" ? "specific" : "weekday"}
+                onValueChange={(value) =>
+                  handleRangeTypeChange?.(
+                    value === "Specific Dates" ? "specific" : "weekday",
+                  )
+                }
+                className="min-h-9 min-w-[100px] border-none px-2"
+              />
             </Dialog.Title>
 
             <DateRangeDrawerSelector
               eventRange={eventRange}
-              onChangeSpecific={onChangeSpecific}
-              onChangeWeekday={onChangeWeekday}
+              dispatch={dispatch}
               displayCalendar={true}
             />
           </div>
@@ -71,35 +71,40 @@ export default function DateRangeDrawer({
 
 const DateRangeDrawerSelector = ({
   eventRange,
-  onChangeSpecific,
-  onChangeWeekday = () => {},
-  displayCalendar = false,
+  displayCalendar,
+  dispatch,
 }: DateRangeProps) => {
   if (eventRange?.type === "specific") {
-    const specificRange = eventRange.dateRange;
+    const startDate = fromZonedTime(
+      eventRange.dateRange.from,
+      eventRange.timezone,
+    );
+    const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
     return (
       <div className="flex flex-col space-y-2">
         {displayCalendar ? (
           <Calendar
             selectedRange={{
-              from: specificRange.from || undefined,
-              to: specificRange.to || undefined,
+              from: startDate || undefined,
+              to: endDate || undefined,
             }}
-            onRangeSelect={(range) => {
-              if (range?.from) {
-                onChangeSpecific?.("from", range.from);
-              }
-              if (range?.to) {
-                onChangeSpecific?.("to", range.to);
-              }
-            }}
+            dispatch={dispatch}
           />
         ) : (
           <>
             <label className="text-start">Possible Dates</label>
             <DateRangeInput
-              specificRange={specificRange}
-              onChangeSpecific={onChangeSpecific}
+              startDate={startDate}
+              endDate={endDate}
+              onChangeSpecific={(key, value) =>
+                dispatch({
+                  type: "SET_DATE_RANGE",
+                  payload: {
+                    ...eventRange.dateRange,
+                    [key]: value.toISOString(),
+                  },
+                })
+              }
             />
           </>
         )}
@@ -125,7 +130,9 @@ const DateRangeDrawerSelector = ({
             Sat: 0,
           }
         }
-        onChange={onChangeWeekday}
+        onChange={(map) =>
+          dispatch({ type: "SET_WEEKDAYS", payload: { weekdays: map } })
+        }
       />
     </div>
   );

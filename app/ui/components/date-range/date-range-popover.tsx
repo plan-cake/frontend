@@ -1,23 +1,32 @@
 "use client";
 
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 import * as Popover from "@radix-ui/react-popover";
 import { Calendar } from "@/app/ui/components/month-calendar";
 import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 
 export default function DateRangePopover({
-  specificRange,
-  onChangeSpecific,
+  eventRange,
+  dispatch,
 }: DateRangeProps) {
+  // If the event range is not specific, return null
+  if (eventRange.type !== "specific") {
+    return null;
+  }
+
+  const startDate = fromZonedTime(
+    eventRange.dateRange.from,
+    eventRange.timezone,
+  );
+  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
+
   return (
     <Popover.Root>
       <Popover.Trigger asChild>
         <div>
-          <DateRangeInput
-            specificRange={specificRange}
-            onChangeSpecific={onChangeSpecific}
-          />
+          <DateRangeInput startDate={startDate} endDate={endDate} />
         </div>
       </Popover.Trigger>
 
@@ -30,17 +39,10 @@ export default function DateRangePopover({
           <Calendar
             className="w-fit"
             selectedRange={{
-              from: specificRange?.from || undefined,
-              to: specificRange?.to || undefined,
+              from: startDate || undefined,
+              to: endDate || undefined,
             }}
-            onRangeSelect={(range) => {
-              if (range?.from) {
-                onChangeSpecific?.("from", range.from);
-              }
-              if (range?.to) {
-                onChangeSpecific?.("to", range.to);
-              }
-            }}
+            dispatch={dispatch}
           />
         </Popover.Content>
       </Popover.Portal>

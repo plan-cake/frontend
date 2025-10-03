@@ -1,20 +1,18 @@
 import { format } from "date-fns";
 
 type DateRangeInputProps = {
-  specificRange: { from: Date | null; to: Date | null } | undefined;
+  startDate: Date;
+  endDate: Date;
   onChangeSpecific?: (key: "from" | "to", value: Date) => void;
 };
 
 export default function DateRangeInput({
-  specificRange,
+  startDate,
+  endDate,
   onChangeSpecific,
 }: DateRangeInputProps) {
-  const displayFrom = specificRange?.from
-    ? format(specificRange.from, "EEE MMMM d, yyyy")
-    : "";
-  const displayTo = specificRange?.to
-    ? format(specificRange.to, "EEE MMMM d, yyyy")
-    : "";
+  const displayFrom = startDate ? format(startDate, "EEE MMMM d, yyyy") : "";
+  const displayTo = endDate ? format(endDate, "EEE MMMM d, yyyy") : "";
   return (
     <form className="flex flex-col gap-y-2 md:flex-row">
       <div className="flex space-x-4">

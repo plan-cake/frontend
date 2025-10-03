@@ -8,24 +8,25 @@ import {
   WeekdayMap,
 } from "@/app/_lib/schedule/types";
 import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { getHours, getMinutes } from "date-fns";
 
-export function checkDateInRange(date: Date, eventRange: EventRange): boolean {
-  if (eventRange.type === "specific") {
-    const { from, to } = eventRange.dateRange;
-    if (!from || !to) {
-      return false;
-    }
-    return date >= from && date < to;
-  } else if (eventRange.type === "weekday") {
-    const weekdays = eventRange.weekdays;
+// export function checkDateInRange(date: Date, eventRange: EventRange): boolean {
+//   if (eventRange.type === "specific") {
+//     const { from, to } = eventRange.dateRange;
+//     if (!from || !to) {
+//       return false;
+//     }
+//     return date >= from && date < to;
+//   } else if (eventRange.type === "weekday") {
+//     const weekdays = eventRange.weekdays;
 
-    const weekday = date.toLocaleDateString("en-US", {
-      weekday: "short",
-    }) as keyof typeof weekdays;
-    return weekdays[weekday] == 0 ? false : true;
-  }
-  return false;
-}
+//     const weekday = date.toLocaleDateString("en-US", {
+//       weekday: "short",
+//     }) as keyof typeof weekdays;
+//     return weekdays[weekday] == 0 ? false : true;
+//   }
+//   return false;
+// }
 
 function combineDateAndTime(date: Date, time: Date): number {
   return Date.UTC(
@@ -64,32 +65,46 @@ export function generateSlotsForSpecificRange(range: EventRange): Date[] {
   }
 
   // Get the absolute start and end times in UTC
-  const eventStartUTC = new Date(
-    combineDateAndTime(range.dateRange.from, range.timeRange.from!),
+  const eventStartUTC = fromZonedTime(
+    `${range.dateRange.from}T${range.timeRange.from}`,
+    range.timezone,
   );
-  const eventEndUTC = new Date(
-    combineDateAndTime(range.dateRange.to, range.timeRange.to!),
+  const eventEndUTC = fromZonedTime(
+    `${range.dateRange.to}T${range.timeRange.to}`,
+    range.timezone,
   );
 
   // Get the valid time range for any given day in UTC
-  const validTimeStartUTC = range.timeRange.from!;
-  const validTimeEndUTC = range.timeRange.to!;
+  const [validStartHour, validStartMinute] = range.timeRange.from
+    .split(":")
+    .map(Number);
+  const [validEndHour, validEndMinute] = range.timeRange.to
+    .split(":")
+    .map(Number);
 
-  let current = new Date(eventStartUTC);
+  let currentUTC = new Date(eventStartUTC);
 
-  while (current < eventEndUTC) {
+  while (currentUTC <= eventEndUTC) {
+    // console.log({ current });
     // Get the time-of-day part of the current date
-    const timeOfDay = new Date(
-      Date.UTC(1970, 0, 1, current.getUTCHours(), current.getUTCMinutes()),
-    );
+    const zonedCurrent = toZonedTime(currentUTC, range.timezone);
 
-    // Check if the time-of-day is within the valid range
-    if (timeOfDay >= validTimeStartUTC && timeOfDay < validTimeEndUTC) {
-      slots.push(new Date(current));
+    const currentHour = getHours(zonedCurrent);
+    const currentMinute = getMinutes(zonedCurrent);
+
+    const isAfterStartTime =
+      currentHour > validStartHour ||
+      (currentHour === validStartHour && currentMinute >= validStartMinute);
+
+    const isBeforeEndTime =
+      currentHour < validEndHour ||
+      (currentHour === validEndHour && currentMinute < validEndMinute);
+
+    if (isAfterStartTime && isBeforeEndTime) {
+      slots.push(new Date(currentUTC));
     }
 
-    // Advance to the next 15-minute slot
-    current.setUTCMinutes(current.getUTCMinutes() + 15);
+    currentUTC.setUTCMinutes(currentUTC.getUTCMinutes() + 15);
   }
 
   return slots;

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
-
+import { useReducer } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
+import { EventRangeReducer } from "@/app/_lib/eventRangeReducer";
 
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
@@ -10,36 +10,26 @@ import TimezoneSelect from "@/app/ui/components/timezone-select";
 import CustomSelect from "@/app/ui/components/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 
+const initialEventRange: EventRange = {
+  type: "specific",
+  duration: 60,
+  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+  dateRange: {
+    from: new Date().toISOString(),
+    to: new Date().toISOString(),
+  },
+  timeRange: {
+    from: "09:00",
+    to: "17:00",
+  },
+};
+
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-  const today = new Date();
-  const todayUTC = Date.UTC(
-    today.getUTCFullYear(),
-    today.getUTCMonth(),
-    today.getUTCDate(),
-    0,
-    0,
-    0,
+  const [eventRange, dispatch] = useReducer(
+    EventRangeReducer,
+    initialEventRange,
   );
-
-  const [eventRange, setEventRange] = useState<EventRange>({
-    type: "specific",
-    duration: 60,
-    timezone: defaultTZ,
-    dateRange: { from: new Date(todayUTC), to: new Date(todayUTC) },
-    timeRange: {
-      from: new Date(Date.UTC(1970, 0, 1, today.getUTCHours(), 0, 0)), // start of day UTC
-      to: new Date(Date.UTC(1970, 0, 1, today.getUTCHours() + 3, 0, 0)), // 3 hours later
-    },
-  });
-
-  const handleTZChange = (newTZ: string | number) => {
-    setEventRange((prev) => ({
-      ...prev,
-      timezone: newTZ.toString(),
-    }));
-  };
 
   const durationOptions = [
     { label: "30 minutes", value: 30 },
@@ -47,26 +37,23 @@ export default function Page() {
     { label: "1 hour", value: 60 },
   ];
 
-  const handleDurationChange = (newDuration: string | number) => {
-    const duration = Number(newDuration);
-    setEventRange((prev) => ({
-      ...prev,
-      duration,
-    }));
+  const handleTZChange = (new_timezone: string | number) => {
+    if (!new_timezone) return;
+    if (typeof new_timezone !== "string") return;
+    dispatch({ type: "SET_TIMEZONE", payload: new_timezone });
   };
 
-  const handleTimeChange = (key: "from" | "to", value: Date) => {
-    setEventRange((prev) => ({
-      ...prev,
-      timeRange: {
-        ...prev.timeRange,
-        [key]: value,
-      },
-    }));
+  const handleDurationChange = (new_duration: number | string) => {
+    if (!new_duration) return;
+    if (typeof new_duration !== "number") return;
+    dispatch({ type: "SET_DURATION", payload: new_duration });
   };
 
-  const handleEventRangeChange = (range: EventRange) => {
-    setEventRange(range);
+  const handleTimeChange = (key: "from" | "to", value: string) => {
+    dispatch({
+      type: "SET_TIME_RANGE",
+      payload: { ...eventRange.timeRange, [key]: value },
+    });
   };
 
   return (
@@ -79,10 +66,7 @@ export default function Page() {
       <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[auto_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
         {/* Date range picker */}
         <div className="flex items-center md:col-span-5">
-          <DateRangeSelector
-            eventRange={eventRange}
-            onChangeEventRange={handleEventRangeChange}
-          />
+          <DateRangeSelector eventRange={eventRange} dispatch={dispatch} />
         </div>
 
         {/* From/To */}
@@ -93,7 +77,9 @@ export default function Page() {
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.from}
-            onChange={(from) => handleTimeChange("from", from)}
+            onChange={(from) =>
+              handleTimeChange("from", from.getHours().toString())
+            }
           />
         </div>
         <div className="flex space-x-4 md:col-start-1 md:row-start-4">
@@ -102,7 +88,7 @@ export default function Page() {
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.to}
-            onChange={(to) => handleTimeChange("to", to)}
+            onChange={(to) => handleTimeChange("to", to.getHours().toString())}
           />
         </div>
 

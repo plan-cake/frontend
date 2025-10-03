@@ -1,17 +1,10 @@
-// _types/date-range-types.ts
-
-import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
+import { Dispatch } from "react";
+import { EventRange } from "@/app/_lib/schedule/types";
+import { EventRangeAction } from "@/app/_lib/eventRangeReducer";
 
 export type DateRangeProps = {
-  eventRange?: EventRange;
-  onChangeEventRange?: (range: EventRange) => void;
-  displayCalendar?: boolean;
+  eventRange: EventRange;
+  dispatch: Dispatch<EventRangeAction>;
 
-  // optional legacy support props
-  rangeType?: "specific" | "weekday";
-  onChangeRangeType?: (type: "specific" | "weekday") => void;
-  specificRange?: { from: Date | null; to: Date | null };
-  onChangeSpecific?: (key: "from" | "to", value: Date) => void;
-  weekdayRange?: WeekdayMap;
-  onChangeWeekday?: (map: WeekdayMap) => void;
+  displayCalendar?: boolean;
 };

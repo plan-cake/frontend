@@ -1,9 +1,15 @@
 // app/_types/schedule.ts
 
+export type EventInformation = {
+  title: string;
+  customCode: string;
+  eventRange: EventRange;
+};
+
 // defines a time range, stored in UTC
 export type TimeDateRange = {
-  from: Date | null;
-  to: Date | null;
+  from: string;
+  to: string;
 };
 
 // represents selected weekdays

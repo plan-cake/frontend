@@ -9,8 +9,8 @@ type TimezoneSelectProps = {
 
 export default function TimezoneSelect({
   value,
-  onChange,
   className,
+  onChange,
 }: TimezoneSelectProps) {
   return (
     <div className={className}>
