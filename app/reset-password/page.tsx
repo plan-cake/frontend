@@ -1,35 +1,62 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
+import formatApiError from "../_utils/format-api-error";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const isSubmitting = useRef(false);
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
     if (!pwdResetToken) {
-      alert("Invalid or missing password reset token.");
+      alert("This link is expired or invalid.");
+      isSubmitting.current = false;
       return;
     }
 
-    if (!newPassword || !confirmPassword) {
-      alert("Please fill in all fields.");
+    if (!newPassword) {
+      alert("Missing new password.");
+      isSubmitting.current = false;
       return;
     }
 
-    // TODO: Replace with real password reset API call
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match.");
-    } else {
-      router.push("/reset-password/success");
+      isSubmitting.current = false;
+      return;
     }
+    await fetch("/api/auth/reset-password/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        reset_token: pwdResetToken,
+        new_password: newPassword,
+      }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          router.push("/reset-password/success");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
   };
 
   return (
