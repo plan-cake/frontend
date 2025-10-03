@@ -2,6 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import formatApiError from "../_utils/format-api-error";
 import MessagePage from "../ui/layout/message-page";
 
 export default function Page() {
@@ -14,18 +15,30 @@ export default function Page() {
 
   useEffect(() => {
     const verifyEmail = async () => {
-      // simulate network delay
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
       if (!token) {
         setVerifying(false);
         setEmailVerified(false);
         return;
       }
 
-      // TODO: Replace with an actual API call
+      await fetch("/api/auth/verify-email/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ verification_code: token }),
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            setEmailVerified(true);
+          } else {
+            // don't alert anything, the page will say enough
+          }
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          alert("An error occurred. Please try again.");
+        });
+
       setVerifying(false);
-      setEmailVerified(true);
     };
 
     verifyEmail();
