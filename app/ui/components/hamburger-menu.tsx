@@ -67,7 +67,7 @@ export default function HamburgerMenu() {
               </li>
               <li>
                 <Link href="/login" className="tracking-wide">
-                  Login/Signup
+                  Login
                 </Link>
               </li>
             </ul>
