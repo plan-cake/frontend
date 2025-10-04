@@ -2,7 +2,7 @@
 
 import { useReducer } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
-import { EventRangeReducer } from "@/app/_lib/eventRangeReducer";
+import { EventRangeReducer } from "@/app/_lib/event-range-reducer";
 
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
