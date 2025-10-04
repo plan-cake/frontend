@@ -46,11 +46,20 @@ export default function useGenerateTimeSlots(
           const dayKey = zonedDate.toLocaleDateString("en-CA");
 
           if (!daysMap.has(dayKey)) {
-            const dayLabel = zonedDate.toLocaleDateString("en-US", {
-              weekday: "short",
-              month: "short",
-              day: "numeric",
-            });
+            let dayLabel = "";
+            if (eventRange.type === "weekday") {
+              dayLabel = zonedDate
+                .toLocaleDateString("en-US", {
+                  weekday: "short",
+                })
+                .toUpperCase() as keyof typeof eventRange.weekdays;
+            } else {
+              dayLabel = zonedDate.toLocaleDateString("en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
+              });
+            }
             daysMap.set(dayKey, {
               dayKey,
               dayLabel,
