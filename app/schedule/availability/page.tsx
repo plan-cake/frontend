@@ -44,8 +44,8 @@ export default function Page() {
     },
     // This timeRange is for the valid times within a day
     timeRange: {
-      from: "09:00",
-      to: "20:00",
+      from: 9,
+      to: 20,
     },
   };
 

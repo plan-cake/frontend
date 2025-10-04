@@ -8,7 +8,6 @@ import CopyToast from "@/app/ui/components/copy-toast";
 import TimezoneSelect from "@/app/ui/components/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { getUtcIsoSlot } from "@/app/_lib/availability/utils";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { EventRange } from "@/app/_lib/schedule/types";
 
@@ -29,18 +28,27 @@ export default function Page() {
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   // Placeholder eventRange
-  const today = new Date("2025-07-11T00:00:00");
+  const today = new Date();
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   const eventRange: EventRange = {
     type: "specific",
-    duration: 60 * 7,
+    duration: 60,
+    // 2. Set the event's *original* timezone, not the user's.
     timezone: "America/New_York",
     dateRange: {
-      from: today,
-      to: new Date(today.getTime() + 6 * 24 * 60 * 60 * 1000),
+      from: formatDate(today),
+      to: formatDate(today),
     },
+    // This timeRange is for the valid times within a day
     timeRange: {
-      from: new Date(Date.UTC(1970, 0, 1, 13, 0, 0)),
-      to: new Date(Date.UTC(1970, 0, 1, 24, 0, 0)),
+      from: 9,
+      to: 20,
     },
   };
 

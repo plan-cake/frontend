@@ -51,8 +51,6 @@ function generateSlotsForSpecificRange(range: EventRange): Date[] {
 
   let currentUTC = new Date(eventStartUTC);
 
-  console.log({ eventStartUTC, eventEndUTC });
-
   while (currentUTC <= eventEndUTC) {
     // Get the time-of-day part of the current date
     const zonedCurrent = toZonedTime(currentUTC, range.timezone);

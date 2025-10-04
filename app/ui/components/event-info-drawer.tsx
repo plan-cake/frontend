@@ -62,8 +62,15 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         )}
 
         <InfoRow label="Possible Times">
-          {prettyDate(new Date(eventRange.timeRange.from!), "time")} –{" "}
-          {prettyDate(new Date(eventRange.timeRange.to!), "time")}
+          {eventRange.timeRange.from === 0 && eventRange.timeRange.to === 24
+            ? "Anytime"
+            : `${prettyDate(
+                new Date(new Date().setHours(eventRange.timeRange.from, 0)),
+                "time",
+              )} - ${prettyDate(
+                new Date(new Date().setHours(eventRange.timeRange.to, 0)),
+                "time",
+              )}`}
         </InfoRow>
 
         <InfoRow label="Intended Duration">
