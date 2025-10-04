@@ -49,8 +49,8 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
       <div className="space-y-4 overflow-y-auto">
         {eventRange.type === "specific" ? (
           <InfoRow label="Possible Dates">
-            {prettyDate(eventRange.dateRange.from!, "date")} –{" "}
-            {prettyDate(eventRange.dateRange.to!, "date")}
+            {prettyDate(new Date(eventRange.dateRange.from!), "date")} –{" "}
+            {prettyDate(new Date(eventRange.dateRange.to!), "date")}
           </InfoRow>
         ) : (
           <InfoRow label="Days of the Week">
@@ -62,8 +62,8 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         )}
 
         <InfoRow label="Possible Times">
-          {prettyDate(eventRange.timeRange.from!, "time")} –{" "}
-          {prettyDate(eventRange.timeRange.to!, "time")}
+          {prettyDate(new Date(eventRange.timeRange.from!), "time")} –{" "}
+          {prettyDate(new Date(eventRange.timeRange.to!), "time")}
         </InfoRow>
 
         <InfoRow label="Intended Duration">
