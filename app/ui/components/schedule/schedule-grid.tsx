@@ -99,10 +99,10 @@ export default function ScheduleGrid({
           const blockTimeSlots = visibleTimeSlots.filter((slot) => {
             const localSlot = toZonedTime(slot, timezone);
             const hour = localSlot.getHours();
-            return hour >= block.startHour && hour < block.endHour;
+            return hour >= block.startHour && hour <= block.endHour;
           });
 
-          const numQuarterHours = (block.endHour - block.startHour) * 4;
+          const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
 
           if (mode === "preview") {
             return (
