@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 
 import { Calendar } from "@/app/ui/components/month-calendar";
 import CustomSelect from "@/app/ui/components/custom-select";

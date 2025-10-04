@@ -1,44 +1,12 @@
 // app/_lib/schedule.ts
 
 import {
-  DaySlot,
   EventRange,
-  SpecificDateRange,
   WeekdayRange,
   WeekdayMap,
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
-import { addDays, getHours, getMinutes, startOfDay } from "date-fns";
-
-// export function checkDateInRange(date: Date, eventRange: EventRange): boolean {
-//   if (eventRange.type === "specific") {
-//     const { from, to } = eventRange.dateRange;
-//     if (!from || !to) {
-//       return false;
-//     }
-//     return date >= from && date < to;
-//   } else if (eventRange.type === "weekday") {
-//     const weekdays = eventRange.weekdays;
-
-//     const weekday = date.toLocaleDateString("en-US", {
-//       weekday: "short",
-//     }) as keyof typeof weekdays;
-//     return weekdays[weekday] == 0 ? false : true;
-//   }
-//   return false;
-// }
-
-function combineDateAndTime(date: Date, time: Date): number {
-  return Date.UTC(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    time.getUTCHours(),
-    time.getUTCMinutes(),
-    time.getUTCSeconds(),
-    time.getUTCMilliseconds(),
-  );
-}
+import { getHours, getMinutes, startOfDay } from "date-fns";
 
 /**
  * expands a high-level EventRange into a concrete list of days and time slots

@@ -11,7 +11,6 @@ import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
 
-// import TimeBlock from "@/app/ui/components/schedule/time-block";
 import ScheduleHeader from "./schedule-header";
 import PreviewTimeBlock from "./timeblocks/preview-timeblock";
 import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
@@ -149,26 +148,6 @@ export default function ScheduleGrid({
               />
             );
           }
-
-          // return (
-          //   <TimeBlock
-          //     key={i}
-          //     mode={mode}
-          //     disableSelect={disableSelect}
-          //     timeslots={blockTimeSlots}
-          //     timeColWidth={50}
-          //     numVisibleDays={visibleDays.length}
-          //     visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-          //     startHour={block.startHour}
-          //     endHour={block.endHour}
-          //     userTimezone={timezone}
-          //     availability={availability}
-          //     onToggle={handleToggle}
-          //     allAvailabilities={attendees.map((a) => a.availability)}
-          //     onHoverSlot={setHoveredSlot}
-          //     hoveredSlot={hoveredSlot}
-          //   />
-          // );
         })}
       </div>
     </div>
