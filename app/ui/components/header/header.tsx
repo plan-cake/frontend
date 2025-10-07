@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Logo from "../components/logo";
+import Logo from "../logo";
 import AccountButton from "./account-button";
 import ThemeToggle from "./theme-toggle";
 
