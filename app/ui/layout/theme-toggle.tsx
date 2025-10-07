@@ -14,7 +14,7 @@ export default function FixedThemeToggle() {
     <button
       type="button"
       onClick={toggleTheme}
-      className="frosted-glass flex items-center justify-center rounded-full p-2 transition-all duration-300 hover:bg-white/20"
+      className="frosted-glass flex cursor-pointer items-center justify-center rounded-full p-2 transition-all duration-300 hover:bg-white/20"
       aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode`}
     >
       {resolvedTheme === "dark" ? (
