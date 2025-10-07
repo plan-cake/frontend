@@ -1,48 +1,44 @@
 import { forwardRef } from "react";
-
 import * as Select from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import { cn } from "@/app/_lib/classname";
 
-type Option = { label: string; value: string | number };
-type GroupedOption = { label: string; options: Option[] };
-
-type CustomSelectOptions = Option | GroupedOption;
+// --- Simplified Types ---
+type Option = {
+  label: string;
+  value: string | number;
+};
 
 type CustomSelectProps = {
   value: string | number;
-  options: CustomSelectOptions[];
-  isGrouped?: boolean;
+  options: Option[];
   onValueChange: (value: string | number) => void;
+  placeholder?: string;
   className?: string;
 };
 
+// --- Refactored Component ---
 export default function CustomSelect({
   value,
   options,
-  isGrouped = false,
   onValueChange,
+  placeholder,
   className,
 }: CustomSelectProps) {
-  // flatten options if they are grouped and find the current selected option
-  const allOptions = isGrouped
-    ? (options as GroupedOption[]).flatMap((g) => g.options)
-    : (options as Option[]);
-  const current = allOptions.find((o) => o.value === value);
-
   return (
     <Select.Root
-      value={value.toString()}
+      // Ensure value is a string for Radix compatibility
+      value={value?.toString()}
       onValueChange={(v) => onValueChange(isNaN(Number(v)) ? v : Number(v))}
     >
       <Select.Trigger
         className={cn(
-          "inline-flex items-center justify-between rounded-md text-blue focus:outline-none dark:text-red",
+          "inline-flex items-center justify-between overflow-hidden rounded-md text-blue focus:outline-none dark:text-red",
           className,
         )}
         aria-label="Custom select"
       >
-        <Select.Value />
+        <Select.Value placeholder={placeholder} />
         <Select.Icon>
           <ChevronDownIcon className="ml-2 h-4 w-4" />
         </Select.Icon>
@@ -51,27 +47,11 @@ export default function CustomSelect({
       <Select.Portal>
         <Select.Content className="z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:bg-violet dark:shadow-violet-700">
           <Select.Viewport className="p-1">
-            {isGrouped
-              ? (options as GroupedOption[]).map((group) => (
-                  <SelectGroup key={group.label} value={group.label}>
-                    {group.options.map((option) => (
-                      <SelectItem
-                        key={`${group.label}-${option.value}`}
-                        value={option.value}
-                      >
-                        {option.label}
-                      </SelectItem>
-                    ))}
-                  </SelectGroup>
-                ))
-              : (options as Option[]).map((option) => (
-                  <SelectItem
-                    key={option.value.toString()}
-                    value={option.value}
-                  >
-                    {option.label}
-                  </SelectItem>
-                ))}
+            {options.map((option) => (
+              <SelectItem key={option.value.toString()} value={option.value}>
+                {option.label}
+              </SelectItem>
+            ))}
           </Select.Viewport>
         </Select.Content>
       </Select.Portal>
@@ -79,12 +59,13 @@ export default function CustomSelect({
   );
 }
 
-type SelectProps = {
+// --- SelectItem (Unchanged) ---
+type SelectItemProps = {
   value: string | number;
   children: React.ReactNode;
 };
 
-const SelectItem = forwardRef<HTMLDivElement, SelectProps>(
+const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
   ({ children, value }, ref) => {
     return (
       <Select.Item
@@ -101,18 +82,3 @@ const SelectItem = forwardRef<HTMLDivElement, SelectProps>(
   },
 );
 SelectItem.displayName = "SelectItem";
-
-const SelectGroup = forwardRef<HTMLDivElement, SelectProps>(
-  ({ children, value }, ref) => {
-    return (
-      <Select.Group ref={ref}>
-        <Select.Label className="px-[25px] text-xs leading-[25px] font-bold">
-          {value}
-        </Select.Label>
-        {children}
-        <Select.Separator className="m-[5px] h-px bg-violet dark:bg-white" />
-      </Select.Group>
-    );
-  },
-);
-SelectGroup.displayName = "SelectGroup";

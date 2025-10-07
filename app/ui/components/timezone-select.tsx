@@ -1,5 +1,5 @@
-import { groupedTimezones } from "@/app/_lib/grouped-timezones";
 import CustomSelect from "@/app/ui/components/custom-select";
+import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 
 type TimezoneSelectProps = {
   value: string;
@@ -7,19 +7,26 @@ type TimezoneSelectProps = {
   className?: string;
 };
 
+const labelStyle = "original";
+const timezones = allTimezones;
+
 export default function TimezoneSelect({
   value,
   className,
   onChange,
 }: TimezoneSelectProps) {
+  const { options, parseTimezone } = useTimezoneSelect({
+    labelStyle,
+    timezones,
+  });
+
   return (
     <div className={className}>
       <CustomSelect
-        options={groupedTimezones}
-        isGrouped
-        value={value}
+        options={options}
+        value={parseTimezone(value)?.value || ""}
         onValueChange={onChange}
-        className="w-fit"
+        className="overflow-hidden"
       />
     </div>
   );

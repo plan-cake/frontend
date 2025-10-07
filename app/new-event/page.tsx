@@ -4,11 +4,14 @@ import { useReducer } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { EventRangeReducer } from "@/app/_lib/event-range-reducer";
 
+// import TimezoneSelect, { type ITimezone } from "react-timezone-select";
+
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
 import TimezoneSelect from "@/app/ui/components/timezone-select";
 import CustomSelect from "@/app/ui/components/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
+import { ITimezone } from "react-timezone-select";
 
 const initialEventRange: EventRange = {
   type: "specific",
