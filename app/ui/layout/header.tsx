@@ -2,6 +2,7 @@ import Link from "next/link";
 import Logo from "../components/logo";
 import ThemeToggle from "./theme-toggle";
 import AccountButton from "./account-button";
+import { cn } from "@/app/_lib/classname";
 
 export default function Header() {
   return (
@@ -13,7 +14,7 @@ export default function Header() {
       </nav>
 
       {/* Theme and account buttons */}
-      <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm">
+      <div className="frosted-glass fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full p-2">
         <ThemeToggle />
         <AccountButton />
       </div>

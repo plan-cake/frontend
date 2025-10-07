@@ -1,14 +1,15 @@
 "use client";
 
-import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
 export default function AccountButton() {
   const loggedIn = useRef(false);
-  const [checkingLogin, setCheckingLogin] = useState(true);
+  const router = useRouter();
 
   useEffect(() => {
+    // // TODO: make this at least check if the cookie exists first to avoid hitting the API every time
     const checkLogin = async () => {
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
@@ -24,39 +25,31 @@ export default function AccountButton() {
         console.error("Fetch error:", err);
         loggedIn.current = false;
       }
-      setCheckingLogin(false);
     };
     checkLogin();
   }, []);
 
-  if (checkingLogin) {
-    return (
-      <div className="flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm transition-all duration-300">
-        <div className="h-5 w-5 animate-pulse rounded bg-gray-300" />
-      </div>
-    );
-  }
-
-  if (loggedIn.current) {
-    return (
-      <button
-        type="button"
-        // onClick={toggleTheme}
-        className="flex items-center justify-center rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm transition-all duration-300 hover:bg-white/20"
-        aria-label="Account"
-      >
-        <PersonIcon className="h-5 w-5" />
-      </button>
-    );
-  } else {
-    return (
-      <Link
-        href="/login"
-        className="ml-auto cursor-pointer gap-2 rounded-full bg-red px-4 py-2 font-medium transition"
-        aria-label="Log in"
-      >
-        Log In
-      </Link>
-    );
-  }
+  return (
+    <button
+      className={
+        loggedIn.current
+          ? "frosted-glass flex items-center justify-center rounded-full p-2 hover:bg-white/20"
+          : "cursor-pointer rounded-full bg-red px-4 py-2 font-medium"
+      }
+      onClick={() => {
+        if (loggedIn.current) {
+          // open account menu
+        } else {
+          router.push("/login");
+        }
+      }}
+      aria-label={loggedIn.current ? "Open account menu" : "Log in"}
+    >
+      {loggedIn.current ? (
+        <PersonIcon className="h-5 w-5 text-violet dark:text-yellow-400" />
+      ) : (
+        "Log In"
+      )}
+    </button>
+  );
 }
