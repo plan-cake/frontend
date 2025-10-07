@@ -1,10 +1,21 @@
-import Link from "next/link";
+"use client";
+
+import { useEffect, useState } from "react";
 import Logo from "../components/logo";
-import ThemeToggle from "./theme-toggle";
 import AccountButton from "./account-button";
-import { cn } from "@/app/_lib/classname";
+import ThemeToggle from "./theme-toggle";
 
 export default function Header() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <>
       <nav className="absolute top-0 right-0 left-0 z-40">
