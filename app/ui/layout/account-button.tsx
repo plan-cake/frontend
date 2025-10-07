@@ -31,9 +31,10 @@ export default function AccountButton() {
   return (
     <button
       className={
-        loggedIn
-          ? "frosted-glass flex cursor-pointer items-center justify-center rounded-full p-2 hover:bg-white/20"
-          : "cursor-pointer rounded-full bg-red px-4 py-2 font-medium"
+        "cursor-pointer rounded-full p-2 font-medium " +
+        (loggedIn
+          ? "frosted-glass flex items-center justify-center"
+          : "bg-red px-4 py-2")
       }
       onClick={() => {
         if (loggedIn) {
