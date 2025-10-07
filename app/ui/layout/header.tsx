@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Logo from "../components/logo";
 import ThemeToggle from "./theme-toggle";
+import AccountButton from "./account-button";
 
 export default function Header() {
   return (
@@ -11,8 +12,11 @@ export default function Header() {
         </div>
       </nav>
 
-      {/* Fixed theme toggle */}
-      <ThemeToggle />
+      {/* Theme and account buttons */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full border border-white/20 bg-white/10 p-2 backdrop-blur-sm">
+        <ThemeToggle />
+        <AccountButton />
+      </div>
     </>
   );
 }
