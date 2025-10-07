@@ -9,7 +9,6 @@ export default function AccountButton() {
   const router = useRouter();
 
   useEffect(() => {
-    // TODO: make this at least check if the cookie exists first to avoid hitting the API every time
     const checkLogin = async () => {
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
