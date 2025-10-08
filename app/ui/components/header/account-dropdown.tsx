@@ -41,6 +41,7 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
         <DropdownMenu.Content
           className="frosted-glass z-50 mr-4 rounded-md p-1"
           sideOffset={16}
+          onCloseAutoFocus={(e) => e.preventDefault()}
         >
           <DropdownItem onSelect={() => router.push("/dashboard")}>
             <DashboardIcon className="h-4 w-4" />
