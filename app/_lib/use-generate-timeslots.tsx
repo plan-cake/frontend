@@ -10,7 +10,6 @@ export default function useGenerateTimeSlots(
 ) {
   return useMemo(() => {
     const daySlots = expandEventRange(eventRange);
-    console.log("daySlots", daySlots);
     if (daySlots.length === 0) {
       return {
         timeBlocks: [],

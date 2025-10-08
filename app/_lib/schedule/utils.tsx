@@ -35,7 +35,10 @@ function generateSlotsForSpecificRange(range: EventRange): Date[] {
   const startDateString = range.dateRange.from.split("T")[0];
   const endDateString = range.dateRange.to.split("T")[0];
   const startTimeString = String(range.timeRange.from).padStart(2, "0");
-  const endTimeString = String(range.timeRange.to).padStart(2, "0");
+  const endTimeString =
+    range.timeRange.to == 24
+      ? "23:59"
+      : String(range.timeRange.to).padStart(2, "0");
   const eventStartUTC = fromZonedTime(
     `${startDateString}T${startTimeString}`,
     range.timezone,
