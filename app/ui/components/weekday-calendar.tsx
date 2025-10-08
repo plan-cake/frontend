@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Checkbox from "./checkbox";
+import { cn } from "@/app/_lib/classname";
 
-import { WeekdayMap } from "@/app/_types/schedule-types";
+import { WeekdayMap } from "@/app/_lib/schedule/types";
+import Checkbox from "@/app/ui/components/checkbox";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
@@ -42,14 +43,20 @@ export default function WeekdayCalendar({
 
   return (
     <div className="flex space-y-2">
-      <div className="grid flex-1 grid-cols-7 gap-x-2">
+      <div className="grid grid-cols-7 gap-x-2">
         {days.map((day) => {
           const isSelected = selectedDays[day] === 1;
           return (
             <button
               key={day}
               onClick={() => handleRangeSelect(day)}
-              className={`flex aspect-square w-full items-center justify-center rounded-full p-1 text-center transition-all duration-200 ${isSelected ? "bg-blue-200 dark:bg-red" : "hover:bg-gray-200 dark:hover:bg-gray-800"} `}
+              className={cn(
+                "aspect-square w-fit items-center justify-center rounded-full p-2 text-center",
+                "transition-all duration-200",
+                isSelected
+                  ? "bg-blue-200 dark:bg-red"
+                  : "hover:bg-gray-200 dark:hover:bg-gray-800",
+              )}
             >
               {day}
             </button>
@@ -57,8 +64,7 @@ export default function WeekdayCalendar({
         })}
       </div>
 
-      {/* 
-      <Checkbox
+      {/* <Checkbox
         label="Start on Monday"
         checked={startMonday}
         onChange={setStartMonday}

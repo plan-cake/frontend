@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Modak, Nunito } from "next/font/google";
 import Header from "./ui/components/header/header";
-import { Providers } from "./_utils/providers";
+import { Providers } from "@/app/_lib/providers";
 import "./globals.css";
 
 const modak = Modak({
@@ -29,12 +29,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${modak.variable} ${nunito.variable}`}>
-      <body>
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${modak.variable} ${nunito.variable}`}
+    >
+      <body className="font-sans antialiased">
+        <div className="flex min-h-dvh flex-col">
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );

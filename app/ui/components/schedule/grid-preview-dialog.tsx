@@ -1,11 +1,14 @@
 "use client";
 
-import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
-import ScheduleGrid from "./schedule-grid";
-import { EventRange } from "@/app/_types/schedule-types";
 import { useState } from "react";
-import TimezoneSelect from "../timezone-select";
+
+import { motion } from "framer-motion";
+import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
@@ -36,7 +39,7 @@ export default function GridPreviewDialog({
         layout
         className={`flex flex-col space-y-4 overflow-hidden rounded-3xl border border-transparent bg-[#FFFFFF] dark:bg-[#343249] ${
           isOpen
-            ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] bg-white p-8 dark:bg-violet"
+            ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] p-8"
             : "absolute inset-0 h-full w-full pt-4 pr-4 pb-4 pl-2"
         } `}
       >
@@ -87,7 +90,7 @@ export default function GridPreviewDialog({
             <ScheduleGrid
               eventRange={eventRange}
               disableSelect={true}
-              timezone={timezone}
+              timezone={eventRange.timezone}
             />
           </motion.div>
         )}

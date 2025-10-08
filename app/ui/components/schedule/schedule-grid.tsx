@@ -1,115 +1,56 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-} from "@radix-ui/react-icons";
+import { useState } from "react";
 
-import {
-  EventRange,
-  expandEventRange,
-  getDateLabels,
-  getDateKeys,
-} from "@/app/_types/schedule-types";
-import {
-  AvailabilitySet,
-  createEmptyUserAvailability,
-} from "@/app/_types/user-availability";
-import useCheckMobile from "@/app/_utils/use-check-mobile";
 import { toZonedTime } from "date-fns-tz";
-import { differenceInCalendarDays } from "date-fns";
-import TimeBlock from "./time-block";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
+import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
+
+import ScheduleHeader from "./schedule-header";
+import PreviewTimeBlock from "./timeblocks/preview-timeblock";
+import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
+import ResultsTimeBlock from "./timeblocks/results-timeblock";
 
 interface ScheduleGridProps {
+  mode: "paint" | "view" | "preview";
   eventRange: EventRange;
   timezone: string;
-  disableSelect?: boolean;
-}
 
-interface TimeBlockListType {
-  startHour: number;
-  endHour: number;
+  disableSelect?: boolean;
+  attendees?: {
+    name: string;
+    availability: AvailabilitySet;
+  }[];
+
+  // for "view" mode
+  hoveredSlot?: string | null;
+  setHoveredSlot?: (slotIso: string | null) => void;
+
+  // for "paint" mode
+  userAvailability?: AvailabilitySet;
+  onToggleSlot?: (slotIso: string) => void;
 }
 
 export default function ScheduleGrid({
-  disableSelect = false,
   eventRange,
   timezone,
+  disableSelect = false,
+  attendees = [],
+  mode = "preview",
+  hoveredSlot,
+  setHoveredSlot = () => {},
+  userAvailability = createEmptyUserAvailability(),
+  onToggleSlot = () => {},
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const [availability, setAvailability] = useState<AvailabilitySet>(
-    createEmptyUserAvailability(eventRange.type).selections,
-  );
-  function handleToggle(slotIso: string) {
-    if (disableSelect) return;
-    setAvailability((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(slotIso)) {
-        updated.delete(slotIso);
-      } else {
-        updated.add(slotIso);
-      }
-      if (process.env.NODE_ENV === "development") {
-        console.log("Updated availability:", updated);
-      }
-      return updated;
-    });
-  }
-
-  const { numHours, numDays, daysLabel, dayKeys, timeBlocks } = useMemo(() => {
-    const expandedEventRange = expandEventRange(eventRange);
-    const expandedRange = expandedEventRange.expandedRange;
-    if (!expandedEventRange || expandedRange.length === 0) {
-      return {
-        numHours: 0,
-        numDays: 0,
-        daysLabel: [],
-        dayKeys: [],
-        timeBlocks: [],
-      };
-    }
-
-    const localStartDate = toZonedTime(expandedRange[0].time, timezone);
-    const localEndDate = toZonedTime(
-      expandedRange[expandedRange.length - 1].time,
-      timezone,
-    );
-
-    let localStartHour = localStartDate.getHours();
-    let localEndHour = localEndDate.getHours();
-
-    let timeBlocks: TimeBlockListType[] = [];
-
-    if (localEndHour < localStartHour) {
-      timeBlocks.push({ startHour: 0, endHour: localEndHour });
-      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
-    } else {
-      timeBlocks.push({ startHour: localStartHour, endHour: localEndHour });
-    }
-
-    const numHours = timeBlocks.reduce((acc, block) => {
-      return acc + (block.endHour - block.startHour + 1);
-    }, 0);
-
-    const numDays = differenceInCalendarDays(localEndDate, localStartDate) + 1;
-    const daysLabel = getDateLabels(
-      localStartDate,
-      localEndDate,
-      eventRange.type,
-    );
-    const dayKeys = getDateKeys(localStartDate, localEndDate);
-
-    return {
-      numHours,
-      numDays,
-      daysLabel,
-      dayKeys,
-      timeBlocks,
-    };
-  }, [eventRange, timezone]);
+  const { timeBlocks, dayGroupedSlots, numDays, numHours, error } =
+    useGenerateTimeSlots(eventRange, timezone);
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);
@@ -117,124 +58,95 @@ export default function ScheduleGrid({
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-  const visibleDays = daysLabel.slice(startIndex, endIndex);
-  const visibleDayKeys = dayKeys.slice(startIndex, endIndex);
 
-  const timeColWidth = 50;
-  const rightArrowWidth = 20;
+  const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
+  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
 
-  if (numHours <= 0) {
-    return <GridError message="Invalid time range" />;
-  } else if (numDays <= 0) {
+  if (numDays <= 0)
     return <GridError message="Invalid or missing date range" />;
-  }
+  if (error) return <GridError message={error} />;
 
   return (
-    <div className="relative h-[90%] w-full">
-      {/* Arrows */}
-      {currentPage > 0 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-          className="absolute top-0 left-6 z-10 h-[50px] w-[50px] text-xl"
-          aria-label="View previous days"
-        >
-          <ChevronLeftIcon className="h-5 w-5" />
-        </button>
-      )}
-      {currentPage < totalPages - 1 && (
-        <button
-          onClick={() => setCurrentPage((p) => Math.min(p + 1, totalPages - 1))}
-          className="absolute top-0 right-0 z-10 h-[50px] w-[20px] text-xl"
-          aria-label="View next days"
-        >
-          <ChevronRightIcon className="h-5 w-5" />
-        </button>
-      )}
+    <div
+      className="relative mb-8 grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
+      style={{ maxHeight: "90%" }}
+    >
+      <ScheduleHeader
+        preview={mode === "preview"}
+        visibleDays={visibleDays}
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPrevPage={() => setCurrentPage((p) => Math.max(p - 1, 0))}
+        onNextPage={() =>
+          setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
+        }
+      />
 
-      {/* Grid */}
-      <div
-        className={`grid h-full w-full divide-x-1 divide-y-1 divide-solid divide-gray-400 grid-cols-[50px_repeat(${visibleDays.length},1fr)_20px] grid-rows-[50px_repeat(${numHours},1fr)]`}
-      >
-        {Array.from({
-          length: (numHours + 1) * (visibleDays.length + 2) + 1,
-        }).map((_, i) => (
-          <div
-            key={i}
-            className={`${disableSelect ? "cursor-not-allowed" : ""}`}
-          />
-        ))}
-      </div>
-
-      {/* Time labels */}
-      <div
-        className={`pointer-events-none absolute top-0 grid h-full w-[50px] bg-white dark:bg-violet grid-rows-[50px_repeat(${numHours},1fr)] left-0`}
-      >
-        <div />
-        {Array.from({ length: numHours }).map((_, i) => {
-          const hour = timeRange.from
-            ? new Date(timeRange.from.getTime() + i * 3600000)
-            : new Date();
-          const formatter = new Intl.DateTimeFormat("en-US", {
-            timeZone: timezone,
-            hour: "numeric",
-            hour12: true,
+      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
+        {timeBlocks.map((block, i) => {
+          // filter visibleTimeSlots to those within this block's hours
+          const blockTimeSlots = visibleTimeSlots.filter((slot) => {
+            const localSlot = toZonedTime(slot, timezone);
+            const hour = localSlot.getHours();
+            return hour >= block.startHour && hour <= block.endHour;
           });
-          return (
-            <div
-              key={i}
-              className="relative flex items-start justify-end pr-2 text-right text-xs"
-            >
-              <span className="absolute -top-2">{formatter.format(hour)}</span>
-            </div>
-          );
-        })}
-      </div>
 
-      {/* Column headers */}
-      <div
-        className={`absolute top-0 right-[20px] left-[50px] grid h-[50px] grid-cols-${Math.min(visibleDays.length, 7)}`}
-      >
-        {visibleDays.map((day, i) => {
-          const type = eventRange.type;
-          if (type === "specific") {
-            const [weekday, month, date] = day.split(" ");
+          const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
+
+          if (mode === "preview") {
             return (
-              <div
+              <PreviewTimeBlock
                 key={i}
-                className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
-              >
-                <div>{weekday}</div>
-                <div>
-                  {month} {date}
-                </div>
-              </div>
+                timeColWidth={50}
+                numQuarterHours={numQuarterHours}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
+              />
             );
-          } else if (type === "weekday") {
+          } else if (mode === "paint") {
             return (
-              <div
+              <InteractiveTimeBlock
                 key={i}
-                className="flex items-center justify-center text-sm font-medium"
-              >
-                {day.toUpperCase()}
-              </div>
+                timeColWidth={50}
+                numQuarterHours={numQuarterHours}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
+                availability={userAvailability}
+                onToggle={onToggleSlot}
+              />
+            );
+          } else if (mode === "view") {
+            return (
+              <ResultsTimeBlock
+                key={i}
+                timeColWidth={50}
+                numQuarterHours={numQuarterHours}
+                startHour={block.startHour}
+                timeslots={blockTimeSlots}
+                numVisibleDays={visibleDays.length}
+                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
+                userTimezone={timezone}
+                hoveredSlot={hoveredSlot}
+                allAvailabilities={attendees.map((a) => a.availability)}
+                onHoverSlot={setHoveredSlot}
+              />
             );
           }
         })}
-
-        <div className="w-[16px]" aria-hidden />
       </div>
-
-      {/* Right border */}
-      <div className="pointer-events-none absolute top-0 right-0 h-full w-[20px] bg-white dark:bg-violet" />
     </div>
   );
 }
 
-const GridError = ({ message }: { message: string }) => {
-  return (
-    <div className="flex h-full w-full items-center justify-center text-sm">
-      <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red" />
-      {message}
-    </div>
-  );
-};
+const GridError = ({ message }: { message: string }) => (
+  <div className="flex h-full w-full items-center justify-center text-sm">
+    <ExclamationTriangleIcon className="mr-2 h-5 w-5 text-red" />
+    {message}
+  </div>
+);
