@@ -1,14 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
-import AccountDropdown from "./account-dropdown";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import AccountDropdown from "./account-dropdown";
 
 export default function AccountButton() {
   const [loggedIn, setLoggedIn] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
     const checkLogin = async () => {
