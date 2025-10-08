@@ -6,10 +6,10 @@ import { WeekdayMap } from "@/app/_lib/schedule/types";
 
 // Import child components
 import useCheckMobile from "@/app/_lib/use-check-mobile";
-import CustomSelect from "@/app/ui/components/custom-select";
 import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
 import DateRangeDrawer from "@/app/ui/components/date-range/date-range-drawer";
 import DateRangePopover from "@/app/ui/components/date-range/date-range-popover";
+import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeSelector({
   eventRange,
@@ -37,18 +37,9 @@ export default function DateRangeSelector({
       <div className="mb-4 flex w-full flex-row gap-8">
         <div className="flex flex-col gap-1">
           <label htmlFor="date-range-type">Type</label>
-          <CustomSelect
-            options={[
-              { label: "Specific Dates", value: "specific" },
-              { label: "Days of the Week", value: "weekday" },
-            ]}
-            value={rangeType === "specific" ? "specific" : "weekday"}
-            onValueChange={(value) =>
-              handleRangeTypeChange?.(
-                value === "Specific Dates" ? "specific" : "weekday",
-              )
-            }
-            className="hidden min-h-9 w-full min-w-[180px] md:flex"
+          <EventTypeSelect
+            eventType={rangeType}
+            onEventTypeChange={handleRangeTypeChange}
           />
         </div>
         <div className="flex w-full flex-col justify-center gap-2">

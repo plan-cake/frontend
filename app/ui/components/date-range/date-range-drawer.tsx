@@ -1,12 +1,15 @@
+"use client";
+
+import { useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
 import { fromZonedTime } from "date-fns-tz";
 
 import { Calendar } from "@/app/ui/components/month-calendar";
-import CustomSelect from "@/app/ui/components/custom-select";
 import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
 import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
+import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeDrawer({
   eventRange,
@@ -14,9 +17,12 @@ export default function DateRangeDrawer({
 }: DateRangeProps) {
   const rangeType = eventRange?.type ?? "specific";
 
-  const handleRangeTypeChange = (value: "specific" | "weekday") => {
-    dispatch({ type: "SET_RANGE_TYPE", payload: value });
-  };
+  const handleRangeTypeChange = useCallback((value: string) => {
+    dispatch({
+      type: "SET_RANGE_TYPE",
+      payload: value as "specific" | "weekday",
+    });
+  }, []);
 
   return (
     <Dialog.Root>
@@ -42,18 +48,9 @@ export default function DateRangeDrawer({
             />
             <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
               <label htmlFor="date-range-type">Select Date Range</label>
-              <CustomSelect
-                options={[
-                  { label: "Specific Dates", value: "specific" },
-                  { label: "Days of the Week", value: "weekday" },
-                ]}
-                value={rangeType === "specific" ? "specific" : "weekday"}
-                onValueChange={(value) =>
-                  handleRangeTypeChange?.(
-                    value === "Specific Dates" ? "specific" : "weekday",
-                  )
-                }
-                className="min-h-9 min-w-[100px] border-none px-2"
+              <EventTypeSelect
+                eventType={rangeType}
+                onEventTypeChange={handleRangeTypeChange}
               />
             </Dialog.Title>
 
