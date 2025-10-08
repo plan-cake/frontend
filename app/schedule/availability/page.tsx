@@ -65,7 +65,7 @@ export default function Page() {
       {/* Main Content */}
       <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-8 md:w-80">
+        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-30 md:w-80">
           <div>
             <span className="text-lg">
               Hi,{" "}

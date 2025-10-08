@@ -87,7 +87,7 @@ export default function Page() {
         />
 
         {/* Sidebar for attendees */}
-        <div className="sticky bottom-8 h-fit w-full shrink-0 space-y-3 md:top-8 md:w-80">
+        <div className="sticky bottom-8 h-fit w-full shrink-0 space-y-3 md:top-25 md:w-80">
           <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">

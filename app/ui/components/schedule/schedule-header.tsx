@@ -26,8 +26,10 @@ export default function ScheduleHeader({
   return (
     <div
       className={cn(
-        preview ? "bg-[#FFFFFF] dark:bg-[#343248]" : "bg-white dark:bg-violet",
-        "sticky top-0 z-10 col-span-2 grid h-[50px] w-full items-center",
+        preview
+          ? "top-0 bg-[#FFFFFF] dark:bg-[#343248]"
+          : "top-25 bg-white dark:bg-violet",
+        "sticky z-10 col-span-2 grid h-[50px] w-full items-center",
       )}
       style={{
         gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
