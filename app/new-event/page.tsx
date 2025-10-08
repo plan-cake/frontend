@@ -52,7 +52,7 @@ export default function Page() {
     dispatch({ type: "SET_CUSTOM_CODE", payload: new_code });
   };
 
-  const handleTZChange = (new_timezone: string | number) => {
+  const handleTZChange = (new_timezone: string) => {
     if (!new_timezone) return;
     if (typeof new_timezone !== "string") return;
     dispatch({ type: "SET_TIMEZONE", payload: new_timezone });

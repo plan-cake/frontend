@@ -3,7 +3,7 @@ import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 
 type TimezoneSelectProps = {
   value: string;
-  onChange: (tz: string | number) => void;
+  onChange: (tz: string) => void;
   className?: string;
 };
 
@@ -25,7 +25,7 @@ export default function TimezoneSelect({
       <CustomSelect
         options={options}
         value={parseTimezone(value)?.value || ""}
-        onValueChange={onChange}
+        onValueChange={(v) => onChange(String(v))}
         className="w-full"
       />
     </div>
