@@ -29,12 +29,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${modak.variable} ${nunito.variable}`}>
-      <body>
-        <Providers>
-          <Header />
-          {children}
-        </Providers>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={`${modak.variable} ${nunito.variable}`}
+    >
+      <body className="font-sans antialiased">
+        <div className="flex min-h-dvh flex-col p-10">
+          <Providers>
+            <Header />
+            {children}
+          </Providers>
+        </div>
       </body>
     </html>
   );

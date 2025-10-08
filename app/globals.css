@@ -2,7 +2,7 @@
 @import "react-day-picker/style.css";
 
 :root {
-  --background: #ffffff;
+  --background: #f5f5f5;
   --foreground: #3e3c53;
   --bone-base: #e9deca;
   --red-base: #ff5c5c;
