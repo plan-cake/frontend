@@ -4,10 +4,13 @@ import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
+import { LoginContext } from "@/app/_utils/providers";
+import { useContext } from "react";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { setLoggedIn } = useContext(LoginContext);
   const isSubmitting = useRef(false);
   const router = useRouter();
 
@@ -35,6 +38,7 @@ export default function Page() {
     })
       .then(async (res) => {
         if (res.ok) {
+          setLoggedIn(true);
           router.push("/dashboard");
         } else {
           alert(formatApiError(await res.json()));
