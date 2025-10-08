@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Logo from "../logo";
 import AccountButton from "./account-button";
 import ThemeToggle from "./theme-toggle";
+import NewEventButton from "./new-event-button";
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);
@@ -26,6 +27,7 @@ export default function Header() {
 
       {/* Theme and account buttons */}
       <div className="frosted-glass fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full p-2">
+        <NewEventButton />
         <ThemeToggle />
         <AccountButton />
       </div>
