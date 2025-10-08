@@ -2,14 +2,17 @@
 
 import { PersonIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
+import { LoginContext } from "@/app/_utils/providers";
 import AccountDropdown from "./account-dropdown";
 
 export default function AccountButton() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
   useEffect(() => {
     const checkLogin = async () => {
+      if (loggedIn) return;
+
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
           method: "GET",

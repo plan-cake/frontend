@@ -1,13 +1,15 @@
 import { cn } from "@/app/_lib/classname";
 import formatApiError from "@/app/_utils/format-api-error";
+import { LoginContext } from "@/app/_utils/providers";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DashboardIcon, ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-import { forwardRef, ReactNode, useRef } from "react";
+import { forwardRef, ReactNode, useContext, useRef } from "react";
 
 const AccountDropdown = ({ children }: { children: ReactNode }) => {
   const isSubmitting = useRef(false);
+  const { setLoggedIn } = useContext(LoginContext);
   const router = useRouter();
 
   const logout = async () => {
@@ -20,6 +22,7 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
     })
       .then(async (res) => {
         if (res.ok) {
+          setLoggedIn(false);
           router.push("/login");
         } else {
           alert(formatApiError(await res.json()));
