@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -18,13 +18,12 @@ export default function Page() {
       confirmPassword,
     });
 
-    // TODO: Replace with real sign up information
-    if (
-      email === "test" &&
-      password === "1234" &&
-      confirmPassword === password
-    ) {
-      router.push("/dashboard");
+    // TODO: Replace with real sign up API logic
+    if (email && password && confirmPassword === password) {
+      // add the email to session storage to have it in the email-sent page without
+      // putting it in the URL
+      sessionStorage.setItem("sign_up_email", email);
+      router.push("/sign-up/email-sent");
     } else {
       alert("WOMP WOMP NO ACCOUNT FOR YOU");
     }
@@ -40,7 +39,7 @@ export default function Page() {
 
         {/* Email */}
         <input
-          type="text"
+          type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
