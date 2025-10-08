@@ -93,19 +93,7 @@ const DateRangeDrawerSelector = ({
         ) : (
           <>
             <label className="text-start">Possible Dates</label>
-            <DateRangeInput
-              startDate={startDate}
-              endDate={endDate}
-              onChangeSpecific={(key, value) =>
-                dispatch({
-                  type: "SET_DATE_RANGE",
-                  payload: {
-                    ...eventRange.dateRange,
-                    [key]: value.toISOString(),
-                  },
-                })
-              }
-            />
+            <DateRangeInput startDate={startDate} endDate={endDate} />
           </>
         )}
       </div>
