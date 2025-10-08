@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/copy-toast";
-import TimezoneSelect from "@/app/ui/components/timezone-select";
+import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { Pencil1Icon } from "@radix-ui/react-icons";

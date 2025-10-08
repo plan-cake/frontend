@@ -1,4 +1,4 @@
-import CustomSelect from "@/app/ui/components/custom-select";
+import CustomSelect from "@/app/ui/components/selectors/custom-select";
 import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 
 type TimezoneSelectProps = {

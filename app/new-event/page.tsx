@@ -6,8 +6,8 @@ import { EventInfoReducer } from "../_lib/schedule/event-info-reducer";
 
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
-import TimezoneSelect from "@/app/ui/components/timezone-select";
-import CustomSelect from "@/app/ui/components/custom-select";
+import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
+import CustomSelect from "@/app/ui/components/selectors/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 
 const initialEventRange: EventRange = {
