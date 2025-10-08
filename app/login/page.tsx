@@ -1,24 +1,51 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import formatApiError from "../_utils/format-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const isSubmitting = useRef(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Login attempt:", { email, password });
 
-    // TODO: Replace with real authentication
-    if (email === "test" && password === "1234") {
-      router.push("/dashboard");
-    } else {
-      alert("Invalid email or password");
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
+    if (!email) {
+      alert("Missing email");
+      isSubmitting.current = false;
+      return;
     }
+    if (!password) {
+      alert("Missing password");
+      isSubmitting.current = false;
+      return;
+    }
+
+    await fetch("/api/auth/login/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          router.push("/dashboard");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
   };
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 
+import formatApiError from "@/app/_utils/format-api-error";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef } from "react";
 import MessagePage from "../../ui/layout/message-page";
@@ -23,7 +24,7 @@ export default function Page() {
     return null;
   }
 
-  const handleResendEmail = () => {
+  const handleResendEmail = async () => {
     const emailResendCooldown = 30000; // 30 seconds
     let timeLeft =
       (emailResendCooldown - (Date.now() - lastEmailResend.current)) / 1000;
@@ -32,8 +33,24 @@ export default function Page() {
       alert(`Slow down! ${timeLeft} seconds until you can send again.`);
       return;
     }
-    // TODO: Replace with real resend email API logic
-    console.log("Resending email to:", email);
+
+    await fetch("/api/auth/resend-register-email/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          alert("Email resent. Please check your inbox.");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
     lastEmailResend.current = Date.now();
   };
 

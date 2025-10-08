@@ -3,30 +3,56 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import formatApiError from "../_utils/format-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const isSubmitting = React.useRef(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Sign up attempt:", {
-      email,
-      password,
-      confirmPassword,
-    });
 
-    // TODO: Replace with real sign up API logic
-    if (email && password && confirmPassword === password) {
-      // add the email to session storage to have it in the email-sent page without
-      // putting it in the URL
-      sessionStorage.setItem("sign_up_email", email);
-      router.push("/sign-up/email-sent");
-    } else {
-      alert("WOMP WOMP NO ACCOUNT FOR YOU");
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
+    if (!email) {
+      alert("Missing email");
+      isSubmitting.current = false;
+      return;
     }
+    if (!password) {
+      alert("Missing password");
+      isSubmitting.current = false;
+      return;
+    }
+    if (confirmPassword !== password) {
+      alert("Passwords do not match");
+      isSubmitting.current = false;
+      return;
+    }
+
+    await fetch("/api/auth/register/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          sessionStorage.setItem("sign_up_email", email);
+          router.push("/sign-up/email-sent");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
   };
 
   return (

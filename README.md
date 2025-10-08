@@ -10,6 +10,12 @@ To clone and run this application, [Node.js](https://nodejs.org/en/download/) (w
 npm install npm@latest -g
 ```
 
+### `.env` Setup
+
+Create a file called `.env` in the root directory, copying the contents of `example.env`.
+
+Replace all values in the file with the relevant information.
+
 ### Installation
 
 ```bash

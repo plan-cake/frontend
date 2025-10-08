@@ -1,4 +1,8 @@
-import React from "react";
+"use client";
+
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
+import formatApiError from "../_utils/format-api-error";
 
 type Event = {
   id: string;
@@ -7,6 +11,9 @@ type Event = {
 };
 
 export default function Page() {
+  const router = useRouter();
+  const isSubmitting = useRef(false);
+
   // Mock data for testing
   const joinedEvents: Event[] = [
     {
@@ -60,6 +67,29 @@ export default function Page() {
     );
   };
 
+  const logout = async () => {
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
+    await fetch("/api/auth/logout/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          router.push("/login");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
+  };
+
   return (
     <div className="min-h-screen p-6">
       {/* Events You Joined */}
@@ -95,6 +125,16 @@ export default function Page() {
           ))}
         </div>
       </section>
+
+      {/* Logout Button */}
+      <div className="mt-8 flex justify-center">
+        <button
+          onClick={logout}
+          className="mb-2 cursor-pointer rounded-full bg-blue px-4 py-2 font-medium transition dark:bg-red"
+        >
+          Logout
+        </button>
+      </div>
     </div>
   );
 }

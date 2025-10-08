@@ -1,23 +1,47 @@
 "use client";
 
-import React, { useState } from "react";
 import Link from "next/link";
-import MessagePage from "../ui/layout/message-page";
 import { useRouter } from "next/navigation";
+import React, { useRef, useState } from "react";
+import formatApiError from "../_utils/format-api-error";
+import MessagePage from "../ui/layout/message-page";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
+  const isSubmitting = useRef(false);
   const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
     if (!email) {
-      alert("Please enter an email address.");
+      alert("Missing email");
+      isSubmitting.current = false;
       return;
     }
-    setEmailSent(true);
+
+    await fetch("/api/auth/start-password-reset/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          setEmailSent(true);
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
   };
 
   return (
