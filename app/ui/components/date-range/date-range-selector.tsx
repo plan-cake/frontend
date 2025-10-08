@@ -34,7 +34,7 @@ export default function DateRangeSelector({
     return <DateRangeDrawer eventRange={eventRange} dispatch={dispatch} />;
   } else {
     return (
-      <div className="mb-4 flex flex-row gap-8">
+      <div className="mb-4 flex w-full flex-row gap-8">
         <div className="flex flex-col gap-1">
           <label htmlFor="date-range-type">Type</label>
           <CustomSelect
@@ -48,10 +48,10 @@ export default function DateRangeSelector({
                 value === "Specific Dates" ? "specific" : "weekday",
               )
             }
-            className="hidden min-h-9 min-w-[180px] md:flex"
+            className="hidden min-h-9 w-full min-w-[180px] md:flex"
           />
         </div>
-        <div className="flex flex-col justify-center gap-2">
+        <div className="flex w-full flex-col justify-center gap-2">
           {eventRange?.type === "specific" ? (
             <>
               <label htmlFor="date-range">Possible Dates</label>

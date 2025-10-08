@@ -12,27 +12,29 @@ export default function DateRangeInput({
   const displayFrom = startDate ? format(startDate, "EEE MMMM d, yyyy") : "";
   const displayTo = endDate ? format(endDate, "EEE MMMM d, yyyy") : "";
   return (
-    <form className="flex flex-col gap-y-2 md:flex-row">
-      <div className="flex space-x-4">
+    <form className="flex w-full flex-col gap-y-2 md:flex-row md:gap-4">
+      {/* Start Date */}
+      <div className="flex w-fit items-center space-x-4">
         <label className="text-gray-400 md:hidden">FROM</label>
-        <input
-          value={displayFrom}
-          className="text-blue focus:outline-none dark:text-red"
+        <span
+          className="bg-transparent text-blue focus:outline-none dark:text-red"
           aria-label="Start date"
-          readOnly
-        />
+        >
+          {displayFrom}
+        </span>
       </div>
 
-      <span className="mr-2 hidden text-gray-400 md:block">TO</span>
+      <span className="hidden w-fit text-gray-400 md:block">TO</span>
 
-      <div className="flex space-x-4">
+      {/* End Date */}
+      <div className="flex w-fit items-center space-x-4">
         <label className="text-gray-400 md:hidden">UNTIL</label>
-        <input
-          value={displayTo}
-          className="text-blue focus:outline-none md:text-end dark:text-red"
+        <span
+          className="bg-transparent text-blue focus:outline-none md:text-end dark:text-red"
           aria-label="End date"
-          readOnly
-        />
+        >
+          {displayTo}
+        </span>
       </div>
     </form>
   );

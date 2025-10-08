@@ -71,7 +71,7 @@ export default function Page() {
       />
       <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[auto_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
         {/* Date range picker */}
-        <div className="flex items-center md:col-span-5">
+        <div className="flex items-center md:col-span-10">
           <DateRangeSelector eventRange={eventRange} dispatch={dispatch} />
         </div>
 
