@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { PlusIcon } from "@radix-ui/react-icons";
+import { usePathname } from "next/navigation";
 
 export default function NewEventButton() {
+  const pathname = usePathname();
+
+  if (pathname === "/new-event") {
+    return null;
+  }
+
   return (
     <Link
       className="flex cursor-pointer flex-row items-center gap-1 rounded-full bg-red py-2 pr-4 pl-2.5 font-medium"
