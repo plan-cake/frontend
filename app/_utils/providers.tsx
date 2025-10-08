@@ -16,7 +16,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <LoginContext value={{ loggedIn, setLoggedIn }}>{children}</LoginContext>
+      <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
+        {children}
+      </LoginContext.Provider>
     </ThemeProvider>
   );
 }
