@@ -60,9 +60,7 @@ export default function PreviewTimeBlock({
           }
         }
 
-        let backgroundColor;
-        backgroundColor = isDark ? "rgb(52 50 72)" : "rgb(255 255 255)";
-
+        let backgroundColor = "";
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}

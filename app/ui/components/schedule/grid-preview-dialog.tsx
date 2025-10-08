@@ -66,6 +66,7 @@ export default function GridPreviewDialog({
         {isOpen ? (
           <motion.div className="h-[85%] grow space-y-4">
             <ScheduleGrid
+              mode="preview"
               eventRange={eventRange}
               disableSelect
               timezone={timezone}
@@ -88,6 +89,7 @@ export default function GridPreviewDialog({
         ) : (
           <motion.div className="h-full grow space-y-4">
             <ScheduleGrid
+              mode="preview"
               eventRange={eventRange}
               disableSelect={true}
               timezone={eventRange.timezone}
