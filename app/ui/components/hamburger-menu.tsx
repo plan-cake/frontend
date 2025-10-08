@@ -51,7 +51,7 @@ export default function HamburgerMenu() {
           <div className="w-60 text-xl">
             <ul className="flex flex-col space-y-1 p-4">
               <li>
-                <Link href="/" className="tracking-wide">
+                <Link href="/new-event" className="tracking-wide">
                   Mix Your First Plan
                 </Link>
               </li>
@@ -67,7 +67,7 @@ export default function HamburgerMenu() {
               </li>
               <li>
                 <Link href="/login" className="tracking-wide">
-                  Login/Signup
+                  Login
                 </Link>
               </li>
             </ul>
