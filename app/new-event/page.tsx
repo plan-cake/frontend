@@ -30,13 +30,19 @@ export default function Page() {
 
   return (
     <div className="flex h-full w-full grow flex-col space-y-4 md:space-y-8">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="add event name"
-        className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
-      />
+      <div className="flex w-full items-center justify-between">
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="add event name"
+          className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
+        />
+        <button className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+          Create Event
+        </button>
+      </div>
+
       <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
@@ -133,6 +139,12 @@ export default function Page() {
 
       <div className="flex min-h-0 flex-1 md:hidden">
         <GridPreviewDialog eventRange={eventRange} />
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
+        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
+          Create Event
+        </div>
       </div>
     </div>
   );
