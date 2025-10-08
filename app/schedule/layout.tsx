@@ -4,8 +4,8 @@ export default function ScheduleLayout({
   children: React.ReactNode;
 }) {
   return (
-    <main>
-      <div className="sticky top-0 z-10 h-25 w-full bg-white p-10 dark:bg-violet" />
+    <main className="p-10">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       {children}
     </main>
   );
