@@ -1,10 +1,10 @@
-import { UserAvailability } from "./types";
+import { AvailabilitySet } from "./types";
 import { createEmptyUserAvailability, toggleUtcSlot } from "./utils";
 
 export interface AvailabilityState {
   displayName: string;
   timeZone: string;
-  userAvailability: UserAvailability;
+  userAvailability: AvailabilitySet;
 }
 
 export type AvailabilityAction =
@@ -13,7 +13,7 @@ export type AvailabilityAction =
   | { type: "SET_TIME_ZONE"; payload: string }
   | {
       type: "TOGGLE_SLOT";
-      payload: { slot: Date };
+      payload: { slot: string };
     };
 
 // 3. Create the reducer function

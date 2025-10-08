@@ -1,38 +1,33 @@
 // app/_lib/availability.ts
 
 import { fromZonedTime } from "date-fns-tz";
-import { UserAvailability } from "@/app/_lib/availability/types";
+import { AvailabilitySet } from "@/app/_lib/availability/types";
 
 // Creates an empty UserAvailability object
-export const createEmptyUserAvailability = (
-  type: "specific" | "weekday" = "specific",
-): UserAvailability => ({
-  type,
-  selections: new Set<string>(),
-});
+export const createEmptyUserAvailability = (): AvailabilitySet => {
+  return new Set<string>();
+};
 
 // Toggles a single time slot in the user's availability
 export function toggleUtcSlot(
-  prev: UserAvailability,
-  timeSlot: Date, // Date in UTC
-): UserAvailability {
-  const updated = new Set(prev.selections);
-  const isoString = timeSlot.toISOString();
-
-  if (updated.has(isoString)) {
-    updated.delete(isoString);
+  prev: AvailabilitySet,
+  timeSlot: string, // ISO string
+): AvailabilitySet {
+  const updated = new Set(prev);
+  if (updated.has(timeSlot)) {
+    updated.delete(timeSlot);
   } else {
-    updated.add(isoString);
+    updated.add(timeSlot);
   }
-  return { ...prev, selections: updated };
+  return updated;
 }
 
 // Checks if a specific time slot is in the user's availability
 export function isSlotSelected(
-  availability: UserAvailability,
+  availability: AvailabilitySet,
   timeSlot: Date,
 ): boolean {
-  return availability.selections.has(timeSlot.toISOString());
+  return availability.has(timeSlot.toISOString());
 }
 
 // Converts a local time representation to a UTC ISO string

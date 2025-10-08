@@ -99,6 +99,8 @@ export default function Page() {
           mode="paint"
           eventRange={eventRange}
           timezone={timeZone}
+          onToggleSlot={toggleSlot}
+          userAvailability={userAvailability.selections}
         />
       </div>
 

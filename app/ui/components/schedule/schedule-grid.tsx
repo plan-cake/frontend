@@ -17,17 +17,23 @@ import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
 import ResultsTimeBlock from "./timeblocks/results-timeblock";
 
 interface ScheduleGridProps {
+  mode: "paint" | "view" | "preview";
   eventRange: EventRange;
   timezone: string;
+
   disableSelect?: boolean;
   attendees?: {
     name: string;
     availability: AvailabilitySet;
   }[];
-  mode?: "paint" | "view" | "preview";
 
+  // for "view" mode
   hoveredSlot?: string | null;
   setHoveredSlot?: (slotIso: string | null) => void;
+
+  // for "paint" mode
+  userAvailability?: AvailabilitySet;
+  onToggleSlot?: (slotIso: string) => void;
 }
 
 export default function ScheduleGrid({
