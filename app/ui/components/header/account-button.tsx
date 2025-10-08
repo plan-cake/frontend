@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import AccountDropdown from "./account-dropdown";
+import Link from "next/link";
 
 export default function AccountButton() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -29,26 +30,26 @@ export default function AccountButton() {
     checkLogin();
   }, []);
 
-  return (
-    <AccountDropdown>
-      <button
-        className={
-          "cursor-pointer rounded-full p-2 font-medium " +
-          (loggedIn
-            ? "frosted-glass flex items-center justify-center"
-            : "bg-red px-4 py-2")
-        }
-        onClick={() => {
-          if (loggedIn) {
-            // open account menu
-          } else {
-            router.push("/login");
-          }
-        }}
-        aria-label={loggedIn ? "Open account menu" : "Log in"}
+  if (loggedIn) {
+    return (
+      <AccountDropdown>
+        <button
+          className="frosted-glass flex cursor-pointer items-center justify-center rounded-full p-2 font-medium"
+          aria-label="Open account menu"
+        >
+          <PersonIcon className="h-5 w-5" />
+        </button>
+      </AccountDropdown>
+    );
+  } else {
+    return (
+      <Link
+        className="cursor-pointer rounded-full bg-red p-2 px-4 py-2 font-medium"
+        href="/login"
+        aria-label="Log in"
       >
-        {loggedIn ? <PersonIcon className="h-5 w-5" /> : "Log In"}
-      </button>
-    </AccountDropdown>
-  );
+        Log In
+      </Link>
+    );
+  }
 }
