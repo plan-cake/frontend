@@ -29,7 +29,7 @@ export default function Page() {
   const { title, customCode, eventRange } = state;
 
   return (
-    <div className="mt-20 flex h-full w-full grow flex-col space-y-4 md:space-y-8">
+    <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
       <div className="flex w-full items-center justify-between">
         <input
           type="text"
