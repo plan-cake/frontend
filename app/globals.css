@@ -16,15 +16,6 @@
   --calendar-accent-background: var(--color-blue-100);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: var(--violet);
-    --foreground: var(--bone);
-    --calendar-accent: var(--color-red);
-    --calendar-accent-background: var(--color-red-200);
-  }
-}
-
 .dark {
   --background: var(--violet);
   --foreground: var(--bone);
