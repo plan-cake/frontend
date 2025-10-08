@@ -26,7 +26,7 @@ export default function TimezoneSelect({
         options={options}
         value={parseTimezone(value)?.value || ""}
         onValueChange={onChange}
-        className="overflow-hidden"
+        className="w-full"
       />
     </div>
   );

@@ -69,7 +69,7 @@ export default function Page() {
         placeholder="add event name"
         className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
-      <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[auto_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
+      <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
           <DateRangeSelector eventRange={eventRange} dispatch={dispatch} />

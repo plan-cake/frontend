@@ -90,7 +90,7 @@ export default function GridPreviewDialog({
             <ScheduleGrid
               eventRange={eventRange}
               disableSelect={true}
-              timezone={timezone}
+              timezone={eventRange.timezone}
             />
           </motion.div>
         )}

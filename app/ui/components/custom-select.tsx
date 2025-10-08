@@ -33,14 +33,16 @@ export default function CustomSelect({
     >
       <Select.Trigger
         className={cn(
-          "inline-flex items-center justify-between overflow-hidden rounded-md text-blue focus:outline-none dark:text-red",
+          "inline-flex items-center rounded-md text-start text-blue focus:outline-none dark:text-red",
           className,
         )}
         aria-label="Custom select"
       >
-        <Select.Value placeholder={placeholder} />
-        <Select.Icon>
-          <ChevronDownIcon className="ml-2 h-4 w-4" />
+        <span className="flex-1 truncate pr-2">
+          <Select.Value placeholder={placeholder} />
+        </span>
+        <Select.Icon className="flex-shrink-0">
+          <ChevronDownIcon className="h-4 w-4" />
         </Select.Icon>
       </Select.Trigger>
 
