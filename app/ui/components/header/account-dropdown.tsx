@@ -1,10 +1,38 @@
 import { cn } from "@/app/_lib/classname";
+import formatApiError from "@/app/_utils/format-api-error";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { DashboardIcon, ExitIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
-import { forwardRef, ReactNode } from "react";
+import { forwardRef, ReactNode, useRef } from "react";
 
 const AccountDropdown = ({ children }: { children: ReactNode }) => {
+  const isSubmitting = useRef(false);
+  const router = useRouter();
+
+  const logout = async () => {
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
+    await fetch("/api/auth/logout/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          router.push("/login");
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred. Please try again.");
+      });
+
+    isSubmitting.current = false;
+  };
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild>{children}</DropdownMenu.Trigger>
@@ -14,11 +42,11 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
           className="frosted-glass z-50 mr-4 rounded-md p-1"
           sideOffset={16}
         >
-          <DropdownItem>
+          <DropdownItem onSelect={() => router.push("/dashboard")}>
             <DashboardIcon className="h-4 w-4" />
             Dashboard
           </DropdownItem>
-          <DropdownItem>
+          <DropdownItem onSelect={logout}>
             <ExitIcon className="h-4 w-4" />
             Log Out
           </DropdownItem>
