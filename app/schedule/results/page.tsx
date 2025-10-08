@@ -68,7 +68,11 @@ export default function Page() {
           )}
           <CopyToast
             label="Copy Link"
-            eventLink={origin ? `${origin}/event/${eventCode}` : ""}
+            eventLink={
+              window.location.origin
+                ? `${window.location.origin}/event/${eventCode}`
+                : ""
+            }
           />
         </div>
       </div>
