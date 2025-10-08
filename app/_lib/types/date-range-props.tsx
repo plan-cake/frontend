@@ -1,10 +1,18 @@
-import { Dispatch } from "react";
-import { EventRange } from "@/app/_lib/schedule/types";
-import { EventRangeAction } from "@/app/_lib/schedule/event-range-reducer";
+import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
+import { DateRange } from "react-day-picker";
 
 export type DateRangeProps = {
   eventRange: EventRange;
-  dispatch: Dispatch<EventRangeAction>;
+
+  // update functions
+  setTitle?: (title: string) => void;
+  setCustomCode?: (code: string) => void;
+  setEventType?: (type: "specific" | "weekday") => void;
+  setTimezone?: (tz: string) => void;
+  setDuration?: (duration: number) => void;
+  setTimeRange?: (timeRange: { from: number; to: number }) => void;
+  setDateRange?: (dateRange: DateRange | undefined) => void;
+  setWeekdayRange?: (weekdays: WeekdayMap) => void;
 
   displayCalendar?: boolean;
 };

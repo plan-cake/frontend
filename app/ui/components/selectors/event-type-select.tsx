@@ -2,7 +2,7 @@ import CustomSelect from "./custom-select";
 
 type EventTypeSelectProps = {
   eventType: string;
-  onEventTypeChange: (value: string) => void;
+  onEventTypeChange: (type: "specific" | "weekday") => void;
 };
 
 export default function EventTypeSelect({

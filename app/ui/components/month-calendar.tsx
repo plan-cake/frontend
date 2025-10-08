@@ -1,22 +1,20 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
-import { Dispatch } from "react";
-import { EventRangeAction } from "@/app/_lib/schedule/event-range-reducer";
 
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
 type CalendarProps = {
   className?: string;
   selectedRange: DateRange;
-  dispatch: Dispatch<EventRangeAction>;
+  setDateRange: (range: DateRange | undefined) => void;
 };
 
 export function Calendar({
   className,
   selectedRange,
-  dispatch,
+  setDateRange,
 }: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -27,17 +25,6 @@ export function Calendar({
   const today = new Date();
 
   const [month, setMonth] = useState(today);
-
-  const handleRangeSelect = useCallback((range: DateRange | undefined) => {
-    if (range?.from && range?.to) {
-      const from = range.from.toISOString();
-      const to = range.to.toISOString();
-      dispatch({
-        type: "SET_DATE_RANGE",
-        payload: { from, to },
-      });
-    }
-  }, []);
 
   return (
     <div className={className}>
@@ -55,7 +42,7 @@ export function Calendar({
         month={month}
         onMonthChange={setMonth}
         selected={selectedRange}
-        onSelect={handleRangeSelect}
+        onSelect={setDateRange}
         disabled={{ before: new Date() }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,

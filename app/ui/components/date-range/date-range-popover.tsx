@@ -1,15 +1,14 @@
-"use client";
-
-import { DateRangeProps } from "@/app/_lib/types/date-range-props";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
-
 import * as Popover from "@radix-ui/react-popover";
+import { fromZonedTime } from "date-fns-tz";
+
 import { Calendar } from "@/app/ui/components/month-calendar";
 import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 
+import { DateRangeProps } from "@/app/_lib/types/date-range-props";
+
 export default function DateRangePopover({
   eventRange,
-  dispatch,
+  setDateRange = () => {},
 }: DateRangeProps) {
   // If the event range is not specific, return null
   if (eventRange.type !== "specific") {
@@ -42,7 +41,7 @@ export default function DateRangePopover({
               from: startDate || undefined,
               to: endDate || undefined,
             }}
-            dispatch={dispatch}
+            setDateRange={setDateRange}
           />
         </Popover.Content>
       </Popover.Portal>

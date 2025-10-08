@@ -1,8 +1,4 @@
-"use client";
-
-import { useCallback } from "react";
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
-import { WeekdayMap } from "@/app/_lib/schedule/types";
 
 // Import child components
 import useCheckMobile from "@/app/_lib/use-check-mobile";
@@ -13,25 +9,22 @@ import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeSelector({
   eventRange,
-  dispatch,
+  setEventType = () => {},
+  setWeekdayRange = () => {},
+  setDateRange = () => {},
 }: DateRangeProps) {
   const isMobile = useCheckMobile();
-
-  const handleRangeTypeChange = useCallback((value: string) => {
-    dispatch({
-      type: "SET_RANGE_TYPE",
-      payload: value as "specific" | "weekday",
-    });
-  }, []);
-
-  const updateWeekdayRange = useCallback((map: WeekdayMap) => {
-    dispatch({ type: "SET_WEEKDAYS", payload: { weekdays: map } });
-  }, []);
-
   const rangeType = eventRange?.type ?? "specific";
 
   if (isMobile) {
-    return <DateRangeDrawer eventRange={eventRange} dispatch={dispatch} />;
+    return (
+      <DateRangeDrawer
+        eventRange={eventRange}
+        setEventType={setEventType}
+        setWeekdayRange={setWeekdayRange}
+        setDateRange={setDateRange}
+      />
+    );
   } else {
     return (
       <div className="mb-4 flex w-full flex-row gap-8">
@@ -39,14 +32,17 @@ export default function DateRangeSelector({
           <label htmlFor="date-range-type">Type</label>
           <EventTypeSelect
             eventType={rangeType}
-            onEventTypeChange={handleRangeTypeChange}
+            onEventTypeChange={setEventType}
           />
         </div>
         <div className="flex w-full flex-col justify-center gap-2">
           {eventRange?.type === "specific" ? (
             <>
               <label htmlFor="date-range">Possible Dates</label>
-              <DateRangePopover eventRange={eventRange} dispatch={dispatch} />
+              <DateRangePopover
+                eventRange={eventRange}
+                setDateRange={setDateRange}
+              />
             </>
           ) : (
             <WeekdayCalendar
@@ -61,7 +57,7 @@ export default function DateRangeSelector({
                   Sat: 0,
                 }
               }
-              onChange={updateWeekdayRange}
+              onChange={setWeekdayRange}
             />
           )}
         </div>

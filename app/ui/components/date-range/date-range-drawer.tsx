@@ -1,6 +1,3 @@
-"use client";
-
-import { useCallback } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
@@ -13,16 +10,11 @@ import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeDrawer({
   eventRange,
-  dispatch,
+  setEventType = () => {},
+  setWeekdayRange = () => {},
+  setDateRange = () => {},
 }: DateRangeProps) {
   const rangeType = eventRange?.type ?? "specific";
-
-  const handleRangeTypeChange = useCallback((value: string) => {
-    dispatch({
-      type: "SET_RANGE_TYPE",
-      payload: value as "specific" | "weekday",
-    });
-  }, []);
 
   return (
     <Dialog.Root>
@@ -30,7 +22,7 @@ export default function DateRangeDrawer({
         <button className="cursor-pointer" aria-label="Open date range picker">
           <DateRangeDrawerSelector
             eventRange={eventRange}
-            dispatch={dispatch}
+            setEventType={setEventType}
           />
         </button>
       </Dialog.Trigger>
@@ -50,14 +42,15 @@ export default function DateRangeDrawer({
               <label htmlFor="date-range-type">Select Date Range</label>
               <EventTypeSelect
                 eventType={rangeType}
-                onEventTypeChange={handleRangeTypeChange}
+                onEventTypeChange={setEventType}
               />
             </Dialog.Title>
 
             <DateRangeDrawerSelector
               eventRange={eventRange}
-              dispatch={dispatch}
               displayCalendar={true}
+              setWeekdayRange={setWeekdayRange}
+              setDateRange={setDateRange}
             />
           </div>
         </Dialog.Content>
@@ -69,7 +62,8 @@ export default function DateRangeDrawer({
 const DateRangeDrawerSelector = ({
   eventRange,
   displayCalendar,
-  dispatch,
+  setWeekdayRange = () => {},
+  setDateRange = () => {},
 }: DateRangeProps) => {
   if (eventRange?.type === "specific") {
     const startDate = fromZonedTime(
@@ -85,7 +79,7 @@ const DateRangeDrawerSelector = ({
               from: startDate || undefined,
               to: endDate || undefined,
             }}
-            dispatch={dispatch}
+            setDateRange={setDateRange}
           />
         ) : (
           <>
@@ -115,9 +109,7 @@ const DateRangeDrawerSelector = ({
             Sat: 0,
           }
         }
-        onChange={(map) =>
-          dispatch({ type: "SET_WEEKDAYS", payload: { weekdays: map } })
-        }
+        onChange={setWeekdayRange}
       />
     </div>
   );

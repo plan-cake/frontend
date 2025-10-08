@@ -1,34 +1,11 @@
 "use client";
 
-import { useReducer } from "react";
-import { EventInformation, EventRange } from "@/app/_lib/schedule/types";
-import { EventInfoReducer } from "../_lib/schedule/event-info-reducer";
-
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import CustomSelect from "@/app/ui/components/selectors/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
-
-const initialEventRange: EventRange = {
-  type: "specific",
-  duration: 60,
-  timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  dateRange: {
-    from: new Date().toISOString(),
-    to: new Date().toISOString(),
-  },
-  timeRange: {
-    from: 9,
-    to: 17,
-  },
-};
-
-const initalEventInfo: EventInformation = {
-  title: "",
-  customCode: "",
-  eventRange: initialEventRange,
-};
+import { useEventInfo } from "../_lib/schedule/use-event-info";
 
 const durationOptions = [
   { label: "30 minutes", value: 30 },
@@ -38,46 +15,25 @@ const durationOptions = [
 
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [eventInfo, dispatch] = useReducer(EventInfoReducer, initalEventInfo);
-
-  /* HANDLERS THAT CONTROL STATE OF EVENT INFORMATION */
-  // these handlers dispatch actions to the reducer to update state
-  // they also perform any necessary validation/conversion
-
-  const handleTitleChange = (new_title: string) => {
-    dispatch({ type: "SET_TITLE", payload: new_title });
-  };
-
-  const handleCustomCodeChange = (new_code: string) => {
-    dispatch({ type: "SET_CUSTOM_CODE", payload: new_code });
-  };
-
-  const handleTZChange = (new_timezone: string) => {
-    if (!new_timezone) return;
-    if (typeof new_timezone !== "string") return;
-    dispatch({ type: "SET_TIMEZONE", payload: new_timezone });
-  };
-
-  const handleDurationChange = (new_duration: number | string) => {
-    if (!new_duration) return;
-    if (typeof new_duration !== "number") return;
-    dispatch({ type: "SET_DURATION", payload: new_duration });
-  };
-
-  const handleTimeChange = (key: "from" | "to", value: number) => {
-    dispatch({
-      type: "SET_TIME_RANGE",
-      payload: {
-        ...eventInfo.eventRange.timeRange,
-        [key]: value,
-      },
-    });
-  };
+  const {
+    state,
+    setTitle,
+    setEventType,
+    setCustomCode,
+    setTimezone,
+    setDuration,
+    setTimeRange,
+    setDateRange,
+    setWeekdayRange,
+  } = useEventInfo();
+  const { title, customCode, eventRange } = state;
 
   return (
     <div className="flex h-full w-full grow flex-col space-y-4 md:space-y-8">
       <input
         type="text"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
         placeholder="add event name"
         className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
       />
@@ -85,8 +41,10 @@ export default function Page() {
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
           <DateRangeSelector
-            eventRange={eventInfo.eventRange}
-            dispatch={dispatch}
+            eventRange={eventRange}
+            setEventType={setEventType}
+            setWeekdayRange={setWeekdayRange}
+            setDateRange={setDateRange}
           />
         </div>
 
@@ -96,18 +54,20 @@ export default function Page() {
           <label className="text-gray-400">FROM</label>
           <TimeDropdown
             defaultTZ={defaultTZ}
-            duration={eventInfo.eventRange.duration}
-            value={eventInfo.eventRange.timeRange.from}
-            onChange={(from) => handleTimeChange("from", from)}
+            duration={eventRange.duration}
+            value={eventRange.timeRange.from}
+            onChange={(value) =>
+              setTimeRange({ ...eventRange.timeRange, from: value })
+            }
           />
         </div>
         <div className="flex space-x-4 md:col-start-1 md:row-start-4">
           <label className="text-gray-400">UNTIL</label>
           <TimeDropdown
             defaultTZ={defaultTZ}
-            duration={eventInfo.eventRange.duration}
-            value={eventInfo.eventRange.timeRange.to}
-            onChange={(to) => handleTimeChange("to", to)}
+            duration={eventRange.duration}
+            value={eventRange.timeRange.to}
+            onChange={(to) => setTimeRange({ ...eventRange.timeRange, to })}
           />
         </div>
 
@@ -128,8 +88,8 @@ export default function Page() {
           </label>
           <div className="hidden md:col-start-1 md:row-start-14 md:block">
             <TimezoneSelect
-              value={eventInfo.eventRange.timezone}
-              onChange={handleTZChange}
+              value={eventRange.timezone}
+              onChange={setTimezone}
             />
           </div>
           <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
@@ -138,8 +98,8 @@ export default function Page() {
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <CustomSelect
               options={durationOptions}
-              value={eventInfo.eventRange.duration}
-              onValueChange={handleDurationChange}
+              value={eventRange.duration}
+              onValueChange={(v) => setDuration((v as number) || 60)}
             />
           </div>
 
@@ -153,26 +113,26 @@ export default function Page() {
                 Timezone
               </label>
               <TimezoneSelect
-                value={eventInfo.eventRange.timezone}
-                onChange={handleTZChange}
+                value={eventRange.timezone}
+                onChange={setTimezone}
               />
               <label className="text-gray-400">Duration</label>
               <CustomSelect
                 options={durationOptions}
-                value={eventInfo.eventRange.duration}
-                onValueChange={handleDurationChange}
+                value={eventRange.duration}
+                onValueChange={(v) => setDuration((v as number) || 60)}
               />
             </div>
           </details>
         </div>
 
         <div className="hidden flex-1 md:col-span-10 md:col-start-2 md:row-span-15 md:row-start-2 md:block">
-          <GridPreviewDialog eventRange={eventInfo.eventRange} />
+          <GridPreviewDialog eventRange={eventRange} />
         </div>
       </div>
 
       <div className="flex min-h-0 flex-1 md:hidden">
-        <GridPreviewDialog eventRange={eventInfo.eventRange} />
+        <GridPreviewDialog eventRange={eventRange} />
       </div>
     </div>
   );
