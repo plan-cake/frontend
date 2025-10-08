@@ -10,6 +10,7 @@ export default function useGenerateTimeSlots(
 ) {
   return useMemo(() => {
     const daySlots = expandEventRange(eventRange);
+    console.log("daySlots", daySlots);
     if (daySlots.length === 0) {
       return {
         timeBlocks: [],
@@ -31,7 +32,7 @@ export default function useGenerateTimeSlots(
     // Handle overnight ranges
     if (localEndHour < localStartHour) {
       timeBlocks.push({ startHour: 0, endHour: localEndHour });
-      timeBlocks.push({ startHour: localStartHour, endHour: 24 });
+      timeBlocks.push({ startHour: localStartHour, endHour: 23 });
       numHours += localEndHour;
       numHours += 24 - localStartHour;
     } else {
