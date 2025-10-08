@@ -2,24 +2,32 @@
 @import "react-day-picker/style.css";
 
 :root {
-  --background: #f5f5f5;
+  --background: #ffffff;
   --foreground: #3e3c53;
+  --bone-base: #e9deca;
+  --red-base: #ff5c5c;
+  --white-base: #ffffff;
+  --bone: #e9deca;
+  --lion: #deb887;
+  --violet: #3e3c53;
+  --stone: #9ca3af;
+  --red: #ff6b6b;
   --calendar-accent: var(--color-blue);
   --calendar-accent-background: var(--color-blue-100);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #3e3c53;
-    --foreground: #e9deca;
+    --background: var(--violet);
+    --foreground: var(--bone);
     --calendar-accent: var(--color-red);
     --calendar-accent-background: var(--color-red-200);
   }
 }
 
 .dark {
-  --background: #3e3c53;
-  --foreground: #e9deca;
+  --background: var(--violet);
+  --foreground: var(--bone);
   --calendar-accent: var(--color-red);
   --calendar-accent-background: var(--color-red-200);
 }
@@ -27,6 +35,53 @@
 body {
   background: var(--background);
   color: var(--foreground);
+  font-family: var(--font-nunito);
+}
+
+.font-display {
+  font-family: var(--font-modak);
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+}
+
+.text-bone {
+  color: var(--bone);
+}
+
+.text-lion {
+  color: var(--lion);
+}
+
+.text-violet {
+  color: var(--violet);
+}
+
+.text-outline {
+  -webkit-text-stroke: 2px currentColor;
+  color: transparent;
+}
+
+.text-outline-dark {
+  -webkit-text-stroke: 2px var(--violet);
+  color: transparent;
+  text-shadow: 2px 2px 0px var(--violet);
+}
+
+.text-outline-light {
+  -webkit-text-stroke: 2px var(--bone);
+  color: transparent;
+  text-shadow: 2px 2px 0px var(--bone);
+}
+
+.text-outline-golden {
+  -webkit-text-stroke: 2px var(--lion);
+  color: transparent;
+}
+
+.bubble-text {
+  font-family: var(--font-modak);
+  letter-spacing: 0.05em;
+  line-height: 1.1;
 }
 
 .rdp-root {

@@ -19,28 +19,22 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "tomeeto",
-  description: "to meet or not to meet",
+  title: "plancake",
+  description: "Stacking up perfect plans, one pancake at a time",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      className={`${modak.variable} ${nunito.variable}`}
-    >
-      <body className="font-sans antialiased">
-        <div className="flex min-h-dvh flex-col p-10">
-          <Providers>
-            <Header />
-            {children}
-          </Providers>
-        </div>
+    <html lang="en" className={`${modak.variable} ${nunito.variable}`}>
+      <body>
+        <Providers>
+          <Header />
+          {children}
+        </Providers>
       </body>
     </html>
   );
