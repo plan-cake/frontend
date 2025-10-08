@@ -1,17 +1,14 @@
 "use client";
 
 import { useReducer } from "react";
-import { EventRange } from "@/app/_lib/schedule/types";
-import { EventRangeReducer } from "@/app/_lib/event-range-reducer";
-
-// import TimezoneSelect, { type ITimezone } from "react-timezone-select";
+import { EventInformation, EventRange } from "@/app/_lib/schedule/types";
+import { EventInfoReducer } from "../_lib/schedule/event-info-reducer";
 
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
 import TimezoneSelect from "@/app/ui/components/timezone-select";
 import CustomSelect from "@/app/ui/components/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
-import { ITimezone } from "react-timezone-select";
 
 const initialEventRange: EventRange = {
   type: "specific",
@@ -27,18 +24,33 @@ const initialEventRange: EventRange = {
   },
 };
 
+const initalEventInfo: EventInformation = {
+  title: "",
+  customCode: "",
+  eventRange: initialEventRange,
+};
+
+const durationOptions = [
+  { label: "30 minutes", value: 30 },
+  { label: "45 minutes", value: 45 },
+  { label: "1 hour", value: 60 },
+];
+
 export default function Page() {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  const [eventRange, dispatch] = useReducer(
-    EventRangeReducer,
-    initialEventRange,
-  );
+  const [eventInfo, dispatch] = useReducer(EventInfoReducer, initalEventInfo);
 
-  const durationOptions = [
-    { label: "30 minutes", value: 30 },
-    { label: "45 minutes", value: 45 },
-    { label: "1 hour", value: 60 },
-  ];
+  /* HANDLERS THAT CONTROL STATE OF EVENT INFORMATION */
+  // these handlers dispatch actions to the reducer to update state
+  // they also perform any necessary validation/conversion
+
+  const handleTitleChange = (new_title: string) => {
+    dispatch({ type: "SET_TITLE", payload: new_title });
+  };
+
+  const handleCustomCodeChange = (new_code: string) => {
+    dispatch({ type: "SET_CUSTOM_CODE", payload: new_code });
+  };
 
   const handleTZChange = (new_timezone: string | number) => {
     if (!new_timezone) return;
@@ -56,7 +68,7 @@ export default function Page() {
     dispatch({
       type: "SET_TIME_RANGE",
       payload: {
-        ...eventRange.timeRange,
+        ...eventInfo.eventRange.timeRange,
         [key]: value,
       },
     });
@@ -72,7 +84,10 @@ export default function Page() {
       <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
-          <DateRangeSelector eventRange={eventRange} dispatch={dispatch} />
+          <DateRangeSelector
+            eventRange={eventInfo.eventRange}
+            dispatch={dispatch}
+          />
         </div>
 
         {/* From/To */}
@@ -81,8 +96,8 @@ export default function Page() {
           <label className="text-gray-400">FROM</label>
           <TimeDropdown
             defaultTZ={defaultTZ}
-            duration={eventRange.duration}
-            value={eventRange.timeRange.from}
+            duration={eventInfo.eventRange.duration}
+            value={eventInfo.eventRange.timeRange.from}
             onChange={(from) => handleTimeChange("from", from)}
           />
         </div>
@@ -90,8 +105,8 @@ export default function Page() {
           <label className="text-gray-400">UNTIL</label>
           <TimeDropdown
             defaultTZ={defaultTZ}
-            duration={eventRange.duration}
-            value={eventRange.timeRange.to}
+            duration={eventInfo.eventRange.duration}
+            value={eventInfo.eventRange.timeRange.to}
             onChange={(to) => handleTimeChange("to", to)}
           />
         </div>
@@ -113,7 +128,7 @@ export default function Page() {
           </label>
           <div className="hidden md:col-start-1 md:row-start-14 md:block">
             <TimezoneSelect
-              value={eventRange.timezone}
+              value={eventInfo.eventRange.timezone}
               onChange={handleTZChange}
             />
           </div>
@@ -123,7 +138,7 @@ export default function Page() {
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <CustomSelect
               options={durationOptions}
-              value={eventRange.duration}
+              value={eventInfo.eventRange.duration}
               onValueChange={handleDurationChange}
             />
           </div>
@@ -138,13 +153,13 @@ export default function Page() {
                 Timezone
               </label>
               <TimezoneSelect
-                value={eventRange.timezone}
+                value={eventInfo.eventRange.timezone}
                 onChange={handleTZChange}
               />
               <label className="text-gray-400">Duration</label>
               <CustomSelect
                 options={durationOptions}
-                value={eventRange.duration}
+                value={eventInfo.eventRange.duration}
                 onValueChange={handleDurationChange}
               />
             </div>
@@ -152,12 +167,12 @@ export default function Page() {
         </div>
 
         <div className="hidden flex-1 md:col-span-10 md:col-start-2 md:row-span-15 md:row-start-2 md:block">
-          <GridPreviewDialog eventRange={eventRange} />
+          <GridPreviewDialog eventRange={eventInfo.eventRange} />
         </div>
       </div>
 
       <div className="flex min-h-0 flex-1 md:hidden">
-        <GridPreviewDialog eventRange={eventRange} />
+        <GridPreviewDialog eventRange={eventInfo.eventRange} />
       </div>
     </div>
   );

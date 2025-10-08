@@ -3,7 +3,7 @@
 import { useState, useCallback } from "react";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { Dispatch } from "react";
-import { EventRangeAction } from "@/app/_lib/event-range-reducer";
+import { EventRangeAction } from "@/app/_lib/schedule/event-range-reducer";
 
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 

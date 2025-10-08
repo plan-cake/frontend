@@ -6,6 +6,9 @@ export type EventInformation = {
   eventRange: EventRange;
 };
 
+// discriminated union for event ranges - this is your single source of truth
+export type EventRange = SpecificDateRange | WeekdayRange;
+
 // represents selected weekdays
 export type WeekdayMap = {
   [day in "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat"]: 0 | 1;
@@ -37,9 +40,6 @@ export type WeekdayRange = {
     to: number; // hour in 24h format, e.g., 17 for 5:00 PM
   };
 };
-
-// discriminated union for event ranges - this is your single source of truth
-export type EventRange = SpecificDateRange | WeekdayRange;
 
 /* SLOTS TYPES FOR UI */
 // these types are generated from the core models above for rendering
