@@ -100,7 +100,7 @@ export default function Page() {
           eventRange={eventRange}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
-          userAvailability={userAvailability.selections}
+          userAvailability={userAvailability}
         />
       </div>
 

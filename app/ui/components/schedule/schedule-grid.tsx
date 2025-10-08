@@ -44,26 +44,10 @@ export default function ScheduleGrid({
   mode = "preview",
   hoveredSlot,
   setHoveredSlot = () => {},
+  userAvailability = createEmptyUserAvailability(),
+  onToggleSlot = () => {},
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
-
-  const [availability, setAvailability] = useState<AvailabilitySet>(
-    createEmptyUserAvailability(eventRange.type).selections,
-  );
-
-  function handleToggle(slotIsoString: string) {
-    if (disableSelect || mode !== "paint") return;
-
-    setAvailability((prev) => {
-      const updated = new Set(prev);
-      if (updated.has(slotIsoString)) {
-        updated.delete(slotIsoString);
-      } else {
-        updated.add(slotIsoString);
-      }
-      return updated;
-    });
-  }
 
   const { timeBlocks, dayGroupedSlots, numDays, numHours, error } =
     useGenerateTimeSlots(eventRange, timezone);
@@ -133,8 +117,8 @@ export default function ScheduleGrid({
                 numVisibleDays={visibleDays.length}
                 visibleDayKeys={visibleDays.map((d) => d.dayKey)}
                 userTimezone={timezone}
-                availability={availability}
-                onToggle={handleToggle}
+                availability={userAvailability}
+                onToggle={onToggleSlot}
               />
             );
           } else if (mode === "view") {
