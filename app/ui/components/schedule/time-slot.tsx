@@ -39,8 +39,9 @@ function TimeSlot({
       draggable={false}
       className={cn(
         cellClasses,
-        "relative bg-white transition-colors hover:cursor-pointer dark:bg-violet",
+        "relative bg-white hover:cursor-pointer dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
+        disableSelect && "bg-[#FFFFFF] dark:bg-[#343249]",
       )}
       style={{
         gridColumn,
@@ -53,8 +54,9 @@ function TimeSlot({
       <div
         className={cn(
           "h-full w-full",
-          disableSelect && "cursor-not-allowed",
-          "hover:bg-blue-200 dark:hover:bg-red-200",
+          disableSelect
+            ? "cursor-not-allowed"
+            : "hover:bg-blue-200 dark:hover:bg-red-200",
         )}
         style={{ backgroundColor }}
       />
