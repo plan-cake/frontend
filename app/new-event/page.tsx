@@ -82,30 +82,43 @@ export default function Page() {
           {/* Desktop: show all options */}
           <label
             htmlFor="Advanced Option"
-            className="hidden md:col-start-1 md:row-start-12 md:block"
+            className="hidden md:col-start-1 md:row-start-10 md:block"
           >
             Advanced Options
           </label>
           <label
             htmlFor="timezone"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block"
+            className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block"
           >
             Timezone
           </label>
-          <div className="hidden md:col-start-1 md:row-start-14 md:block">
+          <div className="hidden md:col-start-1 md:row-start-12 md:block">
             <TimezoneSelect
               value={eventRange.timezone}
               onChange={setTimezone}
             />
           </div>
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block">
             Duration
           </label>
-          <div className="hidden md:col-start-1 md:row-start-16 md:block">
+          <div className="hidden md:col-start-1 md:row-start-14 md:block">
             <CustomSelect
               options={durationOptions}
               value={eventRange.duration}
               onValueChange={(v) => setDuration((v as number) || 60)}
+            />
+          </div>
+
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
+            Custom Event Code
+          </label>
+          <div className="hidden md:col-start-1 md:row-start-16 md:block">
+            <input
+              type="text"
+              value={customCode}
+              onChange={(e) => setCustomCode(e.target.value)}
+              placeholder="optional"
+              className="w-full border-b-1 border-gray-300 text-blue focus:outline-none dark:border-gray-400 dark:text-red"
             />
           </div>
 
@@ -127,6 +140,14 @@ export default function Page() {
                 options={durationOptions}
                 value={eventRange.duration}
                 onValueChange={(v) => setDuration((v as number) || 60)}
+              />
+              <label className="text-gray-400">Custom Event Code</label>
+              <input
+                type="text"
+                value={customCode}
+                onChange={(e) => setCustomCode(e.target.value)}
+                placeholder="optional"
+                className="w-full border-b-1 border-gray-300 text-blue focus:outline-none dark:border-gray-400 dark:text-red"
               />
             </div>
           </details>
