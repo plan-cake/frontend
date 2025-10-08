@@ -2,7 +2,6 @@
 
 import { fromZonedTime } from "date-fns-tz";
 import { UserAvailability } from "@/app/_lib/availability/types";
-import { EventRange } from "@/app/_lib/schedule/types";
 
 // Creates an empty UserAvailability object
 export const createEmptyUserAvailability = (

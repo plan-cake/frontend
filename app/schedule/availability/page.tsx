@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useAvailability } from "@/app/_lib/availability/use-availability";
 
 import { EventRange } from "@/app/_lib/schedule/types";
 
@@ -11,15 +12,10 @@ import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 
 export default function Page() {
-  const [timezone, setTimezone] = useState(
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
-  );
-
-  const handleTZChange = (newTZ: string | number) => {
-    setTimezone(newTZ.toString());
-  };
-
-  const [userName, setUserName] = useState("John Doe");
+  // AVAILABILITY STATE
+  const { state, setDisplayName, setTimeZone, toggleSlot } =
+    useAvailability("John Doe");
+  const { displayName, timeZone, userAvailability } = state;
 
   const eventName = "Sample Event";
 
@@ -75,11 +71,10 @@ export default function Page() {
               Hi,{" "}
               <input
                 type="text"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
                 placeholder="add your name"
-                // value={userName}
-                onChange={(e) => setUserName(e.target.value)}
                 className="inline-block w-auto border-b border-violet bg-transparent px-1 focus:outline-none dark:border-gray-400"
-                style={{ minWidth: "6ch" }}
               />
               <br />
               add your availabilities here
@@ -94,7 +89,7 @@ export default function Page() {
           <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
-              <TimezoneSelect value={timezone} onChange={handleTZChange} />
+              <TimezoneSelect value={timeZone} onChange={setTimeZone} />
             </span>
           </div>
         </div>
@@ -103,7 +98,7 @@ export default function Page() {
         <ScheduleGrid
           mode="paint"
           eventRange={eventRange}
-          timezone={timezone}
+          timezone={timeZone}
         />
       </div>
 
