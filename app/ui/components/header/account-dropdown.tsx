@@ -10,7 +10,6 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
 
       <DropdownMenu.Portal>
         <DropdownMenu.Content
-          //   className="z-50 mr-4 rounded-md border border-gray-400 bg-white p-1 shadow-lg dark:bg-violet dark:shadow-violet-700"
           className="frosted-glass z-50 mr-4 rounded-md p-1"
           sideOffset={16}
         >
