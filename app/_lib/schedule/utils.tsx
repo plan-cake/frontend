@@ -125,7 +125,10 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
 
       const startTimeString =
         String(range.timeRange.from).padStart(2, "0") + ":00";
-      const endTimeString = String(range.timeRange.to).padStart(2, "0") + ":00";
+      const endTimeString =
+        range.timeRange.to == 24
+          ? "23:59"
+          : String(range.timeRange.to).padStart(2, "0");
 
       let slotTimeUTC = fromZonedTime(
         `${dateString}T${startTimeString}`,
