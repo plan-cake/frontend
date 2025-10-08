@@ -29,8 +29,6 @@ export default function Page() {
         .then(async (res) => {
           if (res.ok) {
             setEmailVerified(true);
-          } else {
-            // don't alert anything, the page will say enough
           }
         })
         .catch((err) => {
