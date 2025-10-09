@@ -6,6 +6,11 @@ import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import CustomSelect from "@/app/ui/components/selectors/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 import { useEventInfo } from "../_lib/schedule/use-event-info";
+import { useRef } from "react";
+import { useRouter } from "next/navigation";
+import formatApiError from "../_utils/format-api-error";
+import { SpecificDateRange, WeekdayRange } from "../_lib/schedule/types";
+import { json } from "stream/consumers";
 
 const durationOptions = [
   { label: "30 minutes", value: 30 },
@@ -27,6 +32,58 @@ export default function Page() {
     setWeekdayRange,
   } = useEventInfo();
   const { title, customCode, eventRange } = state;
+  const isSubmitting = useRef(false);
+  const router = useRouter();
+
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
+  const createEvent = async () => {
+    if (isSubmitting.current) return;
+    isSubmitting.current = true;
+
+    if (state.eventRange.type === "specific") {
+      const jsonBody = {
+        title,
+        duration: eventRange.duration,
+        time_zone: eventRange.timezone,
+        start_date: formatDate(
+          new Date((eventRange as SpecificDateRange).dateRange.from),
+        ),
+        end_date: formatDate(
+          new Date((eventRange as SpecificDateRange).dateRange.to),
+        ),
+        start_hour: eventRange.timeRange.from,
+        end_hour: eventRange.timeRange.to,
+        custom_code: customCode || undefined,
+      };
+      await fetch("/api/event/date-create/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonBody),
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            const code = (await res.json()).event_code;
+            router.push(`/${code}`);
+          } else {
+            alert(formatApiError(await res.json()));
+          }
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          alert("An error occurred. Please try again.");
+        });
+    } else {
+      alert("Weekly events not implemented yet");
+    }
+
+    isSubmitting.current = false;
+  };
 
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
@@ -38,7 +95,10 @@ export default function Page() {
           placeholder="add event name"
           className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
         />
-        <button className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+        <button
+          className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
+          onClick={createEvent}
+        >
           Create Event
         </button>
       </div>
@@ -163,7 +223,10 @@ export default function Page() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
-        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
+        <div
+          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+          onClick={createEvent}
+        >
           Create Event
         </div>
       </div>
