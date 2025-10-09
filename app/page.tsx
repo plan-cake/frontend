@@ -62,7 +62,7 @@ export default function Home() {
                   </h3>
                   <p className="text-violet dark:text-bone">
                     Intelligently suggest optimal meeting times based on
-                    everyone&apos;s availability and preferences.
+                    everyone&apos;s availability.
                   </p>
                 </div>
                 <div>
@@ -70,8 +70,8 @@ export default function Home() {
                     Easy Coordination
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Share a simple link and watch as responses stack up in
-                    real-time without the back-and-forth.
+                    Share a simple link and watch as responses stack up without
+                    the back-and-forth.
                   </p>
                 </div>
                 <div>
@@ -79,8 +79,8 @@ export default function Home() {
                     Perfect Results
                   </h3>
                   <p className="text-violet dark:text-bone">
-                    Get the ideal meeting time that works for everyone with
-                    automatic calendar integration.
+                    Get the ideal meeting time that works for everyone with an
+                    intuitive graph view.
                   </p>
                 </div>
               </div>
@@ -123,7 +123,7 @@ export default function Home() {
                 <h3 className="mb-4 text-xl font-semibold">Share & Stack</h3>
                 <p className="text-sm">
                   Send the link to participants and watch responses stack up in
-                  real-time
+                  a flash
                 </p>
               </div>
               <div className="text-center">
@@ -132,8 +132,8 @@ export default function Home() {
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Flip & Serve</h3>
                 <p className="text-sm">
-                  Review the results, pick the best time, and serve up calendar
-                  invites to all
+                  Review the results and serve up the ideal meeting time for
+                  everyone
                 </p>
               </div>
             </div>
