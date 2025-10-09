@@ -150,3 +150,23 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
 
   return slots;
 }
+
+export function generateWeekdayMap(
+  startDay: number,
+  endDay: number,
+): WeekdayMap {
+  const weekdays: WeekdayMap = {
+    Sun: 0,
+    Mon: 0,
+    Tue: 0,
+    Wed: 0,
+    Thu: 0,
+    Fri: 0,
+    Sat: 0,
+  };
+  for (let i = startDay; i <= endDay; i++) {
+    const dayKey = Object.keys(weekdays)[i];
+    weekdays[dayKey as keyof WeekdayMap] = 1;
+  }
+  return weekdays;
+}

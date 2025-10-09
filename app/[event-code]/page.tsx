@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import {
   EventRange,
   SpecificDateRange,
-  WeekdayMap,
   WeekdayRange,
 } from "@/app/_lib/schedule/types";
 
@@ -18,6 +17,7 @@ import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import { useParams } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
+import { generateWeekdayMap } from "../_lib/schedule/utils";
 
 export default function Page() {
   // AVAILABILITY STATE
@@ -80,19 +80,10 @@ export default function Page() {
             };
             setEventRange(newRange);
           } else {
-            const dayKeys = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-            const weekdays: WeekdayMap = {
-              Sun: 0,
-              Mon: 0,
-              Tue: 0,
-              Wed: 0,
-              Thu: 0,
-              Fri: 0,
-              Sat: 0,
-            };
-            for (let i = data.start_weekday; i <= data.end_weekday; i++) {
-              weekdays[dayKeys[i] as keyof WeekdayMap] = 1;
-            }
+            const weekdays = generateWeekdayMap(
+              data.start_weekday,
+              data.end_weekday,
+            );
             const newRange: WeekdayRange = {
               type: "weekday",
               duration: data.duration,
