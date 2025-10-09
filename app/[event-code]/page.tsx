@@ -1,23 +1,29 @@
 "use client";
 
-import { useState } from "react";
 import { useAvailability } from "@/app/_lib/availability/use-availability";
+import { useEffect, useState } from "react";
 
-import { EventRange } from "@/app/_lib/schedule/types";
+import {
+  EventRange,
+  SpecificDateRange,
+  WeekdayMap,
+  WeekdayRange,
+} from "@/app/_lib/schedule/types";
 
-import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/copy-toast";
+import EventInfoDrawer, {
+  EventInfo,
+} from "@/app/ui/components/event-info-drawer";
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
-import { EventInfo } from "@/app/ui/components/event-info-drawer";
+import { useParams } from "next/navigation";
+import formatApiError from "../_utils/format-api-error";
 
 export default function Page() {
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
     useAvailability("John Doe");
   const { displayName, timeZone, userAvailability } = state;
-
-  const eventName = "Sample Event";
 
   // --- CORRECTED ---
   // 1. Create dates in UTC to avoid browser timezone issues.
@@ -29,7 +35,8 @@ export default function Page() {
     return `${year}-${month}-${day}`;
   };
 
-  const eventRange: EventRange = {
+  const [eventName, setEventName] = useState("Loading...");
+  const [eventRange, setEventRange] = useState<EventRange>({
     type: "specific",
     duration: 60,
     // 2. Set the event's *original* timezone, not the user's.
@@ -43,7 +50,69 @@ export default function Page() {
       from: 9,
       to: 20,
     },
-  };
+  });
+
+  // get the event data from the code in the URL
+  const params = useParams();
+  const eventCode = params?.["event-code"];
+  useEffect(() => {
+    fetch("/api/event/get-details?event_code=" + eventCode, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const data = await res.json();
+          setEventName(data.title);
+          if (data.event_type === "Date") {
+            const newRange: SpecificDateRange = {
+              type: "specific",
+              duration: data.duration,
+              timezone: data.time_zone,
+              dateRange: {
+                from: data.start_date,
+                to: data.end_date,
+              },
+              timeRange: {
+                from: data.start_hour,
+                to: data.end_hour,
+              },
+            };
+            setEventRange(newRange);
+          } else {
+            const dayKeys = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            const weekdays: WeekdayMap = {
+              Sun: 0,
+              Mon: 0,
+              Tue: 0,
+              Wed: 0,
+              Thu: 0,
+              Fri: 0,
+              Sat: 0,
+            };
+            for (let i = data.start_weekday; i <= data.end_weekday; i++) {
+              weekdays[dayKeys[i] as keyof WeekdayMap] = 1;
+            }
+            const newRange: WeekdayRange = {
+              type: "weekday",
+              duration: data.duration,
+              timezone: data.time_zone,
+              weekdays: weekdays,
+              timeRange: {
+                from: data.start_hour,
+                to: data.end_hour,
+              },
+            };
+            setEventRange(newRange);
+          }
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
+  }, [eventCode]);
 
   return (
     <div className="flex flex-col space-y-4">
