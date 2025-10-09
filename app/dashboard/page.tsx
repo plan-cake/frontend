@@ -1,5 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import formatApiError from "../_utils/format-api-error";
+
 type Event = {
   id: string;
   title: string;
@@ -7,35 +10,48 @@ type Event = {
 };
 
 export default function Page() {
-  // Mock data for testing
-  const joinedEvents: Event[] = [
-    {
-      id: "1",
-      title: "Dinner With Friends",
-      participants: ["A", "B", "C", "D", "E", "F"],
-    },
-    { id: "2", title: "Board Game Night", participants: ["D", "E"] },
-    {
-      id: "3",
-      title: "Dungeons & Dragons ",
-      participants: ["F", "G", "H", "I"],
-    },
-    { id: "4", title: "Project Meeting", participants: ["I", "J", "K"] },
-    {
-      id: "5",
-      title: "Competitive Slug Racing",
-      participants: ["L", "M", "N", "O", "P"],
-    },
-  ];
+  const [joinedEvents, setJoinedEvents] = useState<Event[]>([]);
+  const [createdEvents, setCreatedEvents] = useState<Event[]>([]);
 
-  const createdEvents: Event[] = [
-    { id: "6", title: "Study Session", participants: ["I", "J", "K"] },
-    {
-      id: "7",
-      title: "Eboard Meeting",
-      participants: ["L", "M", "N", "O", "P"],
-    },
-  ];
+  useEffect(() => {
+    fetch("/api/dashboard/get", {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then(async (res) => {
+        if (res.ok) {
+          const data = await res.json();
+          const newJoinedEvents: Event[] = [];
+          data.participated_events.map((event: any) => {
+            newJoinedEvents.push({
+              id: event.event_code,
+              title: event.title,
+              participants: event.participants.map((p: string) =>
+                p.slice(0, 1).toUpperCase(),
+              ),
+            });
+          });
+          setJoinedEvents(newJoinedEvents);
+          const newCreatedEvents: Event[] = [];
+          data.created_events.map((event: any) => {
+            newCreatedEvents.push({
+              id: event.event_code,
+              title: event.title,
+              participants: event.participants.map((p: string) =>
+                p.slice(0, 1).toUpperCase(),
+              ),
+            });
+          });
+          setCreatedEvents(newCreatedEvents);
+        } else {
+          alert(formatApiError(await res.json()));
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+        alert("An error occurred while fetching dashboard data.");
+      });
+  }, []);
 
   const renderParticipants = (participants: string[]) => {
     const visible = participants.slice(0, 4);
