@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
+import Link from "next/link";
 
 type Event = {
   id: string;
@@ -84,12 +85,19 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {joinedEvents.map((event) => (
             <div key={event.id} className="flex flex-col items-center">
-              <div className="flex h-40 w-full flex-col justify-end rounded-lg bg-gray-200 p-4 text-black shadow transition hover:shadow-lg">
+              <Link
+                href={`/${event.id}`}
+                className="flex h-40 w-full flex-col justify-end rounded-lg bg-gray-200 p-4 text-black shadow transition hover:shadow-lg"
+              >
                 <div className="flex gap-1">
                   {renderParticipants(event.participants)}
                 </div>
-              </div>
-              <h3 className="mt-2 text-center font-semibold">{event.title}</h3>
+              </Link>
+              <Link href={`/${event.id}`}>
+                <h3 className="mt-2 text-center font-semibold">
+                  {event.title}
+                </h3>
+              </Link>
             </div>
           ))}
         </div>
@@ -101,12 +109,19 @@ export default function Page() {
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {createdEvents.map((event) => (
             <div key={event.id} className="flex flex-col items-center">
-              <div className="flex h-40 w-full flex-col justify-end rounded-lg bg-gray-200 p-4 text-black shadow transition hover:shadow-lg">
+              <Link
+                href={`/${event.id}`}
+                className="flex h-40 w-full flex-col justify-end rounded-lg bg-gray-200 p-4 text-black shadow transition hover:shadow-lg"
+              >
                 <div className="flex gap-1">
                   {renderParticipants(event.participants)}
                 </div>
-              </div>
-              <h3 className="mt-2 text-center font-semibold">{event.title}</h3>
+              </Link>
+              <Link href={`/${event.id}`}>
+                <h3 className="mt-2 text-center font-semibold">
+                  {event.title}
+                </h3>
+              </Link>
             </div>
           ))}
         </div>
