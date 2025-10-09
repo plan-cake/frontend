@@ -5,14 +5,14 @@ export default function Header() {
     <div className="grid w-full grid-cols-3 items-center">
       <div className="relative col-start-2 h-[75px] w-[100px] md:col-start-1">
         <Image
-          src="/tomeeto-light.png"
-          alt="Tomeeto Logo"
+          src="/plancake-light.png"
+          alt="Plancake Logo"
           fill
           className="absolute inset-0 object-contain opacity-100 transition-opacity duration-500 dark:opacity-0"
         />
         <Image
-          src="/tomeeto-dark.png"
-          alt="Tomeeto Logo"
+          src="/plancake-dark.png"
+          alt="Plancake Logo"
           fill
           className="absolute inset-0 object-contain opacity-0 transition-opacity duration-500 dark:opacity-100"
         />
