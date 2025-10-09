@@ -10,8 +10,9 @@ export type EventInformation = {
 export type EventRange = SpecificDateRange | WeekdayRange;
 
 // represents selected weekdays
+export type Weekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
 export type WeekdayMap = {
-  [day in "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat"]: 0 | 1;
+  [day in Weekday]: 0 | 1;
 };
 
 /* EVENT RANGE MODELS */
