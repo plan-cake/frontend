@@ -3,23 +3,14 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/app/_lib/classname";
 
-import { WeekdayMap } from "@/app/_lib/schedule/types";
-import Checkbox from "@/app/ui/components/checkbox";
+import { WeekdayMap, Weekday } from "@/app/_lib/schedule/types";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
   onChange: (map: WeekdayMap) => void;
 };
 
-let days: Array<keyof WeekdayMap> = [
-  "Sun",
-  "Mon",
-  "Tue",
-  "Wed",
-  "Thu",
-  "Fri",
-  "Sat",
-];
+let days: Array<Weekday> = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 export default function WeekdayCalendar({
   selectedDays,
@@ -28,6 +19,9 @@ export default function WeekdayCalendar({
   const [startMonday, setStartMonday] = useState(false);
   days = startMonday ? [...days.slice(1), days[0]] : days;
 
+  // for toggling ranges of days
+  const [startDay, setStartDay] = useState<Weekday | null>(null);
+
   useEffect(() => {
     const today = new Date();
     const dayOfWeek = today.getDay();
@@ -35,10 +29,45 @@ export default function WeekdayCalendar({
     onChange(selectedDays);
   }, []);
 
-  const handleRangeSelect = (day: keyof WeekdayMap) => {
+  // for toggling only one day at a time
+  // currently not in use
+  const handleDayClick = (day: keyof WeekdayMap) => {
     const newSelectedDays = { ...selectedDays };
     newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
     onChange(newSelectedDays);
+  };
+
+  const handleRangeSelect = (day: Weekday) => {
+    if (!startDay) {
+      // set it as the start of the range
+      setStartDay(day);
+
+      // clear previous selections and select this day
+      const newSelection: WeekdayMap = { ...selectedDays };
+      days.forEach((d) => (newSelection[d] = 0));
+      newSelection[day] = 1;
+      onChange(newSelection);
+    } else {
+      // complete range
+      const newSelection: WeekdayMap = { ...selectedDays };
+      days.forEach((d) => (newSelection[d] = 0));
+
+      const startIndex = days.indexOf(startDay);
+      const endIndex = days.indexOf(day);
+
+      // determine the range boundaries
+      const [min, max] = [
+        Math.min(startIndex, endIndex),
+        Math.max(startIndex, endIndex),
+      ];
+
+      for (let i = min; i <= max; i++) {
+        newSelection[days[i]] = 1;
+      }
+
+      setStartDay(null);
+      onChange(newSelection);
+    }
   };
 
   return (
@@ -51,10 +80,10 @@ export default function WeekdayCalendar({
               key={day}
               onClick={() => handleRangeSelect(day)}
               className={cn(
-                "aspect-square w-fit items-center justify-center rounded-full p-2 text-center",
+                "aspect-square w-10 items-center justify-center rounded-full text-center",
                 "transition-all duration-200",
                 isSelected
-                  ? "bg-blue-200 dark:bg-red"
+                  ? "bg-blue-400 text-white dark:bg-red"
                   : "hover:bg-gray-200 dark:hover:bg-gray-800",
               )}
             >
