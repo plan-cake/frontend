@@ -29,7 +29,7 @@ export default function WeekdayCalendar({
     onChange(selectedDays);
   }, []);
 
-  // for toggling only on day at a time
+  // for toggling only one day at a time
   // currently not in use
   const handleDayClick = (day: keyof WeekdayMap) => {
     const newSelectedDays = { ...selectedDays };
