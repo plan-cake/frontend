@@ -1,13 +1,7 @@
 "use client";
 
 import { useAvailability } from "@/app/_lib/availability/use-availability";
-import { useEffect, useState } from "react";
-
-import {
-  EventRange,
-  SpecificDateRange,
-  WeekdayRange,
-} from "@/app/_lib/schedule/types";
+import { useEffect } from "react";
 
 import CopyToast from "@/app/ui/components/copy-toast";
 import EventInfoDrawer, {
@@ -18,6 +12,8 @@ import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import { useParams } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { generateWeekdayMap } from "../_lib/schedule/utils";
+import { useEventInfo } from "../_lib/schedule/use-event-info";
+import { convertAvailabilityToGrid } from "../_lib/availability/utils";
 
 export default function Page() {
   // AVAILABILITY STATE
@@ -25,32 +21,9 @@ export default function Page() {
     useAvailability("John Doe");
   const { displayName, timeZone, userAvailability } = state;
 
-  // --- CORRECTED ---
-  // 1. Create dates in UTC to avoid browser timezone issues.
-  const today = new Date();
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
-
-  const [eventName, setEventName] = useState("Loading...");
-  const [eventRange, setEventRange] = useState<EventRange>({
-    type: "specific",
-    duration: 60,
-    // 2. Set the event's *original* timezone, not the user's.
-    timezone: "America/New_York",
-    dateRange: {
-      from: formatDate(today),
-      to: formatDate(today),
-    },
-    // This timeRange is for the valid times within a day
-    timeRange: {
-      from: 9,
-      to: 20,
-    },
-  });
+  // EVENT DATA STATE
+  const { state: eventState, setTitle, setEventRangeInfo } = useEventInfo();
+  const { eventRange, title: eventName } = eventState;
 
   // get the event data from the code in the URL
   const params = useParams();
@@ -63,9 +36,9 @@ export default function Page() {
       .then(async (res) => {
         if (res.ok) {
           const data = await res.json();
-          setEventName(data.title);
+          setTitle(data.title);
           if (data.event_type === "Date") {
-            const newRange: SpecificDateRange = {
+            setEventRangeInfo({
               type: "specific",
               duration: data.duration,
               timezone: data.time_zone,
@@ -77,14 +50,14 @@ export default function Page() {
                 from: data.start_hour,
                 to: data.end_hour,
               },
-            };
-            setEventRange(newRange);
+            });
           } else {
             const weekdays = generateWeekdayMap(
               data.start_weekday,
               data.end_weekday,
             );
-            const newRange: WeekdayRange = {
+
+            setEventRangeInfo({
               type: "weekday",
               duration: data.duration,
               timezone: data.time_zone,
@@ -93,8 +66,7 @@ export default function Page() {
                 from: data.start_hour,
                 to: data.end_hour,
               },
-            };
-            setEventRange(newRange);
+            });
           }
         } else {
           alert(formatApiError(await res.json()));
@@ -104,6 +76,30 @@ export default function Page() {
         console.error("Fetch error:", err);
       });
   }, [eventCode]);
+
+  const handleSubmitAvailability = async () => {
+    const availabilityGrid = convertAvailabilityToGrid(
+      userAvailability,
+      eventRange,
+    );
+
+    const payload = {
+      event_code: eventCode,
+      display_name: displayName,
+      availability: availabilityGrid,
+      time_zone: timeZone,
+    };
+
+    try {
+      const response = await fetch("/api/availability/add/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+    } catch (error) {
+      console.error("Error submitting availability:", error);
+    }
+  };
 
   return (
     <div className="flex flex-col space-y-4">
@@ -165,9 +161,12 @@ export default function Page() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
-        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
+        <button
+          onClick={handleSubmitAvailability}
+          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+        >
           Submit Availability
-        </div>
+        </button>
       </div>
     </div>
   );
