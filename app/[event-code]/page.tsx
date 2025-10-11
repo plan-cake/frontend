@@ -1,27 +1,8 @@
 import { notFound } from "next/navigation";
-import formatApiError from "../_utils/format-api-error";
+import { fetchEventDetails } from "../_utils/fetch-data";
+import { processEventData } from "../_utils/process-event-data";
 
 import AvailabilityClientPage from "@/app/ui/layout/availability-page";
-
-async function fetchEventDetails(eventCode: string): Promise<any> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const res = await fetch(
-    `${baseUrl}/event/get-details/?event_code=${eventCode}`,
-    {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-      cache: "no-store",
-    },
-  );
-
-  if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch event details: " + errorMessage);
-    // notFound();
-  }
-
-  return res.json();
-}
 
 export default async function Page({
   params,
@@ -37,11 +18,13 @@ export default async function Page({
   console.log(eventCode);
 
   const eventData = await fetchEventDetails(eventCode);
+  const { eventName, eventRange } = processEventData(eventData);
 
   return (
     <AvailabilityClientPage
       eventCode={eventCode}
-      initialEventData={eventData}
+      eventName={eventName}
+      eventRange={eventRange}
     />
   );
 }
