@@ -173,3 +173,19 @@ export function generateWeekdayMap(
   }
   return weekdays;
 }
+
+export function findRangeFromWeekdayMap(selectedDays: WeekdayMap): {
+  startDay: Weekday | null;
+  endDay: Weekday | null;
+} {
+  const selected = days.filter((day) => selectedDays[day] === 1);
+
+  if (selected.length === 0) {
+    return { startDay: null, endDay: null };
+  }
+
+  return {
+    startDay: selected[0],
+    endDay: selected[selected.length - 1],
+  };
+}
