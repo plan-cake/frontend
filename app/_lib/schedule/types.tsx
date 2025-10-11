@@ -25,6 +25,11 @@ export const days: Array<Weekday> = [
   "Sat",
 ];
 
+export type WeekdayTimeRange = {
+  slotTimeUTC: Date;
+  dayEndUTC: Date;
+};
+
 /* EVENT RANGE MODELS */
 
 export type SpecificDateRange = {
