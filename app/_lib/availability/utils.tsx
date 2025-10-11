@@ -1,7 +1,10 @@
-// app/_lib/availability.ts
-
-import { fromZonedTime } from "date-fns-tz";
+import { eachDayOfInterval, parseISO } from "date-fns";
 import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { EventRange, SpecificDateRange, WeekdayRange } from "../schedule/types";
+import {
+  getAbsoluteDateRangeInUTC,
+  getSelectedWeekdaysInTimezone,
+} from "@/app/_lib/schedule/utils";
 
 // Creates an empty UserAvailability object
 export const createEmptyUserAvailability = (): AvailabilitySet => {
@@ -30,26 +33,65 @@ export function isSlotSelected(
   return availability.has(timeSlot.toISOString());
 }
 
-// Converts a local time representation to a UTC ISO string
-export function getUtcIsoString(
-  dateKey: string, // "YYYY-MM-DD"
-  hour: number,
-  minute: number,
-  timezone: string,
-): string {
-  const localDateTimeString = `${dateKey}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
-  const utcDate = fromZonedTime(localDateTimeString, timezone);
-  return utcDate.toISOString();
+// converts set to grid for api
+export function convertAvailabilityToGrid(
+  availability: AvailabilitySet,
+  eventRange: EventRange,
+): boolean[][] {
+  if (eventRange.type === "specific") {
+    return convertAvailabilityToGridForSpecificRange(availability, eventRange);
+  } else {
+    return convertAvailabilityToGridForWeekdayRange(availability, eventRange);
+  }
 }
 
-// Gets a UTC ISO slot for a specific date and time
-export function getUtcIsoSlot(
-  dateKey: string,
-  hour: number,
-  minute: number,
-  timezone: string,
-): { utcDate: Date; isoString: string } {
-  const localDateTimeString = `${dateKey}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}:00`;
-  const utcDate = fromZonedTime(localDateTimeString, timezone);
-  return { utcDate, isoString: utcDate.toISOString() };
+function convertAvailabilityToGridForSpecificRange(
+  availability: AvailabilitySet,
+  eventRange: SpecificDateRange,
+): boolean[][] {
+  const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(eventRange);
+  const startTime = eventStartUTC.getHours();
+  const endTime = eventEndUTC.getHours();
+
+  const days = eachDayOfInterval({
+    start: parseISO(eventStartUTC.toISOString()),
+    end: parseISO(eventEndUTC.toISOString()),
+  });
+
+  const grid: boolean[][] = days.map((day) => {
+    const daySlots: boolean[] = [];
+
+    for (let hour = startTime; hour < endTime; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        const slot = new Date(day);
+        slot.setHours(hour, minute);
+        daySlots.push(isSlotSelected(availability, slot));
+      }
+    }
+
+    return daySlots;
+  });
+
+  return grid;
+}
+
+function convertAvailabilityToGridForWeekdayRange(
+  availability: AvailabilitySet,
+  eventRange: WeekdayRange,
+): boolean[][] {
+  const selectedDays = getSelectedWeekdaysInTimezone(eventRange);
+
+  const grid: boolean[][] = selectedDays.map((day) => {
+    const daySlots: boolean[] = [];
+    let { slotTimeUTC, dayEndUTC } = day;
+
+    while (slotTimeUTC < dayEndUTC) {
+      daySlots.push(isSlotSelected(availability, slotTimeUTC));
+      slotTimeUTC.setUTCMinutes(slotTimeUTC.getUTCMinutes() + 15);
+    }
+
+    return daySlots;
+  });
+
+  return grid;
 }
