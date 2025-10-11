@@ -1,7 +1,7 @@
 "use client";
 
 import { useAvailability } from "@/app/_lib/availability/use-availability";
-import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 import CopyToast from "@/app/ui/components/copy-toast";
 import EventInfoDrawer, {
@@ -9,60 +9,24 @@ import EventInfoDrawer, {
 } from "@/app/ui/components/event-info-drawer";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
-import { generateWeekdayMap } from "@/app/_lib/schedule/utils";
-import { useEventInfo } from "@/app/_lib/schedule/use-event-info";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
+import { EventRange } from "@/app/_lib/schedule/types";
 
 export default function AvailabilityPage({
   eventCode,
-  initialEventData,
+  eventName,
+  eventRange,
 }: {
   eventCode: string;
-  initialEventData: any;
+  eventName: string;
+  eventRange: EventRange;
 }) {
+  const router = useRouter();
+
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
     useAvailability("John Doe");
   const { displayName, timeZone, userAvailability } = state;
-
-  // EVENT DATA STATE
-  const { state: eventState, setTitle, setEventRangeInfo } = useEventInfo();
-  const { eventRange, title: eventName } = eventState;
-
-  useEffect(() => {
-    setTitle(initialEventData.title);
-    if (initialEventData.event_type === "Date") {
-      setEventRangeInfo({
-        type: "specific",
-        duration: initialEventData.duration,
-        timezone: initialEventData.time_zone,
-        dateRange: {
-          from: initialEventData.start_date,
-          to: initialEventData.end_date,
-        },
-        timeRange: {
-          from: initialEventData.start_hour,
-          to: initialEventData.end_hour,
-        },
-      });
-    } else {
-      const weekdays = generateWeekdayMap(
-        initialEventData.start_weekday,
-        initialEventData.end_weekday,
-      );
-
-      setEventRangeInfo({
-        type: "weekday",
-        duration: initialEventData.duration,
-        timezone: initialEventData.time_zone,
-        weekdays: weekdays,
-        timeRange: {
-          from: initialEventData.start_hour,
-          to: initialEventData.end_hour,
-        },
-      });
-    }
-  }, [initialEventData, setTitle, setEventRangeInfo]);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
@@ -89,8 +53,10 @@ export default function AvailabilityPage({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
+      router.push(`/${eventCode}/results`);
     } catch (error) {
       console.error("Error submitting availability:", error);
+      throw new Error("Failed to submit availability" + error);
     }
   };
 

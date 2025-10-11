@@ -7,17 +7,18 @@ import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { Pencil1Icon } from "@radix-ui/react-icons";
-import { useEventInfo } from "@/app/_lib/schedule/use-event-info";
-import { useEffect, useState } from "react";
-import { generateWeekdayMap } from "@/app/_lib/schedule/utils";
+import { useState } from "react";
+import { EventRange } from "@/app/_lib/schedule/types";
 
 export default function ResultsPage({
   eventCode,
-  initialEventData,
+  eventName,
+  eventRange,
   initialAvailabilityData,
 }: {
   eventCode: string;
-  initialEventData: any;
+  eventName: string;
+  eventRange: EventRange;
   initialAvailabilityData: any;
 }) {
   const isOwner = true; // Placeholder, replace with actual logic to determine if the user is the owner
@@ -33,45 +34,6 @@ export default function ResultsPage({
 
   const participants = initialAvailabilityData.participants || [];
   const availabilites = initialAvailabilityData.availabilities || [];
-
-  // EVENT DATA STATE
-  const { state: eventState, setTitle, setEventRangeInfo } = useEventInfo();
-  const { eventRange, title: eventName } = eventState;
-
-  useEffect(() => {
-    setTitle(initialEventData.title);
-    if (initialEventData.event_type === "Date") {
-      setEventRangeInfo({
-        type: "specific",
-        duration: initialEventData.duration,
-        timezone: initialEventData.time_zone,
-        dateRange: {
-          from: initialEventData.start_date,
-          to: initialEventData.end_date,
-        },
-        timeRange: {
-          from: initialEventData.start_hour,
-          to: initialEventData.end_hour,
-        },
-      });
-    } else {
-      const weekdays = generateWeekdayMap(
-        initialEventData.start_weekday,
-        initialEventData.end_weekday,
-      );
-
-      setEventRangeInfo({
-        type: "weekday",
-        duration: initialEventData.duration,
-        timezone: initialEventData.time_zone,
-        weekdays: weekdays,
-        timeRange: {
-          from: initialEventData.start_hour,
-          to: initialEventData.end_hour,
-        },
-      });
-    }
-  }, [initialEventData, setTitle, setEventRangeInfo]);
 
   return (
     <div className="flex flex-col space-y-4">
