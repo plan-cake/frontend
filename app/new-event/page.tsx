@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { SpecificDateRange, WeekdayRange } from "../_lib/schedule/types";
 import { json } from "stream/consumers";
+import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
 
 const durationOptions = [
   { label: "30 minutes", value: 30 },
@@ -79,7 +80,51 @@ export default function Page() {
           alert("An error occurred. Please try again.");
         });
     } else {
-      alert("Weekly events not implemented yet");
+      const weekdayRange = findRangeFromWeekdayMap(
+        (eventRange as WeekdayRange).weekdays,
+      );
+      if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
+        alert("Please select at least one weekday.");
+        isSubmitting.current = false;
+        return;
+      }
+      const dayNameToIndex: { [key: string]: number } = {
+        Sun: 0,
+        Mon: 1,
+        Tue: 2,
+        Wed: 3,
+        Thu: 4,
+        Fri: 5,
+        Sat: 6,
+      };
+      const jsonBody = {
+        title,
+        duration: eventRange.duration,
+        time_zone: eventRange.timezone,
+        start_weekday: dayNameToIndex[weekdayRange.startDay!],
+        end_weekday: dayNameToIndex[weekdayRange.endDay!],
+        start_hour: eventRange.timeRange.from,
+        end_hour: eventRange.timeRange.to,
+        custom_code: customCode || undefined,
+      };
+      console.log(jsonBody);
+      await fetch("/api/event/week-create/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(jsonBody),
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            const code = (await res.json()).event_code;
+            router.push(`/${code}`);
+          } else {
+            alert(formatApiError(await res.json()));
+          }
+        })
+        .catch((err) => {
+          console.error("Fetch error:", err);
+          alert("An error occurred. Please try again.");
+        });
     }
 
     isSubmitting.current = false;
