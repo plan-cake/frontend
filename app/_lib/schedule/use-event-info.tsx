@@ -1,6 +1,6 @@
 import { useReducer, useCallback } from "react";
 import { EventInfoReducer } from "./event-info-reducer";
-import { EventInformation, WeekdayMap } from "./types";
+import { EventInformation, EventRange, WeekdayMap } from "./types";
 import { DateRange } from "react-day-picker";
 
 export function useEventInfo() {
@@ -31,6 +31,10 @@ export function useEventInfo() {
 
   const setCustomCode = useCallback((code: string) => {
     dispatch({ type: "SET_CUSTOM_CODE", payload: code });
+  }, []);
+
+  const setEventRangeInfo = useCallback((info: EventRange) => {
+    dispatch({ type: "SET_RANGE_INFO", payload: info });
   }, []);
 
   const setEventType = useCallback((type: "specific" | "weekday") => {
@@ -76,6 +80,7 @@ export function useEventInfo() {
     setTitle,
     setEventType,
     setCustomCode,
+    setEventRangeInfo,
     setTimezone,
     setDuration,
     setTimeRange,

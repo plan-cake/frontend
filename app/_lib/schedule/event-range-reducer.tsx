@@ -1,6 +1,7 @@
 import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
 
 export type EventRangeAction =
+  | { type: "SET_RANGE_INFO"; payload: EventRange }
   | { type: "SET_RANGE_TYPE"; payload: "specific" | "weekday" }
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
   | { type: "SET_TIME_RANGE"; payload: { from: number; to: number } }
@@ -17,6 +18,12 @@ export function EventRangeReducer(
   action: EventRangeAction,
 ): EventRange {
   switch (action.type) {
+    case "SET_RANGE_INFO": {
+      return {
+        ...action.payload,
+      };
+    }
+
     case "SET_RANGE_TYPE": {
       if (action.payload === state.type) {
         return state;
