@@ -4,6 +4,8 @@ import {
   EventRange,
   WeekdayRange,
   WeekdayMap,
+  Weekday,
+  days,
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { getHours, getMinutes, startOfDay } from "date-fns";
@@ -164,9 +166,10 @@ export function generateWeekdayMap(
     Fri: 0,
     Sat: 0,
   };
+
   for (let i = startDay; i <= endDay; i++) {
-    const dayKey = Object.keys(weekdays)[i];
-    weekdays[dayKey as keyof WeekdayMap] = 1;
+    const dayKey: Weekday = days[i];
+    weekdays[dayKey] = 1;
   }
   return weekdays;
 }
