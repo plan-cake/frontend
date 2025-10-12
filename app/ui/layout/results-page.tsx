@@ -36,8 +36,6 @@ export default function ResultsPage({
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
 
-  console.log({ availabilities });
-
   return (
     <div className="flex flex-col space-y-4">
       <div className="flex justify-between">

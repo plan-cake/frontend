@@ -10,7 +10,6 @@ import { useRef } from "react";
 import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { SpecificDateRange, WeekdayRange } from "../_lib/schedule/types";
-import { json } from "stream/consumers";
 import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
 
 const durationOptions = [
