@@ -31,7 +31,7 @@ export default function ResultsPage({
     setTimezone(newTZ.toString());
   };
 
-  const isCreater: boolean = initialAvailabilityData.is_creator || false;
+  const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
@@ -44,7 +44,7 @@ export default function ResultsPage({
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="flex items-center gap-2">
-          {isCreater && (
+          {isCreator && (
             <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
               <span className="hidden md:block">Edit Event</span>
               <Pencil1Icon width={16} height={16} className="md:hidden" />
