@@ -9,6 +9,7 @@ import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { Pencil1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
+import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 
 export default function ResultsPage({
   eventCode,
@@ -21,8 +22,6 @@ export default function ResultsPage({
   eventRange: EventRange;
   initialAvailabilityData: any;
 }) {
-  const isOwner = true; // Placeholder, replace with actual logic to determine if the user is the owner
-
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -32,8 +31,12 @@ export default function ResultsPage({
     setTimezone(newTZ.toString());
   };
 
-  const participants = initialAvailabilityData.participants || [];
-  const availabilites = initialAvailabilityData.availabilities || [];
+  const isCreater: boolean = initialAvailabilityData.is_creator || false;
+  const participants: string[] = initialAvailabilityData.participants || [];
+  const availabilities: ResultsAvailabilityMap =
+    initialAvailabilityData.availability || {};
+
+  console.log({ availabilities });
 
   return (
     <div className="flex flex-col space-y-4">
@@ -43,7 +46,7 @@ export default function ResultsPage({
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="flex items-center gap-2">
-          {isOwner && (
+          {isCreater && (
             <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
               <span className="hidden md:block">Edit Event</span>
               <Pencil1Icon width={16} height={16} className="md:hidden" />
@@ -67,6 +70,8 @@ export default function ResultsPage({
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
+          availabilities={availabilities}
+          numParticipants={participants.length}
         />
 
         {/* Sidebar for attendees */}
@@ -74,23 +79,22 @@ export default function ResultsPage({
           <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
-              {/* {participants.map((person: string) => {
-                const isAvailable = hoveredSlot
-                  ? person.availability.has(hoveredSlot)
-                  : true;
+              {participants.map((person: string) => {
+                const isAvailable =
+                  availabilities[hoveredSlot || ""]?.includes(person);
                 return (
                   <li
-                    key={attendee.name}
+                    key={person}
                     className={`flex items-center gap-2 transition-opacity ${
                       hoveredSlot && !isAvailable
                         ? "line-through opacity-50"
                         : "opacity-100"
                     }`}
                   >
-                    {attendee.name}
+                    {person}
                   </li>
                 );
-              })} */}
+              })}
             </ul>
           </div>
 

@@ -1,4 +1,4 @@
-import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 
 import BaseTimeBlock from "./base-timeblock";
 
@@ -15,7 +15,8 @@ interface ResultsTimeBlockProps {
   visibleDayKeys: string[];
   hoveredSlot: string | null | undefined;
 
-  allAvailabilities?: AvailabilitySet[];
+  availabilities: ResultsAvailabilityMap;
+  numParticipants: number;
 
   userTimezone: string;
   onHoverSlot?: (iso: string | null) => void;
@@ -29,7 +30,8 @@ export default function ResultsTimeBlock({
   numVisibleDays,
   visibleDayKeys,
   userTimezone,
-  allAvailabilities = [],
+  availabilities,
+  numParticipants,
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
@@ -70,13 +72,14 @@ export default function ResultsTimeBlock({
         }
 
         // REPLACE THIS WITH API DATA !!!!!!!!!
-        const matchCount = allAvailabilities.reduce(
-          (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
-          0,
-        );
-        const total = allAvailabilities.length || 1;
-        const opacity = matchCount / total;
+        const matchCount =
+          availabilities[slotIso]?.length > 0
+            ? availabilities[slotIso].length
+            : 0;
+        const opacity = matchCount / numParticipants || 0;
         const isHovered = hoveredSlot === slotIso;
+
+        // console.log({ availabilities, slotIso, opacity });
 
         let backgroundColor;
         backgroundColor = isDark

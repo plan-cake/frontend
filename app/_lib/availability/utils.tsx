@@ -61,7 +61,7 @@ function convertAvailabilityToGridForSpecificRange(
   const grid: boolean[][] = days.map((day) => {
     const daySlots: boolean[] = [];
 
-    for (let hour = startTime; hour < endTime; hour++) {
+    for (let hour = startTime; hour <= endTime; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
         const slot = new Date(day);
         slot.setHours(hour, minute);
@@ -71,7 +71,7 @@ function convertAvailabilityToGridForSpecificRange(
 
     return daySlots;
   });
-
+  // console.log("GRIDDDDDDD", grid);
   return grid;
 }
 
