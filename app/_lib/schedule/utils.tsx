@@ -103,11 +103,10 @@ export function getSelectedWeekdaysInTimezone(
     return [];
   }
 
-  const now = new Date();
-  const startOfTodayInTz = startOfDay(toZonedTime(now, range.timezone));
-  const startOfWeekInViewerTz = new Date(startOfTodayInTz);
-  startOfWeekInViewerTz.setDate(
-    startOfTodayInTz.getDate() - startOfTodayInTz.getDay(),
+  // 01/01/2012 is a sunday
+  const startOfWeekInViewerTz = fromZonedTime(
+    "2012-01-01T00:00:00",
+    range.timezone,
   );
 
   const { fromHour: startTimeString, toHour: endTimeString } = getTimeStrings(
@@ -117,7 +116,9 @@ export function getSelectedWeekdaysInTimezone(
   const selectedDatesUTC: WeekdayTimeRange[] = [];
   for (let i = 0; i < 7; i++) {
     const currentDay = new Date(startOfWeekInViewerTz);
+    // console.log({ currentDay });
     currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
+    // console.log({ currentDay });
     if (selectedDayIndexes.has(currentDay.getDay())) {
       const dateString = formatInTimeZone(
         currentDay,
