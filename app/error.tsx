@@ -15,12 +15,12 @@ export default function EventErrorPage({
   }, [error]);
 
   return (
-    <div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center rounded-lg bg-white p-8 text-center dark:bg-gray-800">
+    <div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center rounded-lg p-8 text-center">
       <h2 className="mb-4 text-2xl font-bold text-gray-800 dark:text-white">
-        Oops! Something Went Wrong
+        Oops! Something went wrong.
       </h2>
 
-      <p className="mb-6 max-w-md text-red-500">{error.message}</p>
+      <p className="mb-6 max-w-md text-red">{error.message}</p>
 
       <button
         onClick={() => reset()}
