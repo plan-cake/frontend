@@ -50,8 +50,12 @@ function convertAvailabilityToGridForSpecificRange(
   eventRange: SpecificDateRange,
 ): boolean[][] {
   const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(eventRange);
+  console.log({ eventStartUTC, eventEndUTC });
   const startTime = eventStartUTC.getHours();
-  const endTime = eventEndUTC.getHours();
+  const endTime =
+    eventEndUTC.getMinutes() === 59
+      ? eventEndUTC.getHours() + 1
+      : eventEndUTC.getHours();
 
   const days = eachDayOfInterval({
     start: parseISO(eventStartUTC.toISOString()),
@@ -61,7 +65,7 @@ function convertAvailabilityToGridForSpecificRange(
   const grid: boolean[][] = days.map((day) => {
     const daySlots: boolean[] = [];
 
-    for (let hour = startTime; hour <= endTime; hour++) {
+    for (let hour = startTime; hour < endTime; hour++) {
       for (let minute = 0; minute < 60; minute += 15) {
         const slot = new Date(day);
         slot.setHours(hour, minute);
@@ -71,7 +75,6 @@ function convertAvailabilityToGridForSpecificRange(
 
     return daySlots;
   });
-  // console.log("GRIDDDDDDD", grid);
   return grid;
 }
 
