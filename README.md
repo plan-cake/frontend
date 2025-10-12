@@ -13,16 +13,19 @@ plancake is a meeting scheduling tool that helps users coordinate availability a
 ### Tech Stack
 
 **Core Framework:**
+
 - [Next.js 15.3.1](https://nextjs.org/) - React framework with App Router
 - [React 19](https://react.dev/) - UI library
 - [TypeScript 5](https://www.typescriptlang.org/) - Type safety
 
 **Styling:**
+
 - [Tailwind CSS 4.1.4](https://tailwindcss.com/) - Utility-first CSS framework
 - [Tailwind Merge](https://github.com/dcastil/tailwind-merge) - Conditional class merging
 - [clsx](https://github.com/lukeed/clsx) - Utility for constructing className strings
 
 **UI Components:**
+
 - [Radix UI](https://www.radix-ui.com/) - Accessible component primitives
   - Dialog
   - Popover
@@ -33,10 +36,12 @@ plancake is a meeting scheduling tool that helps users coordinate availability a
 - [next-themes](https://github.com/pacocoursey/next-themes) - Dark mode support
 
 **Date/Time Handling:**
+
 - [date-fns-tz](https://date-fns.org/) - Timezone utilities
 - [react-day-picker](https://react-day-picker.js.org/) - Date picker component
 
 **Development Tools:**
+
 - [ESLint 9](https://eslint.org/) - Code linting
 - [Prettier 3.5.3](https://prettier.io/) - Code formatting
 - [Turbopack](https://turbo.build/pack) - Fast bundler (dev mode)
@@ -52,23 +57,27 @@ plancake is a meeting scheduling tool that helps users coordinate availability a
 ### Installation Steps
 
 1. **Clone the repository**
+
    ```bash
    git clone https://github.com/plan-cake/v2meeto.git
    cd v2meeto
    ```
 
 2. **Install dependencies**
+
    ```bash
    npm install
    ```
 
    This will install all dependencies listed in [package.json](package.json), including:
+
    - Next.js 15.3.1 with React 19
    - Tailwind CSS 4.1.4
    - Radix UI components
    - TypeScript and type definitions
 
 3. **Run the development server**
+
    ```bash
    npm run dev
    ```
@@ -99,6 +108,7 @@ npm run format
 # Check formatting without modifying files
 npm run check-format
 ```
+
 ### Building for Production
 
 ```bash
@@ -110,6 +120,7 @@ npm run start
 ```
 
 The production build:
+
 - Optimizes and minifies JavaScript/CSS
 - Generates static pages where possible
 - Creates optimized images
