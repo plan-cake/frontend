@@ -25,7 +25,7 @@ export default function AvailabilityPage({
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability("John Doe");
+    useAvailability("");
   const { displayName, timeZone, userAvailability } = state;
 
   // SUBMIT AVAILABILITY
