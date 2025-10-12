@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-function formatLabel(tz: string): string {
+export function formatLabel(tz: string): string {
   try {
     const now = new Date();
     const offsetMinutes = -now.getTimezoneOffset();

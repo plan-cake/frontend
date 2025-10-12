@@ -1,14 +1,14 @@
 "use client";
 
-import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { motion } from "framer-motion";
-import ScheduleGrid from "./schedule-grid";
-import { EventRange } from "@/app/_types/schedule-types";
 import { useState } from "react";
-import TimezoneSelect from "../timezone-select";
 
-import InteractiveScheduleGrid from "./interactive-schedule-grid";
-import { UserAvailability } from "@/app/_types/user-availability";
+import { motion } from "framer-motion";
+import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
+
+import { EventRange } from "@/app/_lib/schedule/types";
+
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
@@ -17,11 +17,6 @@ interface GridPreviewDialogProps {
 export default function GridPreviewDialog({
   eventRange,
 }: GridPreviewDialogProps) {
-  const [userAvailability, setUserAvailability] = useState<UserAvailability>({
-    type: "specific",
-    selections: {},
-  });
-
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
 
@@ -30,7 +25,7 @@ export default function GridPreviewDialog({
   };
 
   return (
-    <div className="h-full">
+    <div className="relative grow md:h-full md:w-full">
       {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-gray-700/40"
@@ -42,7 +37,11 @@ export default function GridPreviewDialog({
       )}
       <motion.div
         layout
-        className={`flex flex-col space-y-4 rounded border border-transparent ${isOpen ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] rounded-lg bg-white p-8 dark:bg-violet" : "h-full p-2 hover:border-violet dark:hover:border-gray-400"}`}
+        className={`flex flex-col space-y-4 overflow-hidden rounded-3xl border border-transparent bg-[#FFFFFF] dark:bg-[#343249] ${
+          isOpen
+            ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] p-8"
+            : "absolute inset-0 h-full w-full pt-4 pr-4 pb-4 pl-2"
+        } `}
       >
         <motion.div
           layout
@@ -65,26 +64,21 @@ export default function GridPreviewDialog({
           )}
         </motion.div>
         {isOpen ? (
-          <motion.div className="grow space-y-4">
+          <motion.div className="h-[85%] grow space-y-4">
             <ScheduleGrid
+              mode="preview"
               eventRange={eventRange}
-              // disableSelect={false}
+              disableSelect
               timezone={timezone}
             />
-            {/* <InteractiveScheduleGrid
-              eventRange={eventRange}
-              timezone={timezone}
-              setUserAvailability={setUserAvailability}
-              userAvailability={userAvailability}
-            /> */}
-            <div className="flex items-center justify-between">
-              <TimezoneSelect
-                value={timezone}
-                onChange={handleTZChange}
-                className="ml-[50px] flex items-end gap-4"
-                label="See event in"
-              />
-              <label className="mr-[20px] text-sm">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between">
+              <label className="flex items-center text-sm md:ml-[50px]">
+                See event in{" "}
+                <span className="ml-1 font-bold text-blue dark:text-red">
+                  <TimezoneSelect value={timezone} onChange={handleTZChange} />
+                </span>
+              </label>
+              <label className="text-sm md:mr-[20px]">
                 Original Event in{" "}
                 <span className="font-bold text-blue dark:text-red">
                   {eventRange.timezone}
@@ -93,11 +87,12 @@ export default function GridPreviewDialog({
             </div>
           </motion.div>
         ) : (
-          <motion.div className="grow space-y-4">
+          <motion.div className="h-full grow space-y-4">
             <ScheduleGrid
+              mode="preview"
               eventRange={eventRange}
               disableSelect={true}
-              timezone={timezone}
+              timezone={eventRange.timezone}
             />
           </motion.div>
         )}
