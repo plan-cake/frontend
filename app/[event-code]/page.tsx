@@ -15,8 +15,6 @@ export default async function Page({
     notFound();
   }
 
-  console.log(eventCode);
-
   const eventData = await fetchEventDetails(eventCode);
   const { eventName, eventRange } = processEventData(eventData);
 

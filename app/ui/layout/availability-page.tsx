@@ -56,7 +56,7 @@ export default function AvailabilityPage({
       router.push(`/${eventCode}/results`);
     } catch (error) {
       console.error("Error submitting availability:", error);
-      throw new Error("Failed to submit availability" + error);
+      throw new Error("Failed to submit availability: " + error);
     }
   };
 

@@ -50,7 +50,6 @@ function convertAvailabilityToGridForSpecificRange(
   eventRange: SpecificDateRange,
 ): boolean[][] {
   const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(eventRange);
-  console.log({ eventStartUTC, eventEndUTC });
   const startTime = eventStartUTC.getHours();
   const endTime =
     eventEndUTC.getMinutes() === 59

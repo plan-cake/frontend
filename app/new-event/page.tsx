@@ -106,7 +106,7 @@ export default function Page() {
         end_hour: eventRange.timeRange.to,
         custom_code: customCode || undefined,
       };
-      console.log(jsonBody);
+
       await fetch("/api/event/week-create/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
