@@ -15,6 +15,21 @@ export type WeekdayMap = {
   [day in Weekday]: 0 | 1;
 };
 
+export const days: Array<Weekday> = [
+  "Sun",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Sat",
+];
+
+export type WeekdayTimeRange = {
+  slotTimeUTC: Date;
+  dayEndUTC: Date;
+};
+
 /* EVENT RANGE MODELS */
 
 export type SpecificDateRange = {

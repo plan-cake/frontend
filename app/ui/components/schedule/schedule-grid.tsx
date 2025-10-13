@@ -6,7 +6,10 @@ import { toZonedTime } from "date-fns-tz";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 import { EventRange } from "@/app/_lib/schedule/types";
-import { AvailabilitySet } from "@/app/_lib/availability/types";
+import {
+  AvailabilitySet,
+  ResultsAvailabilityMap,
+} from "@/app/_lib/availability/types";
 import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
@@ -22,12 +25,10 @@ interface ScheduleGridProps {
   timezone: string;
 
   disableSelect?: boolean;
-  attendees?: {
-    name: string;
-    availability: AvailabilitySet;
-  }[];
 
   // for "view" mode
+  availabilities?: ResultsAvailabilityMap;
+  numParticipants?: number;
   hoveredSlot?: string | null;
   setHoveredSlot?: (slotIso: string | null) => void;
 
@@ -40,8 +41,9 @@ export default function ScheduleGrid({
   eventRange,
   timezone,
   disableSelect = false,
-  attendees = [],
   mode = "preview",
+  availabilities = {},
+  numParticipants = 0,
   hoveredSlot,
   setHoveredSlot = () => {},
   userAvailability = createEmptyUserAvailability(),
@@ -133,7 +135,8 @@ export default function ScheduleGrid({
                 visibleDayKeys={visibleDays.map((d) => d.dayKey)}
                 userTimezone={timezone}
                 hoveredSlot={hoveredSlot}
-                allAvailabilities={attendees.map((a) => a.availability)}
+                availabilities={availabilities}
+                numParticipants={numParticipants}
                 onHoverSlot={setHoveredSlot}
               />
             );

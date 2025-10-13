@@ -1,48 +1,63 @@
 "use client";
 
-import { useState } from "react";
 import { useAvailability } from "@/app/_lib/availability/use-availability";
+import { useRouter } from "next/navigation";
 
+import CopyToast from "@/app/ui/components/copy-toast";
+import EventInfoDrawer, {
+  EventInfo,
+} from "@/app/ui/components/event-info-drawer";
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
+import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { EventRange } from "@/app/_lib/schedule/types";
 
-import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
-import CopyToast from "@/app/ui/components/copy-toast";
-import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
-import { EventInfo } from "@/app/ui/components/event-info-drawer";
+export default function AvailabilityPage({
+  eventCode,
+  eventName,
+  eventRange,
+}: {
+  eventCode: string;
+  eventName: string;
+  eventRange: EventRange;
+}) {
+  const router = useRouter();
 
-export default function Page() {
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability("John Doe");
+    useAvailability("");
   const { displayName, timeZone, userAvailability } = state;
 
-  const eventName = "Sample Event";
+  // SUBMIT AVAILABILITY
+  const handleSubmitAvailability = async () => {
+    console.log("Submitting availability...");
+    console.log("User Availability:", userAvailability);
+    console.log("Event Range:", eventRange);
 
-  // --- CORRECTED ---
-  // 1. Create dates in UTC to avoid browser timezone issues.
-  const today = new Date();
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+    // Convert userAvailability to the format expected by the backend
+    const availabilityGrid = convertAvailabilityToGrid(
+      userAvailability,
+      eventRange,
+    );
 
-  const eventRange: EventRange = {
-    type: "specific",
-    duration: 60,
-    // 2. Set the event's *original* timezone, not the user's.
-    timezone: "America/New_York",
-    dateRange: {
-      from: formatDate(today),
-      to: formatDate(today),
-    },
-    // This timeRange is for the valid times within a day
-    timeRange: {
-      from: 9,
-      to: 20,
-    },
+    const payload = {
+      event_code: eventCode,
+      display_name: displayName,
+      availability: availabilityGrid,
+      time_zone: timeZone,
+    };
+
+    try {
+      const response = await fetch("/api/availability/add/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      router.push(`/${eventCode}/results`);
+    } catch (error) {
+      console.error("Error submitting availability:", error);
+      throw new Error("Failed to submit availability: " + error);
+    }
   };
 
   return (
@@ -56,7 +71,10 @@ export default function Page() {
 
         <div className="flex items-center gap-2">
           <CopyToast label="Copy Link" />
-          <button className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]">
+          <button
+            onClick={handleSubmitAvailability}
+            className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
+          >
             Submit Availability
           </button>
         </div>
@@ -105,7 +123,10 @@ export default function Page() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
-        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
+        <div
+          onClick={handleSubmitAvailability}
+          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+        >
           Submit Availability
         </div>
       </div>

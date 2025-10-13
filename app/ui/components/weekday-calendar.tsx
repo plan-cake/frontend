@@ -3,21 +3,19 @@
 import { useState, useEffect } from "react";
 import { cn } from "@/app/_lib/classname";
 
-import { WeekdayMap, Weekday } from "@/app/_lib/schedule/types";
+import { days, WeekdayMap, Weekday } from "@/app/_lib/schedule/types";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
   onChange: (map: WeekdayMap) => void;
 };
 
-let days: Array<Weekday> = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-
 export default function WeekdayCalendar({
   selectedDays,
   onChange,
 }: WeekdayCalendarProps) {
   const [startMonday, setStartMonday] = useState(false);
-  days = startMonday ? [...days.slice(1), days[0]] : days;
+  let reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
 
   // for toggling ranges of days
   const [startDay, setStartDay] = useState<Weekday | null>(null);
@@ -31,7 +29,7 @@ export default function WeekdayCalendar({
 
   // for toggling only one day at a time
   // currently not in use
-  const handleDayClick = (day: keyof WeekdayMap) => {
+  const handleDayClick = (day: Weekday) => {
     const newSelectedDays = { ...selectedDays };
     newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
     onChange(newSelectedDays);

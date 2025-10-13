@@ -1,8 +1,8 @@
-import { AvailabilitySet } from "@/app/_lib/availability/types";
+import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 
 import BaseTimeBlock from "./base-timeblock";
 
-import { toZonedTime } from "date-fns-tz";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 import { useTheme } from "next-themes";
 import TimeSlot from "../time-slot";
 
@@ -15,7 +15,8 @@ interface ResultsTimeBlockProps {
   visibleDayKeys: string[];
   hoveredSlot: string | null | undefined;
 
-  allAvailabilities?: AvailabilitySet[];
+  availabilities: ResultsAvailabilityMap;
+  numParticipants: number;
 
   userTimezone: string;
   onHoverSlot?: (iso: string | null) => void;
@@ -29,7 +30,8 @@ export default function ResultsTimeBlock({
   numVisibleDays,
   visibleDayKeys,
   userTimezone,
-  allAvailabilities = [],
+  availabilities,
+  numParticipants,
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
@@ -44,8 +46,12 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
-        const slotIso = timeslot.toISOString();
         const localSlot = toZonedTime(timeslot, userTimezone);
+        const localSlotIso = formatInTimeZone(
+          localSlot,
+          userTimezone,
+          "yyyy-MM-dd'T'HH:mm:ss",
+        );
 
         const currentDayKey = localSlot.toLocaleDateString("en-CA");
         const dayIndex = visibleDayKeys.indexOf(currentDayKey);
@@ -69,14 +75,12 @@ export default function ResultsTimeBlock({
           }
         }
 
-        // REPLACE THIS WITH API DATA !!!!!!!!!
-        const matchCount = allAvailabilities.reduce(
-          (acc, set) => acc + (set.has(slotIso) ? 1 : 0),
-          0,
-        );
-        const total = allAvailabilities.length || 1;
-        const opacity = matchCount / total;
-        const isHovered = hoveredSlot === slotIso;
+        const matchCount =
+          availabilities[localSlotIso]?.length > 0
+            ? availabilities[localSlotIso].length
+            : 0;
+        const opacity = matchCount / numParticipants || 0;
+        const isHovered = hoveredSlot === localSlotIso;
 
         let backgroundColor;
         backgroundColor = isDark
@@ -86,14 +90,14 @@ export default function ResultsTimeBlock({
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}
-            slotIso={slotIso}
+            slotIso={localSlotIso}
             cellClasses={cellClasses.join(" ")}
             backgroundColor={backgroundColor}
             isHovered={isHovered}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onMouseEnter={() => {
-              onHoverSlot?.(slotIso);
+              onHoverSlot?.(localSlotIso);
             }}
           />
         );
