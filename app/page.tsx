@@ -104,7 +104,7 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-3xl bg-bone p-8 dark:bg-violet-600">
+          <div className="rounded-3xl bg-bone p-8 text-violet dark:bg-gray-300">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
                 <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red">
@@ -142,7 +142,7 @@ export default function Home() {
       </section>
 
       {/* Plan Today Section */}
-      <section className="bg-bone py-16 dark:bg-violet">
+      <section className="bg-bone py-16 text-violet dark:bg-gray-300">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="bubble-text mb-8 text-6xl md:text-8xl">PLAN TODAY</h2>
           <div className="mt-8">
