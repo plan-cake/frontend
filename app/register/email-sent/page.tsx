@@ -7,7 +7,7 @@ import MessagePage from "../../ui/layout/message-page";
 
 export default function Page() {
   const router = useRouter();
-  const email = sessionStorage.getItem("sign_up_email");
+  const email = sessionStorage.getItem("register_email");
   const lastEmailResend = useRef(Date.now());
 
   useEffect(() => {
@@ -16,7 +16,7 @@ export default function Page() {
       router.push("/login");
     }
     // clear the email from storage
-    sessionStorage.removeItem("sign_up_email");
+    sessionStorage.removeItem("register_email");
   }, []);
 
   if (!email) {

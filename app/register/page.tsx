@@ -41,8 +41,8 @@ export default function Page() {
     })
       .then(async (res) => {
         if (res.ok) {
-          sessionStorage.setItem("sign_up_email", email);
-          router.push("/sign-up/email-sent");
+          sessionStorage.setItem("register_email", email);
+          router.push("/register/email-sent");
         } else {
           alert(formatApiError(await res.json()));
         }
@@ -60,7 +60,7 @@ export default function Page() {
       <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display mb-4 block text-5xl leading-none text-lion md:text-8xl">
-          sign up
+          register
         </h1>
 
         {/* Email */}
@@ -90,13 +90,13 @@ export default function Page() {
           className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
         />
 
-        {/* Sign Up Button */}
+        {/* Register Button */}
         <div className="flex w-full">
           <button
             type="submit"
             className="mb-2 ml-auto cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            sign up
+            register
           </button>
         </div>
 

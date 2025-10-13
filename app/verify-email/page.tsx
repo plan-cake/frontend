@@ -67,8 +67,8 @@ export default function Page() {
           buttons={[
             {
               type: "secondary",
-              label: "back to sign up",
-              onClick: () => router.push("/sign-up"),
+              label: "back to register",
+              onClick: () => router.push("/register"),
             },
           ]}
         />

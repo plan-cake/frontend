@@ -93,11 +93,11 @@ export default function Page() {
           </button>
         </div>
 
-        {/* Sign up Link */}
+        {/* Register Link */}
         <div className="w-full text-right text-xs">
           No account?{" "}
-          <Link href="/sign-up" className="cursor-pointer">
-            Sign up!
+          <Link href="/register" className="cursor-pointer">
+            Register!
           </Link>
         </div>
       </form>

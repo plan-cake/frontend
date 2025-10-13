@@ -12,7 +12,7 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
   const { setLoggedIn } = useContext(LoginContext);
   const router = useRouter();
 
-  const logout = async () => {
+  const signOut = async () => {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
 
@@ -50,9 +50,9 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
             <DashboardIcon className="h-4 w-4" />
             Dashboard
           </DropdownItem>
-          <DropdownItem onSelect={logout}>
+          <DropdownItem onSelect={signOut}>
             <ExitIcon className="h-4 w-4" />
-            Log Out
+            Sign Out
           </DropdownItem>
         </DropdownMenu.Content>
       </DropdownMenu.Portal>
