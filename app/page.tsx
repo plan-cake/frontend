@@ -106,7 +106,7 @@ export default function Home() {
           <div className="rounded-3xl bg-bone p-8 text-violet dark:bg-gray-300">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
                   <span className="text-3xl">🍳</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Mix your event</h3>
