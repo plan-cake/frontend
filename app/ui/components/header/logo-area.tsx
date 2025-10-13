@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import HamburgerMenu from "./hamburger-menu";
 import Link from "next/link";
 
-export default function Logo() {
+export default function LogoArea() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
