@@ -6,10 +6,12 @@ import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import { useContext } from "react";
+import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
   const isSubmitting = useRef(false);
   const router = useRouter();
@@ -70,13 +72,26 @@ export default function Page() {
         />
 
         {/* Password */}
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
-        />
+        <div className="mb-4 flex w-full flex-row items-center gap-2 rounded-full border px-4 py-2 focus:ring-2 focus:outline-none">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full focus:outline-none"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="cursor-pointer"
+          >
+            {showPassword ? (
+              <EyeOpenIcon className="h-5 w-5" />
+            ) : (
+              <EyeNoneIcon className="h-5 w-5" />
+            )}
+          </button>
+        </div>
 
         <div className="flex w-full items-center justify-between">
           {/* Forgot Password */}
