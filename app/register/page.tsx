@@ -4,14 +4,12 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import formatApiError from "../_utils/format-api-error";
-import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const isSubmitting = React.useRef(false);
   const router = useRouter();
 
@@ -67,57 +65,28 @@ export default function Page() {
         </h1>
 
         {/* Email */}
-        <input
+        <TextInputField
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setEmail}
         />
 
         {/* Password */}
-        <div className="mb-4 flex w-full flex-row items-center gap-2 rounded-full border px-4 py-2 focus:ring-2 focus:outline-none">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="cursor-pointer"
-          >
-            {showPassword ? (
-              <EyeOpenIcon className="h-5 w-5" />
-            ) : (
-              <EyeNoneIcon className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+        <TextInputField
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={setPassword}
+        />
 
         {/* Retype Password */}
-        <div className="mb-4 flex w-full flex-row items-center gap-2 rounded-full border px-4 py-2 focus:ring-2 focus:outline-none">
-          <input
-            type={showConfirmPassword ? "text" : "password"}
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            className="w-full focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-            className="cursor-pointer"
-          >
-            {showConfirmPassword ? (
-              <EyeOpenIcon className="h-5 w-5" />
-            ) : (
-              <EyeNoneIcon className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+        <TextInputField
+          type="password"
+          placeholder="Retype Password"
+          value={confirmPassword}
+          onChange={setConfirmPassword}
+        />
 
         {/* Register Button */}
         <div className="flex w-full">

@@ -6,13 +6,12 @@ import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import { useContext } from "react";
-import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import Checkbox from "../ui/components/checkbox";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
   const isSubmitting = useRef(false);
@@ -65,35 +64,20 @@ export default function Page() {
         </h1>
 
         {/* Email */}
-        <input
+        <TextInputField
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setEmail}
         />
 
         {/* Password */}
-        <div className="mb-4 flex w-full flex-row items-center gap-2 rounded-full border px-4 py-2 focus:ring-2 focus:outline-none">
-          <input
-            type={showPassword ? "text" : "password"}
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full focus:outline-none"
-          />
-          <button
-            type="button"
-            onClick={() => setShowPassword(!showPassword)}
-            className="cursor-pointer"
-          >
-            {showPassword ? (
-              <EyeOpenIcon className="h-5 w-5" />
-            ) : (
-              <EyeNoneIcon className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+        <TextInputField
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={setPassword}
+        />
 
         <div className="flex w-full justify-between">
           <div className="m-0 flex flex-col gap-2">
