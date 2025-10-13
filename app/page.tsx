@@ -159,7 +159,7 @@ export default function Home() {
               <Logo />
             </div>
             <p className="text-sm">
-              © 2025 plancake. Stacking up perfect plans, one pancake at a
+              © 2025 Plancake. Stacking up perfect plans, one pancake at a
               time.
             </p>
           </div>
