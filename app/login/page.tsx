@@ -7,11 +7,13 @@ import formatApiError from "../_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import { useContext } from "react";
 import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import Checkbox from "../ui/components/checkbox";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
   const isSubmitting = useRef(false);
   const router = useRouter();
@@ -36,7 +38,7 @@ export default function Page() {
     await fetch("/api/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember_me: rememberMe }),
     })
       .then(async (res) => {
         if (res.ok) {
@@ -93,11 +95,19 @@ export default function Page() {
           </button>
         </div>
 
-        <div className="flex w-full items-center justify-between">
-          {/* Forgot Password */}
-          <Link href="/forgot-password" className="mb-8 text-xs">
-            Forgot Password?
-          </Link>
+        <div className="flex w-full justify-between">
+          <div className="m-0 flex flex-col gap-2">
+            {/* Remember Me Checkbox */}
+            <Checkbox
+              label="Remember Me"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+            />
+            {/* Forgot Password */}
+            <Link href="/forgot-password" className="text-xs">
+              Forgot Password?
+            </Link>
+          </div>
 
           {/* Login Button */}
           <button
