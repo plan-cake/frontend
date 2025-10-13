@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Logo from "./ui/components/logo";
 
 export default function Home() {
   return (
@@ -154,7 +155,9 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-12">
-            <div className="font-display mb-2 text-2xl text-lion">plancake</div>
+            <div className="mb-2">
+              <Logo />
+            </div>
             <p className="text-sm">
               © 2025 plancake. Stacking up perfect plans, one pancake at a
               time.
