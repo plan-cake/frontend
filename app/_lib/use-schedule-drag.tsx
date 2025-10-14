@@ -1,4 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from "react";
+import { generateDragSlots } from "./availability/utils";
+
+type DragState = {
+  startSlot: string | null;
+  endSlot: string | null;
+};
 
 /**
  * hook to manage the drag-to-select logic for the schedule grid.
@@ -8,9 +14,34 @@ export default function useScheduleDrag(
   onToggle: (slotIso: string) => void,
   mode: "paint" | "view" | "preview",
 ) {
-  const [isDragging, setIsDragging] = useState(false);
   const [didTouch, setDidTouch] = useState(false); // prevents mousedown from firing after touchend
-  const draggedSlots = useRef<Set<string>>(new Set());
+  const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
+  const dragState = useRef<DragState>({
+    startSlot: null,
+    endSlot: null,
+  });
+
+  function isDragging() {
+    return (
+      dragState.current.startSlot !== null || dragState.current.endSlot !== null
+    );
+  }
+
+  function setDragSlot(slotIso: string) {
+    if (!dragState.current.startSlot) {
+      dragState.current.startSlot = slotIso;
+    }
+    dragState.current.endSlot = slotIso;
+    // update draggedSlots
+    setDraggedSlots(
+      generateDragSlots(dragState.current.startSlot, dragState.current.endSlot),
+    );
+  }
+
+  function resetDragSlots() {
+    dragState.current = { startSlot: null, endSlot: null };
+    setDraggedSlots(new Set());
+  }
 
   // keeps onToggle ref up to date
   const onToggleRef = useRef(onToggle);
@@ -21,10 +52,10 @@ export default function useScheduleDrag(
   // handle stopping drag on mouseup/touchend anywhere
   useEffect(() => {
     const stopDragging = () => {
-      if (isDragging) {
-        setIsDragging(false);
-        draggedSlots.current.clear();
+      for (const slotIso of draggedSlots) {
+        onToggleRef.current(slotIso);
       }
+      resetDragSlots();
       if (didTouch) {
         // reset didTouch after a short delay to prevent
         // immediate re-triggering
@@ -46,42 +77,31 @@ export default function useScheduleDrag(
   const handleMouseDown = useCallback(
     (slotIso: string, isDisabled: boolean) => {
       if (mode !== "paint" || isDisabled || didTouch) return;
-      setIsDragging(true);
-      draggedSlots.current = new Set([slotIso]);
-      onToggleRef.current(slotIso);
+      setDragSlot(slotIso);
     },
     [mode, didTouch],
   );
 
   const handleMouseEnter = useCallback(
     (slotIso: string, isDisabled: boolean) => {
-      if (
-        mode !== "paint" ||
-        !isDragging ||
-        isDisabled ||
-        draggedSlots.current.has(slotIso)
-      )
-        return;
-      draggedSlots.current.add(slotIso);
-      onToggleRef.current(slotIso);
+      if (mode !== "paint" || !isDragging() || isDisabled) return;
+      setDragSlot(slotIso);
     },
-    [mode, isDragging],
+    [mode],
   );
 
   const handleTouchStart = useCallback(
     (slotIso: string, isDisabled: boolean) => {
       if (mode !== "paint" || isDisabled) return;
       setDidTouch(true);
-      setIsDragging(true);
-      draggedSlots.current = new Set([slotIso]);
-      onToggleRef.current(slotIso);
+      setDragSlot(slotIso);
     },
     [mode],
   );
 
   const handleTouchMove = useCallback(
     (event: React.TouchEvent<HTMLDivElement>) => {
-      if (mode !== "paint" || !isDragging) return;
+      if (mode !== "paint" || !isDragging()) return;
 
       // get touchpoint
       const touch = event.touches[0];
@@ -89,14 +109,10 @@ export default function useScheduleDrag(
 
       if (target instanceof HTMLElement && target.dataset.slotIso) {
         const currentSlotIso = target.dataset.slotIso;
-        // check that the slot is not disabled
-        if (!draggedSlots.current.has(currentSlotIso)) {
-          draggedSlots.current.add(currentSlotIso);
-          onToggleRef.current(currentSlotIso);
-        }
+        setDragSlot(currentSlotIso);
       }
     },
-    [mode, isDragging],
+    [mode],
   );
 
   return {
@@ -104,5 +120,6 @@ export default function useScheduleDrag(
     onMouseEnter: handleMouseEnter,
     onTouchStart: handleTouchStart,
     onTouchMove: handleTouchMove,
+    draggedSlots: draggedSlots,
   };
 }

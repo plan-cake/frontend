@@ -86,6 +86,7 @@ export default function InteractiveTimeBlock({
             slotIso={slotIso}
             cellClasses={cellClasses.join(" ")}
             isSelected={isSelected}
+            isToggling={dragHandlers.draggedSlots.has(slotIso)}
             backgroundColor={backgroundColor}
             gridColumn={gridColumn}
             gridRow={gridRow}
