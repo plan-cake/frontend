@@ -89,7 +89,7 @@ export default function Page() {
             />
             {/* Forgot Password */}
             <Link href="/forgot-password" className="text-xs">
-              Forgot Password?
+              Forgot password?
             </Link>
           </div>
 
@@ -98,7 +98,7 @@ export default function Page() {
             type="submit"
             className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            login
+            Login
           </button>
         </div>
 

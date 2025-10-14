@@ -13,7 +13,7 @@ export default function Page() {
         buttons={[
           {
             type: "primary",
-            label: "back to login",
+            label: "Back to Login",
             onClick: () => router.push("/login"),
           },
         ]}

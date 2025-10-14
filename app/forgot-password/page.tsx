@@ -65,7 +65,7 @@ export default function Page() {
         >
           {/* Title */}
           <h1 className="font-display mb-4 block text-center text-5xl leading-none text-lion md:text-8xl">
-            reset password
+            forgot password
           </h1>
 
           {/* Email */}
@@ -88,7 +88,7 @@ export default function Page() {
               type="submit"
               className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
             >
-              send reset link
+              Send Link
             </button>
           </div>
         </form>

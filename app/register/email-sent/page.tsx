@@ -62,12 +62,12 @@ export default function Page() {
         buttons={[
           {
             type: "secondary",
-            label: "resend email",
+            label: "Resend Email",
             onClick: handleResendEmail,
           },
           {
             type: "primary",
-            label: "go to login",
+            label: "Go to Login",
             onClick: () => router.push("/login"),
           },
         ]}

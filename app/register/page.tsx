@@ -152,7 +152,7 @@ export default function Page() {
             type="submit"
             className="mb-2 ml-auto cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            register
+            Register
           </button>
         </div>
 
