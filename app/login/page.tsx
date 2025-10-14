@@ -83,7 +83,7 @@ export default function Page() {
           <div className="m-0 flex flex-col gap-2">
             {/* Remember Me Checkbox */}
             <Checkbox
-              label="Remember Me"
+              label="Remember me"
               checked={rememberMe}
               onChange={() => setRememberMe(!rememberMe)}
             />
