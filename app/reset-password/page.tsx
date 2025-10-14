@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import { useDebounce } from "../_lib/use-debounce";
 import PasswordCriteria from "../ui/components/auth/password-criteria";
@@ -50,6 +50,13 @@ export default function Page() {
       .catch((err) => {
         console.error("Fetch error:", err);
       });
+  }, [newPassword]);
+
+  useEffect(() => {
+    if (newPassword.length === 0) {
+      setPasswordCriteria({});
+      return;
+    }
   }, [newPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
