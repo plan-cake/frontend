@@ -6,18 +6,24 @@ import React, { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import TextInputField from "../ui/components/auth/text-input-field";
 import { useDebounce } from "../_lib/use-debounce";
+import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
+import { cn } from "../_lib/classname";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordErrors, setPasswordErrors] = useState<string[]>([]);
+  const [passwordCriteria, setPasswordCriteria] = useState({});
   const isSubmitting = React.useRef(false);
   const router = useRouter();
 
+  function passwordIsStrong() {
+    return Object.keys(passwordCriteria).length === 0;
+  }
+
   useDebounce(() => {
     if (password.length === 0) {
-      setPasswordErrors([]);
+      setPasswordCriteria({});
       return;
     }
 
@@ -30,13 +36,16 @@ export default function Page() {
       .then((res) => {
         console.log(res.status);
         if (res.ok) {
-          setPasswordErrors([]);
-        } else {
           res.json().then((data) => {
-            if (data && data.error && data.error.password) {
-              setPasswordErrors(data.error.password);
+            if (data.is_strong) {
+              setPasswordCriteria({});
+              return;
+            } else {
+              setPasswordCriteria(data.criteria || {});
             }
           });
+        } else {
+          console.error("Fetch error:", res.status);
         }
       })
       .catch((err) => {
@@ -46,7 +55,7 @@ export default function Page() {
 
   useEffect(() => {
     if (password.length === 0) {
-      setPasswordErrors([]);
+      setPasswordCriteria({});
       return;
     }
   }, [password]);
@@ -67,7 +76,7 @@ export default function Page() {
       isSubmitting.current = false;
       return;
     }
-    if (passwordErrors.length > 0) {
+    if (!passwordIsStrong()) {
       alert("Password is not strong enough");
       isSubmitting.current = false;
       return;
@@ -124,13 +133,19 @@ export default function Page() {
         />
 
         {/* Password Errors */}
-        {passwordErrors.length > 0 && (
+        {!passwordIsStrong() && (
           <div className="-mt-2 mb-2 w-full px-4 text-sm">
             <b>Your password must:</b>
-            {passwordErrors.map((error, index) => (
-              <div key={index}>
-                {/* NOT A HACK I PROMISE, the message format is just consistent */}
-                - {error.substring(14).substring(0, error.length - 15)}
+            {Object.entries(passwordCriteria).map(([key, value], index) => (
+              <div
+                key={index}
+                className={cn(
+                  "flex items-center gap-1",
+                  value ? "line-through opacity-50" : "",
+                )}
+              >
+                {value ? <CheckIcon /> : <Cross2Icon />}
+                {key}
               </div>
             ))}
           </div>
