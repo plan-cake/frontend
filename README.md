@@ -1,10 +1,10 @@
-# plancake Frontend
+# Plancake Frontend
 
 A modern, responsive web application for scheduling and meeting coordination built with Next.js 15, React 19, and Tailwind CSS.
 
 ## Overview
 
-plancake is a meeting scheduling tool that helps users coordinate availability across time zones. The application allows users to create events, share availability grids, and find optimal meeting times.
+Plancake is a meeting scheduling tool that helps users coordinate availability across time zones. The application allows users to create events, share availability grids, and find optimal meeting times.
 
 ---
 
@@ -46,6 +46,13 @@ plancake is a meeting scheduling tool that helps users coordinate availability a
 - [Prettier 3.5.3](https://prettier.io/) - Code formatting
 - [Turbopack](https://turbo.build/pack) - Fast bundler (dev mode)
 
+
+### `.env` Setup
+
+Create a file called `.env` in the root directory, copying the contents of `example.env`.
+
+Replace all values in the file with the relevant information.
+
 ## Local Development Setup
 
 ### Prerequisites
@@ -59,8 +66,8 @@ plancake is a meeting scheduling tool that helps users coordinate availability a
 1. **Clone the repository**
 
    ```bash
-   git clone https://github.com/plan-cake/v2meeto.git
-   cd v2meeto
+   https://github.com/plan-cake/frontend.git
+   cd frontend
    ```
 
 2. **Install dependencies**
