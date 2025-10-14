@@ -34,7 +34,6 @@ export default function Page() {
       body: JSON.stringify({ password: newPassword }),
     })
       .then((res) => {
-        console.log(res.status);
         if (res.ok) {
           res.json().then((data) => {
             if (data.is_strong) {
