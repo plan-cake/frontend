@@ -5,6 +5,7 @@ import React, { useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import { useDebounce } from "../_lib/use-debounce";
 import PasswordCriteria from "../ui/components/auth/password-criteria";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
@@ -111,12 +112,11 @@ export default function Page() {
         </h1>
 
         {/* New Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="New Password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setNewPassword}
         />
 
         {!passwordIsStrong() && (
@@ -126,12 +126,11 @@ export default function Page() {
         )}
 
         {/* Confirm Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setConfirmPassword}
         />
 
         {/* Change Password Button */}

@@ -6,6 +6,7 @@ import React, { useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import MessagePage from "../ui/layout/message-page";
 import LinkText from "../ui/components/link-text";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -70,12 +71,11 @@ export default function Page() {
           </h1>
 
           {/* Email */}
-          <input
+          <TextInputField
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+            onChange={setEmail}
           />
 
           <div className="flex w-full items-center justify-between">
