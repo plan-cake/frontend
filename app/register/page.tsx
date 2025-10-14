@@ -6,8 +6,7 @@ import React, { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import TextInputField from "../ui/components/auth/text-input-field";
 import { useDebounce } from "../_lib/use-debounce";
-import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { cn } from "../_lib/classname";
+import PasswordCriteria from "../ui/components/auth/password-criteria";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -134,20 +133,8 @@ export default function Page() {
 
         {/* Password Errors */}
         {!passwordIsStrong() && (
-          <div className="-mt-2 mb-2 w-full px-4 text-sm">
-            <b>Your password must:</b>
-            {Object.entries(passwordCriteria).map(([key, value], index) => (
-              <div
-                key={index}
-                className={cn(
-                  "flex items-center gap-1",
-                  value ? "line-through opacity-50" : "",
-                )}
-              >
-                {value ? <CheckIcon /> : <Cross2Icon />}
-                {key}
-              </div>
-            ))}
+          <div className="-mt-2 mb-2 w-full px-4">
+            <PasswordCriteria criteria={passwordCriteria} />
           </div>
         )}
 
