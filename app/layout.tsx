@@ -19,7 +19,7 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "plancake",
+  title: "Plancake",
   description: "Stacking up perfect plans, one pancake at a time",
 };
 

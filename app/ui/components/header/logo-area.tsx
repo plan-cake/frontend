@@ -3,8 +3,9 @@
 import { useEffect, useState } from "react";
 import HamburgerMenu from "./hamburger-menu";
 import Link from "next/link";
+import Logo from "../logo";
 
-export default function Logo() {
+export default function LogoArea() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -23,12 +24,7 @@ export default function Logo() {
       {/* Text Container */}
       <div className="absolute top-2 left-2">
         <Link href="/">
-          <div className="font-display text-2xl leading-[20px] font-normal text-lion [-webkit-text-stroke:1px_white]">
-            plan
-          </div>
-          <div className="font-display text-2xl leading-[20px] font-normal text-lion [-webkit-text-stroke:1px_black]">
-            cake
-          </div>
+          <Logo />
         </Link>
         <HamburgerMenu />
       </div>

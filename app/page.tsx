@@ -1,6 +1,5 @@
-"use client";
-
 import Link from "next/link";
+import Logo from "./ui/components/logo";
 
 export default function Home() {
   return (
@@ -104,10 +103,10 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-3xl bg-bone p-8 dark:bg-violet-600">
+          <div className="rounded-3xl bg-bone p-8 text-violet dark:bg-gray-300">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-red">
+                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
                   <span className="text-3xl">🍳</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Mix your event</h3>
@@ -142,7 +141,7 @@ export default function Home() {
       </section>
 
       {/* Plan Today Section */}
-      <section className="bg-bone py-16 dark:bg-violet">
+      <section className="bg-bone py-16 text-violet dark:bg-gray-300">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
           <h2 className="bubble-text mb-8 text-6xl md:text-8xl">PLAN TODAY</h2>
           <div className="mt-8">
@@ -154,9 +153,11 @@ export default function Home() {
             </Link>
           </div>
           <div className="mt-12">
-            <div className="font-display mb-2 text-2xl text-lion">plancake</div>
+            <div className="mb-2">
+              <Logo />
+            </div>
             <p className="text-sm">
-              © 2025 plancake. Stacking up perfect plans, one pancake at a
+              © 2025 Plancake. Stacking up perfect plans, one pancake at a
               time.
             </p>
           </div>
