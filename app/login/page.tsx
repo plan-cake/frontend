@@ -6,10 +6,14 @@ import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import { useContext } from "react";
+import Checkbox from "../ui/components/checkbox";
+import TextInputField from "../ui/components/auth/text-input-field";
+import LinkText from "../ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
   const isSubmitting = useRef(false);
   const router = useRouter();
@@ -34,7 +38,7 @@ export default function Page() {
     await fetch("/api/auth/login/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email, password, remember_me: rememberMe }),
     })
       .then(async (res) => {
         if (res.ok) {
@@ -61,43 +65,49 @@ export default function Page() {
         </h1>
 
         {/* Email */}
-        <input
+        <TextInputField
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setEmail}
         />
 
         {/* Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setPassword}
         />
 
-        <div className="flex w-full items-center justify-between">
-          {/* Forgot Password */}
-          <Link href="/forgot-password" className="mb-8 text-xs">
-            Forgot Password?
-          </Link>
+        <div className="flex w-full justify-between">
+          <div className="m-0 flex flex-col gap-2">
+            {/* Remember Me Checkbox */}
+            <Checkbox
+              label="Remember me"
+              checked={rememberMe}
+              onChange={() => setRememberMe(!rememberMe)}
+            />
+            {/* Forgot Password */}
+            <Link href="/forgot-password" className="text-xs">
+              <LinkText>Forgot password?</LinkText>
+            </Link>
+          </div>
 
           {/* Login Button */}
           <button
             type="submit"
             className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            login
+            Login
           </button>
         </div>
 
-        {/* Sign up Link */}
+        {/* Register Link */}
         <div className="w-full text-right text-xs">
           No account?{" "}
-          <Link href="/sign-up" className="cursor-pointer">
-            Sign up!
+          <Link href="/register">
+            <LinkText>Register!</LinkText>
           </Link>
         </div>
       </form>

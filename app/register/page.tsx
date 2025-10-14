@@ -2,15 +2,62 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
+import TextInputField from "../ui/components/auth/text-input-field";
+import { useDebounce } from "../_lib/use-debounce";
+import PasswordCriteria from "../ui/components/auth/password-criteria";
+import LinkText from "../ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordCriteria, setPasswordCriteria] = useState({});
   const isSubmitting = React.useRef(false);
   const router = useRouter();
+
+  function passwordIsStrong() {
+    return Object.keys(passwordCriteria).length === 0;
+  }
+
+  useDebounce(() => {
+    if (password.length === 0) {
+      setPasswordCriteria({});
+      return;
+    }
+
+    // Check that the password is strong enough with the API
+    fetch("/api/auth/check-password/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          res.json().then((data) => {
+            if (data.is_strong) {
+              setPasswordCriteria({});
+              return;
+            } else {
+              setPasswordCriteria(data.criteria || {});
+            }
+          });
+        } else {
+          console.error("Fetch error:", res.status);
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
+  }, [password]);
+
+  useEffect(() => {
+    if (password.length === 0) {
+      setPasswordCriteria({});
+      return;
+    }
+  }, [password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,6 +75,11 @@ export default function Page() {
       isSubmitting.current = false;
       return;
     }
+    if (!passwordIsStrong()) {
+      alert("Password is not strong enough");
+      isSubmitting.current = false;
+      return;
+    }
     if (confirmPassword !== password) {
       alert("Passwords do not match");
       isSubmitting.current = false;
@@ -41,8 +93,8 @@ export default function Page() {
     })
       .then(async (res) => {
         if (res.ok) {
-          sessionStorage.setItem("sign_up_email", email);
-          router.push("/sign-up/email-sent");
+          sessionStorage.setItem("register_email", email);
+          router.push("/register/email-sent");
         } else {
           alert(formatApiError(await res.json()));
         }
@@ -60,51 +112,55 @@ export default function Page() {
       <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display mb-4 block text-5xl leading-none text-lion md:text-8xl">
-          sign up
+          register
         </h1>
 
         {/* Email */}
-        <input
+        <TextInputField
           type="email"
           placeholder="Email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setEmail}
         />
 
         {/* Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="Password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setPassword}
         />
+
+        {/* Password Errors */}
+        {!passwordIsStrong() && (
+          <div className="-mt-2 mb-2 w-full px-4">
+            <PasswordCriteria criteria={passwordCriteria} />
+          </div>
+        )}
 
         {/* Retype Password */}
-        <input
+        <TextInputField
           type="password"
-          placeholder="Confirm Password"
+          placeholder="Retype Password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setConfirmPassword}
         />
 
-        {/* Sign Up Button */}
+        {/* Register Button */}
         <div className="flex w-full">
           <button
             type="submit"
             className="mb-2 ml-auto cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
           >
-            sign up
+            Register
           </button>
         </div>
 
         {/* Login Link */}
         <div className="w-full text-right text-xs">
           Already have an account?{" "}
-          <Link href="/login" className="cursor-pointer">
-            Login!
+          <Link href="/login">
+            <LinkText>Login!</LinkText>
           </Link>
         </div>
       </form>

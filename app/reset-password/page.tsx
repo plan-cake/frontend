@@ -1,17 +1,63 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
+import { useDebounce } from "../_lib/use-debounce";
+import PasswordCriteria from "../ui/components/auth/password-criteria";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [passwordCriteria, setPasswordCriteria] = useState({});
   const isSubmitting = useRef(false);
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
+
+  function passwordIsStrong() {
+    return Object.keys(passwordCriteria).length === 0;
+  }
+
+  useDebounce(() => {
+    if (newPassword.length === 0) {
+      setPasswordCriteria({});
+      return;
+    }
+
+    // Check that the password is strong enough with the API
+    fetch("/api/auth/check-password/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: newPassword }),
+    })
+      .then((res) => {
+        if (res.ok) {
+          res.json().then((data) => {
+            if (data.is_strong) {
+              setPasswordCriteria({});
+              return;
+            } else {
+              setPasswordCriteria(data.criteria || {});
+            }
+          });
+        } else {
+          console.error("Fetch error:", res.status);
+        }
+      })
+      .catch((err) => {
+        console.error("Fetch error:", err);
+      });
+  }, [newPassword]);
+
+  useEffect(() => {
+    if (newPassword.length === 0) {
+      setPasswordCriteria({});
+      return;
+    }
+  }, [newPassword]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +76,11 @@ export default function Page() {
       isSubmitting.current = false;
       return;
     }
-
+    if (!passwordIsStrong()) {
+      alert("Password is not strong enough");
+      isSubmitting.current = false;
+      return;
+    }
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match.");
       isSubmitting.current = false;
@@ -68,21 +118,25 @@ export default function Page() {
         </h1>
 
         {/* New Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="New Password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setNewPassword}
         />
 
+        {!passwordIsStrong() && (
+          <div className="-mt-2 mb-2 w-full px-4">
+            <PasswordCriteria criteria={passwordCriteria} />
+          </div>
+        )}
+
         {/* Confirm Password */}
-        <input
+        <TextInputField
           type="password"
           placeholder="Confirm Password"
           value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+          onChange={setConfirmPassword}
         />
 
         {/* Change Password Button */}

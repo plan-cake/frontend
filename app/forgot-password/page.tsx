@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import MessagePage from "../ui/layout/message-page";
+import LinkText from "../ui/components/link-text";
+import TextInputField from "../ui/components/auth/text-input-field";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -65,22 +67,21 @@ export default function Page() {
         >
           {/* Title */}
           <h1 className="font-display mb-4 block text-center text-5xl leading-none text-lion md:text-8xl">
-            reset password
+            forgot password
           </h1>
 
           {/* Email */}
-          <input
+          <TextInputField
             type="email"
             placeholder="Email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="mb-4 w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none"
+            onChange={setEmail}
           />
 
           <div className="flex w-full items-center justify-between">
             {/* Forgot Password */}
             <Link href="/login" className="mb-8 text-xs">
-              Remembered password?
+              <LinkText>Remembered password?</LinkText>
             </Link>
 
             {/* Email Button */}
@@ -88,7 +89,7 @@ export default function Page() {
               type="submit"
               className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
             >
-              send reset link
+              Send Link
             </button>
           </div>
         </form>
