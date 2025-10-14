@@ -46,7 +46,6 @@ Plancake is a meeting scheduling tool that helps users coordinate availability a
 - [Prettier 3.5.3](https://prettier.io/) - Code formatting
 - [Turbopack](https://turbo.build/pack) - Fast bundler (dev mode)
 
-
 ### `.env` Setup
 
 Create a file called `.env` in the root directory, copying the contents of `example.env`.
