@@ -8,6 +8,7 @@ import { LoginContext } from "@/app/_lib/providers";
 import { useContext } from "react";
 import Checkbox from "../ui/components/checkbox";
 import TextInputField from "../ui/components/auth/text-input-field";
+import LinkText from "../ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -89,7 +90,7 @@ export default function Page() {
             />
             {/* Forgot Password */}
             <Link href="/forgot-password" className="text-xs">
-              Forgot password?
+              <LinkText>Forgot password?</LinkText>
             </Link>
           </div>
 
@@ -105,8 +106,8 @@ export default function Page() {
         {/* Register Link */}
         <div className="w-full text-right text-xs">
           No account?{" "}
-          <Link href="/register" className="cursor-pointer">
-            Register!
+          <Link href="/register">
+            <LinkText>Register!</LinkText>
           </Link>
         </div>
       </form>

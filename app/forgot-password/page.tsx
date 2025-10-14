@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import MessagePage from "../ui/layout/message-page";
+import LinkText from "../ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -80,7 +81,7 @@ export default function Page() {
           <div className="flex w-full items-center justify-between">
             {/* Forgot Password */}
             <Link href="/login" className="mb-8 text-xs">
-              Remembered password?
+              <LinkText>Remembered password?</LinkText>
             </Link>
 
             {/* Email Button */}

@@ -7,6 +7,7 @@ import formatApiError from "../_utils/format-api-error";
 import TextInputField from "../ui/components/auth/text-input-field";
 import { useDebounce } from "../_lib/use-debounce";
 import PasswordCriteria from "../ui/components/auth/password-criteria";
+import LinkText from "../ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -159,8 +160,8 @@ export default function Page() {
         {/* Login Link */}
         <div className="w-full text-right text-xs">
           Already have an account?{" "}
-          <Link href="/login" className="cursor-pointer">
-            Login!
+          <Link href="/login">
+            <LinkText>Login!</LinkText>
           </Link>
         </div>
       </form>
