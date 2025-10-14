@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import TextInputField from "../ui/components/auth/text-input-field";
 import { useDebounce } from "../_lib/use-debounce";
@@ -42,6 +42,13 @@ export default function Page() {
       .catch((err) => {
         console.error("Fetch error:", err);
       });
+  }, [password]);
+
+  useEffect(() => {
+    if (password.length === 0) {
+      setPasswordErrors([]);
+      return;
+    }
   }, [password]);
 
   const handleSubmit = async (e: React.FormEvent) => {
