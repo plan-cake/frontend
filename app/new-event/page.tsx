@@ -6,11 +6,15 @@ import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 import CustomSelect from "@/app/ui/components/selectors/custom-select";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 import { useEventInfo } from "../_lib/schedule/use-event-info";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { SpecificDateRange, WeekdayRange } from "../_lib/schedule/types";
 import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
+import ErrorToast from "@/app/ui/components/error-toast";
+import { ToastErrorMessage } from "../_lib/types/toast";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { cn } from "../_lib/classname";
 
 const durationOptions = [
   { label: "30 minutes", value: 30 },
@@ -19,6 +23,10 @@ const durationOptions = [
 ];
 
 export default function Page() {
+  const [toasts, setToasts] = useState<ToastErrorMessage[]>([]);
+  const [eventNameError, setEventNameError] = useState<string | null>(null);
+  const [customCodeError, setCustomCodeError] = useState<boolean>(false);
+
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const {
     state,
@@ -42,9 +50,54 @@ export default function Page() {
     return `${year}-${month}-${day}`;
   };
 
+  const createErrorToast = (message: string) => {
+    const newToast = {
+      id: Date.now() + Math.random(),
+      message: message,
+    };
+    setToasts((prevToasts) => [...prevToasts, newToast]);
+  };
+
   const createEvent = async () => {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+
+    let areErrors: boolean = false;
+    setEventNameError(null);
+    if (!title) {
+      isSubmitting.current = false;
+      areErrors = true;
+
+      const errorMessage = "Please enter an event name.";
+      setEventNameError(errorMessage);
+      createErrorToast(errorMessage);
+    }
+
+    // check if custom code is valid
+    if (customCode) {
+      try {
+        const response = await fetch("/api/event/check-code/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ custom_code: customCode }),
+        });
+
+        if (!response.ok) {
+          areErrors = true;
+          const errorMessage =
+            "Custom code is not available, please choose another.";
+          createErrorToast(errorMessage);
+          setCustomCodeError(true);
+        }
+      } catch (error) {
+        console.error("Error checking code:", error);
+        throw new Error("Failed to checking code: " + error);
+      }
+    }
+
+    if (areErrors) {
+      return;
+    }
 
     if (state.eventRange.type === "specific") {
       const jsonBody = {
@@ -71,19 +124,19 @@ export default function Page() {
             const code = (await res.json()).event_code;
             router.push(`/${code}`);
           } else {
-            alert(formatApiError(await res.json()));
+            createErrorToast(formatApiError(await res.json()));
           }
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          alert("An error occurred. Please try again.");
+          createErrorToast("An error occurred. Please try again.");
         });
     } else {
       const weekdayRange = findRangeFromWeekdayMap(
         (eventRange as WeekdayRange).weekdays,
       );
       if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
-        alert("Please select at least one weekday.");
+        createErrorToast("Please select at least one weekday.");
         isSubmitting.current = false;
         return;
       }
@@ -117,28 +170,59 @@ export default function Page() {
             const code = (await res.json()).event_code;
             router.push(`/${code}`);
           } else {
-            alert(formatApiError(await res.json()));
+            createErrorToast(formatApiError(await res.json()));
           }
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          alert("An error occurred. Please try again.");
+          createErrorToast("An error occurred. Please try again.");
         });
     }
 
     isSubmitting.current = false;
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (eventNameError) {
+      setEventNameError(null);
+    } else if (e.target.value == "") {
+      setEventNameError("Please enter an event name.");
+    }
+
+    setTitle(e.target.value);
+  };
+
+  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (customCodeError) {
+      setCustomCodeError(false);
+    }
+
+    setCustomCode(e.target.value);
+  };
+
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
       <div className="flex w-full items-center justify-between">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="add event name"
-          className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
-        />
+        <div className="md:w-1/2">
+          <p
+            className={`text-right text-xs text-red ${eventNameError ? "visible" : "invisible"}`}
+          >
+            {eventNameError ? eventNameError : "Error Placeholder"}
+          </p>
+          <input
+            type="text"
+            value={title}
+            onChange={handleNameChange}
+            placeholder="add event name"
+            className={cn(
+              "w-full border-b-1 p-1 text-2xl focus:outline-none",
+              eventNameError
+                ? "border-red placeholder:text-red"
+                : "border-violet dark:border-gray-400",
+            )}
+          />
+        </div>
+
         <button
           className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           onClick={createEvent}
@@ -213,16 +297,23 @@ export default function Page() {
             />
           </div>
 
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:flex md:justify-between">
             Custom Event Code
+            {customCodeError && (
+              <ExclamationTriangleIcon className="h-4 w-4 text-red" />
+            )}
           </label>
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <input
               type="text"
               value={customCode}
-              onChange={(e) => setCustomCode(e.target.value)}
+              onChange={handleCustomCodeChange}
               placeholder="optional"
-              className="w-full border-b-1 border-gray-300 text-blue focus:outline-none dark:border-gray-400 dark:text-red"
+              className={`w-full border-b-1 focus:outline-none ${
+                customCodeError
+                  ? "border-red placeholder:text-red"
+                  : "border-violet text-blue dark:border-gray-400 dark:text-red"
+              }`}
             />
           </div>
 
@@ -267,13 +358,23 @@ export default function Page() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
-        <div
-          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
-          onClick={createEvent}
-        >
+        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
           Create Event
         </div>
       </div>
+
+      {toasts.map((toast) => (
+        <ErrorToast
+          key={toast.id}
+          error={toast.message}
+          open={true}
+          onOpenChange={() => {
+            setToasts((currentToasts) =>
+              currentToasts.filter((t) => t.id !== toast.id),
+            );
+          }}
+        />
+      ))}
     </div>
   );
 }
