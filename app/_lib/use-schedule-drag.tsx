@@ -4,6 +4,7 @@ import { generateDragSlots } from "./availability/utils";
 type DragState = {
   startSlot: string | null;
   endSlot: string | null;
+  togglingOn: boolean | null;
 };
 
 /**
@@ -11,13 +12,14 @@ type DragState = {
  * it includes state, event handlers, and global listeners for both mouse and touch events.
  */
 export default function useScheduleDrag(
-  onToggle: (slotIso: string) => void,
+  onToggle: (slotIso: string, togglingOn: boolean) => void,
   mode: "paint" | "view" | "preview",
 ) {
   const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
   const dragState = useRef<DragState>({
     startSlot: null,
     endSlot: null,
+    togglingOn: null,
   });
 
   function isDragging() {
@@ -38,7 +40,7 @@ export default function useScheduleDrag(
   }
 
   function resetDragSlots() {
-    dragState.current = { startSlot: null, endSlot: null };
+    dragState.current = { startSlot: null, endSlot: null, togglingOn: null };
     setDraggedSlots(new Set());
   }
 
@@ -52,7 +54,7 @@ export default function useScheduleDrag(
   useEffect(() => {
     const stopDragging = () => {
       for (const slotIso of draggedSlots) {
-        onToggleRef.current(slotIso);
+        onToggleRef.current(slotIso, dragState.current.togglingOn!);
       }
       resetDragSlots();
     };
@@ -69,9 +71,10 @@ export default function useScheduleDrag(
   /* EVENT HANDLERS */
 
   const handlePointerDown = useCallback(
-    (slotIso: string, isDisabled: boolean) => {
+    (slotIso: string, isDisabled: boolean, toggleState: boolean) => {
       if (mode !== "paint" || isDisabled) return;
       setDragSlot(slotIso);
+      dragState.current.togglingOn = !toggleState;
     },
     [mode],
   );
@@ -105,5 +108,6 @@ export default function useScheduleDrag(
     onPointerEnter: handlePointerEnter,
     onTouchMove: handleTouchMove,
     draggedSlots: draggedSlots,
+    togglingOn: dragState.current.togglingOn,
   };
 }

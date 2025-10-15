@@ -15,12 +15,13 @@ export const createEmptyUserAvailability = (): AvailabilitySet => {
 export function toggleUtcSlot(
   prev: AvailabilitySet,
   timeSlot: string, // ISO string
+  togglingOn: boolean,
 ): AvailabilitySet {
   const updated = new Set(prev);
-  if (updated.has(timeSlot)) {
-    updated.delete(timeSlot);
-  } else {
+  if (togglingOn) {
     updated.add(timeSlot);
+  } else {
+    updated.delete(timeSlot);
   }
   return updated;
 }

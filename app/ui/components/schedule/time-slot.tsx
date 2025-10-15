@@ -7,7 +7,6 @@ interface TimeSlotProps {
   slotIso: string;
   isSelected?: boolean;
   isHovered?: boolean;
-  isToggling?: boolean;
 
   disableSelect?: boolean;
   backgroundColor: string;
@@ -26,7 +25,6 @@ function TimeSlot({
   slotIso,
   isSelected,
   isHovered,
-  isToggling,
   disableSelect,
   backgroundColor,
   gridColumn,
@@ -42,7 +40,6 @@ function TimeSlot({
         cellClasses,
         "relative bg-white dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
-        isToggling && "bg-blue-200 dark:bg-red-200",
         disableSelect
           ? "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
           : "cursor-cell hover:bg-blue-200 dark:hover:bg-red-200",

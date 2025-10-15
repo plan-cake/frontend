@@ -17,7 +17,7 @@ interface InteractiveTimeBlockProps {
 
   userTimezone: string;
   availability: AvailabilitySet;
-  onToggle: (slotIso: string) => void;
+  onToggle: (slotIso: string, togglingOn: boolean) => void;
 }
 
 export default function InteractiveTimeBlock({
@@ -70,14 +70,29 @@ export default function InteractiveTimeBlock({
         }
 
         const isSelected = availability.has(slotIso);
+        const isToggling =
+          dragHandlers.draggedSlots.has(slotIso) &&
+          dragHandlers.togglingOn === !isSelected;
 
         let backgroundColor;
         if (isSelected) {
-          backgroundColor = isDark
-            ? "rgba(225, 92, 92, 1)"
-            : "rgba(61, 115, 163, 1)";
+          if (isToggling) {
+            backgroundColor = isDark
+              ? "var(--color-red-200)"
+              : "var(--color-blue-200)";
+          } else {
+            backgroundColor = isDark
+              ? "rgba(225, 92, 92, 1)"
+              : "rgba(61, 115, 163, 1)";
+          }
         } else {
-          backgroundColor = "";
+          if (isToggling) {
+            backgroundColor = isDark
+              ? "var(--color-red-200)"
+              : "var(--color-blue-200)";
+          } else {
+            backgroundColor = "";
+          }
         }
 
         return (
@@ -86,11 +101,12 @@ export default function InteractiveTimeBlock({
             slotIso={slotIso}
             cellClasses={cellClasses.join(" ")}
             isSelected={isSelected}
-            isToggling={dragHandlers.draggedSlots.has(slotIso)}
             backgroundColor={backgroundColor}
             gridColumn={gridColumn}
             gridRow={gridRow}
-            onPointerDown={() => dragHandlers.onPointerDown(slotIso, false)}
+            onPointerDown={() =>
+              dragHandlers.onPointerDown(slotIso, false, isSelected)
+            }
             onPointerEnter={() => {
               dragHandlers.onPointerEnter(slotIso, false);
             }}
