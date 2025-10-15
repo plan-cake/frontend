@@ -5,6 +5,8 @@ type DragState = {
   startSlot: string | null;
   endSlot: string | null;
   togglingOn: boolean | null;
+  lastToggledSlot: string | null;
+  lastTogglingState: boolean | null;
 };
 
 /**
@@ -17,11 +19,47 @@ export default function useScheduleDrag(
 ) {
   const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+  const [isShifting, setIsShifting] = useState(false);
   const dragState = useRef<DragState>({
     startSlot: null,
     endSlot: null,
     togglingOn: null,
+    lastTogglingState: null,
+    lastToggledSlot: null,
   });
+
+  // track shift key state
+  useEffect(() => {
+    if (mode !== "paint") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging()) {
+        setIsShifting(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging()) {
+        setIsShifting(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dragState.current.lastToggledSlot === null) {
+      setIsShifting(false);
+      return;
+    }
+    if (isShifting && hoveredSlot) {
+      setDraggedSlots(
+        generateDragSlots(dragState.current.lastToggledSlot!, hoveredSlot),
+      );
+    }
+  }, [hoveredSlot, isShifting]);
 
   function isDragging() {
     return (
@@ -45,6 +83,8 @@ export default function useScheduleDrag(
       startSlot: null,
       endSlot: null,
       togglingOn: null,
+      lastTogglingState: dragState.current.lastTogglingState,
+      lastToggledSlot: dragState.current.lastToggledSlot,
     };
     setDraggedSlots(new Set());
     setHoveredSlot(null);
@@ -61,6 +101,11 @@ export default function useScheduleDrag(
     const stopDragging = () => {
       for (const slotIso of draggedSlots) {
         onToggleRef.current(slotIso, dragState.current.togglingOn!);
+      }
+      // save last toggled slot for shift-dragging
+      if (dragState.current.endSlot) {
+        dragState.current.lastTogglingState = dragState.current.togglingOn;
+        dragState.current.lastToggledSlot = dragState.current.endSlot;
       }
       resetDragSlots();
     };
@@ -79,10 +124,19 @@ export default function useScheduleDrag(
   const handlePointerDown = useCallback(
     (slotIso: string, isDisabled: boolean, toggleState: boolean) => {
       if (mode !== "paint" || isDisabled) return;
-      setDragSlot(slotIso);
-      dragState.current.togglingOn = !toggleState;
+      if (isShifting) {
+        // take over the shift drag
+        dragState.current.startSlot = dragState.current.lastToggledSlot;
+        dragState.current.endSlot = slotIso;
+        dragState.current.togglingOn = dragState.current.lastTogglingState;
+        setDragSlot(slotIso);
+        // setIsShifting(false);
+      } else {
+        setDragSlot(slotIso);
+        dragState.current.togglingOn = !toggleState;
+      }
     },
-    [mode],
+    [mode, isShifting],
   );
 
   const handlePointerEnter = useCallback(
@@ -121,7 +175,9 @@ export default function useScheduleDrag(
     onPointerLeave: handlePointerLeave,
     onTouchMove: handleTouchMove,
     draggedSlots: draggedSlots,
-    togglingOn: dragState.current.togglingOn,
+    togglingOn: isShifting
+      ? dragState.current.lastTogglingState
+      : dragState.current.togglingOn,
     hoveredSlot: hoveredSlot,
   };
 }
