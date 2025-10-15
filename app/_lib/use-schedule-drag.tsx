@@ -117,7 +117,7 @@ export default function useScheduleDrag(
       window.removeEventListener("mouseup", stopDragging);
       window.removeEventListener("touchend", stopDragging);
     };
-  }, [isDragging]);
+  }, [draggedSlots]);
 
   /* EVENT HANDLERS */
 
