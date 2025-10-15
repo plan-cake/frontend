@@ -96,7 +96,7 @@ export default function ResultsTimeBlock({
             isHovered={isHovered}
             gridColumn={gridColumn}
             gridRow={gridRow}
-            onMouseEnter={() => {
+            onPointerEnter={() => {
               onHoverSlot?.(localSlotIso);
             }}
           />
