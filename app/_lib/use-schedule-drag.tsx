@@ -1,16 +1,95 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, use } from "react";
+import { generateDragSlots } from "./availability/utils";
+
+type DragState = {
+  startSlot: string | null;
+  endSlot: string | null;
+  togglingOn: boolean | null;
+  lastToggledSlot: string | null;
+  lastTogglingState: boolean | null;
+};
 
 /**
  * hook to manage the drag-to-select logic for the schedule grid.
  * it includes state, event handlers, and global listeners for both mouse and touch events.
  */
 export default function useScheduleDrag(
-  onToggle: (slotIso: string) => void,
+  onToggle: (slotIso: string, togglingOn: boolean) => void,
   mode: "paint" | "view" | "preview",
 ) {
-  const [isDragging, setIsDragging] = useState(false);
-  const [didTouch, setDidTouch] = useState(false); // prevents mousedown from firing after touchend
-  const draggedSlots = useRef<Set<string>>(new Set());
+  const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+  const [isShifting, setIsShifting] = useState(false);
+  const dragState = useRef<DragState>({
+    startSlot: null,
+    endSlot: null,
+    togglingOn: null,
+    lastTogglingState: null,
+    lastToggledSlot: null,
+  });
+  const isDragging = useRef(false);
+
+  useEffect(() => {
+    isDragging.current =
+      dragState.current.startSlot !== null ||
+      dragState.current.endSlot !== null;
+  }, [dragState.current.startSlot, dragState.current.endSlot]);
+
+  // track shift key state
+  useEffect(() => {
+    if (mode !== "paint") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging.current) {
+        setIsShifting(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging.current) {
+        setIsShifting(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (dragState.current.lastToggledSlot === null) {
+      setIsShifting(false);
+      return;
+    }
+    if (isShifting && hoveredSlot) {
+      setDraggedSlots(
+        generateDragSlots(dragState.current.lastToggledSlot!, hoveredSlot),
+      );
+    }
+  }, [hoveredSlot, isShifting]);
+
+  function setDragSlot(slotIso: string) {
+    if (!dragState.current.startSlot) {
+      dragState.current.startSlot = slotIso;
+    }
+    dragState.current.endSlot = slotIso;
+    // update draggedSlots
+    setDraggedSlots(
+      generateDragSlots(dragState.current.startSlot, dragState.current.endSlot),
+    );
+  }
+
+  function resetDragSlots() {
+    dragState.current = {
+      startSlot: null,
+      endSlot: null,
+      togglingOn: null,
+      lastTogglingState: dragState.current.lastTogglingState,
+      lastToggledSlot: dragState.current.lastToggledSlot,
+    };
+    setDraggedSlots(new Set());
+    setHoveredSlot(null);
+  }
 
   // keeps onToggle ref up to date
   const onToggleRef = useRef(onToggle);
@@ -21,15 +100,15 @@ export default function useScheduleDrag(
   // handle stopping drag on mouseup/touchend anywhere
   useEffect(() => {
     const stopDragging = () => {
-      if (isDragging) {
-        setIsDragging(false);
-        draggedSlots.current.clear();
+      for (const slotIso of draggedSlots) {
+        onToggleRef.current(slotIso, dragState.current.togglingOn!);
       }
-      if (didTouch) {
-        // reset didTouch after a short delay to prevent
-        // immediate re-triggering
-        setTimeout(() => setDidTouch(false), 50);
+      // save last toggled slot for shift-dragging
+      if (dragState.current.endSlot) {
+        dragState.current.lastTogglingState = dragState.current.togglingOn;
+        dragState.current.lastToggledSlot = dragState.current.endSlot;
       }
+      resetDragSlots();
     };
 
     window.addEventListener("mouseup", stopDragging);
@@ -39,49 +118,44 @@ export default function useScheduleDrag(
       window.removeEventListener("mouseup", stopDragging);
       window.removeEventListener("touchend", stopDragging);
     };
-  }, [isDragging, didTouch]);
+  }, [draggedSlots]);
 
   /* EVENT HANDLERS */
 
-  const handleMouseDown = useCallback(
-    (slotIso: string, isDisabled: boolean) => {
-      if (mode !== "paint" || isDisabled || didTouch) return;
-      setIsDragging(true);
-      draggedSlots.current = new Set([slotIso]);
-      onToggleRef.current(slotIso);
+  const handlePointerDown = useCallback(
+    (slotIso: string, isDisabled: boolean, toggleState: boolean) => {
+      if (mode !== "paint" || isDisabled) return;
+      if (isShifting) {
+        // take over the shift drag
+        dragState.current.startSlot = dragState.current.lastToggledSlot;
+        dragState.current.endSlot = slotIso;
+        dragState.current.togglingOn = dragState.current.lastTogglingState;
+        setDragSlot(slotIso);
+      } else {
+        setDragSlot(slotIso);
+        dragState.current.togglingOn = !toggleState;
+      }
     },
-    [mode, didTouch],
+    [mode, isShifting],
   );
 
-  const handleMouseEnter = useCallback(
-    (slotIso: string, isDisabled: boolean) => {
-      if (
-        mode !== "paint" ||
-        !isDragging ||
-        isDisabled ||
-        draggedSlots.current.has(slotIso)
-      )
-        return;
-      draggedSlots.current.add(slotIso);
-      onToggleRef.current(slotIso);
-    },
-    [mode, isDragging],
-  );
-
-  const handleTouchStart = useCallback(
+  const handlePointerEnter = useCallback(
     (slotIso: string, isDisabled: boolean) => {
       if (mode !== "paint" || isDisabled) return;
-      setDidTouch(true);
-      setIsDragging(true);
-      draggedSlots.current = new Set([slotIso]);
-      onToggleRef.current(slotIso);
+      setHoveredSlot(slotIso);
+      if (!isDragging.current) return;
+      setDragSlot(slotIso);
     },
     [mode],
   );
 
+  const handlePointerLeave = useCallback(() => {
+    setHoveredSlot(null);
+  }, []);
+
   const handleTouchMove = useCallback(
     (event: React.TouchEvent<HTMLDivElement>) => {
-      if (mode !== "paint" || !isDragging) return;
+      if (mode !== "paint" || !isDragging.current) return;
 
       // get touchpoint
       const touch = event.touches[0];
@@ -89,20 +163,21 @@ export default function useScheduleDrag(
 
       if (target instanceof HTMLElement && target.dataset.slotIso) {
         const currentSlotIso = target.dataset.slotIso;
-        // check that the slot is not disabled
-        if (!draggedSlots.current.has(currentSlotIso)) {
-          draggedSlots.current.add(currentSlotIso);
-          onToggleRef.current(currentSlotIso);
-        }
+        setDragSlot(currentSlotIso);
       }
     },
-    [mode, isDragging],
+    [mode],
   );
 
   return {
-    onMouseDown: handleMouseDown,
-    onMouseEnter: handleMouseEnter,
-    onTouchStart: handleTouchStart,
+    onPointerDown: handlePointerDown,
+    onPointerEnter: handlePointerEnter,
+    onPointerLeave: handlePointerLeave,
     onTouchMove: handleTouchMove,
+    draggedSlots: draggedSlots,
+    togglingOn: isShifting
+      ? dragState.current.lastTogglingState
+      : dragState.current.togglingOn,
+    hoveredSlot: hoveredSlot,
   };
 }
