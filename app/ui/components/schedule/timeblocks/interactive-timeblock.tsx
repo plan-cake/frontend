@@ -73,9 +73,14 @@ export default function InteractiveTimeBlock({
         const isToggling =
           dragHandlers.draggedSlots.has(slotIso) &&
           dragHandlers.togglingOn === !isSelected;
+        const isHovered = dragHandlers.hoveredSlot === slotIso;
 
         let backgroundColor;
-        if (isSelected) {
+        if (isHovered) {
+          backgroundColor = isDark
+            ? "var(--color-red-200)"
+            : "var(--color-blue-200)";
+        } else if (isSelected) {
           if (isToggling) {
             backgroundColor = isDark
               ? "var(--color-red-200)"
@@ -109,6 +114,9 @@ export default function InteractiveTimeBlock({
             }
             onPointerEnter={() => {
               dragHandlers.onPointerEnter(slotIso, false);
+            }}
+            onPointerLeave={() => {
+              dragHandlers.onPointerLeave();
             }}
             onTouchMove={dragHandlers.onTouchMove}
           />

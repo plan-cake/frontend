@@ -16,6 +16,7 @@ export default function useScheduleDrag(
   mode: "paint" | "view" | "preview",
 ) {
   const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
   const dragState = useRef<DragState>({
     startSlot: null,
     endSlot: null,
@@ -40,8 +41,13 @@ export default function useScheduleDrag(
   }
 
   function resetDragSlots() {
-    dragState.current = { startSlot: null, endSlot: null, togglingOn: null };
+    dragState.current = {
+      startSlot: null,
+      endSlot: null,
+      togglingOn: null,
+    };
     setDraggedSlots(new Set());
+    setHoveredSlot(null);
   }
 
   // keeps onToggle ref up to date
@@ -81,11 +87,17 @@ export default function useScheduleDrag(
 
   const handlePointerEnter = useCallback(
     (slotIso: string, isDisabled: boolean) => {
-      if (mode !== "paint" || !isDragging() || isDisabled) return;
+      if (mode !== "paint" || isDisabled) return;
+      setHoveredSlot(slotIso);
+      if (!isDragging()) return;
       setDragSlot(slotIso);
     },
     [mode],
   );
+
+  const handlePointerLeave = useCallback(() => {
+    setHoveredSlot(null);
+  }, []);
 
   const handleTouchMove = useCallback(
     (event: React.TouchEvent<HTMLDivElement>) => {
@@ -106,8 +118,10 @@ export default function useScheduleDrag(
   return {
     onPointerDown: handlePointerDown,
     onPointerEnter: handlePointerEnter,
+    onPointerLeave: handlePointerLeave,
     onTouchMove: handleTouchMove,
     draggedSlots: draggedSlots,
     togglingOn: dragState.current.togglingOn,
+    hoveredSlot: hoveredSlot,
   };
 }

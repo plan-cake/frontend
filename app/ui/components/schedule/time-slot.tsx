@@ -18,6 +18,7 @@ interface TimeSlotProps {
   // Event handlers
   onPointerDown?: () => void;
   onPointerEnter?: () => void;
+  onPointerLeave?: () => void;
   onTouchMove?: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
@@ -42,7 +43,7 @@ function TimeSlot({
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
         disableSelect
           ? "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
-          : "cursor-cell hover:bg-blue-200 dark:hover:bg-red-200",
+          : "cursor-cell",
       )}
       style={{
         gridColumn,
