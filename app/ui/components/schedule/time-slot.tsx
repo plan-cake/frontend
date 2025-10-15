@@ -40,7 +40,7 @@ function TimeSlot({
       draggable={false}
       className={cn(
         cellClasses,
-        "relative bg-white hover:cursor-pointer dark:bg-violet",
+        "relative bg-white dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
         isToggling && "bg-blue-200 dark:bg-red-200",
         disableSelect
