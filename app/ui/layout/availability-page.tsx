@@ -61,7 +61,8 @@ export default function AvailabilityPage({
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 p-10">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       {/* Header and Button Row */}
       <div className="flex justify-between md:flex-row">
         <div className="flex items-center space-x-2">

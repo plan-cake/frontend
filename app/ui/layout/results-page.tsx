@@ -37,7 +37,8 @@ export default function ResultsPage({
     initialAvailabilityData.availability || {};
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 p-10">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       <div className="flex justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
