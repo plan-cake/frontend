@@ -77,6 +77,9 @@ export default function ResultsPage({
           <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
+              {participants.length === 0 && (
+                <li className="text-sm italic opacity-50">No attendees yet</li>
+              )}
               {participants.map((person: string) => {
                 const isAvailable =
                   availabilities[hoveredSlot || ""]?.includes(person);
