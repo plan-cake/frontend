@@ -6,6 +6,8 @@ import {
 import { processEventData } from "@/app/_utils/process-event-data";
 
 import ResultsPage from "@/app/ui/layout/results-page";
+import { formatAuthCookies } from "@/app/_utils/cookie-utils";
+import { cookies } from "next/headers";
 
 export default async function Page({
   params,
@@ -13,14 +15,16 @@ export default async function Page({
   params: { "event-code": string };
 }) {
   const { "event-code": eventCode } = await params;
+  const cookieStore = await cookies();
+  const authCookies = formatAuthCookies(cookieStore);
 
   if (!eventCode) {
     notFound();
   }
 
   const [initialEventData, availabilityData] = await Promise.all([
-    fetchEventDetails(eventCode),
-    fetchAvailabilityData(eventCode),
+    fetchEventDetails(eventCode, authCookies),
+    fetchAvailabilityData(eventCode, authCookies),
   ]);
 
   // Process the data here, on the server!
