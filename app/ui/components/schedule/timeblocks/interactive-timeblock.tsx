@@ -73,33 +73,21 @@ export default function InteractiveTimeBlock({
         const isToggling =
           dragHandlers.draggedSlots.has(slotIso) &&
           dragHandlers.togglingOn === !isSelected;
+        // don't highlight if we're toggling, in case the user is hovering a slot that
+        // won't be toggled
         const isHovered =
           dragHandlers.hoveredSlot === slotIso &&
           dragHandlers.draggedSlots.size === 0;
 
         let backgroundColor;
-        if (isHovered) {
+        if (isHovered || isToggling) {
           backgroundColor = isDark
             ? "var(--color-red-200)"
             : "var(--color-blue-200)";
         } else if (isSelected) {
-          if (isToggling) {
-            backgroundColor = isDark
-              ? "var(--color-red-200)"
-              : "var(--color-blue-200)";
-          } else {
-            backgroundColor = isDark
-              ? "rgba(225, 92, 92, 1)"
-              : "rgba(61, 115, 163, 1)";
-          }
+          backgroundColor = isDark ? "var(--color-red)" : "var(--color-blue)";
         } else {
-          if (isToggling) {
-            backgroundColor = isDark
-              ? "var(--color-red-200)"
-              : "var(--color-blue-200)";
-          } else {
-            backgroundColor = "";
-          }
+          backgroundColor = "";
         }
 
         return (
