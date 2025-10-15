@@ -1,0 +1,104 @@
+import {
+  EventRange,
+  SpecificDateRange,
+  WeekdayRange,
+} from "../_lib/schedule/types";
+import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
+import { EventEditorType } from "../ui/layout/event-editor";
+import formatApiError from "./format-api-error";
+
+export type EventSubmitData = {
+  title: string;
+  code: string;
+  eventRange: EventRange;
+};
+
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
+
+export default async function submitEvent(
+  data: EventSubmitData,
+  type: EventEditorType,
+  eventType: "specific" | "weekday",
+  onSuccess: (code: string) => void,
+): Promise<void> {
+  let apiRoute = "";
+  let jsonBody = {};
+
+  if (eventType === "specific") {
+    apiRoute =
+      type === "new" ? "/api/event/date-create/" : "/api/event/date-edit/";
+
+    jsonBody = {
+      title: data.title,
+      duration: data.eventRange.duration,
+      time_zone: data.eventRange.timezone,
+      start_date: formatDate(
+        new Date((data.eventRange as SpecificDateRange).dateRange.from),
+      ),
+      end_date: formatDate(
+        new Date((data.eventRange as SpecificDateRange).dateRange.to),
+      ),
+      start_hour: data.eventRange.timeRange.from,
+      end_hour: data.eventRange.timeRange.to,
+    };
+  } else {
+    apiRoute =
+      type === "new" ? "/api/event/week-create/" : "/api/event/week-edit/";
+
+    const weekdayRange = findRangeFromWeekdayMap(
+      (data.eventRange as WeekdayRange).weekdays,
+    );
+    if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
+      alert("Please select at least one weekday.");
+      return;
+    }
+
+    const dayNameToIndex: { [key: string]: number } = {
+      Sun: 0,
+      Mon: 1,
+      Tue: 2,
+      Wed: 3,
+      Thu: 4,
+      Fri: 5,
+      Sat: 6,
+    };
+    const jsonBody = {
+      title: data.title,
+      duration: data.eventRange.duration,
+      time_zone: data.eventRange.timezone,
+      start_weekday: dayNameToIndex[weekdayRange.startDay!],
+      end_weekday: dayNameToIndex[weekdayRange.endDay!],
+      start_hour: data.eventRange.timeRange.from,
+      end_hour: data.eventRange.timeRange.to,
+    };
+  }
+
+  if (type === "new" && data.code) {
+    (jsonBody as any).custom_code = data.code;
+  } else if (type === "edit") {
+    (jsonBody as any).event_code = data.code;
+  }
+
+  await fetch(apiRoute, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(jsonBody),
+  })
+    .then(async (res) => {
+      if (res.ok) {
+        const code = (await res.json()).event_code;
+        onSuccess(code);
+      } else {
+        alert(formatApiError(await res.json()));
+      }
+    })
+    .catch((err) => {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+    });
+}
