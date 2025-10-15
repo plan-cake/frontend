@@ -83,9 +83,13 @@ export default function ResultsTimeBlock({
         const isHovered = hoveredSlot === localSlotIso;
 
         let backgroundColor;
-        backgroundColor = isDark
-          ? `rgba(225, 92, 92, ${opacity})`
-          : `rgba(61, 115, 163, ${opacity})`;
+        const accentColor = isDark ? "var(--color-red)" : "var(--color-blue)";
+        const opacityPercent = Math.round(opacity * 100);
+        const backgroundBase = isDark
+          ? "var(--color-violet)"
+          : "var(--color-white)";
+        // blend the accent color with the background
+        backgroundColor = `color-mix(in srgb, ${accentColor} ${opacityPercent}%, ${backgroundBase})`;
 
         return (
           <TimeSlot
