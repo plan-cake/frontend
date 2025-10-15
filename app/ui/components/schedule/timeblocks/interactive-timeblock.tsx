@@ -90,11 +90,10 @@ export default function InteractiveTimeBlock({
             backgroundColor={backgroundColor}
             gridColumn={gridColumn}
             gridRow={gridRow}
-            onMouseDown={() => dragHandlers.onMouseDown(slotIso, false)}
-            onMouseEnter={() => {
-              dragHandlers.onMouseEnter(slotIso, false);
+            onPointerDown={() => dragHandlers.onPointerDown(slotIso, false)}
+            onPointerEnter={() => {
+              dragHandlers.onPointerEnter(slotIso, false);
             }}
-            onTouchStart={() => dragHandlers.onTouchStart(slotIso, false)}
             onTouchMove={dragHandlers.onTouchMove}
           />
         );

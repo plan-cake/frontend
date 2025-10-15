@@ -17,9 +17,8 @@ interface TimeSlotProps {
   cellClasses?: string;
 
   // Event handlers
-  onMouseDown?: () => void;
-  onMouseEnter?: () => void;
-  onTouchStart?: (e: React.TouchEvent<HTMLDivElement>) => void;
+  onPointerDown?: () => void;
+  onPointerEnter?: () => void;
   onTouchMove?: (e: React.TouchEvent<HTMLDivElement>) => void;
 }
 
@@ -44,26 +43,19 @@ function TimeSlot({
         "relative bg-white hover:cursor-pointer dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
         isToggling && "bg-blue-200 dark:bg-red-200",
-        disableSelect && "bg-[#FFFFFF] dark:bg-[#343249]",
+        disableSelect
+          ? "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
+          : "cursor-cell hover:bg-blue-200 dark:hover:bg-red-200",
       )}
       style={{
         gridColumn,
         gridRow,
         touchAction: "none",
         userSelect: "none",
+        backgroundColor,
       }}
       {...eventHandlers}
-    >
-      <div
-        className={cn(
-          "h-full w-full",
-          disableSelect
-            ? "cursor-not-allowed"
-            : "hover:bg-blue-200 dark:hover:bg-red-200",
-        )}
-        style={{ backgroundColor }}
-      />
-    </div>
+    />
   );
 }
 

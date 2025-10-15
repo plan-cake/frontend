@@ -14,7 +14,6 @@ export default function useScheduleDrag(
   onToggle: (slotIso: string) => void,
   mode: "paint" | "view" | "preview",
 ) {
-  const [didTouch, setDidTouch] = useState(false); // prevents mousedown from firing after touchend
   const [draggedSlots, setDraggedSlots] = useState<Set<string>>(new Set());
   const dragState = useRef<DragState>({
     startSlot: null,
@@ -56,11 +55,6 @@ export default function useScheduleDrag(
         onToggleRef.current(slotIso);
       }
       resetDragSlots();
-      if (didTouch) {
-        // reset didTouch after a short delay to prevent
-        // immediate re-triggering
-        setTimeout(() => setDidTouch(false), 50);
-      }
     };
 
     window.addEventListener("mouseup", stopDragging);
@@ -70,30 +64,21 @@ export default function useScheduleDrag(
       window.removeEventListener("mouseup", stopDragging);
       window.removeEventListener("touchend", stopDragging);
     };
-  }, [isDragging, didTouch]);
+  }, [isDragging]);
 
   /* EVENT HANDLERS */
 
-  const handleMouseDown = useCallback(
+  const handlePointerDown = useCallback(
     (slotIso: string, isDisabled: boolean) => {
-      if (mode !== "paint" || isDisabled || didTouch) return;
-      setDragSlot(slotIso);
-    },
-    [mode, didTouch],
-  );
-
-  const handleMouseEnter = useCallback(
-    (slotIso: string, isDisabled: boolean) => {
-      if (mode !== "paint" || !isDragging() || isDisabled) return;
+      if (mode !== "paint" || isDisabled) return;
       setDragSlot(slotIso);
     },
     [mode],
   );
 
-  const handleTouchStart = useCallback(
+  const handlePointerEnter = useCallback(
     (slotIso: string, isDisabled: boolean) => {
-      if (mode !== "paint" || isDisabled) return;
-      setDidTouch(true);
+      if (mode !== "paint" || !isDragging() || isDisabled) return;
       setDragSlot(slotIso);
     },
     [mode],
@@ -116,9 +101,8 @@ export default function useScheduleDrag(
   );
 
   return {
-    onMouseDown: handleMouseDown,
-    onMouseEnter: handleMouseEnter,
-    onTouchStart: handleTouchStart,
+    onPointerDown: handlePointerDown,
+    onPointerEnter: handlePointerEnter,
     onTouchMove: handleTouchMove,
     draggedSlots: draggedSlots,
   };
