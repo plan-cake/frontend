@@ -73,7 +73,9 @@ export default function InteractiveTimeBlock({
         const isToggling =
           dragHandlers.draggedSlots.has(slotIso) &&
           dragHandlers.togglingOn === !isSelected;
-        const isHovered = dragHandlers.hoveredSlot === slotIso;
+        const isHovered =
+          dragHandlers.hoveredSlot === slotIso &&
+          dragHandlers.draggedSlots.size === 0;
 
         let backgroundColor;
         if (isHovered) {
