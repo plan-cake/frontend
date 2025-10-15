@@ -2,7 +2,7 @@ import formatApiError from "@/app/_utils/format-api-error";
 
 export async function fetchEventDetails(
   eventCode: string,
-  cookieHeader: string,
+  cookieHeader?: string,
 ): Promise<any> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
@@ -11,7 +11,7 @@ export async function fetchEventDetails(
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Cookie: cookieHeader,
+        Cookie: cookieHeader ? cookieHeader : "",
       },
       cache: "no-store",
     },
