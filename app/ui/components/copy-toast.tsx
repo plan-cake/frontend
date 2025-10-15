@@ -1,29 +1,20 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import * as Toast from "@radix-ui/react-toast";
 import { CopyIcon } from "@radix-ui/react-icons";
+import { cn } from "@/app/_lib/classname";
 
 export default function CopyToast({
   eventLink = "plancake.com/event/12345",
   label = "Event Link",
 }) {
   const [open, setOpen] = useState(false);
-  const eventDateRef = useRef(new Date());
-  const timerRef = useRef(0);
-
-  useEffect(() => {
-    return () => clearTimeout(timerRef.current);
-  }, []);
 
   const copyToClipboard = async () => {
     try {
       await navigator.clipboard.writeText(eventLink);
       setOpen(true);
-      window.clearTimeout(timerRef.current);
-      timerRef.current = window.setTimeout(() => {
-        setOpen(false);
-      }, 2000);
     } catch (err) {
       console.error("Failed to copy: ", err);
     }
@@ -42,15 +33,21 @@ export default function CopyToast({
       </button>
 
       <Toast.Root
-        className="grid grid-cols-[auto_max-content] items-center gap-x-2 rounded-full bg-white px-8 py-2 shadow-[0px_10px_32px_0_rgba(61,115,163,.70)] [grid-template-areas:_'title_action'_'description_action'] data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] dark:bg-violet dark:shadow-[0px_10px_32px_0_rgba(255,92,92,.70)]"
+        className={cn(
+          "grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-blue p-[15px] text-white shadow-xl",
+          "border border-blue",
+          "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
+        )}
         open={open}
         onOpenChange={setOpen}
+        duration={3000}
       >
-        <Toast.Title className="text-sm font-bold [grid-area:_title]">
-          Copied: Event Link
+        <CopyIcon className="col-start-1 row-span-2 h-5 w-5" />
+        <Toast.Title className="col-start-2 flex text-sm font-bold">
+          COPIED EVENT LINK!
         </Toast.Title>
         <Toast.Description asChild>
-          <div className="m-0 text-[13px] leading-[1.3] [grid-area:_description]">
+          <div className="col-start-2 m-0 text-[13px] leading-[1.3]">
             {eventLink}
           </div>
         </Toast.Description>
