@@ -131,7 +131,6 @@ export default function useScheduleDrag(
         dragState.current.endSlot = slotIso;
         dragState.current.togglingOn = dragState.current.lastTogglingState;
         setDragSlot(slotIso);
-        // setIsShifting(false);
       } else {
         setDragSlot(slotIso);
         dragState.current.togglingOn = !toggleState;
