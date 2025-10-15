@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, use } from "react";
 import { generateDragSlots } from "./availability/utils";
 
 type DragState = {
@@ -27,17 +27,24 @@ export default function useScheduleDrag(
     lastTogglingState: null,
     lastToggledSlot: null,
   });
+  const isDragging = useRef(false);
+
+  useEffect(() => {
+    isDragging.current =
+      dragState.current.startSlot !== null ||
+      dragState.current.endSlot !== null;
+  }, [dragState.current.startSlot, dragState.current.endSlot]);
 
   // track shift key state
   useEffect(() => {
     if (mode !== "paint") return;
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "Shift" && !isDragging()) {
+      if (e.key === "Shift" && !isDragging.current) {
         setIsShifting(true);
       }
     };
     const handleKeyUp = (e: KeyboardEvent) => {
-      if (e.key === "Shift" && !isDragging()) {
+      if (e.key === "Shift" && !isDragging.current) {
         setIsShifting(false);
       }
     };
@@ -60,12 +67,6 @@ export default function useScheduleDrag(
       );
     }
   }, [hoveredSlot, isShifting]);
-
-  function isDragging() {
-    return (
-      dragState.current.startSlot !== null || dragState.current.endSlot !== null
-    );
-  }
 
   function setDragSlot(slotIso: string) {
     if (!dragState.current.startSlot) {
@@ -143,7 +144,7 @@ export default function useScheduleDrag(
     (slotIso: string, isDisabled: boolean) => {
       if (mode !== "paint" || isDisabled) return;
       setHoveredSlot(slotIso);
-      if (!isDragging()) return;
+      if (!isDragging.current) return;
       setDragSlot(slotIso);
     },
     [mode],
@@ -155,7 +156,7 @@ export default function useScheduleDrag(
 
   const handleTouchMove = useCallback(
     (event: React.TouchEvent<HTMLDivElement>) => {
-      if (mode !== "paint" || !isDragging()) return;
+      if (mode !== "paint" || !isDragging.current) return;
 
       // get touchpoint
       const touch = event.touches[0];
