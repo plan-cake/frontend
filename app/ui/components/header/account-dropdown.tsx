@@ -46,10 +46,6 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
           sideOffset={16}
           onCloseAutoFocus={(e) => e.preventDefault()}
         >
-          <DropdownItem onSelect={() => router.push("/dashboard")}>
-            <DashboardIcon className="h-4 w-4" />
-            Dashboard
-          </DropdownItem>
           <DropdownItem onSelect={signOut}>
             <ExitIcon className="h-4 w-4" />
             Sign Out

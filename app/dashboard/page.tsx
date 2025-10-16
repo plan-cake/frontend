@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import formatApiError from "../_utils/format-api-error";
 import Link from "next/link";
+import HeaderSpacer from "../ui/components/header/header-spacer";
 
 type Event = {
   id: string;
@@ -79,6 +80,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen p-6">
+      <HeaderSpacer />
       {/* Events You Joined */}
       <section>
         <h2 className="mb-4 text-2xl font-bold">Events You Joined</h2>
