@@ -1,11 +1,11 @@
-import { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
+import { cookies } from "next/headers";
 
-export function formatAuthCookies(cookies: ReadonlyRequestCookies): string {
-  if (!cookies) return "";
+export async function getAuthCookieString(): Promise<string> {
+  const cookieStore = await cookies();
   let cookieHeader = "";
   const authCookieNames = ["auth_sess_token", "guest_sess_token"];
   authCookieNames.forEach((name) => {
-    const cookie = cookies.get(name);
+    const cookie = cookieStore.get(name);
     if (cookie) {
       cookieHeader += `${name}=${cookie.value}; `;
     }

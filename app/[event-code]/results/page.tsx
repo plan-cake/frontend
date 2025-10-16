@@ -6,8 +6,7 @@ import {
 import { processEventData } from "@/app/_utils/process-event-data";
 
 import ResultsPage from "@/app/ui/layout/results-page";
-import { formatAuthCookies } from "@/app/_utils/cookie-utils";
-import { cookies } from "next/headers";
+import { getAuthCookieString } from "@/app/_utils/cookie-utils";
 
 export default async function Page({
   params,
@@ -15,8 +14,7 @@ export default async function Page({
   params: { "event-code": string };
 }) {
   const { "event-code": eventCode } = await params;
-  const cookieStore = await cookies();
-  const authCookies = formatAuthCookies(cookieStore);
+  const authCookies = await getAuthCookieString();
 
   if (!eventCode) {
     notFound();
