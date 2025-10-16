@@ -60,6 +60,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     isSubmitting.current = false;
   };
 
+  const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
+
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
       <div className="flex w-full items-center justify-between">
@@ -82,6 +84,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
           <DateRangeSelector
+            earliestDate={earliestCalendarDate}
             eventRange={eventRange}
             setEventType={setEventType}
             setWeekdayRange={setWeekdayRange}

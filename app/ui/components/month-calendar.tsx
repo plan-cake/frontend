@@ -6,12 +6,14 @@ import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
 type CalendarProps = {
+  earliestDate?: Date;
   className?: string;
   selectedRange: DateRange;
   setDateRange: (range: DateRange | undefined) => void;
 };
 
 export function Calendar({
+  earliestDate,
   className,
   selectedRange,
   setDateRange,
@@ -24,7 +26,14 @@ export function Calendar({
 
   const today = new Date();
 
-  const [month, setMonth] = useState(today);
+  const startDateLocal = new Date(earliestDate || today);
+  const startDate = new Date(
+    startDateLocal.getUTCFullYear(),
+    startDateLocal.getUTCMonth(),
+    startDateLocal.getUTCDate(),
+  );
+
+  const [month, setMonth] = useState(startDate);
 
   return (
     <div className={className}>
@@ -43,7 +52,7 @@ export function Calendar({
         onMonthChange={setMonth}
         selected={selectedRange}
         onSelect={setDateRange}
-        disabled={{ before: new Date() }}
+        disabled={{ before: startDate }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
         }}

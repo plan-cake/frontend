@@ -9,6 +9,7 @@ import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeDrawer({
+  earliestDate,
   eventRange,
   setEventType = () => {},
   setWeekdayRange = () => {},
@@ -47,6 +48,7 @@ export default function DateRangeDrawer({
             </Dialog.Title>
 
             <DateRangeDrawerSelector
+              earliestDate={earliestDate}
               eventRange={eventRange}
               displayCalendar={true}
               setWeekdayRange={setWeekdayRange}
@@ -60,6 +62,7 @@ export default function DateRangeDrawer({
 }
 
 const DateRangeDrawerSelector = ({
+  earliestDate,
   eventRange,
   displayCalendar,
   setWeekdayRange = () => {},
@@ -75,6 +78,7 @@ const DateRangeDrawerSelector = ({
       <div className="flex flex-col space-y-2">
         {displayCalendar ? (
           <Calendar
+            earliestDate={earliestDate}
             selectedRange={{
               from: startDate || undefined,
               to: endDate || undefined,

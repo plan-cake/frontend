@@ -2,6 +2,7 @@ import { EventRange, WeekdayMap } from "@/app/_lib/schedule/types";
 import { DateRange } from "react-day-picker";
 
 export type DateRangeProps = {
+  earliestDate?: Date;
   eventRange: EventRange;
 
   // update functions

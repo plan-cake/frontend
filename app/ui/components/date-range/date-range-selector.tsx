@@ -8,6 +8,7 @@ import DateRangePopover from "@/app/ui/components/date-range/date-range-popover"
 import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
 
 export default function DateRangeSelector({
+  earliestDate,
   eventRange,
   setEventType = () => {},
   setWeekdayRange = () => {},
@@ -19,6 +20,7 @@ export default function DateRangeSelector({
   if (isMobile) {
     return (
       <DateRangeDrawer
+        earliestDate={earliestDate}
         eventRange={eventRange}
         setEventType={setEventType}
         setWeekdayRange={setWeekdayRange}
@@ -40,6 +42,7 @@ export default function DateRangeSelector({
             <>
               <label htmlFor="date-range">Possible Dates</label>
               <DateRangePopover
+                earliestDate={earliestDate}
                 eventRange={eventRange}
                 setDateRange={setDateRange}
               />
