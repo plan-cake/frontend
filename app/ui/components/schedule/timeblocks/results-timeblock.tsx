@@ -64,7 +64,7 @@ export default function ResultsTimeBlock({
           1;
 
         // borders
-        const cellClasses: string[] = [];
+        const cellClasses: string[] = ["cursor-default"];
         if (gridRow < numQuarterHours) {
           cellClasses.push("border-b");
 
