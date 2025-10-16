@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Modak, Nunito } from "next/font/google";
-import Header from "./ui/layout/header";
-import { Providers } from "./_utils/providers";
+import Header from "./ui/components/header/header";
+import { Providers } from "@/app/_lib/providers";
 import "./globals.css";
 
 const modak = Modak({
@@ -19,15 +19,15 @@ const nunito = Nunito({
 });
 
 export const metadata: Metadata = {
-  title: "tomeeto",
-  description: "to meet or not to meet",
+  title: "Plancake",
+  description: "Stacking up perfect plans, one pancake at a time",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html
       lang="en"
@@ -35,7 +35,7 @@ export default function RootLayout({
       className={`${modak.variable} ${nunito.variable}`}
     >
       <body className="font-sans antialiased">
-        <div className="flex min-h-dvh flex-col p-10">
+        <div className="flex min-h-dvh flex-col">
           <Providers>
             <Header />
             {children}
