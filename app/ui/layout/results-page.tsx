@@ -10,6 +10,7 @@ import { Pencil1Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
+import { useRouter } from "next/navigation";
 
 export default function ResultsPage({
   eventCode,
@@ -22,6 +23,7 @@ export default function ResultsPage({
   eventRange: EventRange;
   initialAvailabilityData: any;
 }) {
+  const router = useRouter();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -46,7 +48,10 @@ export default function ResultsPage({
         </div>
         <div className="flex items-center gap-2">
           {isCreator && (
-            <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
+            <button
+              className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
+              onClick={() => router.push(`/${eventCode}/edit`)}
+            >
               <span className="hidden md:block">Edit Event</span>
               <Pencil1Icon width={16} height={16} className="md:hidden" />
             </button>
