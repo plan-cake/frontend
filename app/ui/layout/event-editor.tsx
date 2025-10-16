@@ -20,9 +20,10 @@ export type EventEditorType = "new" | "edit";
 
 type EventEditorProps = {
   type: EventEditorType;
+  initialData?: any;
 };
 
-export default function EventEditor({ type }: EventEditorProps) {
+export default function EventEditor({ type, initialData }: EventEditorProps) {
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const {
     state,
@@ -34,7 +35,7 @@ export default function EventEditor({ type }: EventEditorProps) {
     setTimeRange,
     setDateRange,
     setWeekdayRange,
-  } = useEventInfo();
+  } = useEventInfo(initialData);
   const { title, customCode, eventRange } = state;
   const isSubmitting = useRef(false);
   const router = useRouter();

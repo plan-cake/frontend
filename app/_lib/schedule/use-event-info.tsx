@@ -3,7 +3,7 @@ import { EventInfoReducer } from "./event-info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "./types";
 import { DateRange } from "react-day-picker";
 
-export function useEventInfo() {
+export function useEventInfo(initialData?: any) {
   const initalState: EventInformation = {
     title: "",
     customCode: "",
@@ -21,6 +21,12 @@ export function useEventInfo() {
       },
     },
   };
+
+  if (initialData) {
+    initalState.title = initialData.title || "";
+    initalState.customCode = initialData.code || "";
+    initalState.eventRange = initialData.eventRange || initalState.eventRange;
+  }
 
   const [state, dispatch] = useReducer(EventInfoReducer, initalState);
 
