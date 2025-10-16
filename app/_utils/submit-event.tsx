@@ -92,7 +92,12 @@ export default async function submitEvent(
     .then(async (res) => {
       if (res.ok) {
         const code = (await res.json()).event_code;
-        onSuccess(code);
+        if (type === "new") {
+          onSuccess(code);
+        } else {
+          // endpoint does not return code on edit
+          onSuccess(data.code);
+        }
       } else {
         alert(formatApiError(await res.json()));
       }
