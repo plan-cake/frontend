@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HamburgerMenu from "./hamburger-menu";
 import Link from "next/link";
 import Logo from "../logo";
 
@@ -23,7 +22,7 @@ export default function LogoArea() {
         <Link href="/">
           <Logo />
         </Link>
-        <HamburgerMenu />
+        <span className="text-sm">v0.1.0</span>
       </div>
     </div>
   );
