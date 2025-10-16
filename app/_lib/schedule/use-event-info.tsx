@@ -4,10 +4,10 @@ import { EventInformation, EventRange, WeekdayMap } from "./types";
 import { DateRange } from "react-day-picker";
 
 export function useEventInfo(initialData?: any) {
-  const initalState: EventInformation = {
-    title: "",
-    customCode: "",
-    eventRange: {
+  const initialState: EventInformation = {
+    title: initialData?.title || "",
+    customCode: initialData?.code || "",
+    eventRange: initialData?.eventRange || {
       type: "specific",
       duration: 60,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -22,13 +22,7 @@ export function useEventInfo(initialData?: any) {
     },
   };
 
-  if (initialData) {
-    initalState.title = initialData.title || "";
-    initalState.customCode = initialData.code || "";
-    initalState.eventRange = initialData.eventRange || initalState.eventRange;
-  }
-
-  const [state, dispatch] = useReducer(EventInfoReducer, initalState);
+  const [state, dispatch] = useReducer(EventInfoReducer, initialState);
 
   // DISPATCHERS
   const setTitle = useCallback((title: string) => {
