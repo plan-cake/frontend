@@ -79,6 +79,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen p-6">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       {/* Events You Joined */}
       <section>
         <h2 className="mb-4 text-2xl font-bold">Events You Joined</h2>
