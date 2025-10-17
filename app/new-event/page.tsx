@@ -95,6 +95,22 @@ export default function Page() {
       }
     }
 
+    // check date range is valid
+    if (eventRange.type === "specific") {
+      const specificRange = eventRange as SpecificDateRange;
+
+      if (!specificRange.dateRange.from || !specificRange.dateRange.to) {
+        areErrors = true;
+        createErrorToast("Please select a valid date range.");
+      }
+    }
+
+    // check time range is valid
+    if (eventRange.timeRange.from >= eventRange.timeRange.to) {
+      areErrors = true;
+      createErrorToast("Please select a valid time range.");
+    }
+
     if (areErrors) {
       return;
     }
