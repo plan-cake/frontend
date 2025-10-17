@@ -4,6 +4,7 @@ import { DateRange } from "react-day-picker";
 export type DateRangeProps = {
   earliestDate?: Date;
   eventRange: EventRange;
+  tooManyDays?: boolean;
 
   // update functions
   setTitle?: (title: string) => void;

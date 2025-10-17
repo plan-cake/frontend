@@ -7,6 +7,10 @@ import { Calendar } from "@/app/ui/components/month-calendar";
 import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
 import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
+import { DateRange } from "react-day-picker";
+import { useState } from "react";
+import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 export default function DateRangeDrawer({
   earliestDate,
@@ -16,6 +20,12 @@ export default function DateRangeDrawer({
   setDateRange = () => {},
 }: DateRangeProps) {
   const rangeType = eventRange?.type ?? "specific";
+  const [tooManyDays, setTooManyDays] = useState(false);
+
+  const checkDateRange = (range: DateRange | undefined) => {
+    setTooManyDays(checkInvalidDateRangeLength(range));
+    setDateRange(range);
+  };
 
   return (
     <Dialog.Root>
@@ -24,6 +34,7 @@ export default function DateRangeDrawer({
           <DateRangeDrawerSelector
             eventRange={eventRange}
             setEventType={setEventType}
+            tooManyDays={tooManyDays}
           />
         </button>
       </Dialog.Trigger>
@@ -52,7 +63,7 @@ export default function DateRangeDrawer({
               eventRange={eventRange}
               displayCalendar={true}
               setWeekdayRange={setWeekdayRange}
-              setDateRange={setDateRange}
+              setDateRange={checkDateRange}
             />
           </div>
         </Dialog.Content>
@@ -65,9 +76,12 @@ const DateRangeDrawerSelector = ({
   earliestDate,
   eventRange,
   displayCalendar,
+  tooManyDays,
   setWeekdayRange = () => {},
   setDateRange = () => {},
 }: DateRangeProps) => {
+  console.log(tooManyDays);
+
   if (eventRange?.type === "specific") {
     const startDate = fromZonedTime(
       eventRange.dateRange.from,
@@ -87,7 +101,12 @@ const DateRangeDrawerSelector = ({
           />
         ) : (
           <>
-            <label className="text-start">Possible Dates</label>
+            <label className="flex items-center gap-2 text-start">
+              Possible Dates
+              {tooManyDays && (
+                <ExclamationTriangleIcon className="h-4 w-4 text-[#ED7183]" />
+              )}
+            </label>
             <DateRangeInput startDate={startDate} endDate={endDate} />
           </>
         )}

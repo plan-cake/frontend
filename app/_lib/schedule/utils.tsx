@@ -9,6 +9,7 @@ import {
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { getHours, getMinutes, startOfDay } from "date-fns";
+import { DateRange } from "react-day-picker";
 
 /* WEEKDAY SPECIFIC UTILITIES */
 
@@ -215,4 +216,14 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
   }
 
   return slots;
+}
+
+export function checkInvalidDateRangeLength(
+  range: DateRange | undefined,
+): boolean {
+  if (range?.from && range?.to) {
+    const diffTime = range.to.getTime() - range.from.getTime();
+    return diffTime > 30 * 24 * 60 * 60 * 1000; // more than 30 days
+  }
+  return false;
 }

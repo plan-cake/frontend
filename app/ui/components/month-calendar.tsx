@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
+
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
 
 type CalendarProps = {
   earliestDate?: Date;
@@ -34,6 +37,17 @@ export function Calendar({
   );
 
   const [month, setMonth] = useState(startDate);
+  const [tooManyDays, setTooManyDays] = useState(false);
+
+  const checkDateRange = (range: DateRange | undefined) => {
+    setTooManyDays(checkInvalidDateRangeLength(range));
+    setDateRange(range);
+  };
+
+  useEffect(() => {
+    // make sure to display the warning when the component loads
+    checkDateRange(selectedRange);
+  }, []);
 
   return (
     <div className={className}>
@@ -51,12 +65,18 @@ export function Calendar({
         month={month}
         onMonthChange={setMonth}
         selected={selectedRange}
-        onSelect={setDateRange}
+        onSelect={checkDateRange}
         disabled={{ before: startDate }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
         }}
       />
+      {!isMobile && tooManyDays && (
+        <div className="flex items-center justify-center gap-1 font-bold text-[#ED7183]">
+          <ExclamationTriangleIcon />
+          Too many days selected. Max is 30 days.
+        </div>
+      )}
     </div>
   );
 }
