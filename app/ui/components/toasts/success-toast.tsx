@@ -17,8 +17,8 @@ export default function SuccessToast({
   return (
     <Toast.Root
       className={cn(
-        "grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-blue p-[15px] text-white shadow-xl",
-        "border border-blue",
+        "grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-lion p-[15px] text-white shadow-xl",
+        "border border-lion",
         "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
       )}
       open={open}
