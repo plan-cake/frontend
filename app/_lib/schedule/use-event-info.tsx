@@ -3,13 +3,13 @@ import { EventInfoReducer } from "./event-info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "./types";
 import { DateRange } from "react-day-picker";
 
-export function useEventInfo() {
-  const initalState: EventInformation = {
-    title: "",
-    customCode: "",
-    eventRange: {
+export function useEventInfo(initialData?: any) {
+  const initialState: EventInformation = {
+    title: initialData?.title || "",
+    customCode: initialData?.code || "",
+    eventRange: initialData?.eventRange || {
       type: "specific",
-      duration: 60,
+      duration: 0,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       dateRange: {
         from: new Date().toISOString(),
@@ -22,7 +22,11 @@ export function useEventInfo() {
     },
   };
 
-  const [state, dispatch] = useReducer(EventInfoReducer, initalState);
+  if (!initialData?.eventRange?.duration) {
+    initialState.eventRange.duration = 0;
+  }
+
+  const [state, dispatch] = useReducer(EventInfoReducer, initialState);
 
   // DISPATCHERS
   const setTitle = useCallback((title: string) => {

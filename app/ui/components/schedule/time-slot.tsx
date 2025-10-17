@@ -38,12 +38,12 @@ function TimeSlot({
       data-slot-iso={slotIso}
       draggable={false}
       className={cn(
-        cellClasses,
         "relative bg-white dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
         disableSelect
           ? "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
           : "cursor-cell",
+        cellClasses,
       )}
       style={{
         gridColumn,

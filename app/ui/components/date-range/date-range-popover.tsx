@@ -7,6 +7,7 @@ import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 import { DateRangeProps } from "@/app/_lib/types/date-range-props";
 
 export default function DateRangePopover({
+  earliestDate,
   eventRange,
   setDateRange = () => {},
 }: DateRangeProps) {
@@ -36,6 +37,7 @@ export default function DateRangePopover({
           aria-label="Date range picker"
         >
           <Calendar
+            earliestDate={earliestDate}
             className="w-fit"
             selectedRange={{
               from: startDate || undefined,

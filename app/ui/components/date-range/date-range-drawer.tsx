@@ -7,14 +7,26 @@ import { Calendar } from "@/app/ui/components/month-calendar";
 import WeekdayCalendar from "@/app/ui/components/weekday-calendar";
 import DateRangeInput from "@/app/ui/components/date-range/date-range-input";
 import EventTypeSelect from "@/app/ui/components/selectors/event-type-select";
+import { DateRange } from "react-day-picker";
+import { useState } from "react";
+import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
 export default function DateRangeDrawer({
+  earliestDate,
   eventRange,
+  editing = false,
   setEventType = () => {},
   setWeekdayRange = () => {},
   setDateRange = () => {},
 }: DateRangeProps) {
   const rangeType = eventRange?.type ?? "specific";
+  const [tooManyDays, setTooManyDays] = useState(false);
+
+  const checkDateRange = (range: DateRange | undefined) => {
+    setTooManyDays(checkInvalidDateRangeLength(range));
+    setDateRange(range);
+  };
 
   return (
     <Dialog.Root>
@@ -23,6 +35,7 @@ export default function DateRangeDrawer({
           <DateRangeDrawerSelector
             eventRange={eventRange}
             setEventType={setEventType}
+            tooManyDays={tooManyDays}
           />
         </button>
       </Dialog.Trigger>
@@ -43,14 +56,16 @@ export default function DateRangeDrawer({
               <EventTypeSelect
                 eventType={rangeType}
                 onEventTypeChange={setEventType}
+                disabled={editing}
               />
             </Dialog.Title>
 
             <DateRangeDrawerSelector
+              earliestDate={earliestDate}
               eventRange={eventRange}
               displayCalendar={true}
               setWeekdayRange={setWeekdayRange}
-              setDateRange={setDateRange}
+              setDateRange={checkDateRange}
             />
           </div>
         </Dialog.Content>
@@ -60,8 +75,10 @@ export default function DateRangeDrawer({
 }
 
 const DateRangeDrawerSelector = ({
+  earliestDate,
   eventRange,
   displayCalendar,
+  tooManyDays,
   setWeekdayRange = () => {},
   setDateRange = () => {},
 }: DateRangeProps) => {
@@ -75,6 +92,7 @@ const DateRangeDrawerSelector = ({
       <div className="flex flex-col space-y-2">
         {displayCalendar ? (
           <Calendar
+            earliestDate={earliestDate}
             selectedRange={{
               from: startDate || undefined,
               to: endDate || undefined,
@@ -83,7 +101,12 @@ const DateRangeDrawerSelector = ({
           />
         ) : (
           <>
-            <label className="text-start">Possible Dates</label>
+            <label className="flex items-center gap-2 text-start">
+              Possible Dates
+              {tooManyDays && (
+                <ExclamationTriangleIcon className="h-4 w-4 text-[#ED7183]" />
+              )}
+            </label>
             <DateRangeInput startDate={startDate} endDate={endDate} />
           </>
         )}

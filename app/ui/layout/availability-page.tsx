@@ -17,10 +17,12 @@ export default function AvailabilityPage({
   eventCode,
   eventName,
   eventRange,
+  initialData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  initialData?: any;
 }) {
   const router = useRouter();
   const { addToast } = useToast();
@@ -28,7 +30,7 @@ export default function AvailabilityPage({
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability("");
+    useAvailability(initialData);
   const { displayName, timeZone, userAvailability } = state;
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,7 +123,8 @@ export default function AvailabilityPage({
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 p-10">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       {/* Header and Button Row */}
       <div className="flex justify-between md:flex-row">
         <div className="flex items-center space-x-2">
@@ -135,7 +138,7 @@ export default function AvailabilityPage({
             onClick={handleSubmitAvailability}
             className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           >
-            Submit Availability
+            {initialData ? "Update" : "Submit"} Availability
           </button>
         </div>
       </div>

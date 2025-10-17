@@ -9,6 +9,7 @@ import {
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { getHours, getMinutes, startOfDay } from "date-fns";
+import { DateRange } from "react-day-picker";
 
 /* WEEKDAY SPECIFIC UTILITIES */
 
@@ -116,9 +117,7 @@ export function getSelectedWeekdaysInTimezone(
   const selectedDatesUTC: WeekdayTimeRange[] = [];
   for (let i = 0; i < 7; i++) {
     const currentDay = new Date(startOfWeekInViewerTz);
-    // console.log({ currentDay });
     currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
-    // console.log({ currentDay });
     if (selectedDayIndexes.has(currentDay.getDay())) {
       const dateString = formatInTimeZone(
         currentDay,
@@ -215,4 +214,14 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
   }
 
   return slots;
+}
+
+export function checkInvalidDateRangeLength(
+  range: DateRange | undefined,
+): boolean {
+  if (range?.from && range?.to) {
+    const diffTime = range.to.getTime() - range.from.getTime();
+    return diffTime > 30 * 24 * 60 * 60 * 1000; // more than 30 days
+  }
+  return false;
 }

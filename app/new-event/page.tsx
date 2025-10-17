@@ -1,4 +1,10 @@
-"use client";
+import EventEditor from "../ui/layout/event-editor";
+
+export default function Page() {
+  return <EventEditor type="new" />;
+}
+
+("use client");
 
 import TimeDropdown from "@/app/ui/components/time-dropdown";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
