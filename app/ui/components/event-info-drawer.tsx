@@ -73,9 +73,11 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
               )}`}
         </InfoRow>
 
-        <InfoRow label="Intended Duration">
-          {eventRange.duration} minutes
-        </InfoRow>
+        {eventRange.duration && (
+          <InfoRow label="Intended Duration">
+            {eventRange.duration} minutes
+          </InfoRow>
+        )}
       </div>
     </section>
   );
