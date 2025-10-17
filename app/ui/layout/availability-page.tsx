@@ -1,16 +1,17 @@
 "use client";
 
+import { useState } from "react";
 import { useAvailability } from "@/app/_lib/availability/use-availability";
 import { useRouter } from "next/navigation";
-
-import CopyToast from "@/app/ui/components/copy-toast";
-import EventInfoDrawer, {
-  EventInfo,
-} from "@/app/ui/components/event-info-drawer";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+import CopyToast from "@/app/ui/components/toasts/copy-toast";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
-import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
+import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { EventRange } from "@/app/_lib/schedule/types";
+import formatApiError from "@/app/_utils/format-api-error";
+import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
+import { useToast } from "@/app/_lib/toast-context";
 
 export default function AvailabilityPage({
   eventCode,
@@ -22,19 +23,74 @@ export default function AvailabilityPage({
   eventRange: EventRange;
 }) {
   const router = useRouter();
+  const { addToast } = useToast();
+  const [nameError, setNameError] = useState<string | null>(null);
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
     useAvailability("");
   const { displayName, timeZone, userAvailability } = state;
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (nameError) {
+      setNameError(null);
+    } else if (e.target.value == "") {
+      setNameError("Please enter your name.");
+    }
+    setDisplayName(e.target.value);
+  };
+
+  const createErrorToast = (message: string) => {
+    addToast({
+      type: "error",
+      id: Date.now() + Math.random(),
+      title: "ERROR",
+      message: message,
+    });
+  };
+
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
-    console.log("Submitting availability...");
-    console.log("User Availability:", userAvailability);
-    console.log("Event Range:", eventRange);
+    let areErrors: boolean = false;
+    setNameError(null);
 
-    // Convert userAvailability to the format expected by the backend
+    if (!displayName.trim()) {
+      const errorMessage = "Please enter your name.";
+      areErrors = true;
+      setNameError(errorMessage);
+      createErrorToast(errorMessage);
+    } else {
+      try {
+        const response = await fetch("/api/availability/check-display-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_code: eventCode,
+            display_name: displayName,
+          }),
+        });
+
+        if (!response.ok) {
+          areErrors = true;
+          const errorMessage = "Name is not available, please choose another.";
+          createErrorToast(errorMessage);
+          setNameError(errorMessage);
+        }
+      } catch (error) {
+        console.error("Error checking display name:", error);
+        throw new Error("Failed to checking display name: " + error);
+      }
+    }
+
+    if (!userAvailability || userAvailability.size === 0) {
+      areErrors = true;
+      createErrorToast("Please enter your availability!");
+    }
+
+    if (areErrors) {
+      return;
+    }
+
     const availabilityGrid = convertAvailabilityToGrid(
       userAvailability,
       eventRange,
@@ -53,7 +109,11 @@ export default function AvailabilityPage({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
-      router.push(`/${eventCode}/results`);
+
+      if (response.ok) router.push(`/${eventCode}/results`);
+      else {
+        createErrorToast(formatApiError(await response.json()));
+      }
     } catch (error) {
       console.error("Error submitting availability:", error);
       throw new Error("Failed to submit availability: " + error);
@@ -84,19 +144,27 @@ export default function AvailabilityPage({
       <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-30 md:w-80">
-          <div>
-            <span className="text-lg">
-              Hi,{" "}
-              <input
-                type="text"
-                value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
-                placeholder="add your name"
-                className="inline-block w-auto border-b border-violet bg-transparent px-1 focus:outline-none dark:border-gray-400"
-              />
-              <br />
-              add your availabilities here
-            </span>
+          <div className="w-fit">
+            <p
+              className={`text-right text-xs text-red ${nameError ? "visible" : "invisible"}`}
+            >
+              {nameError ? nameError : "Error Placeholder"}
+            </p>
+            Hi,{" "}
+            <input
+              required
+              type="text"
+              value={displayName}
+              onChange={handleNameChange}
+              placeholder="add your name"
+              className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
+                nameError
+                  ? "border-red placeholder:text-red"
+                  : "border-violet dark:border-gray-400"
+              }`}
+            />
+            <br />
+            add your availabilities here
           </div>
 
           {/* Desktop-only Event Info */}
