@@ -34,7 +34,8 @@ export default function ResultsPage({
     setTimezone(newTZ.toString());
   };
 
-  const participated: boolean = !!initialAvailabilityData.display_name;
+  const participated: boolean =
+    initialAvailabilityData.user_display_name != null;
   const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
@@ -66,6 +67,15 @@ export default function ResultsPage({
                 : ""
             }
           />
+          <Link
+            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm dark:border-red dark:bg-red"
+            href={`/${eventCode}`}
+          >
+            <span className="hidden md:block">
+              {participated ? "Edit" : "Add"} Availability
+            </span>
+            <Pencil1Icon width={16} height={16} className="md:hidden" />
+          </Link>
         </div>
       </div>
 
