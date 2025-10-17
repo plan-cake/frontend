@@ -50,14 +50,7 @@ export default function ResultsPage({
               <Pencil1Icon width={16} height={16} className="md:hidden" />
             </button>
           )}
-          <CopyToast
-            label="Copy Link"
-            eventLink={
-              window.location.origin
-                ? `${window.location.origin}/${eventCode}`
-                : ""
-            }
-          />
+          <CopyToast />
         </div>
       </div>
 
