@@ -15,6 +15,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 export default function DateRangeDrawer({
   earliestDate,
   eventRange,
+  editing = false,
   setEventType = () => {},
   setWeekdayRange = () => {},
   setDateRange = () => {},
@@ -55,6 +56,7 @@ export default function DateRangeDrawer({
               <EventTypeSelect
                 eventType={rangeType}
                 onEventTypeChange={setEventType}
+                disabled={editing}
               />
             </Dialog.Title>
 

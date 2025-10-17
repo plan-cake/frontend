@@ -33,6 +33,7 @@ export default function DateRangeSelector({
       <DateRangeDrawer
         earliestDate={earliestDate}
         eventRange={eventRange}
+        editing={editing}
         setEventType={setEventType}
         setWeekdayRange={setWeekdayRange}
         setDateRange={setDateRange}
