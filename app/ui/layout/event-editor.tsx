@@ -11,6 +11,11 @@ import { useRouter } from "next/navigation";
 import submitEvent from "@/app/_utils/submit-event";
 import { cn } from "@/app/_lib/classname";
 
+import { SpecificDateRange } from "@/app/_lib/schedule/types";
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import { useToast } from "@/app/_lib/toast-context";
+
 const durationOptions = [
   { label: "None", value: 0 },
   { label: "30 minutes", value: 30 },
@@ -26,6 +31,10 @@ type EventEditorProps = {
 };
 
 export default function EventEditor({ type, initialData }: EventEditorProps) {
+  const { addToast } = useToast();
+  const [eventNameError, setEventNameError] = useState<string | null>(null);
+  const [customCodeError, setCustomCodeError] = useState<boolean>(false);
+
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const {
     state,
@@ -42,9 +51,89 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const isSubmitting = useRef(false);
   const router = useRouter();
 
+  const createErrorToast = (message: string) => {
+    addToast({
+      type: "error",
+      id: Date.now() + Math.random(),
+      title: "ERROR",
+      message: message,
+    });
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (eventNameError) {
+      setEventNameError(null);
+    } else if (e.target.value === "") {
+      setEventNameError("Please enter an event name.");
+    }
+
+    setTitle(e.target.value);
+  };
+
+  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (customCodeError) {
+      setCustomCodeError(false);
+    }
+
+    setCustomCode(e.target.value);
+  };
+
   const submitEventInfo = async () => {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+
+    let areErrors: boolean = false;
+    setEventNameError(null);
+    if (!title) {
+      isSubmitting.current = false;
+      areErrors = true;
+
+      const errorMessage = "Please enter an event name.";
+      setEventNameError(errorMessage);
+      createErrorToast(errorMessage);
+    }
+
+    // check if custom code is valid
+    if (customCode) {
+      try {
+        const response = await fetch("/api/event/check-code/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ custom_code: customCode }),
+        });
+
+        if (!response.ok) {
+          areErrors = true;
+          const errorMessage =
+            "Custom code is not available, please choose another.";
+          createErrorToast(errorMessage);
+          setCustomCodeError(true);
+        }
+      } catch (error) {
+        console.error("Error checking code:", error);
+        throw new Error();
+      }
+    }
+
+    // check date range is valid
+    if (eventRange.type === "specific") {
+      const specificRange = eventRange as SpecificDateRange;
+
+      if (!specificRange.dateRange.from || !specificRange.dateRange.to) {
+        areErrors = true;
+        createErrorToast("Please select a valid date range.");
+      }
+    }
+
+    // check time range is valid
+    if (eventRange.timeRange.from >= eventRange.timeRange.to) {
+      areErrors = true;
+      createErrorToast("Please select a valid time range.");
+    }
+
+    if (areErrors) {
+      return;
+    }
 
     await submitEvent(
       {
@@ -67,13 +156,25 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
       <div className="flex w-full items-center justify-between">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="add event name"
-          className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
-        />
+        <div className="md:w-1/2">
+          <p
+            className={`text-right text-xs text-red ${eventNameError ? "visible" : "invisible"}`}
+          >
+            {eventNameError ? eventNameError : "Error Placeholder"}
+          </p>
+          <input
+            type="text"
+            value={title}
+            onChange={handleNameChange}
+            placeholder="add event name"
+            className={cn(
+              "w-full border-b-1 p-1 text-2xl focus:outline-none",
+              eventNameError
+                ? "border-red placeholder:text-red"
+                : "border-violet dark:border-gray-400",
+            )}
+          />
+        </div>
         <button
           className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           onClick={submitEventInfo}
@@ -152,19 +253,21 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
           <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
             {type === "new" && "Custom"} Event Code
+            {customCodeError && (
+              <ExclamationTriangleIcon className="h-4 w-4 text-red" />
+            )}
           </label>
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <input
               type="text"
-              disabled={type === "edit"}
               value={customCode}
-              onChange={(e) => setCustomCode(e.target.value)}
+              onChange={handleCustomCodeChange}
               placeholder="optional"
-              className={cn(
-                "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
-                type === "new" && "text-blue dark:text-red",
-                type === "edit" && "cursor-not-allowed opacity-50",
-              )}
+              className={`w-full border-b-1 focus:outline-none ${
+                customCodeError
+                  ? "border-red placeholder:text-red"
+                  : "border-violet text-blue dark:border-gray-400 dark:text-red"
+              }`}
             />
           </div>
 
