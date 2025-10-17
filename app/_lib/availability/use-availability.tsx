@@ -23,8 +23,8 @@ export function useAvailability(
     dispatch({ type: "SET_TIME_ZONE", payload: tz });
   }, []);
 
-  const toggleSlot = useCallback((slot: string) => {
-    dispatch({ type: "TOGGLE_SLOT", payload: { slot } });
+  const toggleSlot = useCallback((slot: string, togglingOn: boolean) => {
+    dispatch({ type: "TOGGLE_SLOT", payload: { slot, togglingOn } });
   }, []);
 
   const resetAvailability = useCallback(() => {

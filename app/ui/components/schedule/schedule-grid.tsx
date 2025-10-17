@@ -34,7 +34,7 @@ interface ScheduleGridProps {
 
   // for "paint" mode
   userAvailability?: AvailabilitySet;
-  onToggleSlot?: (slotIso: string) => void;
+  onToggleSlot?: (slotIso: string, togglingOn: boolean) => void;
 }
 
 export default function ScheduleGrid({

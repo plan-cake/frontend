@@ -13,7 +13,7 @@ export type AvailabilityAction =
   | { type: "SET_TIME_ZONE"; payload: string }
   | {
       type: "TOGGLE_SLOT";
-      payload: { slot: string };
+      payload: { slot: string; togglingOn: boolean };
     };
 
 // 3. Create the reducer function
@@ -44,10 +44,14 @@ export function availabilityReducer(
     }
 
     case "TOGGLE_SLOT": {
-      const { slot } = action.payload;
+      const { slot, togglingOn } = action.payload;
       return {
         ...state,
-        userAvailability: toggleUtcSlot(state.userAvailability, slot),
+        userAvailability: toggleUtcSlot(
+          state.userAvailability,
+          slot,
+          togglingOn,
+        ),
       };
     }
 

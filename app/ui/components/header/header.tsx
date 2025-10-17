@@ -5,6 +5,7 @@ import LogoArea from "./logo-area";
 import AccountButton from "./account-button";
 import ThemeToggle from "./theme-toggle";
 import NewEventButton from "./new-event-button";
+import DashboardButton from "./dashboard-button";
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);
@@ -29,6 +30,7 @@ export default function Header() {
       <div className="frosted-glass fixed top-4 right-4 z-50 flex items-center gap-2 rounded-full p-2">
         <NewEventButton />
         <ThemeToggle />
+        <DashboardButton />
         <AccountButton />
       </div>
     </>

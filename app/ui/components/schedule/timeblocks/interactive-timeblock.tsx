@@ -17,7 +17,7 @@ interface InteractiveTimeBlockProps {
 
   userTimezone: string;
   availability: AvailabilitySet;
-  onToggle: (slotIso: string) => void;
+  onToggle: (slotIso: string, togglingOn: boolean) => void;
 }
 
 export default function InteractiveTimeBlock({
@@ -70,12 +70,22 @@ export default function InteractiveTimeBlock({
         }
 
         const isSelected = availability.has(slotIso);
+        const isToggling =
+          dragHandlers.draggedSlots.has(slotIso) &&
+          dragHandlers.togglingOn === !isSelected;
+        // don't highlight if we're toggling, in case the user is hovering a slot that
+        // won't be toggled
+        const isHovered =
+          dragHandlers.hoveredSlot === slotIso &&
+          dragHandlers.draggedSlots.size === 0;
 
         let backgroundColor;
-        if (isSelected) {
+        if (isHovered || isToggling) {
           backgroundColor = isDark
-            ? "rgba(225, 92, 92, 1)"
-            : "rgba(61, 115, 163, 1)";
+            ? "var(--color-red-200)"
+            : "var(--color-blue-200)";
+        } else if (isSelected) {
+          backgroundColor = isDark ? "var(--color-red)" : "var(--color-blue)";
         } else {
           backgroundColor = "";
         }
@@ -89,11 +99,15 @@ export default function InteractiveTimeBlock({
             backgroundColor={backgroundColor}
             gridColumn={gridColumn}
             gridRow={gridRow}
-            onMouseDown={() => dragHandlers.onMouseDown(slotIso, false)}
-            onMouseEnter={() => {
-              dragHandlers.onMouseEnter(slotIso, false);
+            onPointerDown={() =>
+              dragHandlers.onPointerDown(slotIso, false, isSelected)
+            }
+            onPointerEnter={() => {
+              dragHandlers.onPointerEnter(slotIso, false);
             }}
-            onTouchStart={() => dragHandlers.onTouchStart(slotIso, false)}
+            onPointerLeave={() => {
+              dragHandlers.onPointerLeave();
+            }}
             onTouchMove={dragHandlers.onTouchMove}
           />
         );
