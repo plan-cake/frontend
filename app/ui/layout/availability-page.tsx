@@ -74,7 +74,7 @@ export default function AvailabilityPage({
             onClick={handleSubmitAvailability}
             className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           >
-            Submit Availability
+            {initialData ? "Update" : "Submit"} Availability
           </button>
         </div>
       </div>
