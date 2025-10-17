@@ -251,7 +251,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             />
           </div>
 
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:flex md:justify-between">
             {type === "new" && "Custom"} Event Code
             {customCodeError && (
               <ExclamationTriangleIcon className="h-4 w-4 text-red" />
@@ -290,8 +290,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 value={eventRange.duration}
                 onValueChange={(v) => setDuration((v as number) || 0)}
               />
-              <label className="text-gray-400">
+              <label className="flex justify-between text-gray-400">
                 {type === "new" && "Custom"} Event Code
+                {customCodeError && (
+                  <ExclamationTriangleIcon className="h-4 w-4 text-red" />
+                )}
               </label>
               <input
                 type="text"
@@ -303,6 +306,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                   "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
                   type === "new" && "text-blue dark:text-red",
                   type === "edit" && "cursor-not-allowed opacity-50",
+                  customCodeError ? "border-red placeholder:text-red" : "",
                 )}
               />
             </div>
