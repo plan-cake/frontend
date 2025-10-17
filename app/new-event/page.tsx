@@ -91,7 +91,7 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Error checking code:", error);
-        throw new Error("Failed to check code: " + error);
+        throw new Error();
       }
     }
 
@@ -145,7 +145,7 @@ export default function Page() {
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          createErrorToast("An error occurred. Please try again.");
+          throw new Error();
         });
     } else {
       const weekdayRange = findRangeFromWeekdayMap(

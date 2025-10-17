@@ -78,7 +78,7 @@ export default function AvailabilityPage({
         }
       } catch (error) {
         console.error("Error checking display name:", error);
-        throw new Error("Failed to check display name: " + error);
+        throw new Error();
       }
     }
 
@@ -116,7 +116,7 @@ export default function AvailabilityPage({
       }
     } catch (error) {
       console.error("Error submitting availability:", error);
-      throw new Error("Failed to submit availability: " + error);
+      throw new Error();
     }
   };
 
