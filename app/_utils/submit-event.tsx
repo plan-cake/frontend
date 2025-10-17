@@ -33,6 +33,18 @@ export default async function submitEvent(
     apiRoute =
       type === "new" ? "/api/event/date-create/" : "/api/event/date-edit/";
 
+    // check if the date range is more than 30 days
+    const fromDate = new Date(
+      (data.eventRange as SpecificDateRange).dateRange.from,
+    );
+    const toDate = new Date(
+      (data.eventRange as SpecificDateRange).dateRange.to,
+    );
+    if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
+      alert("Too many days selected. Max is 30 days.");
+      return;
+    }
+
     jsonBody = {
       title: data.title,
       time_zone: data.eventRange.timezone,
