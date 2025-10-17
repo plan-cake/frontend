@@ -81,13 +81,9 @@ export default function InteractiveTimeBlock({
 
         let backgroundColor;
         if (isHovered || isToggling) {
-          backgroundColor = isDark
-            ? "var(--color-red-200)"
-            : "var(--color-blue-200)";
+          cellClasses.push("bg-blue-200 dark:bg-red-200");
         } else if (isSelected) {
-          backgroundColor = isDark ? "var(--color-red)" : "var(--color-blue)";
-        } else {
-          backgroundColor = "";
+          cellClasses.push("dark:bg-red bg-blue");
         }
 
         return (
@@ -96,7 +92,7 @@ export default function InteractiveTimeBlock({
             slotIso={slotIso}
             cellClasses={cellClasses.join(" ")}
             isSelected={isSelected}
-            backgroundColor={backgroundColor}
+            backgroundColor={""}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerDown={() =>

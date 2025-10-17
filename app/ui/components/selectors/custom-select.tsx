@@ -12,6 +12,7 @@ type Option = {
 type CustomSelectProps = {
   value: string | number;
   options: Option[];
+  disabled?: boolean;
   onValueChange: (value: string | number) => void;
   placeholder?: string;
   className?: string;
@@ -21,6 +22,7 @@ type CustomSelectProps = {
 export default function CustomSelect({
   value,
   options,
+  disabled,
   onValueChange,
   placeholder,
   className,
@@ -34,16 +36,20 @@ export default function CustomSelect({
       <Select.Trigger
         className={cn(
           "inline-flex items-center rounded-md text-start text-blue focus:outline-none dark:text-red",
+          disabled && "cursor-not-allowed text-violet/50 dark:text-white/50",
           className,
         )}
         aria-label="Custom select"
+        disabled={disabled}
       >
         <span className="flex-1 truncate pr-2">
           <Select.Value placeholder={placeholder} />
         </span>
-        <Select.Icon className="flex-shrink-0">
-          <ChevronDownIcon className="h-4 w-4" />
-        </Select.Icon>
+        {disabled ? null : (
+          <Select.Icon className="flex-shrink-0">
+            <ChevronDownIcon className="h-4 w-4" />
+          </Select.Icon>
+        )}
       </Select.Trigger>
 
       <Select.Portal>

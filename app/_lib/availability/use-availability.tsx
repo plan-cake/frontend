@@ -1,15 +1,20 @@
 import { useReducer, useCallback } from "react";
 import { availabilityReducer, AvailabilityState } from "./availability-reducer";
-import { createEmptyUserAvailability } from "./utils";
+import { createUserAvailability } from "./utils";
 
-export function useAvailability(
-  initialDisplayName = "",
-  initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone,
-) {
+export function useAvailability(initialData: any = null) {
+  const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const isoStrings = [];
+  if (initialData && initialData.available_dates) {
+    for (const dateStr of initialData.available_dates) {
+      isoStrings.push(new Date(dateStr).toISOString());
+    }
+  }
+
   const initialState: AvailabilityState = {
-    displayName: initialDisplayName,
-    timeZone: initialTimeZone,
-    userAvailability: createEmptyUserAvailability(),
+    displayName: initialData?.display_name || "",
+    timeZone: initialData?.time_zone || initialTimeZone,
+    userAvailability: createUserAvailability(isoStrings),
   };
 
   const [state, dispatch] = useReducer(availabilityReducer, initialState);

@@ -6,10 +6,12 @@ import CopyToast from "@/app/ui/components/copy-toast";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ResultsPage({
   eventCode,
@@ -22,6 +24,7 @@ export default function ResultsPage({
   eventRange: EventRange;
   initialAvailabilityData: any;
 }) {
+  const router = useRouter();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -31,13 +34,16 @@ export default function ResultsPage({
     setTimezone(newTZ.toString());
   };
 
+  const participated: boolean =
+    initialAvailabilityData.user_display_name != null;
   const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col space-y-4 p-10">
+      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
       <div className="flex justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
@@ -45,10 +51,13 @@ export default function ResultsPage({
         </div>
         <div className="flex items-center gap-2">
           {isCreator && (
-            <button className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25">
+            <Link
+              className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
+              href={`/${eventCode}/edit`}
+            >
               <span className="hidden md:block">Edit Event</span>
               <Pencil1Icon width={16} height={16} className="md:hidden" />
-            </button>
+            </Link>
           )}
           <CopyToast
             label="Copy Link"
@@ -58,6 +67,15 @@ export default function ResultsPage({
                 : ""
             }
           />
+          <Link
+            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm dark:border-red dark:bg-red"
+            href={`/${eventCode}`}
+          >
+            <span className="hidden md:block">
+              {participated ? "Edit" : "Add"} Availability
+            </span>
+            <Pencil2Icon width={16} height={16} className="md:hidden" />
+          </Link>
         </div>
       </div>
 
@@ -77,6 +95,9 @@ export default function ResultsPage({
           <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
+              {participants.length === 0 && (
+                <li className="text-sm italic opacity-50">No attendees yet</li>
+              )}
               {participants.map((person: string) => {
                 const isAvailable =
                   availabilities[hoveredSlot || ""]?.includes(person);
