@@ -80,8 +80,6 @@ const DateRangeDrawerSelector = ({
   setWeekdayRange = () => {},
   setDateRange = () => {},
 }: DateRangeProps) => {
-  console.log(tooManyDays);
-
   if (eventRange?.type === "specific") {
     const startDate = fromZonedTime(
       eventRange.dateRange.from,

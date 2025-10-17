@@ -117,9 +117,7 @@ export function getSelectedWeekdaysInTimezone(
   const selectedDatesUTC: WeekdayTimeRange[] = [];
   for (let i = 0; i < 7; i++) {
     const currentDay = new Date(startOfWeekInViewerTz);
-    // console.log({ currentDay });
     currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
-    // console.log({ currentDay });
     if (selectedDayIndexes.has(currentDay.getDay())) {
       const dateString = formatInTimeZone(
         currentDay,

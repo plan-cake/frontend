@@ -32,10 +32,6 @@ export default function AvailabilityPage({
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
-    console.log("Submitting availability...");
-    console.log("User Availability:", userAvailability);
-    console.log("Event Range:", eventRange);
-
     // Convert userAvailability to the format expected by the backend
     const availabilityGrid = convertAvailabilityToGrid(
       userAvailability,
