@@ -6,7 +6,7 @@ import CopyToast from "@/app/ui/components/copy-toast";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { Pencil1Icon } from "@radix-ui/react-icons";
+import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
@@ -74,7 +74,7 @@ export default function ResultsPage({
             <span className="hidden md:block">
               {participated ? "Edit" : "Add"} Availability
             </span>
-            <Pencil1Icon width={16} height={16} className="md:hidden" />
+            <Pencil2Icon width={16} height={16} className="md:hidden" />
           </Link>
         </div>
       </div>
