@@ -41,7 +41,7 @@ function TimeSlot({
         cellClasses,
         "relative bg-white hover:cursor-pointer dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
-        disableSelect && "bg-[#FFFFFF] dark:bg-[#343249]",
+        disableSelect && "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]",
       )}
       style={{
         gridColumn,
