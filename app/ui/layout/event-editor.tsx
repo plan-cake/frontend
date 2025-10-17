@@ -11,10 +11,10 @@ import { useRouter } from "next/navigation";
 import submitEvent from "@/app/_utils/submit-event";
 import { cn } from "@/app/_lib/classname";
 
-import { SpecificDateRange } from "@/app/_lib/schedule/types";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { useToast } from "@/app/_lib/toast-context";
+import { validateEventData } from "@/app/_utils/validate-data";
 
 const durationOptions = [
   { label: "None", value: 0 },
@@ -31,10 +31,6 @@ type EventEditorProps = {
 };
 
 export default function EventEditor({ type, initialData }: EventEditorProps) {
-  const { addToast } = useToast();
-  const [eventNameError, setEventNameError] = useState<string | null>(null);
-  const [customCodeError, setCustomCodeError] = useState<boolean>(false);
-
   const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const {
     state,
@@ -51,6 +47,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const isSubmitting = useRef(false);
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   const createErrorToast = (message: string) => {
     addToast({
       type: "error",
@@ -61,94 +61,44 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   };
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (eventNameError) {
-      setEventNameError(null);
-    } else if (e.target.value === "") {
-      setEventNameError("Please enter an event name.");
+    if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
+    else if (e.target.value === "") {
+      setErrors((prev) => ({ ...prev, title: "Please enter an event name." }));
     }
-
     setTitle(e.target.value);
   };
 
   const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (customCodeError) {
-      setCustomCodeError(false);
-    }
-
+    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
     setCustomCode(e.target.value);
   };
 
+  // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    setErrors({}); // reset errors
 
-    let areErrors: boolean = false;
-    setEventNameError(null);
-    if (!title) {
+    try {
+      const validationErrors = await validateEventData(state);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        Object.values(validationErrors).forEach(createErrorToast);
+        return;
+      }
+
+      await submitEvent(
+        { title, code: customCode, eventRange },
+        type,
+        eventRange.type,
+        (code: string) => router.push(`/${code}/results`),
+      );
+    } catch (error) {
+      console.error("Submission failed:", error);
+      createErrorToast("An unexpected error occurred. Please try again.");
+    } finally {
       isSubmitting.current = false;
-      areErrors = true;
-
-      const errorMessage = "Please enter an event name.";
-      setEventNameError(errorMessage);
-      createErrorToast(errorMessage);
     }
-
-    // check if custom code is valid
-    if (customCode) {
-      try {
-        const response = await fetch("/api/event/check-code/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ custom_code: customCode }),
-        });
-
-        if (!response.ok) {
-          areErrors = true;
-          const errorMessage =
-            "Custom code is not available, please choose another.";
-          createErrorToast(errorMessage);
-          setCustomCodeError(true);
-        }
-      } catch (error) {
-        console.error("Error checking code:", error);
-        throw new Error();
-      }
-    }
-
-    // check date range is valid
-    if (eventRange.type === "specific") {
-      const specificRange = eventRange as SpecificDateRange;
-
-      if (!specificRange.dateRange.from || !specificRange.dateRange.to) {
-        areErrors = true;
-        createErrorToast("Please select a valid date range.");
-      }
-    }
-
-    // check time range is valid
-    if (eventRange.timeRange.from >= eventRange.timeRange.to) {
-      areErrors = true;
-      createErrorToast("Please select a valid time range.");
-    }
-
-    if (areErrors) {
-      return;
-    }
-
-    await submitEvent(
-      {
-        title,
-        code: customCode,
-        eventRange,
-      },
-      type,
-      eventRange.type,
-      (code: string) => {
-        router.push(`/${code}/results`);
-      },
-    );
-
-    isSubmitting.current = false;
   };
 
   const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
@@ -158,9 +108,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       <div className="flex w-full items-center justify-between">
         <div className="md:w-1/2">
           <p
-            className={`text-right text-xs text-red ${eventNameError ? "visible" : "invisible"}`}
+            className={`text-right text-xs text-red ${errors.title ? "visible" : "invisible"}`}
           >
-            {eventNameError ? eventNameError : "Error Placeholder"}
+            {errors.title ? errors.title : "Error Placeholder"}
           </p>
           <input
             type="text"
@@ -169,7 +119,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             placeholder="add event name"
             className={cn(
               "w-full border-b-1 p-1 text-2xl focus:outline-none",
-              eventNameError
+              errors.title
                 ? "border-red placeholder:text-red"
                 : "border-violet dark:border-gray-400",
             )}
@@ -253,7 +203,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
           <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:flex md:justify-between">
             {type === "new" && "Custom"} Event Code
-            {customCodeError && (
+            {errors.customCode && (
               <ExclamationTriangleIcon className="h-4 w-4 text-red" />
             )}
           </label>
@@ -264,7 +214,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               onChange={handleCustomCodeChange}
               placeholder="optional"
               className={`w-full border-b-1 focus:outline-none ${
-                customCodeError
+                errors.customCode
                   ? "border-red placeholder:text-red"
                   : "border-violet text-blue dark:border-gray-400 dark:text-red"
               }`}
@@ -292,7 +242,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               />
               <label className="flex justify-between text-gray-400">
                 {type === "new" && "Custom"} Event Code
-                {customCodeError && (
+                {errors.customCode && (
                   <ExclamationTriangleIcon className="h-4 w-4 text-red" />
                 )}
               </label>
@@ -306,7 +256,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                   "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
                   type === "new" && "text-blue dark:text-red",
                   type === "edit" && "cursor-not-allowed opacity-50",
-                  customCodeError ? "border-red placeholder:text-red" : "",
+                  errors.customCode ? "border-red placeholder:text-red" : "",
                 )}
               />
             </div>

@@ -12,6 +12,7 @@ import { EventRange } from "@/app/_lib/schedule/types";
 import formatApiError from "@/app/_utils/format-api-error";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { useToast } from "@/app/_lib/toast-context";
+import { validateAvailabilityData } from "@/app/_utils/validate-data";
 
 export default function AvailabilityPage({
   eventCode,
@@ -25,22 +26,15 @@ export default function AvailabilityPage({
   initialData?: any;
 }) {
   const router = useRouter();
-  const { addToast } = useToast();
-  const [nameError, setNameError] = useState<string | null>(null);
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
     useAvailability(initialData);
   const { displayName, timeZone, userAvailability } = state;
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (nameError) {
-      setNameError(null);
-    } else if (e.target.value === "") {
-      setNameError("Please enter your name.");
-    }
-    setDisplayName(e.target.value);
-  };
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const createErrorToast = (message: string) => {
     addToast({
@@ -51,61 +45,41 @@ export default function AvailabilityPage({
     });
   };
 
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
+    else if (e.target.value === "") {
+      setErrors((prev) => ({
+        ...prev,
+        displayName: "Please enter your name.",
+      }));
+    }
+    setDisplayName(e.target.value);
+  };
+
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
-    let areErrors: boolean = false;
-    setNameError(null);
-
-    if (!displayName.trim()) {
-      const errorMessage = "Please enter your name.";
-      areErrors = true;
-      setNameError(errorMessage);
-      createErrorToast(errorMessage);
-    } else {
-      try {
-        const response = await fetch("/api/availability/check-display-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event_code: eventCode,
-            display_name: displayName,
-          }),
-        });
-
-        if (!response.ok) {
-          areErrors = true;
-          const errorMessage = "Name is not available, please choose another.";
-          createErrorToast(errorMessage);
-          setNameError(errorMessage);
-        }
-      } catch (error) {
-        console.error("Error checking display name:", error);
-        throw new Error();
-      }
-    }
-
-    if (!userAvailability || userAvailability.size === 0) {
-      areErrors = true;
-      createErrorToast("Please enter your availability!");
-    }
-
-    if (areErrors) {
-      return;
-    }
-
-    const availabilityGrid = convertAvailabilityToGrid(
-      userAvailability,
-      eventRange,
-    );
-
-    const payload = {
-      event_code: eventCode,
-      display_name: displayName,
-      availability: availabilityGrid,
-      time_zone: timeZone,
-    };
+    setErrors({}); // reset errors
 
     try {
+      const validationErrors = await validateAvailabilityData(state, eventCode);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        Object.values(validationErrors).forEach(createErrorToast);
+        return;
+      }
+
+      const availabilityGrid = convertAvailabilityToGrid(
+        userAvailability,
+        eventRange,
+      );
+
+      const payload = {
+        event_code: eventCode,
+        display_name: displayName,
+        availability: availabilityGrid,
+        time_zone: timeZone,
+      };
+
       const response = await fetch("/api/availability/add/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -113,12 +87,10 @@ export default function AvailabilityPage({
       });
 
       if (response.ok) router.push(`/${eventCode}/results`);
-      else {
-        createErrorToast(formatApiError(await response.json()));
-      }
+      else createErrorToast(formatApiError(await response.json()));
     } catch (error) {
       console.error("Error submitting availability:", error);
-      throw new Error();
+      createErrorToast("An unexpected error occurred. Please try again.");
     }
   };
 
@@ -149,9 +121,9 @@ export default function AvailabilityPage({
         <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-30 md:w-80">
           <div className="w-fit">
             <p
-              className={`text-right text-xs text-red ${nameError ? "visible" : "invisible"}`}
+              className={`text-right text-xs text-red ${errors.displayName ? "visible" : "invisible"}`}
             >
-              {nameError ? nameError : "Error Placeholder"}
+              {errors.displayName ? errors.displayName : "Error Placeholder"}
             </p>
             Hi,{" "}
             <input
@@ -161,7 +133,7 @@ export default function AvailabilityPage({
               onChange={handleNameChange}
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
-                nameError
+                errors.displayName
                   ? "border-red placeholder:text-red"
                   : "border-violet dark:border-gray-400"
               }`}
