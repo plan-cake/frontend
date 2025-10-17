@@ -88,7 +88,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <DateRangeSelector
             earliestDate={earliestCalendarDate}
             eventRange={eventRange}
-            disabled={type === "edit"}
+            editing={type === "edit"}
             setEventType={setEventType}
             setWeekdayRange={setWeekdayRange}
             setDateRange={setDateRange}

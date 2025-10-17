@@ -14,7 +14,7 @@ import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
 export default function DateRangeSelector({
   earliestDate,
   eventRange,
-  disabled = false,
+  editing = false,
   setEventType = () => {},
   setWeekdayRange = () => {},
   setDateRange = () => {},
@@ -45,7 +45,7 @@ export default function DateRangeSelector({
           <label htmlFor="date-range-type">Type</label>
           <EventTypeSelect
             eventType={rangeType}
-            disabled={disabled}
+            disabled={editing}
             onEventTypeChange={setEventType}
           />
         </div>
