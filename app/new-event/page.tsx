@@ -11,10 +11,9 @@ import { useRouter } from "next/navigation";
 import formatApiError from "../_utils/format-api-error";
 import { SpecificDateRange, WeekdayRange } from "../_lib/schedule/types";
 import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
-import ErrorToast from "@/app/ui/components/error-toast";
-import { ToastErrorMessage } from "../_lib/types/toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { cn } from "../_lib/classname";
+import { useToast } from "../_lib/toast-context";
 
 const durationOptions = [
   { label: "30 minutes", value: 30 },
@@ -23,7 +22,7 @@ const durationOptions = [
 ];
 
 export default function Page() {
-  const [toasts, setToasts] = useState<ToastErrorMessage[]>([]);
+  const { addToast } = useToast();
   const [eventNameError, setEventNameError] = useState<string | null>(null);
   const [customCodeError, setCustomCodeError] = useState<boolean>(false);
 
@@ -51,11 +50,12 @@ export default function Page() {
   };
 
   const createErrorToast = (message: string) => {
-    const newToast = {
+    addToast({
+      type: "error",
       id: Date.now() + Math.random(),
+      title: "ERROR",
       message: message,
-    };
-    setToasts((prevToasts) => [...prevToasts, newToast]);
+    });
   };
 
   const createEvent = async () => {
@@ -358,23 +358,13 @@ export default function Page() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
-        <div className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red">
+        <div
+          onClick={createEvent}
+          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+        >
           Create Event
         </div>
       </div>
-
-      {toasts.map((toast) => (
-        <ErrorToast
-          key={toast.id}
-          error={toast.message}
-          open={true}
-          onOpenChange={() => {
-            setToasts((currentToasts) =>
-              currentToasts.filter((t) => t.id !== toast.id),
-            );
-          }}
-        />
-      ))}
     </div>
   );
 }
