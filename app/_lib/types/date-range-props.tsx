@@ -5,6 +5,7 @@ export type DateRangeProps = {
   earliestDate?: Date;
   eventRange: EventRange;
   tooManyDays?: boolean;
+  disabled?: boolean;
 
   // update functions
   setTitle?: (title: string) => void;
