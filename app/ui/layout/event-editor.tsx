@@ -185,7 +185,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               <CustomSelect
                 options={durationOptions}
                 value={eventRange.duration}
-                onValueChange={(v) => setDuration((v as number) || 60)}
+                onValueChange={(v) => setDuration((v as number) || 0)}
               />
               <label className="text-gray-400">
                 {type === "new" && "Custom"} Event Code
