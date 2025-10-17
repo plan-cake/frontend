@@ -151,7 +151,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           </div>
 
           <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
-            {type === "new" && "Custom "}Event Code
+            {type === "new" && "Custom"} Event Code
           </label>
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <input
@@ -187,13 +187,20 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 value={eventRange.duration}
                 onValueChange={(v) => setDuration((v as number) || 60)}
               />
-              <label className="text-gray-400">Custom Event Code</label>
+              <label className="text-gray-400">
+                {type === "new" && "Custom"} Event Code
+              </label>
               <input
                 type="text"
+                disabled={type === "edit"}
                 value={customCode}
                 onChange={(e) => setCustomCode(e.target.value)}
                 placeholder="optional"
-                className="w-full border-b-1 border-gray-300 text-blue focus:outline-none dark:border-gray-400 dark:text-red"
+                className={cn(
+                  "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
+                  type === "new" && "text-blue dark:text-red",
+                  type === "edit" && "cursor-not-allowed opacity-50",
+                )}
               />
             </div>
           </details>
