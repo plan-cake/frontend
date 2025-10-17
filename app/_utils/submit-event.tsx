@@ -35,7 +35,6 @@ export default async function submitEvent(
 
     jsonBody = {
       title: data.title,
-      duration: data.eventRange.duration,
       time_zone: data.eventRange.timezone,
       start_date: formatDate(
         new Date((data.eventRange as SpecificDateRange).dateRange.from),
@@ -69,13 +68,17 @@ export default async function submitEvent(
     };
     const jsonBody = {
       title: data.title,
-      duration: data.eventRange.duration,
       time_zone: data.eventRange.timezone,
       start_weekday: dayNameToIndex[weekdayRange.startDay!],
       end_weekday: dayNameToIndex[weekdayRange.endDay!],
       start_hour: data.eventRange.timeRange.from,
       end_hour: data.eventRange.timeRange.to,
     };
+  }
+
+  // only include duration if set
+  if (data.eventRange.duration && data.eventRange.duration > 0) {
+    (jsonBody as any).duration = data.eventRange.duration;
   }
 
   if (type === "new" && data.code) {

@@ -12,6 +12,7 @@ import submitEvent from "@/app/_utils/submit-event";
 import { cn } from "@/app/_lib/classname";
 
 const durationOptions = [
+  { label: "None", value: 0 },
   { label: "30 minutes", value: 30 },
   { label: "45 minutes", value: 45 },
   { label: "1 hour", value: 60 },
@@ -144,7 +145,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             <CustomSelect
               options={durationOptions}
               value={eventRange.duration}
-              onValueChange={(v) => setDuration((v as number) || 60)}
+              onValueChange={(v) => setDuration((v as number) || 0)}
             />
           </div>
 

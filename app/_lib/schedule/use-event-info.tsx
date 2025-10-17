@@ -9,7 +9,7 @@ export function useEventInfo(initialData?: any) {
     customCode: initialData?.code || "",
     eventRange: initialData?.eventRange || {
       type: "specific",
-      duration: 60,
+      duration: 0,
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
       dateRange: {
         from: new Date().toISOString(),
@@ -21,6 +21,10 @@ export function useEventInfo(initialData?: any) {
       },
     },
   };
+
+  if (!initialData?.eventRange?.duration) {
+    initialState.eventRange.duration = 0;
+  }
 
   const [state, dispatch] = useReducer(EventInfoReducer, initialState);
 
