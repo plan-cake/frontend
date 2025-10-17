@@ -11,6 +11,7 @@ import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function ResultsPage({
   eventCode,
@@ -33,6 +34,7 @@ export default function ResultsPage({
     setTimezone(newTZ.toString());
   };
 
+  const participated: boolean = !!initialAvailabilityData.display_name;
   const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
@@ -48,13 +50,13 @@ export default function ResultsPage({
         </div>
         <div className="flex items-center gap-2">
           {isCreator && (
-            <button
+            <Link
               className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
-              onClick={() => router.push(`/${eventCode}/edit`)}
+              href={`/${eventCode}/edit`}
             >
               <span className="hidden md:block">Edit Event</span>
               <Pencil1Icon width={16} height={16} className="md:hidden" />
-            </button>
+            </Link>
           )}
           <CopyToast
             label="Copy Link"
