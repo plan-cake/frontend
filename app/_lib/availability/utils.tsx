@@ -11,6 +11,12 @@ export const createEmptyUserAvailability = (): AvailabilitySet => {
   return new Set<string>();
 };
 
+export const createUserAvailability = (
+  data: Array<string>,
+): AvailabilitySet => {
+  return new Set<string>(data);
+};
+
 // Toggles a single time slot in the user's availability
 export function toggleUtcSlot(
   prev: AvailabilitySet,

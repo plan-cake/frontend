@@ -49,3 +49,27 @@ export async function fetchAvailabilityData(
 
   return res.json();
 }
+
+export async function fetchSelfAvailability(
+  eventCode: string,
+  cookieHeader: string,
+): Promise<any> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(
+    `${baseUrl}/availability/get-self/?event_code=${eventCode}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Cookie: cookieHeader,
+      },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) {
+    return null;
+  }
+
+  return res.json();
+}

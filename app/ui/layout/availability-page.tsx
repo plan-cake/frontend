@@ -16,16 +16,18 @@ export default function AvailabilityPage({
   eventCode,
   eventName,
   eventRange,
+  initialData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  initialData?: any;
 }) {
   const router = useRouter();
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability("");
+    useAvailability(initialData);
   const { displayName, timeZone, userAvailability } = state;
 
   // SUBMIT AVAILABILITY
