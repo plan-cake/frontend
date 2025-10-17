@@ -191,7 +191,7 @@ export default function Page() {
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          createErrorToast("An error occurred. Please try again.");
+          throw new Error();
         });
     }
 
