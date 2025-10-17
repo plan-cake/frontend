@@ -13,12 +13,12 @@ export default function NewEventButton() {
 
   return (
     <Link
-      className="flex cursor-pointer flex-row items-center gap-1 rounded-full bg-red py-2 pr-4 pl-2.5 font-medium"
+      className="flex cursor-pointer flex-row items-center gap-1 rounded-full bg-red p-2 font-medium md:pr-4 md:pl-2.5"
       href="/new-event"
       aria-label="Create new event"
     >
       <PlusIcon className="h-5 w-5" />
-      New Event
+      <span className="hidden md:inline">New Event</span>
     </Link>
   );
 }

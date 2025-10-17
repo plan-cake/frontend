@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import HamburgerMenu from "./hamburger-menu";
 import Link from "next/link";
 import Logo from "../logo";
 
@@ -17,16 +16,13 @@ export default function LogoArea() {
   }
 
   return (
-    <div className="fixed top-4 left-4 z-50">
-      {/* Background shape */}
-      <div className="h-20 w-28 rounded-br-[60px] bg-lion shadow-lg" />
-
+    <div className="frosted-glass fixed top-4 left-4 z-50 h-20 w-28 rounded-br-[60px]">
       {/* Text Container */}
-      <div className="absolute top-2 left-2">
+      <div className="p-2">
         <Link href="/">
           <Logo />
         </Link>
-        <HamburgerMenu />
+        <span className="text-sm">v0.1.0</span>
       </div>
     </div>
   );
