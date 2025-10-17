@@ -91,7 +91,7 @@ export default function Page() {
         }
       } catch (error) {
         console.error("Error checking code:", error);
-        throw new Error("Failed to checking code: " + error);
+        throw new Error("Failed to check code: " + error);
       }
     }
 
@@ -201,7 +201,7 @@ export default function Page() {
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (eventNameError) {
       setEventNameError(null);
-    } else if (e.target.value == "") {
+    } else if (e.target.value === "") {
       setEventNameError("Please enter an event name.");
     }
 

@@ -34,7 +34,7 @@ export default function AvailabilityPage({
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (nameError) {
       setNameError(null);
-    } else if (e.target.value == "") {
+    } else if (e.target.value === "") {
       setNameError("Please enter your name.");
     }
     setDisplayName(e.target.value);
@@ -78,7 +78,7 @@ export default function AvailabilityPage({
         }
       } catch (error) {
         console.error("Error checking display name:", error);
-        throw new Error("Failed to checking display name: " + error);
+        throw new Error("Failed to check display name: " + error);
       }
     }
 
