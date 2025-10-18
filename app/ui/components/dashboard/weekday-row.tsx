@@ -1,18 +1,16 @@
 import { cn } from "@/app/_lib/classname";
 
 type WeekdayRowProps = {
-  className?: string;
   startWeekday: number;
   endWeekday: number;
 };
 
 export default function WeekdayRow({
-  className,
   startWeekday,
   endWeekday,
 }: WeekdayRowProps) {
   return (
-    <div className={`flex w-full ${className}`}>
+    <div className={`flex w-full`}>
       {["S", "M", "T", "W", "T", "F", "S"].map((initial, index) => (
         <WeekdayRowIcon
           key={index}

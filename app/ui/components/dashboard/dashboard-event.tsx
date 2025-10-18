@@ -37,20 +37,14 @@ export default function DashboardEvent({
           {title}
         </div>
         <div className="text-sm opacity-50">{code}</div>
-        {type === "specific" && (
-          <DateRangeRow
-            className="my-2"
-            startDate={startDate!}
-            endDate={endDate!}
-          />
-        )}
-        {type === "weekday" && (
-          <WeekdayRow
-            className="my-2"
-            startWeekday={startWeekday!}
-            endWeekday={endWeekday!}
-          />
-        )}
+        <div className="my-2">
+          {type === "specific" && (
+            <DateRangeRow startDate={startDate!} endDate={endDate!} />
+          )}
+          {type === "weekday" && (
+            <WeekdayRow startWeekday={startWeekday!} endWeekday={endWeekday!} />
+          )}
+        </div>
         <div className="flex items-center gap-2">
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(startHour, endHour)}
