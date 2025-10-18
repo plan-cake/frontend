@@ -60,14 +60,12 @@ export default function PreviewTimeBlock({
           }
         }
 
-        let backgroundColor = "";
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}
             slotIso={slotIso}
             disableSelect={true}
             cellClasses={cellClasses.join(" ")}
-            backgroundColor={backgroundColor}
             gridColumn={gridColumn}
             gridRow={gridRow}
           />
