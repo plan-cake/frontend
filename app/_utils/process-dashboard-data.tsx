@@ -1,9 +1,13 @@
 import { DashboardEventProps } from "../ui/components/dashboard/dashboard-event";
 import { DashboardPageProps } from "../ui/layout/dashboard-page";
 
-function processSingleEvent(eventData: any): DashboardEventProps {
+function processSingleEvent(
+  myEvent: boolean,
+  eventData: any,
+): DashboardEventProps {
   if (eventData.event_type === "Date") {
     const data: DashboardEventProps = {
+      myEvent: myEvent,
       code: eventData.event_code,
       title: eventData.title,
       type: "specific",
@@ -15,6 +19,7 @@ function processSingleEvent(eventData: any): DashboardEventProps {
     return data;
   } else {
     const data: DashboardEventProps = {
+      myEvent: myEvent,
       code: eventData.event_code,
       title: eventData.title,
       type: "weekday",
@@ -34,11 +39,11 @@ export function processDashboardData(eventData: any): DashboardPageProps {
   };
 
   for (const event of eventData.created_events) {
-    processedEvents.created_events.push(processSingleEvent(event));
+    processedEvents.created_events.push(processSingleEvent(true, event));
   }
 
   for (const event of eventData.participated_events) {
-    processedEvents.participated_events.push(processSingleEvent(event));
+    processedEvents.participated_events.push(processSingleEvent(false, event));
   }
 
   return processedEvents;

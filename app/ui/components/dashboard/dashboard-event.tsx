@@ -1,9 +1,10 @@
-import { ClockIcon } from "@radix-ui/react-icons";
+import { ClockIcon, CopyIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import DateRangeRow from "./date-range-row";
 import WeekdayRow from "./weekday-row";
 
 export type DashboardEventProps = {
+  myEvent: boolean;
   code: string;
   title: string;
   type: "specific" | "weekday";
@@ -16,6 +17,7 @@ export type DashboardEventProps = {
 };
 
 export default function DashboardEvent({
+  myEvent = false,
   code,
   title,
   type,
@@ -50,6 +52,13 @@ export default function DashboardEvent({
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(startHour, endHour)}
         </div>
+        {myEvent && (
+          <Link className="mt-2" href={`/${code}/edit`}>
+            <div className="w-fit rounded-full border border-violet p-1.5 dark:border-white">
+              <Pencil1Icon className="h-4 w-4" />
+            </div>
+          </Link>
+        )}
       </div>
     </Link>
   );
