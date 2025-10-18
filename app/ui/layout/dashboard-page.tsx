@@ -67,7 +67,7 @@ function DashboardTabButton({
   return (
     <button
       className={cn(
-        "rounded-full px-4 py-2",
+        "rounded-full px-4 py-2 text-nowrap",
         currentTab === value && "bg-blue text-white dark:bg-red",
         !isMobile && "w-full text-left",
       )}
