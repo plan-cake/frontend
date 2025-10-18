@@ -3,6 +3,7 @@
 import { useState } from "react";
 import HeaderSpacer from "../../ui/components/header/header-spacer";
 import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
+import { cn } from "@/app/_lib/classname";
 
 type DashboardTab = "created" | "participated";
 
@@ -22,32 +23,48 @@ export default function DashboardPage({
       <HeaderSpacer />
       <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
       <div className="flex">
-        <div className="flex flex-col gap-4">
-          <button
-            className={`rounded px-4 py-2 ${
-              tab === "created"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => setTab("created")}
-          >
-            Created Events
-          </button>
-          <button
-            className={`rounded px-4 py-2 ${
-              tab === "participated"
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700"
-            }`}
-            onClick={() => setTab("participated")}
-          >
-            Participated Events
-          </button>
+        <div className="flex flex-col gap-2">
+          <DashboardTabButton
+            label="Created Events"
+            value="created"
+            currentTab={tab}
+            setTab={setTab}
+          />
+          <DashboardTabButton
+            label="Participated Events"
+            value="participated"
+            currentTab={tab}
+            setTab={setTab}
+          />
         </div>
         <EventGrid
           events={tab === "created" ? created_events : participated_events}
         />
       </div>
     </div>
+  );
+}
+
+function DashboardTabButton({
+  label,
+  value,
+  currentTab,
+  setTab,
+}: {
+  label: string;
+  value: DashboardTab;
+  currentTab: DashboardTab;
+  setTab: (value: DashboardTab) => void;
+}) {
+  return (
+    <button
+      className={cn(
+        "w-full rounded-full px-4 py-2 text-left",
+        currentTab === value && "bg-blue text-white dark:bg-red",
+      )}
+      onClick={() => setTab(value)}
+    >
+      {label}
+    </button>
   );
 }
