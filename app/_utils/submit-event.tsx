@@ -78,7 +78,7 @@ export default async function submitEvent(
       Fri: 5,
       Sat: 6,
     };
-    const jsonBody = {
+    jsonBody = {
       title: data.title,
       time_zone: data.eventRange.timezone,
       start_weekday: dayNameToIndex[weekdayRange.startDay!],
