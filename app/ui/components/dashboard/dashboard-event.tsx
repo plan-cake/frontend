@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 export type DashboardEventProps = {
-  event_code: string;
+  code: string;
   title: string;
   type: "specific" | "weekday";
   startHour: number;
@@ -13,7 +13,7 @@ export type DashboardEventProps = {
 };
 
 export default function DashboardEvent({
-  event_code,
+  code,
   title,
   type,
   startHour,
@@ -24,7 +24,7 @@ export default function DashboardEvent({
   endWeekday,
 }: DashboardEventProps) {
   return (
-    <Link href={`/${event_code}`}>
+    <Link href={`/${code}`}>
       <div className="mb-2 flex w-full flex-col rounded rounded-lg bg-white p-4 dark:bg-violet">
         <div className="mb-2 w-full rounded bg-white dark:bg-violet">
           {title}

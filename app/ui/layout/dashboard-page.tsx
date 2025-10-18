@@ -8,7 +8,7 @@ import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
 
 type DashboardTab = "created" | "participated";
 
-type DashboardPageProps = {
+export type DashboardPageProps = {
   created_events: EventGridProps;
   participated_events: EventGridProps;
 };
