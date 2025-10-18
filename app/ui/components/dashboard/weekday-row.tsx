@@ -12,7 +12,7 @@ export default function WeekdayRow({
   endWeekday,
 }: WeekdayRowProps) {
   return (
-    <div className={`flex w-full gap-1 ${className}`}>
+    <div className={`flex w-full ${className}`}>
       {["S", "M", "T", "W", "T", "F", "S"].map((initial, index) => (
         <WeekdayRowIcon
           key={index}
@@ -38,11 +38,15 @@ function WeekdayRowIcon({
   end: number;
 }) {
   const isActive = index >= start && index <= end;
+  const isStart = index === start;
+  const isEnd = index === end;
   return (
     <div
       className={cn(
-        "flex h-6 w-6 items-center justify-center rounded-full text-xs font-bold",
+        "flex h-6 w-6 items-center justify-center text-xs font-bold",
         isActive && "bg-blue/50 dark:bg-red/50",
+        isStart && "rounded-l-full",
+        isEnd && "rounded-r-full",
       )}
     >
       {label}
