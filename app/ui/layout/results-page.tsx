@@ -2,7 +2,7 @@
 
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
-import CopyToast from "@/app/ui/components/copy-toast";
+import CopyToast from "@/app/ui/components/toasts/copy-toast";
 import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
 
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
@@ -59,14 +59,7 @@ export default function ResultsPage({
               <Pencil1Icon width={16} height={16} className="md:hidden" />
             </Link>
           )}
-          <CopyToast
-            label="Copy Link"
-            eventLink={
-              window.location.origin
-                ? `${window.location.origin}/${eventCode}`
-                : ""
-            }
-          />
+          <CopyToast />
           <Link
             className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm dark:border-red dark:bg-red"
             href={`/${eventCode}`}
