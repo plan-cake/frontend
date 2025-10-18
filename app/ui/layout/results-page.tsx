@@ -62,7 +62,7 @@ export default function ResultsPage({
           )}
           <CopyToast />
           <Link
-            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm dark:border-red dark:bg-red"
+            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet md:flex dark:border-red dark:bg-red dark:hover:bg-red/25 dark:hover:text-white"
             href={`/${eventCode}`}
           >
             <span className="hidden md:block">
