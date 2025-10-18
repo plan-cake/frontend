@@ -25,7 +25,7 @@ export default function DashboardPage({
       <HeaderSpacer />
       <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
       <div className={cn("flex gap-4", isMobile && "flex-col")}>
-        <div className={cn("flex", !isMobile && "flex-col gap-2")}>
+        <div className={cn("flex", !isMobile && "flex-col")}>
           <DashboardTabButton
             label="Created Events"
             value="created"
