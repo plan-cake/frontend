@@ -13,7 +13,7 @@ export default function NewEventButton() {
 
   return (
     <Link
-      className="flex cursor-pointer flex-row items-center gap-1 rounded-full bg-red p-2 font-medium md:pr-4 md:pl-2.5"
+      className="flex cursor-pointer flex-row items-center gap-1 rounded-full bg-blue p-2 font-medium text-white md:pr-4 md:pl-2.5 dark:bg-red"
       href="/new-event"
       aria-label="Create new event"
     >
