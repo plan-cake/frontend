@@ -9,7 +9,9 @@ interface TimeSlotProps {
   isHovered?: boolean;
 
   disableSelect?: boolean;
-  backgroundColor: string;
+  dynamicStyle?: React.CSSProperties & {
+    [key: `--${string}`]: string | number;
+  };
   gridColumn: number;
   gridRow: number;
 
@@ -27,7 +29,7 @@ function TimeSlot({
   isSelected,
   isHovered,
   disableSelect,
-  backgroundColor,
+  dynamicStyle: style,
   gridColumn,
   gridRow,
   cellClasses = "",
@@ -50,7 +52,7 @@ function TimeSlot({
         gridRow,
         touchAction: "none",
         userSelect: "none",
-        backgroundColor,
+        ...style,
       }}
       {...eventHandlers}
     />

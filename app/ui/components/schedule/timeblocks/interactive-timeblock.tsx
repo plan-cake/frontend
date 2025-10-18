@@ -92,7 +92,6 @@ export default function InteractiveTimeBlock({
             slotIso={slotIso}
             cellClasses={cellClasses.join(" ")}
             isSelected={isSelected}
-            backgroundColor={""}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerDown={() =>
