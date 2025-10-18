@@ -33,7 +33,7 @@ export default function DashboardEvent({
   return (
     <Link href={`/${code}`}>
       <div className="flex w-full flex-col rounded-lg bg-white p-4 transition-shadow hover:shadow-lg hover:shadow-black/25 dark:bg-violet">
-        <div className="rounded bg-white text-lg font-bold dark:bg-violet">
+        <div className="rounded bg-white text-lg leading-tight font-bold dark:bg-violet">
           {title}
         </div>
         <div className="text-sm opacity-50">{code}</div>
