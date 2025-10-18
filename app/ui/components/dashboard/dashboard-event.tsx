@@ -1,3 +1,4 @@
+import { ClockIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
 export type DashboardEventProps = {
@@ -25,9 +26,31 @@ export default function DashboardEvent({
 }: DashboardEventProps) {
   return (
     <Link href={`/${code}`}>
-      <div className="flex w-full flex-col rounded rounded-lg bg-white p-4 dark:bg-violet">
-        <div className="w-full rounded bg-white dark:bg-violet">{title}</div>
+      <div className="flex w-full flex-col rounded-lg bg-white p-4 dark:bg-violet">
+        <div className="rounded bg-white text-lg font-bold dark:bg-violet">
+          {title}
+        </div>
+        <div className="flex items-center gap-2">
+          <ClockIcon className="h-5 w-5" />
+          {formatTimeRange(startHour, endHour)}
+        </div>
       </div>
     </Link>
   );
+}
+
+function formatHour(hour: number): string {
+  if (hour == 0 || hour == 24) {
+    return "12am";
+  }
+  const period = hour >= 12 ? "pm" : "am";
+  const adjustedHour = hour % 12 === 0 ? 12 : hour % 12;
+  return `${adjustedHour}${period}`;
+}
+
+function formatTimeRange(startHour: number, endHour: number): string {
+  if (startHour === 0 && endHour === 24) {
+    return "All day";
+  }
+  return `${formatHour(startHour)} - ${formatHour(endHour)}`;
 }
