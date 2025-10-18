@@ -12,6 +12,7 @@ import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import HeaderSpacer from "../components/header/header-spacer";
 
 export default function ResultsPage({
   eventCode,
@@ -42,8 +43,8 @@ export default function ResultsPage({
     initialAvailabilityData.availability || {};
 
   return (
-    <div className="flex flex-col space-y-4 p-10">
-      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
+    <div className="flex flex-col space-y-4 pr-10 pl-10">
+      <HeaderSpacer />
       <div className="flex justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>

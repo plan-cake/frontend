@@ -13,6 +13,7 @@ import formatApiError from "@/app/_utils/format-api-error";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateAvailabilityData } from "@/app/_utils/validate-data";
+import HeaderSpacer from "../components/header/header-spacer";
 
 export default function AvailabilityPage({
   eventCode,
@@ -95,8 +96,8 @@ export default function AvailabilityPage({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-10">
-      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
+    <div className="flex flex-col space-y-4 pr-10 pl-10">
+      <HeaderSpacer />
       {/* Header and Button Row */}
       <div className="flex justify-between md:flex-row">
         <div className="flex items-center space-x-2">
@@ -118,7 +119,7 @@ export default function AvailabilityPage({
       {/* Main Content */}
       <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-30 md:w-80">
+        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-25 md:w-80">
           <div className="w-fit">
             <p
               className={`text-right text-xs text-red ${errors.displayName ? "visible" : "invisible"}`}

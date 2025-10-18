@@ -7,9 +7,6 @@ import ThemeToggle from "./theme-toggle";
 import NewEventButton from "./new-event-button";
 import DashboardButton from "./dashboard-button";
 
-import Link from "next/link";
-import Logo from "../logo";
-
 export default function Header() {
   const [mounted, setMounted] = useState(false);
 
@@ -22,8 +19,8 @@ export default function Header() {
   }
 
   return (
-    <header className="max-w-[1440px] p-4">
-      <nav className="flex w-full items-center justify-between">
+    <header className="fixed top-0 z-40 h-25 w-full p-4">
+      <nav className="flex w-full max-w-[1440px] items-center justify-between">
         <LogoArea />
 
         <div className="frosted-glass flex h-fit items-center gap-2 rounded-full p-2">

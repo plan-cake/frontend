@@ -15,6 +15,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateEventData } from "@/app/_utils/validate-data";
+import HeaderSpacer from "../components/header/header-spacer";
 
 const durationOptions = [
   { label: "None", value: 0 },
@@ -104,7 +105,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
 
   return (
-    <div className="flex flex-col space-y-4 pr-10 pl-10">
+    <div className="flex h-svh flex-col space-y-4 pr-10 pl-10">
+      <HeaderSpacer />
       <div className="flex w-full items-center justify-between">
         <div className="md:w-1/2">
           <p
