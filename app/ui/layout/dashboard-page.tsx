@@ -27,14 +27,14 @@ export default function DashboardPage({
       <div className={cn("flex gap-4", isMobile && "flex-col")}>
         <div className={cn("flex", !isMobile && "flex-col")}>
           <DashboardTabButton
-            label="Created Events"
+            label="My Events"
             value="created"
             currentTab={tab}
             isMobile={isMobile}
             setTab={setTab}
           />
           <DashboardTabButton
-            label="Participated Events"
+            label="Others' Events"
             value="participated"
             currentTab={tab}
             isMobile={isMobile}
