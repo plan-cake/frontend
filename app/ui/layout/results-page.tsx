@@ -84,9 +84,11 @@ export default function ResultsPage({
           numParticipants={participants.length}
         />
 
+        <div className="h-25" />
+
         {/* Sidebar for attendees */}
-        <div className="sticky bottom-8 h-fit w-full shrink-0 space-y-3 md:top-25 md:w-80">
-          <div className="space-y-4 rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
+        <div className="fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:top-25 md:h-full md:w-80 md:space-y-4 md:px-0">
+          <div className="rounded-3xl bg-[#FFFFFF] p-4 md:space-y-6 md:p-6 dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-y-0 space-x-2 text-gray-700 dark:text-gray-200">
               {participants.length === 0 && (
@@ -115,7 +117,7 @@ export default function ResultsPage({
             <EventInfo eventRange={eventRange} />
           </div>
 
-          <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-4 text-sm md:block dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
               <TimezoneSelect value={timezone} onChange={handleTZChange} />
