@@ -36,16 +36,17 @@ export default function DashboardEvent({
         <div className="rounded bg-white text-lg font-bold dark:bg-violet">
           {title}
         </div>
+        <div className="text-sm opacity-50">{code}</div>
         {type === "specific" && (
           <DateRangeRow
-            className="mt-1 mb-2"
+            className="my-2"
             startDate={startDate!}
             endDate={endDate!}
           />
         )}
         {type === "weekday" && (
           <WeekdayRow
-            className="mt-1 mb-2"
+            className="my-2"
             startWeekday={startWeekday!}
             endWeekday={endWeekday!}
           />
