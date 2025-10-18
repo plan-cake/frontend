@@ -29,7 +29,7 @@ export default function DashboardPage({
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {loggedIn === false && (
-        <div className="flex items-center gap-4 rounded-2xl bg-blue/20 p-4 dark:bg-red/20">
+        <div className="flex items-center gap-4 rounded-3xl bg-blue/20 p-4 dark:bg-red/20">
           <InfoCircledIcon className="h-5 w-5" />
           <div>
             <h2 className="text-lg font-bold">Logged in as a Guest</h2>
