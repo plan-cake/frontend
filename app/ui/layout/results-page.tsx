@@ -37,7 +37,7 @@ export default function ResultsPage({
 
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
-  const isCreator: boolean = initialAvailabilityData.is_creator || false;
+  const isCreator: boolean = true;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
@@ -45,30 +45,28 @@ export default function ResultsPage({
   return (
     <div className="flex flex-col space-y-4 pr-10 pl-10">
       <HeaderSpacer />
-      <div className="flex justify-between">
+      <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
         </div>
-        <div className="flex items-center gap-2">
+        <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
           {isCreator && (
             <Link
-              className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
+              className="flex flex-row items-center gap-2 rounded-full border-2 border-blue p-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
               href={`/${eventCode}/edit`}
             >
+              <Pencil1Icon className="h-5 w-5" />
               <span className="hidden md:block">Edit Event</span>
-              <Pencil1Icon width={16} height={16} className="md:hidden" />
             </Link>
           )}
           <CopyToast />
           <Link
-            className="rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet md:flex dark:border-red dark:bg-red dark:hover:bg-red/25 dark:hover:text-white"
+            className="flex flex-row items-center gap-2 rounded-full border-2 border-blue bg-blue p-2 text-sm text-white hover:bg-blue-100 hover:text-violet dark:border-red dark:bg-red dark:hover:bg-red/25"
             href={`/${eventCode}`}
           >
-            <span className="hidden md:block">
-              {participated ? "Edit" : "Add"} Availability
-            </span>
-            <Pencil2Icon width={16} height={16} className="md:hidden" />
+            <Pencil2Icon className="h-5 w-5" />
+            <span>{participated ? "Edit" : "Add"} Availability</span>
           </Link>
         </div>
       </div>
