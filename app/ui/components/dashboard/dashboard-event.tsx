@@ -28,6 +28,15 @@ export default function DashboardEvent({
   startWeekday,
   endWeekday,
 }: DashboardEventProps) {
+  const eventUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
+
+  async function copyLink(e: React.MouseEvent<HTMLButtonElement>) {
+    e.stopPropagation();
+    e.preventDefault();
+    await navigator.clipboard.writeText(eventUrl);
+  }
+
   return (
     <Link href={`/${code}`}>
       <div className="flex w-full flex-col rounded-lg bg-white p-4 dark:bg-violet">
@@ -52,13 +61,22 @@ export default function DashboardEvent({
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(startHour, endHour)}
         </div>
-        {myEvent && (
-          <Link className="mt-2" href={`/${code}/edit`}>
-            <div className="w-fit rounded-full border border-violet p-1.5 dark:border-white">
-              <Pencil1Icon className="h-4 w-4" />
-            </div>
-          </Link>
-        )}
+        <div className="mt-2 flex items-center gap-2">
+          <button
+            onClick={copyLink}
+            className="flex cursor-pointer items-center gap-0.5 rounded-full border border-violet px-2 py-1.5 dark:border-white"
+          >
+            <CopyIcon className="h-4 w-4" />
+            <span className="ml-1 text-xs text-white">Copy Link</span>
+          </button>
+          {myEvent && (
+            <Link href={`/${code}/edit`}>
+              <div className="w-fit rounded-full border border-violet p-1.5 dark:border-white">
+                <Pencil1Icon className="h-4 w-4" />
+              </div>
+            </Link>
+          )}
+        </div>
       </div>
     </Link>
   );
