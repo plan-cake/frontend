@@ -1,7 +1,3 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import formatApiError from "../../_utils/format-api-error";
 import Link from "next/link";
 import HeaderSpacer from "../../ui/components/header/header-spacer";
 
@@ -11,50 +7,7 @@ type Event = {
   participants: string[];
 };
 
-export default async function DashboardPage() {
-  const [joinedEvents, setJoinedEvents] = useState<Event[]>([]);
-  const [createdEvents, setCreatedEvents] = useState<Event[]>([]);
-
-  useEffect(() => {
-    fetch("/api/dashboard/get", {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          const data = await res.json();
-          const newJoinedEvents: Event[] = [];
-          data.participated_events.map((event: any) => {
-            newJoinedEvents.push({
-              id: event.event_code,
-              title: event.title,
-              participants: event.participants.map((p: string) =>
-                p.slice(0, 1).toUpperCase(),
-              ),
-            });
-          });
-          setJoinedEvents(newJoinedEvents);
-          const newCreatedEvents: Event[] = [];
-          data.created_events.map((event: any) => {
-            newCreatedEvents.push({
-              id: event.event_code,
-              title: event.title,
-              participants: event.participants.map((p: string) =>
-                p.slice(0, 1).toUpperCase(),
-              ),
-            });
-          });
-          setCreatedEvents(newCreatedEvents);
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred while fetching dashboard data.");
-      });
-  }, []);
-
+export default async function DashboardPage({ eventData }: { eventData: any }) {
   const renderParticipants = (participants: string[]) => {
     const visible = participants.slice(0, 4);
     const extraCount = participants.length - visible.length;
@@ -85,7 +38,7 @@ export default async function DashboardPage() {
       <section>
         <h2 className="mb-4 text-2xl font-bold">Events You Joined</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {joinedEvents.map((event) => (
+          {eventData.participated_events.map((event: any) => (
             <div key={event.id} className="flex flex-col items-center">
               <Link
                 href={`/${event.id}`}
@@ -109,7 +62,7 @@ export default async function DashboardPage() {
       <section className="mt-8">
         <h2 className="mb-4 text-2xl font-bold">Events You Created</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {createdEvents.map((event) => (
+          {eventData.created_events.map((event: any) => (
             <div key={event.id} className="flex flex-col items-center">
               <Link
                 href={`/${event.id}`}

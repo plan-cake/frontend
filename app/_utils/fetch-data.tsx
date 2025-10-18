@@ -73,3 +73,22 @@ export async function fetchSelfAvailability(
 
   return res.json();
 }
+
+export async function fetchDashboard(cookieHeader: string): Promise<any> {
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const res = await fetch(`${baseUrl}/dashboard/get`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Cookie: cookieHeader,
+    },
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    const errorMessage = formatApiError(await res.json());
+    throw new Error("Failed to fetch dashboard events: " + errorMessage);
+  }
+
+  return res.json();
+}
