@@ -24,7 +24,7 @@ export default function DashboardPage({
     <div className="min-h-screen p-6">
       <HeaderSpacer />
       <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
-      <div className={!isMobile ? "flex" : ""}>
+      <div className={cn("flex gap-4", isMobile && "flex-col")}>
         <div className={cn("flex", !isMobile && "flex-col gap-2")}>
           <DashboardTabButton
             label="Created Events"
@@ -41,9 +41,11 @@ export default function DashboardPage({
             setTab={setTab}
           />
         </div>
-        <EventGrid
-          events={tab === "created" ? created_events : participated_events}
-        />
+        <div className="w-full rounded-3xl bg-[#FFFFFF] p-4 dark:bg-[#343249]">
+          <EventGrid
+            events={tab === "created" ? created_events : participated_events}
+          />
+        </div>
       </div>
     </div>
   );
