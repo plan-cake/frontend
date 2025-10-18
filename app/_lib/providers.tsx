@@ -2,6 +2,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { createContext, useState } from "react";
+import ToastProvider from "./toast-provider";
 
 export const LoginContext = createContext<{
   loggedIn: boolean;
@@ -17,7 +18,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
       <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
-        {children}
+        <ToastProvider>{children}</ToastProvider>
       </LoginContext.Provider>
     </ThemeProvider>
   );

@@ -82,27 +82,27 @@ export default function ResultsTimeBlock({
         const opacity = matchCount / numParticipants || 0;
         const isHovered = hoveredSlot === localSlotIso;
 
-        let backgroundColor;
-        const accentColor = isDark ? "var(--color-red)" : "var(--color-blue)";
+        // background colors
         const opacityPercent = Math.round(opacity * 100);
-        const backgroundBase = isDark
-          ? "var(--color-violet)"
-          : "var(--color-white)";
-        // blend the accent color with the background
-        backgroundColor = `color-mix(in srgb, ${accentColor} ${opacityPercent}%, ${backgroundBase})`;
+        const dynamicStyle = {
+          "--opacity-percent": `${opacityPercent}%`,
+        };
+        cellClasses.push(
+          `bg-[color-mix(in_srgb,var(--color-blue)_var(--opacity-percent),var(--color-white))] dark:bg-[color-mix(in_srgb,var(--color-red)_var(--opacity-percent),var(--color-violet))]`,
+        );
 
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}
             slotIso={localSlotIso}
             cellClasses={cellClasses.join(" ")}
-            backgroundColor={backgroundColor}
             isHovered={isHovered}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerEnter={() => {
               onHoverSlot?.(localSlotIso);
             }}
+            dynamicStyle={dynamicStyle}
           />
         );
       })}

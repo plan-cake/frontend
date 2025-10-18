@@ -11,6 +11,11 @@ import { useRouter } from "next/navigation";
 import submitEvent from "@/app/_utils/submit-event";
 import { cn } from "@/app/_lib/classname";
 
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { useState } from "react";
+import { useToast } from "@/app/_lib/toast-context";
+import { validateEventData } from "@/app/_utils/validate-data";
+
 const durationOptions = [
   { label: "None", value: 0 },
   { label: "30 minutes", value: 30 },
@@ -42,24 +47,58 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const isSubmitting = useRef(false);
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const createErrorToast = (message: string) => {
+    addToast({
+      type: "error",
+      id: Date.now() + Math.random(),
+      title: "ERROR",
+      message: message,
+    });
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
+    else if (e.target.value === "") {
+      setErrors((prev) => ({ ...prev, title: "Please enter an event name." }));
+    }
+    setTitle(e.target.value);
+  };
+
+  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
+    setCustomCode(e.target.value);
+  };
+
+  // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    setErrors({}); // reset errors
 
-    await submitEvent(
-      {
-        title,
-        code: customCode,
-        eventRange,
-      },
-      type,
-      eventRange.type,
-      (code: string) => {
-        router.push(`/${code}/results`);
-      },
-    );
+    try {
+      const validationErrors = await validateEventData(state);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        Object.values(validationErrors).forEach(createErrorToast);
+        return;
+      }
 
-    isSubmitting.current = false;
+      await submitEvent(
+        { title, code: customCode, eventRange },
+        type,
+        eventRange.type,
+        (code: string) => router.push(`/${code}/results`),
+      );
+    } catch (error) {
+      console.error("Submission failed:", error);
+      createErrorToast("An unexpected error occurred. Please try again.");
+    } finally {
+      isSubmitting.current = false;
+    }
   };
 
   const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
@@ -67,13 +106,25 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">
       <div className="flex w-full items-center justify-between">
-        <input
-          type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          placeholder="add event name"
-          className="w-full border-b-1 border-violet p-1 text-2xl focus:outline-none md:w-2/4 dark:border-gray-400"
-        />
+        <div className="md:w-1/2">
+          <p
+            className={`text-right text-xs text-red ${errors.title ? "visible" : "invisible"}`}
+          >
+            {errors.title ? errors.title : "Error Placeholder"}
+          </p>
+          <input
+            type="text"
+            value={title}
+            onChange={handleNameChange}
+            placeholder="add event name"
+            className={cn(
+              "w-full border-b-1 p-1 text-2xl focus:outline-none",
+              errors.title
+                ? "border-red placeholder:text-red"
+                : "border-violet dark:border-gray-400",
+            )}
+          />
+        </div>
         <button
           className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
           onClick={submitEventInfo}
@@ -150,21 +201,23 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             />
           </div>
 
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:block">
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-15 md:flex md:justify-between">
             {type === "new" && "Custom"} Event Code
+            {errors.customCode && (
+              <ExclamationTriangleIcon className="h-4 w-4 text-red" />
+            )}
           </label>
           <div className="hidden md:col-start-1 md:row-start-16 md:block">
             <input
               type="text"
-              disabled={type === "edit"}
               value={customCode}
-              onChange={(e) => setCustomCode(e.target.value)}
+              onChange={handleCustomCodeChange}
               placeholder="optional"
-              className={cn(
-                "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
-                type === "new" && "text-blue dark:text-red",
-                type === "edit" && "cursor-not-allowed opacity-50",
-              )}
+              className={`w-full border-b-1 focus:outline-none ${
+                errors.customCode
+                  ? "border-red placeholder:text-red"
+                  : "border-violet text-blue dark:border-gray-400 dark:text-red"
+              }`}
             />
           </div>
 
@@ -187,8 +240,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 value={eventRange.duration}
                 onValueChange={(v) => setDuration((v as number) || 0)}
               />
-              <label className="text-gray-400">
+              <label className="flex justify-between text-gray-400">
                 {type === "new" && "Custom"} Event Code
+                {errors.customCode && (
+                  <ExclamationTriangleIcon className="h-4 w-4 text-red" />
+                )}
               </label>
               <input
                 type="text"
@@ -200,6 +256,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                   "w-full border-b-1 border-gray-300 focus:outline-none dark:border-gray-400",
                   type === "new" && "text-blue dark:text-red",
                   type === "edit" && "cursor-not-allowed opacity-50",
+                  errors.customCode ? "border-red placeholder:text-red" : "",
                 )}
               />
             </div>
