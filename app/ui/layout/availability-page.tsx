@@ -96,10 +96,10 @@ export default function AvailabilityPage({
   };
 
   return (
-    <div className="flex flex-col space-y-4 pr-10 pl-10">
+    <div className="flex flex-col space-y-4 pr-6 pl-6">
       <HeaderSpacer />
       {/* Header and Button Row */}
-      <div className="flex justify-between md:flex-row">
+      <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />

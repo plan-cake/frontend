@@ -43,7 +43,7 @@ export default function ResultsPage({
     initialAvailabilityData.availability || {};
 
   return (
-    <div className="flex flex-col space-y-4 pr-10 pl-10">
+    <div className="flex flex-col space-y-4 pr-6 pl-6">
       <HeaderSpacer />
       <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">

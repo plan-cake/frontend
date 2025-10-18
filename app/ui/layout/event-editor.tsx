@@ -105,7 +105,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
 
   return (
-    <div className="flex min-h-dvh flex-col space-y-4 pr-10 pl-10">
+    <div className="flex min-h-dvh flex-col space-y-4 pr-6 pl-6">
       <HeaderSpacer />
       <div className="flex w-full items-center justify-between">
         <div className="md:w-1/2">
