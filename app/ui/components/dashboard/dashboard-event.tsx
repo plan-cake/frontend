@@ -25,10 +25,8 @@ export default function DashboardEvent({
 }: DashboardEventProps) {
   return (
     <Link href={`/${code}`}>
-      <div className="mb-2 flex w-full flex-col rounded rounded-lg bg-white p-4 dark:bg-violet">
-        <div className="mb-2 w-full rounded bg-white dark:bg-violet">
-          {title}
-        </div>
+      <div className="flex w-full flex-col rounded rounded-lg bg-white p-4 dark:bg-violet">
+        <div className="w-full rounded bg-white dark:bg-violet">{title}</div>
       </div>
     </Link>
   );
