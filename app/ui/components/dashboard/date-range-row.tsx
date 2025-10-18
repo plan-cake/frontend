@@ -13,17 +13,21 @@ export default function DateRangeRow({
     <div
       className={`${className} w-fit rounded-full bg-blue/50 px-3 py-1 text-xs font-bold text-blue-500 dark:bg-red/50 dark:text-red-100`}
     >
-      {formatDateRange(startDate, endDate)}
+      {formatDates(startDate, endDate)}
     </div>
   );
 }
 
-function formatDate(date: string): string {
-  const options: Intl.DateTimeFormatOptions = { month: "long", day: "numeric" };
-  const dateObj = new Date(date);
-  return dateObj.toLocaleDateString("en-US", options);
-}
-
-function formatDateRange(startDate: string, endDate: string): string {
-  return `${formatDate(startDate)} - ${formatDate(endDate)}`;
+function formatDates(startDate: string, endDate: string): string {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  if (start.getUTCMonth() === end.getUTCMonth()) {
+    if (start.getUTCDate() === end.getUTCDate()) {
+      return `${start.toLocaleString("en-US", { month: "long" })} ${start.getUTCDate()}`;
+    } else {
+      return `${start.toLocaleString("en-US", { month: "long" })} ${start.getUTCDate()} - ${end.getUTCDate()}`;
+    }
+  } else {
+    return `${start.toLocaleString("en-US", { month: "long" })} ${start.getUTCDate()} - ${end.toLocaleString("en-US", { month: "long" })} ${end.getUTCDate()}`;
+  }
 }
