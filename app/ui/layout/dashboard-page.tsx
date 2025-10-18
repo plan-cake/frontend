@@ -4,6 +4,7 @@ import { cn } from "@/app/_lib/classname";
 import { LoginContext } from "@/app/_lib/providers";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import Link from "next/link";
 import { useContext, useState } from "react";
 import HeaderSpacer from "../../ui/components/header/header-spacer";
 import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
@@ -34,7 +35,13 @@ export default function DashboardPage({
             <h2 className="text-lg font-bold">Logged in as a Guest</h2>
             <div>
               This data is only available from this browser.{" "}
-              <span>Create an account</span> to sync your data across devices.
+              <Link
+                href="/register"
+                className="cursor-pointer font-bold text-blue hover:underline dark:text-red"
+              >
+                Create an account
+              </Link>{" "}
+              to sync your data across devices.
             </div>
           </div>
         </div>
