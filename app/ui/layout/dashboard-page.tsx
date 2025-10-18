@@ -1,8 +1,10 @@
 "use client";
 
 import { cn } from "@/app/_lib/classname";
+import { LoginContext } from "@/app/_lib/providers";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
-import { useState } from "react";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { useContext, useState } from "react";
 import HeaderSpacer from "../../ui/components/header/header-spacer";
 import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
 
@@ -19,11 +21,24 @@ export default function DashboardPage({
 }: DashboardPageProps) {
   const [tab, setTab] = useState<DashboardTab>("created");
   const isMobile = useCheckMobile();
+  const { loggedIn } = useContext(LoginContext);
 
   return (
-    <div className="min-h-screen p-6">
+    <div className="flex min-h-screen flex-col gap-4 p-6">
       <HeaderSpacer />
-      <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
+      <h1 className="text-2xl font-bold">Dashboard</h1>
+      {loggedIn === false && (
+        <div className="flex items-center gap-4 rounded-2xl bg-blue/20 p-4 dark:bg-red/20">
+          <InfoCircledIcon className="h-5 w-5" />
+          <div>
+            <h2 className="text-lg font-bold">Logged in as a Guest</h2>
+            <div>
+              This data is only available from this browser.{" "}
+              <span>Create an account</span> to sync your data across devices.
+            </div>
+          </div>
+        </div>
+      )}
       <div className={cn("flex gap-4", isMobile && "flex-col")}>
         <div className={cn("flex", !isMobile && "flex-col")}>
           <DashboardTabButton
