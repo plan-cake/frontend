@@ -79,7 +79,7 @@ export default function DashboardEvent({
 }
 
 function formatHour(hour: number): string {
-  if (hour == 0 || hour == 24) {
+  if (hour === 0 || hour === 24) {
     return "12am";
   }
   const period = hour >= 12 ? "pm" : "am";
