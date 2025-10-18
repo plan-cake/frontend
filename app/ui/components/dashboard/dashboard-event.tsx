@@ -67,7 +67,7 @@ export default function DashboardEvent({
             className="flex cursor-pointer items-center gap-0.5 rounded-full border border-violet px-2 py-1.5 dark:border-white"
           >
             <CopyIcon className="h-4 w-4" />
-            <span className="ml-1 text-xs text-white">Copy Link</span>
+            <span className="ml-1 text-xs">Copy Link</span>
           </button>
           {myEvent && (
             <Link href={`/${code}/edit`}>
