@@ -7,5 +7,5 @@ export default async function Page() {
 
   const eventData = await fetchDashboard(authCookies);
 
-  return <DashboardPage eventData={eventData} />;
+  return <DashboardPage {...eventData} />;
 }
