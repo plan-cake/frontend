@@ -1,9 +1,10 @@
 "use client";
 
+import { cn } from "@/app/_lib/classname";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { useState } from "react";
 import HeaderSpacer from "../../ui/components/header/header-spacer";
 import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
-import { cn } from "@/app/_lib/classname";
 
 type DashboardTab = "created" | "participated";
 
@@ -17,23 +18,26 @@ export default function DashboardPage({
   participated_events,
 }: DashboardPageProps) {
   const [tab, setTab] = useState<DashboardTab>("created");
+  const isMobile = useCheckMobile();
 
   return (
     <div className="min-h-screen p-6">
       <HeaderSpacer />
       <h1 className="mb-6 text-2xl font-bold">Dashboard</h1>
-      <div className="flex">
-        <div className="flex flex-col gap-2">
+      <div className={!isMobile ? "flex" : ""}>
+        <div className={cn("flex", !isMobile && "flex-col gap-2")}>
           <DashboardTabButton
             label="Created Events"
             value="created"
             currentTab={tab}
+            isMobile={isMobile}
             setTab={setTab}
           />
           <DashboardTabButton
             label="Participated Events"
             value="participated"
             currentTab={tab}
+            isMobile={isMobile}
             setTab={setTab}
           />
         </div>
@@ -49,18 +53,21 @@ function DashboardTabButton({
   label,
   value,
   currentTab,
+  isMobile,
   setTab,
 }: {
   label: string;
   value: DashboardTab;
   currentTab: DashboardTab;
+  isMobile: boolean;
   setTab: (value: DashboardTab) => void;
 }) {
   return (
     <button
       className={cn(
-        "w-full rounded-full px-4 py-2 text-left",
+        "rounded-full px-4 py-2",
         currentTab === value && "bg-blue text-white dark:bg-red",
+        !isMobile && "w-full text-left",
       )}
       onClick={() => setTab(value)}
     >
