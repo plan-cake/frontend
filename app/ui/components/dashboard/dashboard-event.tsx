@@ -1,9 +1,11 @@
 import { cn } from "@/app/_lib/classname";
 import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import DashboardCopyButton from "./dashboard-copy-button";
 import DateRangeRow from "./date-range-row";
 import WeekdayRow from "./weekday-row";
+import { MouseEvent } from "react";
 
 export type DashboardEventProps = {
   myEvent: boolean;
@@ -30,6 +32,13 @@ export default function DashboardEvent({
   startWeekday,
   endWeekday,
 }: DashboardEventProps) {
+  const router = useRouter();
+
+  function navigateToEdit(e: MouseEvent<HTMLButtonElement>) {
+    e.preventDefault(); // prevent the link behind it triggering
+    router.push(`/${code}/edit`);
+  }
+
   return (
     <Link href={`/${code}`}>
       <div className="flex w-full flex-col rounded-lg bg-white p-4 transition-shadow hover:shadow-lg hover:shadow-black/25 dark:bg-violet">
@@ -52,7 +61,7 @@ export default function DashboardEvent({
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />
           {myEvent && (
-            <Link href={`/${code}/edit`}>
+            <button className="cursor-pointer" onClick={navigateToEdit}>
               <div
                 className={cn(
                   "w-fit rounded-full border border-violet p-1.5 dark:border-white",
@@ -61,7 +70,7 @@ export default function DashboardEvent({
               >
                 <Pencil1Icon className="h-4 w-4" />
               </div>
-            </Link>
+            </button>
           )}
         </div>
       </div>
