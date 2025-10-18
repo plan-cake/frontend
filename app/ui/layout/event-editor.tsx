@@ -105,7 +105,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
 
   return (
-    <div className="flex h-svh flex-col space-y-4 pr-10 pl-10">
+    <div className="flex min-h-dvh flex-col space-y-4 pr-10 pl-10">
       <HeaderSpacer />
       <div className="flex w-full items-center justify-between">
         <div className="md:w-1/2">
@@ -270,8 +270,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         </div>
       </div>
 
-      <div className="flex min-h-0 flex-1 md:hidden">
+      <div className="min-h-screen md:hidden">
         <GridPreviewDialog eventRange={eventRange} />
+        <div className="h-25" />
       </div>
 
       <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">

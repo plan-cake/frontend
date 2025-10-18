@@ -25,7 +25,7 @@ export default function GridPreviewDialog({
   };
 
   return (
-    <div className="relative grow md:h-full md:w-full">
+    <div className="relative h-screen grow md:h-full md:w-full">
       {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-gray-700/40"

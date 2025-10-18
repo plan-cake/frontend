@@ -84,7 +84,7 @@ export default function ScheduleGrid({
         }
       />
 
-      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
+      <div className="flex flex-grow flex-col gap-4 overflow-y-scroll pt-2">
         {timeBlocks.map((block, i) => {
           // filter visibleTimeSlots to those within this block's hours
           const blockTimeSlots = visibleTimeSlots.filter((slot) => {
