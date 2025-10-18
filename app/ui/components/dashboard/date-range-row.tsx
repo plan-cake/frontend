@@ -11,7 +11,7 @@ export default function DateRangeRow({
 }: DateRangeRowProps) {
   return (
     <div
-      className={`${className} w-fit rounded-full bg-blue/50 px-3 py-1 text-xs font-bold dark:bg-red/50`}
+      className={`${className} w-fit rounded-full bg-blue/50 px-3 py-1 text-xs font-bold text-blue-500 dark:bg-red/50 dark:text-red-100`}
     >
       {formatDateRange(startDate, endDate)}
     </div>
