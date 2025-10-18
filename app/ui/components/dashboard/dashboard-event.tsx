@@ -1,8 +1,9 @@
-import { ClockIcon, CopyIcon, Pencil1Icon } from "@radix-ui/react-icons";
+import { cn } from "@/app/_lib/classname";
+import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import DashboardCopyButton from "./dashboard-copy-button";
 import DateRangeRow from "./date-range-row";
 import WeekdayRow from "./weekday-row";
-import { cn } from "@/app/_lib/classname";
 
 export type DashboardEventProps = {
   myEvent: boolean;
@@ -29,15 +30,6 @@ export default function DashboardEvent({
   startWeekday,
   endWeekday,
 }: DashboardEventProps) {
-  const eventUrl =
-    typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
-
-  async function copyLink(e: React.MouseEvent<HTMLButtonElement>) {
-    e.stopPropagation();
-    e.preventDefault();
-    await navigator.clipboard.writeText(eventUrl);
-  }
-
   return (
     <Link href={`/${code}`}>
       <div className="flex w-full flex-col rounded-lg bg-white p-4 transition-shadow hover:shadow-lg hover:shadow-black/25 dark:bg-violet">
@@ -63,16 +55,7 @@ export default function DashboardEvent({
           {formatTimeRange(startHour, endHour)}
         </div>
         <div className="mt-2 flex items-center gap-2">
-          <button
-            onClick={copyLink}
-            className={cn(
-              "flex cursor-pointer items-center gap-0.5 rounded-full border border-violet px-2 py-1.5 dark:border-white",
-              "transition hover:bg-violet/25 dark:hover:bg-white/25",
-            )}
-          >
-            <CopyIcon className="h-4 w-4" />
-            <span className="ml-1 text-xs">Copy Link</span>
-          </button>
+          <DashboardCopyButton code={code} />
           {myEvent && (
             <Link href={`/${code}/edit`}>
               <div
