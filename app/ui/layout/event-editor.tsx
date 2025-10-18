@@ -275,9 +275,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         <div className="h-25" />
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
+      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
         <div
-          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+          className="rounded-full bg-blue p-4 text-center text-white dark:bg-red"
           onClick={submitEventInfo}
         >
           {type === "edit" ? "Update Event" : "Create Event"}
