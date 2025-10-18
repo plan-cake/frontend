@@ -213,6 +213,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             <input
               type="text"
               value={customCode}
+              disabled={type === "edit"}
               onChange={handleCustomCodeChange}
               placeholder="optional"
               className={`w-full border-b-1 focus:outline-none ${
