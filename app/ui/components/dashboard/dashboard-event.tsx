@@ -1,5 +1,6 @@
 import { ClockIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
+import DateRangeRow from "./date-range-row";
 import WeekdayRow from "./weekday-row";
 
 export type DashboardEventProps = {
@@ -31,6 +32,13 @@ export default function DashboardEvent({
         <div className="rounded bg-white text-lg font-bold dark:bg-violet">
           {title}
         </div>
+        {type === "specific" && (
+          <DateRangeRow
+            className="mt-1 mb-2"
+            startDate={startDate!}
+            endDate={endDate!}
+          />
+        )}
         {type === "weekday" && (
           <WeekdayRow
             className="mt-1 mb-2"
