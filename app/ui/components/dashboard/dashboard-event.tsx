@@ -37,7 +37,7 @@ export default function DashboardEvent({
           {title}
         </div>
         <div className="text-sm opacity-50">{code}</div>
-        <div className="my-2">
+        <div className="mt-1 mb-2">
           {type === "specific" && (
             <DateRangeRow startDate={startDate!} endDate={endDate!} />
           )}
