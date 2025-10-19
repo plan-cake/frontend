@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, DependencyList } from "react";
 
 export function useDebounce(
   effect: () => void,
-  deps: any[],
+  deps: DependencyList,
   delay: number = 1000,
 ) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);

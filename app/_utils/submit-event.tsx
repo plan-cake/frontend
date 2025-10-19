@@ -13,6 +13,20 @@ export type EventSubmitData = {
   eventRange: EventRange;
 };
 
+type EventSubmitJsonBody = {
+  title: string;
+  duration?: number;
+  time_zone: string;
+  start_hour: number;
+  end_hour: number;
+  start_date?: string;
+  end_date?: string;
+  start_weekday?: number;
+  end_weekday?: number;
+  custom_code?: string;
+  event_code?: string;
+};
+
 const formatDate = (date: Date): string => {
   const year = date.getUTCFullYear();
   const month = String(date.getUTCMonth() + 1).padStart(2, "0"); // Months are 0-indexed
@@ -27,7 +41,7 @@ export default async function submitEvent(
   onSuccess: (code: string) => void,
 ): Promise<void> {
   let apiRoute = "";
-  let jsonBody = {};
+  let jsonBody: EventSubmitJsonBody;
 
   if (eventType === "specific") {
     apiRoute =
@@ -90,13 +104,13 @@ export default async function submitEvent(
 
   // only include duration if set
   if (data.eventRange.duration && data.eventRange.duration > 0) {
-    (jsonBody as any).duration = data.eventRange.duration;
+    jsonBody.duration = data.eventRange.duration;
   }
 
   if (type === "new" && data.code) {
-    (jsonBody as any).custom_code = data.code;
+    jsonBody.custom_code = data.code;
   } else if (type === "edit") {
-    (jsonBody as any).event_code = data.code;
+    jsonBody.event_code = data.code;
   }
 
   await fetch(apiRoute, {
