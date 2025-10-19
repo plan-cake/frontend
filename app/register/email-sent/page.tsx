@@ -21,7 +21,7 @@ export default function Page() {
       // don't clear the email from storage, it creates problems when testing
       // it should be deleted after the session ends anyway
     }
-  }, []); // empty dependency array to run once on initial mount
+  }, [router]); // empty dependency array to run once on initial mount
 
   if (!email) {
     // don't render until there is an email
