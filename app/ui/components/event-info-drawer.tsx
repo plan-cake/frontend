@@ -74,7 +74,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
               )}`}
         </InfoRow>
 
-        {eventRange.duration && (
+        {eventRange.duration > 0 && (
           <InfoRow label="Intended Duration">
             {eventRange.duration} minutes
           </InfoRow>
