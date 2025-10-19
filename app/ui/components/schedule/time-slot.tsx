@@ -26,7 +26,6 @@ interface TimeSlotProps {
 
 function TimeSlot({
   slotIso,
-  isSelected,
   isHovered,
   disableSelect,
   dynamicStyle: style,

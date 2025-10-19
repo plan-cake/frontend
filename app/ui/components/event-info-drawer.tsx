@@ -55,7 +55,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         ) : (
           <InfoRow label="Days of the Week">
             {Object.entries(eventRange.weekdays)
-              .filter(([_, val]) => val === 1)
+              .filter(([, val]) => val === 1)
               .map(([day]) => day)
               .join(", ")}
           </InfoRow>

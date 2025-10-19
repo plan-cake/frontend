@@ -40,7 +40,6 @@ interface ScheduleGridProps {
 export default function ScheduleGrid({
   eventRange,
   timezone,
-  disableSelect = false,
   mode = "preview",
   availabilities = {},
   numParticipants = 0,
@@ -51,8 +50,10 @@ export default function ScheduleGrid({
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const { timeBlocks, dayGroupedSlots, numDays, numHours, error } =
-    useGenerateTimeSlots(eventRange, timezone);
+  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
+    eventRange,
+    timezone,
+  );
 
   const maxDaysVisible = isMobile ? 4 : 7;
   const [currentPage, setCurrentPage] = useState(0);

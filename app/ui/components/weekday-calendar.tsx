@@ -14,8 +14,8 @@ export default function WeekdayCalendar({
   selectedDays,
   onChange,
 }: WeekdayCalendarProps) {
-  const [startMonday, setStartMonday] = useState(false);
-  const reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
+  // const [startMonday, setStartMonday] = useState(false);
+  // const reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
 
   // for toggling ranges of days
   const [startDay, setStartDay] = useState<Weekday | null>(null);
@@ -29,11 +29,11 @@ export default function WeekdayCalendar({
 
   // for toggling only one day at a time
   // currently not in use
-  const handleDayClick = (day: Weekday) => {
-    const newSelectedDays = { ...selectedDays };
-    newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
-    onChange(newSelectedDays);
-  };
+  // const handleDayClick = (day: Weekday) => {
+  //   const newSelectedDays = { ...selectedDays };
+  //   newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
+  //   onChange(newSelectedDays);
+  // };
 
   const handleRangeSelect = (day: Weekday) => {
     if (!startDay) {

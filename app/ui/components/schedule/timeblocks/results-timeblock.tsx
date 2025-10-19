@@ -3,7 +3,6 @@ import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 import BaseTimeBlock from "./base-timeblock";
 
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
-import { useTheme } from "next-themes";
 import TimeSlot from "../time-slot";
 
 interface ResultsTimeBlockProps {
@@ -35,9 +34,6 @@ export default function ResultsTimeBlock({
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   return (
     <BaseTimeBlock
       timeColWidth={timeColWidth}

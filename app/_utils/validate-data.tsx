@@ -21,7 +21,7 @@ export async function validateEventData(
       if (!response.ok) {
         errors.customCode = "This code is unavailable. Please choose another.";
       }
-    } catch (error) {
+    } catch {
       errors.api = "Could not verify the custom code. Please try again.";
     }
   }
@@ -63,7 +63,7 @@ export async function validateAvailabilityData(
         errors.displayName =
           "This name is already taken. Please choose another.";
       }
-    } catch (error) {
+    } catch {
       errors.api = "Could not verify name availability. Please try again.";
     }
   }

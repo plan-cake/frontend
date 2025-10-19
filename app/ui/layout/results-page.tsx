@@ -10,7 +10,6 @@ import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 export default function ResultsPage({
@@ -24,7 +23,6 @@ export default function ResultsPage({
   eventRange: EventRange;
   initialAvailabilityData: any;
 }) {
-  const router = useRouter();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );

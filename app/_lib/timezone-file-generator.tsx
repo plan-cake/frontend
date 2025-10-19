@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 export function formatLabel(tz: string): string {
   try {
     const now = new Date();
-    const offsetMinutes = -now.getTimezoneOffset();
     const offset =
       new Intl.DateTimeFormat("en-US", {
         timeZone: tz,

@@ -1,7 +1,6 @@
 import BaseTimeBlock from "./base-timeblock";
 
 import { toZonedTime } from "date-fns-tz";
-import { useTheme } from "next-themes";
 import TimeSlot from "../time-slot";
 
 interface PreviewTimeBlockProps {
@@ -24,9 +23,6 @@ export default function PreviewTimeBlock({
   visibleDayKeys,
   userTimezone,
 }: PreviewTimeBlockProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   return (
     <BaseTimeBlock
       timeColWidth={timeColWidth}
