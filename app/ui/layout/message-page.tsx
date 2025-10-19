@@ -1,9 +1,8 @@
-enum ButtonTypeEnum {
-  primary = "primary",
-  secondary = "secondary",
-}
-
-type ButtonData = { type: ButtonTypeEnum; label: string; onClick: () => void };
+type ButtonData = {
+  type: "primary" | "secondary";
+  label: string;
+  onClick: () => void;
+};
 
 type MessagePageProps = {
   title: string;
