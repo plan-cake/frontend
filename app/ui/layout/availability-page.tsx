@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/toasts/copy-toast";
-import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
+import TimeZoneSelector from "../components/selectors/timezone-selector";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { EventRange } from "@/app/_lib/schedule/types";
 import formatApiError from "@/app/_utils/format-api-error";
@@ -151,7 +151,7 @@ export default function AvailabilityPage({
           <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
-              <TimezoneSelect
+              <TimeZoneSelector
                 id="timezone-select"
                 value={timeZone}
                 onChange={setTimeZone}

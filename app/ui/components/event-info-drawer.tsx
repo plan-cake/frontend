@@ -20,11 +20,15 @@ export default function EventInfoDrawer({
       </Dialog.Trigger>
 
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50" />
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
           className="fixed right-0 bottom-0 left-0 z-50 flex h-[500px] w-full animate-slideUp flex-col rounded-t-3xl bg-white p-8 focus:outline-none data-[state=closed]:animate-slideDown dark:bg-[#343249]"
           aria-label="Event Info"
         >
+          <div
+            aria-hidden
+            className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
+          />
           <EventInfo eventRange={eventRange} />
         </Dialog.Content>
       </Dialog.Portal>

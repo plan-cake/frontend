@@ -1,9 +1,9 @@
 "use client";
 
-import TimeDropdown from "@/app/ui/components/time-dropdown";
+import TimeSelector from "../components/selectors/time-selector";
+import TimeZoneSelector from "../components/selectors/timezone-selector";
 import DateRangeSelector from "@/app/ui/components/date-range/date-range-selector";
-import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
-import CustomSelect from "@/app/ui/components/selectors/custom-select";
+import DurationSelector from "../components/selectors/duration-selector";
 import GridPreviewDialog from "@/app/ui/components/schedule/grid-preview-dialog";
 import { useEventInfo } from "../../_lib/schedule/use-event-info";
 import { useRef } from "react";
@@ -16,13 +16,6 @@ import { useState } from "react";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateEventData } from "@/app/_utils/validate-data";
 import HeaderSpacer from "../components/header/header-spacer";
-
-const durationOptions = [
-  { label: "None", value: 0 },
-  { label: "30 minutes", value: 30 },
-  { label: "45 minutes", value: 45 },
-  { label: "1 hour", value: 60 },
-];
 
 export type EventEditorType = "new" | "edit";
 
@@ -154,10 +147,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <label htmlFor="from-time-dropdown" className="text-gray-400">
             FROM
           </label>
-          <TimeDropdown
+          <TimeSelector
             id="from-time-dropdown"
-            defaultTZ={defaultTZ}
-            duration={eventRange.duration}
             value={eventRange.timeRange.from}
             onChange={(value) =>
               setTimeRange({ ...eventRange.timeRange, from: value })
@@ -168,12 +159,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <label htmlFor="to-time-dropdown" className="text-gray-400">
             UNTIL
           </label>
-          <TimeDropdown
+          <TimeSelector
             id="to-time-dropdown"
-            defaultTZ={defaultTZ}
-            duration={eventRange.duration}
             value={eventRange.timeRange.to}
-            onChange={(to) => setTimeRange({ ...eventRange.timeRange, to })}
+            onChange={(value) =>
+              setTimeRange({ ...eventRange.timeRange, to: value })
+            }
           />
         </div>
 
@@ -190,7 +181,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             Timezone
           </label>
           <div className="hidden md:col-start-1 md:row-start-12 md:block">
-            <TimezoneSelect
+            <TimeZoneSelector
               id="timezone-select"
               value={eventRange.timezone}
               onChange={setTimezone}
@@ -203,11 +194,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             Duration
           </label>
           <div className="hidden md:col-start-1 md:row-start-14 md:block">
-            <CustomSelect
+            <DurationSelector
               id="duration-select"
-              options={durationOptions}
               value={eventRange.duration}
-              onValueChange={(v) => setDuration((v as number) || 0)}
+              onChange={(v) => setDuration((v as number) || 0)}
             />
           </div>
 
@@ -241,7 +231,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               <label htmlFor="timezone-select" className="text-gray-400">
                 Timezone
               </label>
-              <TimezoneSelect
+              <TimeZoneSelector
                 id="timezone-select"
                 value={eventRange.timezone}
                 onChange={setTimezone}
@@ -249,11 +239,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               <label htmlFor="duration-select" className="text-gray-400">
                 Duration
               </label>
-              <CustomSelect
+              <DurationSelector
                 id="duration-select"
-                options={durationOptions}
                 value={eventRange.duration}
-                onValueChange={(v) => setDuration((v as number) || 0)}
+                onChange={(v) => setDuration((v as number) || 0)}
               />
               <label className="flex justify-between text-gray-400">
                 {type === "new" && "Custom"} Event Code
