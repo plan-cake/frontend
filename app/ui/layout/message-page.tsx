@@ -2,9 +2,8 @@ enum ButtonTypeEnum {
   primary = "primary",
   secondary = "secondary",
 }
-type ButtonType = keyof typeof ButtonTypeEnum;
 
-type ButtonData = { type: ButtonType; label: string; onClick: () => void };
+type ButtonData = { type: ButtonTypeEnum; label: string; onClick: () => void };
 
 type MessagePageProps = {
   title: string;

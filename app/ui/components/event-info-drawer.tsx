@@ -39,7 +39,8 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         <h1 className="font-semibold">Event Details</h1>
         <p className="text-xs">
           Please note that these details are presented in respect to the{" "}
-          <span className="font-bold">original event's timezone</span> which is{" "}
+          <span className="font-bold">original event&apos;s timezone</span>{" "}
+          which is{" "}
           <span className="font-bold text-blue dark:text-red">
             {formatLabel(eventRange.timezone)}
           </span>
