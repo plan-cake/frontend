@@ -20,7 +20,11 @@
   --background: var(--violet);
   --foreground: var(--bone);
   --calendar-accent: var(--color-red);
-  --calendar-accent-background: var(--color-red-200);
+  --calendar-accent-background: color-mix(
+    in srgb,
+    var(--color-red-200) 25%,
+    transparent
+  );
 }
 
 body {
@@ -78,6 +82,7 @@ body {
 .rdp-root {
   --rdp-accent-color: var(--calendar-accent);
   --rdp-accent-background-color: var(--calendar-accent-background);
+  --rdp-day_button-border: 3px solid transparent;
 }
 
 .rdp-months {
