@@ -8,7 +8,7 @@ import {
   days,
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
-import { getHours, getMinutes, startOfDay } from "date-fns";
+import { getHours, getMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 /* WEEKDAY SPECIFIC UTILITIES */

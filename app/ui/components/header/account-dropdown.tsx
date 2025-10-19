@@ -2,7 +2,7 @@ import { cn } from "@/app/_lib/classname";
 import formatApiError from "@/app/_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DashboardIcon, ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { forwardRef, ReactNode, useContext, useRef } from "react";
