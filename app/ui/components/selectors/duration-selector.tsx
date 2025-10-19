@@ -29,7 +29,7 @@ export default function DurationSelector({
   if (!isMobile) {
     return (
       <CustomSelect
-        id="duration-select"
+        id={id}
         options={durationOptions}
         value={value}
         onValueChange={onChange}
