@@ -8,11 +8,13 @@ import { days, WeekdayMap, Weekday } from "@/app/_lib/schedule/types";
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
   onChange: (map: WeekdayMap) => void;
+  inDrawer?: boolean;
 };
 
 export default function WeekdayCalendar({
   selectedDays,
   onChange,
+  inDrawer = false,
 }: WeekdayCalendarProps) {
   const [startMonday, setStartMonday] = useState(false);
   let reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
@@ -21,10 +23,19 @@ export default function WeekdayCalendar({
   const [startDay, setStartDay] = useState<Weekday | null>(null);
 
   useEffect(() => {
+    const hasSelection = Object.values(selectedDays).some((val) => val === 1);
+    if (hasSelection) {
+      return;
+    }
+
     const today = new Date();
     const dayOfWeek = today.getDay();
-    selectedDays[days[dayOfWeek]] = 1;
-    onChange(selectedDays);
+    const todayKey = days[dayOfWeek];
+
+    const newSelection: WeekdayMap = { ...selectedDays };
+    newSelection[todayKey] = 1;
+
+    onChange(newSelection);
   }, []);
 
   // for toggling only one day at a time

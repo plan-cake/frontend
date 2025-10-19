@@ -22,7 +22,7 @@ export default function EventTypeSelect({
       onValueChange={(value) =>
         onEventTypeChange?.(value === "specific" ? "specific" : "weekday")
       }
-      className="min-h-9 min-w-[100px] border-none pt-2"
+      className="min-h-9 min-w-[100px] border-none"
     />
   );
 }

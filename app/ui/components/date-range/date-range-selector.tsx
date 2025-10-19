@@ -42,7 +42,7 @@ export default function DateRangeSelector({
   } else {
     return (
       <div className="mb-4 flex w-full flex-row gap-8">
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <label htmlFor="date-range-type">Type</label>
           <EventTypeSelect
             eventType={rangeType}
