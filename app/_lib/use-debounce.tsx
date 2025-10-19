@@ -17,5 +17,5 @@ export function useDebounce(
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [...deps, delay]);
+  }, [deps, delay, effect]);
 }

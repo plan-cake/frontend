@@ -47,7 +47,7 @@ export function Calendar({
   useEffect(() => {
     // make sure to display the warning when the component loads
     checkDateRange(selectedRange);
-  }, []);
+  });
 
   return (
     <div className={className}>

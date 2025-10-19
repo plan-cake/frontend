@@ -17,7 +17,7 @@ export default function Page() {
     }
     // clear the email from storage
     sessionStorage.removeItem("register_email");
-  }, []);
+  });
 
   if (!email) {
     // stop rendering if there's no email

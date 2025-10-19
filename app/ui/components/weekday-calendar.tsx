@@ -25,7 +25,7 @@ export default function WeekdayCalendar({
     const dayOfWeek = today.getDay();
     selectedDays[days[dayOfWeek]] = 1;
     onChange(selectedDays);
-  }, []);
+  });
 
   // for toggling only one day at a time
   // currently not in use

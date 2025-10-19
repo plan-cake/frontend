@@ -54,7 +54,7 @@ export default function useScheduleDrag(
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  });
 
   useEffect(() => {
     if (dragState.current.lastToggledSlot === null) {
