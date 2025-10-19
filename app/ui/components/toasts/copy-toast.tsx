@@ -30,13 +30,11 @@ export default function CopyToast() {
 
   return (
     <button
-      className="rounded-full border-2 border-blue px-4 py-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
+      className="flex flex-row items-center gap-2 rounded-full border-2 border-blue p-2 text-sm hover:bg-blue-100 dark:border-red dark:hover:bg-red/25"
       onClick={copyToClipboard}
     >
-      <span className="hidden md:block">Copy Link</span>
-      <span className="md:hidden">
-        <CopyIcon width={16} height={16} />
-      </span>
+      <CopyIcon className="h-5 w-5" />
+      <span>Copy Link</span>
     </button>
   );
 }

@@ -8,7 +8,7 @@ import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { EventRange } from "@/app/_lib/schedule/types";
 
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
+import TimeZoneSelector from "../selectors/timezone-selector";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
@@ -25,7 +25,7 @@ export default function GridPreviewDialog({
   };
 
   return (
-    <div className="relative grow md:h-full md:w-full">
+    <div className="relative h-screen grow md:h-full md:w-full">
       {isOpen && (
         <div
           className="fixed inset-0 z-50 bg-gray-700/40"
@@ -72,10 +72,17 @@ export default function GridPreviewDialog({
               timezone={timezone}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
-              <label className="flex items-center text-sm md:ml-[50px]">
+              <label
+                htmlFor="timezone-select"
+                className="flex items-center text-sm md:ml-[50px]"
+              >
                 See event in{" "}
                 <span className="ml-1 font-bold text-blue dark:text-red">
-                  <TimezoneSelect value={timezone} onChange={handleTZChange} />
+                  <TimeZoneSelector
+                    id="timezone-select"
+                    value={timezone}
+                    onChange={handleTZChange}
+                  />
                 </span>
               </label>
               <label className="text-sm md:mr-[20px]">

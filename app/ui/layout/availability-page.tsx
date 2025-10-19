@@ -6,13 +6,14 @@ import { useRouter } from "next/navigation";
 import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
 import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 import CopyToast from "@/app/ui/components/toasts/copy-toast";
-import TimezoneSelect from "@/app/ui/components/selectors/timezone-select";
+import TimeZoneSelector from "../components/selectors/timezone-selector";
 import { EventInfo } from "@/app/ui/components/event-info-drawer";
 import { EventRange } from "@/app/_lib/schedule/types";
 import formatApiError from "@/app/_utils/format-api-error";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateAvailabilityData } from "@/app/_utils/validate-data";
+import HeaderSpacer from "../components/header/header-spacer";
 
 export default function AvailabilityPage({
   eventCode,
@@ -95,10 +96,10 @@ export default function AvailabilityPage({
   };
 
   return (
-    <div className="flex flex-col space-y-4 p-10">
-      <div className="sticky top-0 z-10 h-25 w-full bg-white dark:bg-violet" />
+    <div className="flex flex-col space-y-4 pr-6 pl-6">
+      <HeaderSpacer />
       {/* Header and Button Row */}
-      <div className="flex justify-between md:flex-row">
+      <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
@@ -108,7 +109,7 @@ export default function AvailabilityPage({
           <CopyToast />
           <button
             onClick={handleSubmitAvailability}
-            className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:shadow-[0px_0px_32px_0_rgba(61,115,163,.70)] md:flex dark:border-red dark:bg-red dark:hover:shadow-[0px_0px_32px_0_rgba(255,92,92,.70)]"
+            className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet md:flex dark:border-red dark:bg-red dark:hover:bg-red/25 dark:hover:text-white"
           >
             {initialData ? "Update" : "Submit"} Availability
           </button>
@@ -118,7 +119,7 @@ export default function AvailabilityPage({
       {/* Main Content */}
       <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-30 md:w-80">
+        <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:top-25 md:w-80">
           <div className="w-fit">
             <p
               className={`text-right text-xs text-red ${errors.displayName ? "visible" : "invisible"}`}
@@ -150,7 +151,11 @@ export default function AvailabilityPage({
           <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
-              <TimezoneSelect value={timeZone} onChange={setTimeZone} />
+              <TimeZoneSelector
+                id="timezone-select"
+                value={timeZone}
+                onChange={setTimeZone}
+              />
             </span>
           </div>
         </div>
@@ -165,10 +170,10 @@ export default function AvailabilityPage({
         />
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full px-4 md:hidden">
+      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
         <div
           onClick={handleSubmitAvailability}
-          className="rounded-t-full bg-blue p-4 text-center text-white dark:bg-red"
+          className="rounded-full bg-blue p-4 text-center text-white dark:bg-red"
         >
           Submit Availability
         </div>

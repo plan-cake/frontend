@@ -42,9 +42,10 @@ export default function DateRangeSelector({
   } else {
     return (
       <div className="mb-4 flex w-full flex-row gap-8">
-        <div className="flex flex-col">
-          <label htmlFor="date-range-type">Type</label>
+        <div className="flex flex-col gap-2">
+          <label htmlFor="event-type-select">Type</label>
           <EventTypeSelect
+            id="event-type-select"
             eventType={rangeType}
             disabled={editing}
             onEventTypeChange={setEventType}
@@ -53,7 +54,7 @@ export default function DateRangeSelector({
         <div className="flex w-full flex-col justify-center gap-2">
           {eventRange?.type === "specific" ? (
             <>
-              <label className="flex items-center gap-2" htmlFor="date-range">
+              <label className="flex items-center gap-2">
                 Possible Dates
                 {tooManyDays && (
                   <ExclamationTriangleIcon className="h-4 w-4 text-[#ED7183]" />
