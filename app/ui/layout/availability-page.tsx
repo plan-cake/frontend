@@ -151,7 +151,11 @@ export default function AvailabilityPage({
           <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
-              <TimezoneSelect value={timeZone} onChange={setTimeZone} />
+              <TimezoneSelect
+                id="timezone-select"
+                value={timeZone}
+                onChange={setTimeZone}
+              />
             </span>
           </div>
         </div>

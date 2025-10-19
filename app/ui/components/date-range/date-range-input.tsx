@@ -15,8 +15,11 @@ export default function DateRangeInput({
     <form className="flex w-full flex-col gap-y-2 md:flex-row md:gap-4">
       {/* Start Date */}
       <div className="flex w-fit items-center space-x-4">
-        <label className="text-gray-400 md:hidden">FROM</label>
+        <label htmlFor="start-date" className="text-gray-400 md:hidden">
+          FROM
+        </label>
         <span
+          id="start-date"
           className="bg-transparent text-blue focus:outline-none dark:text-red"
           aria-label="Start date"
         >
@@ -28,8 +31,11 @@ export default function DateRangeInput({
 
       {/* End Date */}
       <div className="flex w-fit items-center space-x-4">
-        <label className="text-gray-400 md:hidden">UNTIL</label>
+        <label htmlFor="end-date" className="text-gray-400 md:hidden">
+          UNTIL
+        </label>
         <span
+          id="end-date"
           className="bg-transparent text-blue focus:outline-none md:text-end dark:text-red"
           aria-label="End date"
         >

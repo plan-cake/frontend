@@ -118,7 +118,11 @@ export default function ResultsPage({
           <div className="hidden rounded-3xl bg-[#FFFFFF] p-4 text-sm md:block dark:bg-[#343249]">
             Displaying event in
             <span className="ml-1 font-bold text-blue dark:text-red">
-              <TimezoneSelect value={timezone} onChange={handleTZChange} />
+              <TimezoneSelect
+                id="timezone-select"
+                value={timezone}
+                onChange={handleTZChange}
+              />
             </span>
           </div>
         </div>

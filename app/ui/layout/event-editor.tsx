@@ -151,8 +151,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         {/* From/To */}
         <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
         <div className="flex space-x-4 md:col-start-1 md:row-start-3">
-          <label className="text-gray-400">FROM</label>
+          <label htmlFor="from-time-dropdown" className="text-gray-400">
+            FROM
+          </label>
           <TimeDropdown
+            id="from-time-dropdown"
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.from}
@@ -162,8 +165,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
         <div className="flex space-x-4 md:col-start-1 md:row-start-4">
-          <label className="text-gray-400">UNTIL</label>
+          <label htmlFor="to-time-dropdown" className="text-gray-400">
+            UNTIL
+          </label>
           <TimeDropdown
+            id="to-time-dropdown"
             defaultTZ={defaultTZ}
             duration={eventRange.duration}
             value={eventRange.timeRange.to}
@@ -177,20 +183,28 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <label className="hidden md:col-start-1 md:row-start-10 md:block">
             Advanced Options
           </label>
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block">
+          <label
+            htmlFor="timezone-select"
+            className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block"
+          >
             Timezone
           </label>
           <div className="hidden md:col-start-1 md:row-start-12 md:block">
             <TimezoneSelect
+              id="timezone-select"
               value={eventRange.timezone}
               onChange={setTimezone}
             />
           </div>
-          <label className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block">
+          <label
+            htmlFor="duration-select"
+            className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block"
+          >
             Duration
           </label>
           <div className="hidden md:col-start-1 md:row-start-14 md:block">
             <CustomSelect
+              id="duration-select"
               options={durationOptions}
               value={eventRange.duration}
               onValueChange={(v) => setDuration((v as number) || 0)}
@@ -224,13 +238,19 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               Advanced Options
             </summary>
             <div className="mt-2 flex flex-col gap-1">
-              <label className="text-gray-400">Timezone</label>
+              <label htmlFor="timezone-select" className="text-gray-400">
+                Timezone
+              </label>
               <TimezoneSelect
+                id="timezone-select"
                 value={eventRange.timezone}
                 onChange={setTimezone}
               />
-              <label className="text-gray-400">Duration</label>
+              <label htmlFor="duration-select" className="text-gray-400">
+                Duration
+              </label>
               <CustomSelect
+                id="duration-select"
                 options={durationOptions}
                 value={eventRange.duration}
                 onValueChange={(v) => setDuration((v as number) || 0)}

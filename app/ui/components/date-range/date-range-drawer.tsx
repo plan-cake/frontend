@@ -52,8 +52,9 @@ export default function DateRangeDrawer({
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
             />
             <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              <label>Select Date Range</label>
+              <label htmlFor="event-type-select">Select Date Range</label>
               <EventTypeSelect
+                id="event-type-select"
                 eventType={rangeType}
                 onEventTypeChange={setEventType}
                 disabled={editing}

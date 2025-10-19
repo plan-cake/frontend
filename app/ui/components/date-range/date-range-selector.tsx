@@ -43,8 +43,9 @@ export default function DateRangeSelector({
     return (
       <div className="mb-4 flex w-full flex-row gap-8">
         <div className="flex flex-col gap-2">
-          <label>Type</label>
+          <label htmlFor="event-type-select">Type</label>
           <EventTypeSelect
+            id="event-type-select"
             eventType={rangeType}
             disabled={editing}
             onEventTypeChange={setEventType}

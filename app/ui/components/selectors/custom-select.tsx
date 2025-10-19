@@ -10,6 +10,7 @@ type Option = {
 };
 
 type CustomSelectProps = {
+  id: string;
   value: string | number;
   options: Option[];
   disabled?: boolean;
@@ -20,6 +21,7 @@ type CustomSelectProps = {
 
 // --- Refactored Component ---
 export default function CustomSelect({
+  id,
   value,
   options,
   disabled,
@@ -29,11 +31,11 @@ export default function CustomSelect({
 }: CustomSelectProps) {
   return (
     <Select.Root
-      // Ensure value is a string for Radix compatibility
       value={value?.toString()}
       onValueChange={(v) => onValueChange(isNaN(Number(v)) ? v : Number(v))}
     >
       <Select.Trigger
+        id={id}
         className={cn(
           "inline-flex items-center rounded-md text-start text-blue focus:outline-none dark:text-red",
           disabled && "cursor-not-allowed text-violet/50 dark:text-white/50",
