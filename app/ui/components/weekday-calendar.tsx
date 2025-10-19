@@ -19,9 +19,7 @@ export default function WeekdayCalendar({
   const [startMonday, setStartMonday] = useState(false);
   let reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
 
-  // for toggling ranges of days
   const [startDay, setStartDay] = useState<Weekday | null>(null);
-
   useEffect(() => {
     const hasSelection = Object.values(selectedDays).some((val) => val === 1);
     if (hasSelection) {
@@ -36,7 +34,7 @@ export default function WeekdayCalendar({
     newSelection[todayKey] = 1;
 
     onChange(newSelection);
-  }, []);
+  }, [selectedDays, onChange]);
 
   // for toggling only one day at a time
   // currently not in use
