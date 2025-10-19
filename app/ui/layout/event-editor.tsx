@@ -174,16 +174,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         {/* Timezone & Duration */}
         <div className="md:contents">
           {/* Desktop: show all options */}
-          <label
-            htmlFor="Advanced Option"
-            className="hidden md:col-start-1 md:row-start-10 md:block"
-          >
+          <label className="hidden md:col-start-1 md:row-start-10 md:block">
             Advanced Options
           </label>
-          <label
-            htmlFor="timezone"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block"
-          >
+          <label className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block">
             Timezone
           </label>
           <div className="hidden md:col-start-1 md:row-start-12 md:block">
@@ -230,9 +224,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               Advanced Options
             </summary>
             <div className="mt-2 flex flex-col gap-1">
-              <label htmlFor="timezone" className="text-gray-400">
-                Timezone
-              </label>
+              <label className="text-gray-400">Timezone</label>
               <TimezoneSelect
                 value={eventRange.timezone}
                 onChange={setTimezone}

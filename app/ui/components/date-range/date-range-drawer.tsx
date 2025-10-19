@@ -52,7 +52,7 @@ export default function DateRangeDrawer({
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
             />
             <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              <label htmlFor="date-range-type">Select Date Range</label>
+              <label>Select Date Range</label>
               <EventTypeSelect
                 eventType={rangeType}
                 onEventTypeChange={setEventType}
@@ -115,11 +115,7 @@ const DateRangeDrawerSelector = ({
   }
   return (
     <div className="flex flex-col space-y-2">
-      {!displayCalendar && (
-        <label className="text-start" htmlFor="date-range">
-          Dates
-        </label>
-      )}
+      {!displayCalendar && <label className="text-start">Dates</label>}
       <WeekdayCalendar
         selectedDays={
           eventRange?.weekdays ?? {
