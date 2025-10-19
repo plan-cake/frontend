@@ -30,7 +30,6 @@ type EventEditorProps = {
 };
 
 export default function EventEditor({ type, initialData }: EventEditorProps) {
-  const defaultTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const {
     state,
     setTitle,
