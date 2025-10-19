@@ -73,7 +73,7 @@ export default function GridPreviewDialog({
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <label
-                id="timezone-select"
+                htmlFor="timezone-select"
                 className="flex items-center text-sm md:ml-[50px]"
               >
                 See event in{" "}
