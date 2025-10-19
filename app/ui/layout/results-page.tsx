@@ -37,7 +37,7 @@ export default function ResultsPage({
 
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
-  const isCreator: boolean = true;
+  const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
