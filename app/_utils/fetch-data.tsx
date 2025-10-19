@@ -1,9 +1,22 @@
 import formatApiError from "@/app/_utils/format-api-error";
 
+type EventDetailsResponse = {
+  title: string;
+  duration?: number;
+  start_hour: number;
+  end_hour: number;
+  time_zone: string;
+  event_type: "Date" | "Week";
+  start_date?: string;
+  end_date?: string;
+  start_weekday?: number;
+  end_weekday?: number;
+};
+
 export async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
-): Promise<any> {
+): Promise<EventDetailsResponse | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/event/get-details/?event_code=${eventCode}`,
@@ -25,10 +38,17 @@ export async function fetchEventDetails(
   return res.json();
 }
 
+type AvailabilityDataResponse = {
+  is_creator: boolean;
+  user_display_name: string | null;
+  participants: string[];
+  availability: Record<string, string[]>;
+};
+
 export async function fetchAvailabilityData(
   eventCode: string,
   cookieHeader: string,
-): Promise<any> {
+): Promise<AvailabilityDataResponse | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-all/?event_code=${eventCode}`,
@@ -50,10 +70,15 @@ export async function fetchAvailabilityData(
   return res.json();
 }
 
+type SelfAvailabilityResponse = {
+  display_name: string;
+  available_dates: string[];
+};
+
 export async function fetchSelfAvailability(
   eventCode: string,
   cookieHeader: string,
-): Promise<any> {
+): Promise<SelfAvailabilityResponse | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-self/?event_code=${eventCode}`,
@@ -74,7 +99,28 @@ export async function fetchSelfAvailability(
   return res.json();
 }
 
-export async function fetchDashboard(cookieHeader: string): Promise<any> {
+type DashboardEvent = {
+  title: string;
+  duration?: number;
+  start_hour: number;
+  end_hour: number;
+  time_zone: string;
+  event_type: "Date" | "Week";
+  start_date?: string;
+  end_date?: string;
+  start_weekday?: number;
+  end_weekday?: number;
+  event_code: string;
+};
+
+type DashboardResponse = {
+  created_events: DashboardEvent[];
+  participated_events: DashboardEvent[];
+};
+
+export async function fetchDashboard(
+  cookieHeader: string,
+): Promise<DashboardResponse | null> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${baseUrl}/dashboard/get`, {
     method: "GET",
