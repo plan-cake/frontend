@@ -60,26 +60,21 @@ function DurationDrawer({
 }) {
   const valueLabel = options.find((opt) => opt.value === value)?.label || "";
 
-  // 1. Add state to control the dialog
   const [open, setOpen] = useState(false);
   const selectedItemRef = useRef<HTMLDivElement>(null);
 
-  // 2. Change the effect to run when 'open' changes
   useEffect(() => {
-    // Only run when the dialog *opens*
     if (open) {
-      // 3. Use a timeout. This pushes the scroll command to the
-      //    end of the event loop, AFTER the animation has finished.
       const timer = setTimeout(() => {
         selectedItemRef.current?.scrollIntoView({
-          block: "center", // You can also try "nearest"
+          block: "center",
           behavior: "auto",
         });
-      }, 0); // 0ms is usually enough, but you can try 50ms or 100ms if 0 doesn't work
+      }, 0);
 
       return () => clearTimeout(timer);
     }
-  }, [open]); // --- Dependency array is now [open] ---
+  }, [open]);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
