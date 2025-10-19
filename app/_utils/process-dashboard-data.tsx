@@ -1,9 +1,10 @@
 import { DashboardEventProps } from "../ui/components/dashboard/dashboard-event";
 import { DashboardPageProps } from "../ui/layout/dashboard-page";
+import { DashboardEventResponse, DashboardResponse } from "./fetch-data";
 
 function processSingleEvent(
   myEvent: boolean,
-  eventData: any,
+  eventData: DashboardEventResponse,
 ): DashboardEventProps {
   if (eventData.event_type === "Date") {
     const data: DashboardEventProps = {
@@ -32,7 +33,9 @@ function processSingleEvent(
   }
 }
 
-export function processDashboardData(eventData: any): DashboardPageProps {
+export function processDashboardData(
+  eventData: DashboardResponse,
+): DashboardPageProps {
   const processedEvents = {
     created_events: [] as DashboardEventProps[],
     participated_events: [] as DashboardEventProps[],

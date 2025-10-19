@@ -1,8 +1,9 @@
-import { useReducer, useCallback } from "react";
+import { SelfAvailabilityResponse } from "@/app/_utils/fetch-data";
+import { useCallback, useReducer } from "react";
 import { availabilityReducer, AvailabilityState } from "./availability-reducer";
 import { createUserAvailability } from "./utils";
 
-export function useAvailability(initialData: any = null) {
+export function useAvailability(initialData: SelfAvailabilityResponse | null) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isoStrings = [];
   if (initialData && initialData.available_dates) {
@@ -13,7 +14,7 @@ export function useAvailability(initialData: any = null) {
 
   const initialState: AvailabilityState = {
     displayName: initialData?.display_name || "",
-    timeZone: initialData?.time_zone || initialTimeZone,
+    timeZone: initialTimeZone,
     userAvailability: createUserAvailability(isoStrings),
   };
 

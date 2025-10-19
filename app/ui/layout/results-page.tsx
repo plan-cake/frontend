@@ -11,6 +11,7 @@ import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 import Link from "next/link";
+import { AvailabilityDataResponse } from "@/app/_utils/fetch-data";
 
 export default function ResultsPage({
   eventCode,
@@ -21,7 +22,7 @@ export default function ResultsPage({
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
-  initialAvailabilityData: any;
+  initialAvailabilityData: AvailabilityDataResponse;
 }) {
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,

@@ -15,6 +15,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateEventData } from "@/app/_utils/validate-data";
+import { EventRange, SpecificDateRange } from "@/app/_lib/schedule/types";
 
 const durationOptions = [
   { label: "None", value: 0 },
@@ -27,7 +28,11 @@ export type EventEditorType = "new" | "edit";
 
 type EventEditorProps = {
   type: EventEditorType;
-  initialData?: any;
+  initialData?: {
+    title: string;
+    code: string;
+    eventRange: EventRange;
+  };
 };
 
 export default function EventEditor({ type, initialData }: EventEditorProps) {
@@ -101,7 +106,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     }
   };
 
-  const earliestCalendarDate = initialData?.eventRange?.dateRange?.from;
+  const earliestCalendarDate = new Date(
+    (initialData?.eventRange as SpecificDateRange)?.dateRange?.from,
+  );
 
   return (
     <div className="mt-20 flex h-full w-full grow flex-col space-y-4 p-10 md:space-y-8">

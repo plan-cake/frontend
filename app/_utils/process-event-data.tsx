@@ -1,7 +1,8 @@
 import { generateWeekdayMap } from "@/app/_lib/schedule/utils";
 import { EventRange } from "../_lib/schedule/types";
+import { EventDetailsResponse } from "./fetch-data";
 
-export function processEventData(eventData: any): {
+export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
   eventRange: EventRange;
 } {
@@ -11,11 +12,11 @@ export function processEventData(eventData: any): {
   if (eventData.event_type === "Date") {
     eventRange = {
       type: "specific",
-      duration: eventData.duration,
+      duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       dateRange: {
-        from: eventData.start_date,
-        to: eventData.end_date,
+        from: eventData.start_date!,
+        to: eventData.end_date!,
       },
       timeRange: {
         from: eventData.start_hour,
@@ -24,12 +25,12 @@ export function processEventData(eventData: any): {
     };
   } else {
     const weekdays = generateWeekdayMap(
-      eventData.start_weekday,
-      eventData.end_weekday,
+      eventData.start_weekday!,
+      eventData.end_weekday!,
     );
     eventRange = {
       type: "weekday",
-      duration: eventData.duration,
+      duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       weekdays: weekdays,
       timeRange: {

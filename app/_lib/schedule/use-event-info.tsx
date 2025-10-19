@@ -3,7 +3,11 @@ import { EventInfoReducer } from "./event-info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "./types";
 import { DateRange } from "react-day-picker";
 
-export function useEventInfo(initialData?: any) {
+export function useEventInfo(initialData?: {
+  title: string;
+  code: string;
+  eventRange: EventRange;
+}) {
   const initialState: EventInformation = {
     title: initialData?.title || "",
     customCode: initialData?.code || "",

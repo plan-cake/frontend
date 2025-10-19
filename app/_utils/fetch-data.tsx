@@ -1,6 +1,6 @@
 import formatApiError from "@/app/_utils/format-api-error";
 
-type EventDetailsResponse = {
+export type EventDetailsResponse = {
   title: string;
   duration?: number;
   start_hour: number;
@@ -16,7 +16,7 @@ type EventDetailsResponse = {
 export async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
-): Promise<EventDetailsResponse | null> {
+): Promise<EventDetailsResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/event/get-details/?event_code=${eventCode}`,
@@ -38,7 +38,7 @@ export async function fetchEventDetails(
   return res.json();
 }
 
-type AvailabilityDataResponse = {
+export type AvailabilityDataResponse = {
   is_creator: boolean;
   user_display_name: string | null;
   participants: string[];
@@ -48,7 +48,7 @@ type AvailabilityDataResponse = {
 export async function fetchAvailabilityData(
   eventCode: string,
   cookieHeader: string,
-): Promise<AvailabilityDataResponse | null> {
+): Promise<AvailabilityDataResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-all/?event_code=${eventCode}`,
@@ -70,7 +70,7 @@ export async function fetchAvailabilityData(
   return res.json();
 }
 
-type SelfAvailabilityResponse = {
+export type SelfAvailabilityResponse = {
   display_name: string;
   available_dates: string[];
 };
@@ -99,7 +99,7 @@ export async function fetchSelfAvailability(
   return res.json();
 }
 
-type DashboardEvent = {
+export type DashboardEventResponse = {
   title: string;
   duration?: number;
   start_hour: number;
@@ -113,14 +113,14 @@ type DashboardEvent = {
   event_code: string;
 };
 
-type DashboardResponse = {
-  created_events: DashboardEvent[];
-  participated_events: DashboardEvent[];
+export type DashboardResponse = {
+  created_events: DashboardEventResponse[];
+  participated_events: DashboardEventResponse[];
 };
 
 export async function fetchDashboard(
   cookieHeader: string,
-): Promise<DashboardResponse | null> {
+): Promise<DashboardResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${baseUrl}/dashboard/get`, {
     method: "GET",
