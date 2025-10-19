@@ -42,7 +42,7 @@ function TimeSlot({
         "relative bg-white dark:bg-violet",
         isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
         disableSelect
-          ? "cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
+          ? "pointer-events-none cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
           : "cursor-cell",
         cellClasses,
       )}

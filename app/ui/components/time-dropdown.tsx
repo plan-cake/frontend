@@ -1,13 +1,18 @@
 import CustomSelect from "@/app/ui/components/selectors/custom-select";
 
 type TimeDropdownProps = {
+  id: string;
   onChange: (time: number) => void;
   value: number;
   defaultTZ: string;
   duration: number;
 };
 
-export default function TimeDropdown({ onChange, value }: TimeDropdownProps) {
+export default function TimeDropdown({
+  onChange,
+  value,
+  id,
+}: TimeDropdownProps) {
   const options = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
     const period = i < 12 ? "am" : "pm";
@@ -23,6 +28,7 @@ export default function TimeDropdown({ onChange, value }: TimeDropdownProps) {
 
   return (
     <CustomSelect
+      id={id}
       options={options}
       value={value}
       onValueChange={handleValueChange}

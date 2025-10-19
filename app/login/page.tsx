@@ -97,7 +97,7 @@ export default function Page() {
           {/* Login Button */}
           <button
             type="submit"
-            className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium transition"
+            className="mb-2 cursor-pointer gap-2 rounded-full bg-blue px-4 py-2 font-medium text-white transition dark:bg-red"
           >
             Login
           </button>

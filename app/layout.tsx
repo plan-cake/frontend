@@ -35,7 +35,7 @@ export default function RootLayout({
       className={`${modak.variable} ${nunito.variable}`}
     >
       <body className="font-sans antialiased">
-        <div className="flex min-h-dvh flex-col">
+        <div className="mx-auto flex min-h-dvh max-w-[1440px] flex-col">
           <Providers>
             <Header />
             {children}

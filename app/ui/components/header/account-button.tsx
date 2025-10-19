@@ -45,7 +45,7 @@ export default function AccountButton() {
   } else {
     return (
       <Link
-        className="frosted-glass cursor-pointer rounded-full px-4 py-1.5 font-medium"
+        className="frosted-glass cursor-pointer rounded-full px-4 py-1.5 font-medium text-nowrap"
         href="/login"
         aria-label="Log in"
       >

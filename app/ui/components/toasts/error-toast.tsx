@@ -16,7 +16,7 @@ export default function ErrorToast({
   return (
     <Toast.Root
       className={cn(
-        "grid w-fit grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-red p-[15px] text-white shadow-xl",
+        "grid w-fit grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-red px-6 py-3 text-white shadow-xl",
         "border border-red dark:border-red-400",
         "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
       )}

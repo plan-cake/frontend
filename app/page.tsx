@@ -39,48 +39,50 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="bg-bone py-16 dark:bg-gray-300">
+      <section className="bg-white py-16 dark:bg-violet">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid items-center gap-12 md:grid-cols-2">
-            {/* Pancake emoji - centered on mobile */}
-            <div className="order-1 flex justify-center md:order-1">
-              <div className="text-8xl">🥞</div>
-            </div>
+          <div className="rounded-3xl bg-bone p-8 dark:bg-gray-300">
+            <div className="grid items-center gap-12 md:grid-cols-2">
+              {/* Pancake emoji - centered on mobile */}
+              <div className="order-1 flex justify-center md:order-1">
+                <div className="text-8xl">🥞</div>
+              </div>
 
-            {/* Content - centered on mobile, left-aligned on desktop */}
-            <div className="order-2 text-center md:order-2 md:text-left">
-              <h2 className="bubble-text mb-8 text-4xl text-violet md:text-6xl dark:text-bone">
-                why
-                <br />
-                <span className="text-violet dark:text-bone">plancake?</span>
-              </h2>
-              <div className="space-y-6">
-                <div>
-                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
-                    Smart Planning
-                  </h3>
-                  <p className="text-violet dark:text-bone">
-                    Intelligently suggest optimal meeting times based on
-                    everyone&apos;s availability.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
-                    Easy Coordination
-                  </h3>
-                  <p className="text-violet dark:text-bone">
-                    Share a simple link and watch as responses stack up without
-                    the back-and-forth.
-                  </p>
-                </div>
-                <div>
-                  <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
-                    Perfect Results
-                  </h3>
-                  <p className="text-violet dark:text-bone">
-                    Get the ideal meeting time that works for everyone with an
-                    intuitive graph view.
-                  </p>
+              {/* Content - centered on mobile, left-aligned on desktop */}
+              <div className="order-2 text-center md:order-2 md:text-left">
+                <h2 className="bubble-text mb-8 text-4xl text-violet md:text-6xl dark:text-bone">
+                  why
+                  <br />
+                  <span className="text-violet dark:text-bone">plancake?</span>
+                </h2>
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                      Smart Planning
+                    </h3>
+                    <p className="text-violet dark:text-bone">
+                      Intelligently suggest optimal meeting times based on
+                      everyone&apos;s availability.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                      Easy Coordination
+                    </h3>
+                    <p className="text-violet dark:text-bone">
+                      Share a simple link and watch as responses stack up
+                      without the back-and-forth.
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                      Perfect Results
+                    </h3>
+                    <p className="text-violet dark:text-bone">
+                      Get the ideal meeting time that works for everyone with an
+                      intuitive graph view.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -141,9 +143,11 @@ export default function Home() {
       </section>
 
       {/* Plan Today Section */}
-      <section className="bg-bone py-16 text-violet dark:bg-gray-300">
+      <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text mb-8 text-6xl md:text-8xl">PLAN TODAY</h2>
+          <h2 className="bubble-text mb-8 text-6xl text-lion md:text-8xl">
+            PLAN TODAY
+          </h2>
           <div className="mt-8">
             <Link
               href="/new-event"

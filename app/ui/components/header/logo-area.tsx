@@ -16,14 +16,12 @@ export default function LogoArea() {
   }
 
   return (
-    <div className="frosted-glass fixed top-4 left-4 z-50 h-20 w-28 rounded-br-[60px]">
+    <div>
       {/* Text Container */}
-      <div className="p-2">
-        <Link href="/">
-          <Logo />
-        </Link>
-        <span className="text-sm">v0.1.0</span>
-      </div>
+      <Link href="/">
+        <Logo />
+      </Link>
+      <span className="text-xs">v0.1.0</span>
     </div>
   );
 }

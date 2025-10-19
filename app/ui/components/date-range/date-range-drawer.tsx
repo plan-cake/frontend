@@ -31,13 +31,13 @@ export default function DateRangeDrawer({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="cursor-pointer" aria-label="Open date range picker">
+        <div className="cursor-pointer" aria-label="Open date range picker">
           <DateRangeDrawerSelector
             eventRange={eventRange}
             setEventType={setEventType}
             tooManyDays={tooManyDays}
           />
-        </button>
+        </div>
       </Dialog.Trigger>
 
       <Dialog.Portal>
@@ -52,8 +52,9 @@ export default function DateRangeDrawer({
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
             />
             <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              <label htmlFor="date-range-type">Select Date Range</label>
+              <label htmlFor="event-type-select">Select Date Range</label>
               <EventTypeSelect
+                id="event-type-select"
                 eventType={rangeType}
                 onEventTypeChange={setEventType}
                 disabled={editing}
@@ -115,11 +116,7 @@ const DateRangeDrawerSelector = ({
   }
   return (
     <div className="flex flex-col space-y-2">
-      {!displayCalendar && (
-        <label className="text-start" htmlFor="date-range">
-          Dates
-        </label>
-      )}
+      {!displayCalendar && <label className="text-start">Dates</label>}
       <WeekdayCalendar
         selectedDays={
           eventRange?.weekdays ?? {
@@ -133,6 +130,7 @@ const DateRangeDrawerSelector = ({
           }
         }
         onChange={setWeekdayRange}
+        inDrawer={true}
       />
     </div>
   );

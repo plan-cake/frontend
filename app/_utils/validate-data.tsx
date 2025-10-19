@@ -9,6 +9,8 @@ export async function validateEventData(
 
   if (!title?.trim()) {
     errors.title = "Please enter an event name.";
+  } else if (title.length > 50) {
+    errors.title = "Event name must be under 50 characters.";
   }
 
   if (customCode) {
