@@ -8,7 +8,7 @@ type TimeDropdownProps = {
 };
 
 export default function TimeDropdown({ onChange, value }: TimeDropdownProps) {
-  let options = Array.from({ length: 24 }, (_, i) => {
+  const options = Array.from({ length: 24 }, (_, i) => {
     const hour = i % 12 === 0 ? 12 : i % 12;
     const period = i < 12 ? "am" : "pm";
     return { label: `${hour}:00 ${period}`, value: i };

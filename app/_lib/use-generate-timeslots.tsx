@@ -26,7 +26,7 @@ export default function useGenerateTimeSlots(
     const localStartHour = localStartTime.getHours();
     const localEndHour = localEndTime.getHours();
 
-    let timeBlocks = [];
+    const timeBlocks = [];
     let numHours = 0;
     // Handle overnight ranges
     if (localEndHour < localStartHour) {

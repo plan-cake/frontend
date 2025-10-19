@@ -15,7 +15,7 @@ export default function WeekdayCalendar({
   onChange,
 }: WeekdayCalendarProps) {
   const [startMonday, setStartMonday] = useState(false);
-  let reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
+  const reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
 
   // for toggling ranges of days
   const [startDay, setStartDay] = useState<Weekday | null>(null);
