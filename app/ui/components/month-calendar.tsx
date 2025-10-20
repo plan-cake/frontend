@@ -1,25 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import useCheckMobile from "@/app/_utils/use-check-mobile";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
 
-import {
-  DateRange,
-  DayPicker,
-  SelectRangeEventHandler,
-  getDefaultClassNames,
-} from "react-day-picker";
+import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
+
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
 
 type CalendarProps = {
+  earliestDate?: Date;
   className?: string;
   selectedRange: DateRange;
-  onRangeSelect: (range: { from: Date | null; to: Date | null }) => void;
+  setDateRange: (range: DateRange | undefined) => void;
 };
 
 export function Calendar({
+  earliestDate,
   className,
   selectedRange,
-  onRangeSelect,
+  setDateRange,
 }: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -29,14 +29,23 @@ export function Calendar({
 
   const today = new Date();
 
-  const [month, setMonth] = useState(today);
+  const startDate =
+    earliestDate && earliestDate < today
+      ? new Date(
+          earliestDate.getUTCFullYear(),
+          earliestDate.getUTCMonth(),
+          earliestDate.getUTCDate(),
+        )
+      : today;
 
-  const handleRangeSelect: SelectRangeEventHandler = (
-    range: DateRange | undefined,
-  ) => {
-    const from = range?.from || null;
-    const to = range?.to || null;
-    onRangeSelect({ from, to });
+  const [month, setMonth] = useState(startDate);
+  const [tooManyDays, setTooManyDays] = useState(() => {
+    return checkInvalidDateRangeLength(selectedRange);
+  });
+
+  const checkDateRange = (range: DateRange | undefined) => {
+    setTooManyDays(checkInvalidDateRangeLength(range));
+    setDateRange(range);
   };
 
   return (
@@ -55,12 +64,18 @@ export function Calendar({
         month={month}
         onMonthChange={setMonth}
         selected={selectedRange}
-        onSelect={handleRangeSelect}
-        disabled={{ before: new Date() }}
+        onSelect={checkDateRange}
+        disabled={{ before: startDate }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
         }}
       />
+      {!isMobile && tooManyDays && (
+        <div className="flex items-center justify-center gap-1 font-bold text-[#ED7183]">
+          <ExclamationTriangleIcon />
+          Too many days selected. Max is 30 days.
+        </div>
+      )}
     </div>
   );
 }
