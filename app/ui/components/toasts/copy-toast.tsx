@@ -3,9 +3,10 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 import { useToast } from "@/app/_lib/toast-context";
 
-export default function CopyToast() {
+export default function CopyToast({ code }: { code: string }) {
   const { addToast } = useToast();
-  const currentURL = typeof window !== "undefined" ? window.location.href : "";
+  const currentURL =
+    typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
 
   const copyToClipboard = async () => {
     try {
