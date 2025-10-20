@@ -14,7 +14,6 @@ type WeekdayCalendarProps = {
 export default function WeekdayCalendar({
   selectedDays,
   onChange,
-  inDrawer = false,
 }: WeekdayCalendarProps) {
   // const [startMonday, setStartMonday] = useState(false);
   // const reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
