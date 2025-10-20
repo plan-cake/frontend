@@ -24,13 +24,13 @@ export default function Home() {
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <Link
               href="/new-event"
-              className="rounded-2xl bg-red px-8 py-3 text-lg font-medium text-white transition-all hover:bg-red-400 hover:shadow-lg"
+              className="rounded-full bg-red px-8 py-3 text-lg font-medium text-white"
             >
               Mix your first plan
             </Link>
             <Link
               href="/dashboard"
-              className="rounded-2xl bg-blue px-8 py-3 text-lg font-medium text-white transition-all hover:bg-blue-400 hover:shadow-lg"
+              className="rounded-full bg-blue px-8 py-3 text-lg font-medium text-white"
             >
               View Dashboard
             </Link>
@@ -151,7 +151,7 @@ export default function Home() {
           <div className="mt-8">
             <Link
               href="/new-event"
-              className="inline-block rounded-lg bg-red px-8 py-4 text-lg font-semibold text-white shadow-lg transition-colors hover:bg-red-400 hover:shadow-xl"
+              className="inline-block rounded-full bg-blue px-8 py-3 text-lg font-semibold text-white dark:bg-red"
             >
               Start Planning
             </Link>
