@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
@@ -29,25 +29,24 @@ export function Calendar({
 
   const today = new Date();
 
-  const startDateLocal = new Date(earliestDate || today);
-  const startDate = new Date(
-    startDateLocal.getUTCFullYear(),
-    startDateLocal.getUTCMonth(),
-    startDateLocal.getUTCDate(),
-  );
+  let startDate = today;
+  if (earliestDate && earliestDate < today) {
+    startDate = new Date(
+      earliestDate.getUTCFullYear(),
+      earliestDate.getUTCMonth(),
+      earliestDate.getUTCDate(),
+    );
+  }
 
   const [month, setMonth] = useState(startDate);
-  const [tooManyDays, setTooManyDays] = useState(false);
+  const [tooManyDays, setTooManyDays] = useState(() => {
+    return checkInvalidDateRangeLength(selectedRange);
+  });
 
   const checkDateRange = (range: DateRange | undefined) => {
     setTooManyDays(checkInvalidDateRangeLength(range));
     setDateRange(range);
   };
-
-  useEffect(() => {
-    // make sure to display the warning when the component loads
-    checkDateRange(selectedRange);
-  });
 
   return (
     <div className={className}>
