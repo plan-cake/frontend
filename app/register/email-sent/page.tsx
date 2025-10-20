@@ -12,12 +12,11 @@ export default function Page() {
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("register_email");
-    console.log("Stored email:", storedEmail);
     if (!storedEmail) {
       // the user shouldn't be here
       router.push("/login");
     } else {
-      setEmail(storedEmail!);
+      setEmail(storedEmail);
       // don't clear the email from storage, it creates problems when testing
       // it should be deleted after the session ends anyway
     }

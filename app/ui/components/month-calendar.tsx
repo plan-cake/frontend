@@ -29,14 +29,14 @@ export function Calendar({
 
   const today = new Date();
 
-  let startDate = today;
-  if (earliestDate && earliestDate < today) {
-    startDate = new Date(
-      earliestDate.getUTCFullYear(),
-      earliestDate.getUTCMonth(),
-      earliestDate.getUTCDate(),
-    );
-  }
+  const startDate =
+    earliestDate && earliestDate < today
+      ? new Date(
+          earliestDate.getUTCFullYear(),
+          earliestDate.getUTCMonth(),
+          earliestDate.getUTCDate(),
+        )
+      : today;
 
   const [month, setMonth] = useState(startDate);
   const [tooManyDays, setTooManyDays] = useState(() => {
