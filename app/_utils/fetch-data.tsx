@@ -71,7 +71,8 @@ export async function fetchAvailabilityData(
 }
 
 export type SelfAvailabilityResponse = {
-  display_name: string;
+  display_name: string | null;
+  time_zone: string;
   available_dates: string[];
 };
 

@@ -14,7 +14,7 @@ export function useAvailability(initialData: SelfAvailabilityResponse | null) {
 
   const initialState: AvailabilityState = {
     displayName: initialData?.display_name || "",
-    timeZone: initialTimeZone,
+    timeZone: initialData?.time_zone || initialTimeZone,
     userAvailability: createUserAvailability(isoStrings),
   };
 
