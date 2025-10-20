@@ -17,7 +17,7 @@ export async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
 ): Promise<EventDetailsResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   const res = await fetch(
     `${baseUrl}/event/get-details/?event_code=${eventCode}`,
     {
@@ -49,7 +49,7 @@ export async function fetchAvailabilityData(
   eventCode: string,
   cookieHeader: string,
 ): Promise<AvailabilityDataResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-all/?event_code=${eventCode}`,
     {
@@ -80,7 +80,7 @@ export async function fetchSelfAvailability(
   eventCode: string,
   cookieHeader: string,
 ): Promise<SelfAvailabilityResponse | null> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-self/?event_code=${eventCode}`,
     {
@@ -122,7 +122,7 @@ export type DashboardResponse = {
 export async function fetchDashboard(
   cookieHeader: string,
 ): Promise<DashboardResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
+  const baseUrl = process.env.API_URL;
   const res = await fetch(`${baseUrl}/dashboard/get`, {
     method: "GET",
     headers: {
