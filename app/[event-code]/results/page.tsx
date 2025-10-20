@@ -7,12 +7,9 @@ import { processEventData } from "@/app/_utils/process-event-data";
 
 import ResultsPage from "@/app/ui/layout/results-page";
 import { getAuthCookieString } from "@/app/_utils/cookie-utils";
+import { EventCodePageProps } from "@/app/_lib/types/event-code-page-props";
 
-export default async function Page({
-  params,
-}: {
-  params: { "event-code": string };
-}) {
+export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;
   const authCookies = await getAuthCookieString();
 

@@ -4,7 +4,6 @@ import useScheduleDrag from "@/app/_lib/use-schedule-drag";
 import BaseTimeBlock from "./base-timeblock";
 
 import { toZonedTime } from "date-fns-tz";
-import { useTheme } from "next-themes";
 import TimeSlot from "../time-slot";
 
 interface InteractiveTimeBlockProps {
@@ -31,9 +30,6 @@ export default function InteractiveTimeBlock({
   availability,
   onToggle,
 }: InteractiveTimeBlockProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === "dark";
-
   const dragHandlers = useScheduleDrag(onToggle, "paint");
 
   return (
@@ -79,7 +75,6 @@ export default function InteractiveTimeBlock({
           dragHandlers.hoveredSlot === slotIso &&
           dragHandlers.draggedSlots.size === 0;
 
-        let backgroundColor;
         if (isHovered || isToggling) {
           cellClasses.push("bg-blue-200 dark:bg-red-200");
         } else if (isSelected) {

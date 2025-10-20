@@ -10,8 +10,8 @@ import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { AvailabilityDataResponse } from "@/app/_utils/fetch-data";
 import HeaderSpacer from "../components/header/header-spacer";
 
 export default function ResultsPage({
@@ -23,9 +23,8 @@ export default function ResultsPage({
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
-  initialAvailabilityData: any;
+  initialAvailabilityData: AvailabilityDataResponse;
 }) {
-  const router = useRouter();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );

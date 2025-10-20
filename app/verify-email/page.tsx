@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import formatApiError from "../_utils/format-api-error";
 import MessagePage from "../ui/layout/message-page";
 
 export default function Page() {

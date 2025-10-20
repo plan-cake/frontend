@@ -2,12 +2,12 @@ import { cn } from "@/app/_lib/classname";
 import formatApiError from "@/app/_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
-import { DashboardIcon, ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { forwardRef, ReactNode, useContext, useRef } from "react";
 
-const AccountDropdown = ({ children }: { children: ReactNode }) => {
+export default function AccountDropdown({ children }: { children: ReactNode }) {
   const isSubmitting = useRef(false);
   const { setLoggedIn } = useContext(LoginContext);
   const router = useRouter();
@@ -54,13 +54,14 @@ const AccountDropdown = ({ children }: { children: ReactNode }) => {
       </DropdownMenu.Portal>
     </DropdownMenu.Root>
   );
-};
+}
 
 type DropdownItemProps = {
   onSelect?: () => void;
   children: ReactNode;
 };
 
+// this is a forwardRef for compatibility with Radix UI and its accessibility features
 const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
   ({ onSelect, children }, ref) => {
     return (
@@ -78,4 +79,4 @@ const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
   },
 );
 
-export default AccountDropdown;
+DropdownItem.displayName = "DropdownItem";

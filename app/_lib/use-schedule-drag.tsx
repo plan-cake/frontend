@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback, use } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { generateDragSlots } from "./availability/utils";
 
 type DragState = {
@@ -54,7 +54,7 @@ export default function useScheduleDrag(
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, []);
+  }, [mode]);
 
   useEffect(() => {
     if (dragState.current.lastToggledSlot === null) {

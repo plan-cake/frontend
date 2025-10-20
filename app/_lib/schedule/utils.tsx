@@ -8,7 +8,7 @@ import {
   days,
 } from "@/app/_lib/schedule/types";
 import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
-import { getHours, getMinutes, startOfDay } from "date-fns";
+import { getHours, getMinutes } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 /* WEEKDAY SPECIFIC UTILITIES */
@@ -166,7 +166,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   const validStartHour = range.timeRange.from;
   const validEndHour = range.timeRange.to;
 
-  let currentUTC = new Date(eventStartUTC);
+  const currentUTC = new Date(eventStartUTC);
 
   while (currentUTC <= eventEndUTC) {
     // Get the time-of-day part of the current date
@@ -205,7 +205,7 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
   }
 
   for (const day of selectedDays) {
-    let { slotTimeUTC, dayEndUTC } = day;
+    const { slotTimeUTC, dayEndUTC } = day;
 
     while (slotTimeUTC < dayEndUTC) {
       slots.push(new Date(slotTimeUTC));

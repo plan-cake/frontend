@@ -13,6 +13,7 @@ import formatApiError from "@/app/_utils/format-api-error";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { useToast } from "@/app/_lib/toast-context";
 import { validateAvailabilityData } from "@/app/_utils/validate-data";
+import { SelfAvailabilityResponse } from "@/app/_utils/fetch-data";
 import HeaderSpacer from "../components/header/header-spacer";
 
 export default function AvailabilityPage({
@@ -24,7 +25,7 @@ export default function AvailabilityPage({
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
-  initialData?: any;
+  initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
 

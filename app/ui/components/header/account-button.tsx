@@ -29,7 +29,7 @@ export default function AccountButton() {
       }
     };
     checkLogin();
-  }, []);
+  }, [loggedIn, setLoggedIn]);
 
   if (loggedIn) {
     return (

@@ -92,7 +92,7 @@ function convertAvailabilityToGridForWeekdayRange(
 
   const grid: boolean[][] = selectedDays.map((day) => {
     const daySlots: boolean[] = [];
-    let { slotTimeUTC, dayEndUTC } = day;
+    const { slotTimeUTC, dayEndUTC } = day;
 
     while (slotTimeUTC < dayEndUTC) {
       daySlots.push(isSlotSelected(availability, slotTimeUTC));

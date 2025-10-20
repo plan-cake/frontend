@@ -2,25 +2,28 @@
 
 import formatApiError from "@/app/_utils/format-api-error";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import MessagePage from "../../ui/layout/message-page";
 
 export default function Page() {
   const router = useRouter();
-  const email = sessionStorage.getItem("register_email");
   const lastEmailResend = useRef(Date.now());
+  const [email, setEmail] = useState("");
 
   useEffect(() => {
-    if (!email) {
+    const storedEmail = sessionStorage.getItem("register_email");
+    if (!storedEmail) {
       // the user shouldn't be here
       router.push("/login");
+    } else {
+      setEmail(storedEmail);
+      // don't clear the email from storage, it creates problems when testing
+      // it should be deleted after the session ends anyway
     }
-    // clear the email from storage
-    sessionStorage.removeItem("register_email");
-  }, []);
+  }, [router]); // empty dependency array to run once on initial mount
 
   if (!email) {
-    // stop rendering if there's no email
+    // don't render until there is an email
     return null;
   }
 

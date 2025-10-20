@@ -5,18 +5,24 @@ function snakeToTitleCase(str: string): string {
     .join(" ");
 }
 
-export default function formatApiError(errors: any): string {
+type ApiErrorResponse = {
+  error: {
+    [key: string]: string[];
+  };
+};
+
+export default function formatApiError(errors: ApiErrorResponse): string {
   let errorMessage = "";
   let generalMessage = "";
-  errors = errors.error;
+  const errorFields = errors.error;
 
-  if (errors.general) {
-    generalMessage = errors.general[0];
+  if (errorFields.general) {
+    generalMessage = errorFields.general[0];
   }
 
-  for (const field in errors) {
-    if (field !== "general" && Array.isArray(errors[field])) {
-      for (const msg of errors[field]) {
+  for (const field in errorFields) {
+    if (field !== "general" && Array.isArray(errorFields[field])) {
+      for (const msg of errorFields[field]) {
         const fieldTitle = snakeToTitleCase(field);
         errorMessage += `${fieldTitle}: ${msg}\n`;
       }
