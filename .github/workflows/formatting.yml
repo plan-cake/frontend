@@ -32,15 +32,12 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        # fails if there are linting or prettier errors
         run: |
           npm run lint -- \
-            --format @microsoft/eslint-formatter-sarif \
+            --format node_modules/@microsoft/eslint-formatter-sarif \
             --output-file eslint-results.sarif
 
-      - name: Upload ESLint results to GitHub
+      - name: Upload SARIF to GitHub
         uses: github/codeql-action/upload-sarif@v3
-        if: always()
         with:
           sarif_file: eslint-results.sarif
-          wait-for-processing: true
