@@ -88,7 +88,7 @@ export default function AvailabilityPage({
         body: JSON.stringify(payload),
       });
 
-      if (response.ok) router.push(`/${eventCode}/results`);
+      if (response.ok) router.push(`/${eventCode}`);
       else createErrorToast(formatApiError(await response.json()));
     } catch (error) {
       console.error("Error submitting availability:", error);
@@ -107,7 +107,17 @@ export default function AvailabilityPage({
         </div>
 
         <div className="flex items-center gap-2">
-          <CopyToast />
+          <CopyToast code={eventCode} />
+          {initialData && (
+            <button
+              onClick={() => {
+                router.push(`/${eventCode}`);
+              }}
+              className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet md:flex dark:border-red dark:bg-red dark:hover:bg-red/25 dark:hover:text-white"
+            >
+              Cancel Edits
+            </button>
+          )}
           <button
             onClick={handleSubmitAvailability}
             className="hidden rounded-full border-2 border-blue bg-blue px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet md:flex dark:border-red dark:bg-red dark:hover:bg-red/25 dark:hover:text-white"

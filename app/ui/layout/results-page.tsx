@@ -59,10 +59,10 @@ export default function ResultsPage({
               <span className="hidden md:block">Edit Event</span>
             </Link>
           )}
-          <CopyToast />
+          <CopyToast code={eventCode} />
           <Link
             className="flex flex-row items-center gap-2 rounded-full border-2 border-blue bg-blue p-2 text-sm text-white hover:bg-blue-100 hover:text-violet dark:border-red dark:bg-red dark:hover:bg-red/25"
-            href={`/${eventCode}`}
+            href={`/${eventCode}/painting`}
           >
             <Pencil2Icon className="h-5 w-5" />
             <span>{participated ? "Edit" : "Add"} Availability</span>
