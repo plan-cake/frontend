@@ -1,3 +1,5 @@
+import nextPlugin from "@next/eslint-plugin-next";
+
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -11,6 +13,8 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+  nextPlugin.configs.recommended,
+  nextPlugin.configs["core-web-vitals"],
 ];
 
 export default eslintConfig;
