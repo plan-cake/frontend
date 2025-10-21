@@ -1,10 +1,13 @@
 import { notFound } from "next/navigation";
-import { fetchEventDetails, fetchSelfAvailability } from "../_utils/fetch-data";
-import { processEventData } from "../_utils/process-event-data";
+import {
+  fetchEventDetails,
+  fetchAvailabilityData,
+} from "@/app/_utils/fetch-data";
+import { processEventData } from "@/app/_utils/process-event-data";
 
-import AvailabilityClientPage from "@/app/ui/layout/availability-page";
-import { EventCodePageProps } from "../_lib/types/event-code-page-props";
-import { getAuthCookieString } from "../_utils/cookie-utils";
+import ResultsPage from "@/app/ui/layout/results-page";
+import { getAuthCookieString } from "@/app/_utils/cookie-utils";
+import { EventCodePageProps } from "@/app/_lib/types/event-code-page-props";
 
 export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;
@@ -14,18 +17,20 @@ export default async function Page({ params }: EventCodePageProps) {
     notFound();
   }
 
-  const [eventData, initialAvailabilityData] = await Promise.all([
-    fetchEventDetails(eventCode),
-    fetchSelfAvailability(eventCode, authCookies),
+  const [initialEventData, availabilityData] = await Promise.all([
+    fetchEventDetails(eventCode, authCookies),
+    fetchAvailabilityData(eventCode, authCookies),
   ]);
-  const { eventName, eventRange } = processEventData(eventData);
+
+  // Process the data here, on the server!
+  const { eventName, eventRange } = processEventData(initialEventData);
 
   return (
-    <AvailabilityClientPage
+    <ResultsPage
       eventCode={eventCode}
-      eventName={eventName}
-      eventRange={eventRange}
-      initialData={initialAvailabilityData}
+      eventName={eventName} // Pass the processed name
+      eventRange={eventRange} // Pass the processed range
+      initialAvailabilityData={availabilityData}
     />
   );
 }
