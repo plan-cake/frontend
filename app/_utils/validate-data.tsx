@@ -1,7 +1,9 @@
 import { EventInformation } from "@/app/_lib/schedule/types";
 import { AvailabilityState } from "../_lib/availability/availability-reducer";
+import { EventEditorType } from "../ui/layout/event-editor";
 
 export async function validateEventData(
+  editorType: EventEditorType,
   data: EventInformation,
 ): Promise<Record<string, string>> {
   const errors: Record<string, string> = {};
@@ -13,7 +15,7 @@ export async function validateEventData(
     errors.title = "Event name must be under 50 characters.";
   }
 
-  if (customCode) {
+  if (editorType === "new" && customCode) {
     try {
       const response = await fetch("/api/event/check-code/", {
         method: "POST",
