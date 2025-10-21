@@ -12,7 +12,7 @@ jobs:
   # and https://eslint.org
 
   eslint:
-    name: Run ESLint
+    name: Run ESLint and Prettier
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,7 +32,7 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
-        # fails if there are linting errors
+        # fails if there are linting or prettier errors
         run: |
           npm run lint -- \
             --format @microsoft/eslint-formatter-sarif \
@@ -44,25 +44,3 @@ jobs:
         with:
           sarif_file: eslint-results.sarif
           wait-for-processing: true
-
-  prettier:
-    name: Run Prettier Formatting Check
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Check formatting
-        # fails if formatting is incorrect
-        run: npm run check-format
