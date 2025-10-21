@@ -34,7 +34,7 @@ jobs:
       - name: Run ESLint
         run: |
           npm run lint -- \
-            --format node_modules/@microsoft/eslint-formatter-sarif \
+            --format node_modules/@microsoft/eslint-formatter-sarif/sarif.js \
             --output-file eslint-results.sarif
 
       - name: Upload SARIF to GitHub

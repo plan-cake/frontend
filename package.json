@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack --experimental-https",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint --format node_modules/@microsoft/eslint-formatter-sarif --output-file eslint-results.sarif",
+    "lint": "next lint",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },
