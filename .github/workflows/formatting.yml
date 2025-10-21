@@ -2,7 +2,7 @@ name: Code Quality Check
 
 on:
   push:
-    branches: ["main"]
+    branches: ["main", "main-preview"]
   pull_request: # Runs on all PRs
 
 jobs:
@@ -53,6 +53,8 @@ jobs:
   prettier:
     name: Run Prettier Formatting Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -68,4 +70,4 @@ jobs:
 
       - name: Check formatting
         # fails if formatting is incorrect
-        run: npm run format-check
+        run: npm run check-format
