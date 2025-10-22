@@ -76,7 +76,6 @@ Replace all values in the file with the relevant information.
    ```
 
    This will install all dependencies listed in [package.json](package.json), including:
-
    - Next.js 15.3.1 with React 19
    - Tailwind CSS 4.1.4
    - Radix UI components
