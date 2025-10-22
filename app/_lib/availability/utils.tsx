@@ -135,6 +135,13 @@ export function generateDragSlots(
   while (current <= end) {
     slots.add(current.toISOString());
     current.setMinutes(current.getMinutes() + 15);
+    if (
+      current.getHours() * 60 + current.getMinutes() <
+      start.getHours() * 60 + start.getMinutes()
+    ) {
+      // Avoid wrapping to the next day around midnight
+      current.setHours(start.getHours(), start.getMinutes());
+    }
     const currentMinutes = current.getHours() * 60 + current.getMinutes();
     if (currentMinutes > endMinutes) {
       current.setHours(start.getHours(), start.getMinutes());
