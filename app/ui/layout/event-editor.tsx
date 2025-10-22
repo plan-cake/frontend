@@ -78,7 +78,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setErrors({}); // reset errors
 
     try {
-      const validationErrors = await validateEventData(state);
+      const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         Object.values(validationErrors).forEach(createErrorToast);
@@ -89,7 +89,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         { title, code: customCode, eventRange },
         type,
         eventRange.type,
-        (code: string) => router.push(`/${code}/results`),
+        (code: string) => router.push(`/${code}`),
       );
     } catch (error) {
       console.error("Submission failed:", error);
