@@ -1,5 +1,5 @@
 import { EventInformation } from "@/app/_lib/schedule/types";
-import { AvailabilityState } from "../_lib/availability/availability-reducer";
+import { AvailabilityState } from "@/app/_lib/availability/availability-reducer";
 
 export async function validateEventData(
   data: EventInformation,

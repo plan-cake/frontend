@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import formatApiError from "../_utils/format-api-error";
+
+import formatApiError from "@/app/_utils/format-api-error";
 import { LoginContext } from "@/app/_lib/providers";
-import { useContext } from "react";
-import Checkbox from "../ui/components/checkbox";
-import TextInputField from "../ui/components/auth/text-input-field";
-import LinkText from "../ui/components/link-text";
+import Checkbox from "@/app/ui/components/checkbox";
+import TextInputField from "@/app/ui/components/auth/text-input-field";
+import LinkText from "@/app/ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");

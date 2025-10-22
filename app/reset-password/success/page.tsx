@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import MessagePage from "../../ui/layout/message-page";
+import MessagePage from "@/app/ui/layout/message-page";
 
 export default function Page() {
   const router = useRouter();

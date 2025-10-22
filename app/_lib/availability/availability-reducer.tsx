@@ -1,5 +1,8 @@
-import { AvailabilitySet } from "./types";
-import { createEmptyUserAvailability, toggleUtcSlot } from "./utils";
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import {
+  createEmptyUserAvailability,
+  toggleUtcSlot,
+} from "@/app/_lib/availability/utils";
 
 export interface AvailabilityState {
   displayName: string;

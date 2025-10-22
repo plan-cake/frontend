@@ -1,13 +1,16 @@
 "use client";
 
+import { useContext, useState } from "react";
+import Link from "next/link";
+import { InfoCircledIcon } from "@radix-ui/react-icons";
+
 import { cn } from "@/app/_lib/classname";
 import { LoginContext } from "@/app/_lib/providers";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
-import { InfoCircledIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
-import { useContext, useState } from "react";
-import HeaderSpacer from "../../ui/components/header/header-spacer";
-import EventGrid, { EventGridProps } from "../components/dashboard/event-grid";
+import HeaderSpacer from "@/app/ui/components/header/header-spacer";
+import EventGrid, {
+  EventGridProps,
+} from "@/app/ui/components/dashboard/event-grid";
 
 type DashboardTab = "created" | "participated";
 

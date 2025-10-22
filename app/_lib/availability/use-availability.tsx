@@ -1,7 +1,10 @@
-import { SelfAvailabilityResponse } from "@/app/_utils/fetch-data";
 import { useCallback, useReducer } from "react";
-import { availabilityReducer, AvailabilityState } from "./availability-reducer";
-import { createUserAvailability } from "./utils";
+import {
+  availabilityReducer,
+  AvailabilityState,
+} from "@/app/_lib/availability/availability-reducer";
+import { createUserAvailability } from "@/app/_lib/availability/utils";
+import { SelfAvailabilityResponse } from "@/app/_utils/fetch-data";
 
 export function useAvailability(initialData: SelfAvailabilityResponse | null) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

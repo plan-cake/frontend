@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import MessagePage from "../ui/layout/message-page";
+import { useRouter, useSearchParams } from "next/navigation";
+import MessagePage from "@/app/ui/layout/message-page";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);

@@ -1,7 +1,8 @@
+import { MouseEvent } from "react";
+import { CopyIcon } from "@radix-ui/react-icons";
+
 import { cn } from "@/app/_lib/classname";
 import { useToast } from "@/app/_lib/toast-context";
-import { CopyIcon } from "@radix-ui/react-icons";
-import { MouseEvent } from "react";
 
 export type DashboardCopyButtonProps = {
   code: string;

@@ -1,10 +1,10 @@
-import { AvailabilitySet } from "@/app/_lib/availability/types";
-
-import useScheduleDrag from "@/app/_lib/use-schedule-drag";
-import BaseTimeBlock from "./base-timeblock";
-
 import { toZonedTime } from "date-fns-tz";
-import TimeSlot from "../time-slot";
+
+import { AvailabilitySet } from "@/app/_lib/availability/types";
+import useScheduleDrag from "@/app/_lib/use-schedule-drag";
+
+import TimeSlot from "@/app/ui/components/schedule/time-slot";
+import BaseTimeBlock from "@/app/ui/components/schedule/timeblocks/base-timeblock";
 
 interface InteractiveTimeBlockProps {
   timeColWidth: number;

@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Logo from "../logo";
+
+import Logo from "@/app/ui/components/logo";
 
 export default function LogoArea() {
   const [mounted, setMounted] = useState(false);

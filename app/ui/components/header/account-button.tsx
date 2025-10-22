@@ -1,10 +1,12 @@
 "use client";
 
-import { PersonIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 import { useContext, useEffect } from "react";
+import Link from "next/link";
+import { PersonIcon } from "@radix-ui/react-icons";
+
 import { LoginContext } from "@/app/_lib/providers";
-import AccountDropdown from "./account-dropdown";
+
+import AccountDropdown from "@/app/ui/components/header/account-dropdown";
 
 export default function AccountButton() {
   const { loggedIn, setLoggedIn } = useContext(LoginContext);

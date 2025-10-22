@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
-import formatApiError from "../_utils/format-api-error";
-import MessagePage from "../ui/layout/message-page";
-import LinkText from "../ui/components/link-text";
-import TextInputField from "../ui/components/auth/text-input-field";
+import formatApiError from "@/app/_utils/format-api-error";
+import MessagePage from "@/app/ui/layout/message-page";
+import LinkText from "@/app/ui/components/link-text";
+import TextInputField from "@/app/ui/components/auth/text-input-field";
 
 export default function Page() {
   const [email, setEmail] = useState("");

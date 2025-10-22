@@ -1,9 +1,9 @@
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
 
-import BaseTimeBlock from "./base-timeblock";
-
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
-import TimeSlot from "../time-slot";
+import TimeSlot from "@/app/ui/components/schedule/time-slot";
+import BaseTimeBlock from "@/app/ui/components/schedule/timeblocks/base-timeblock";
 
 interface ResultsTimeBlockProps {
   timeColWidth: number;

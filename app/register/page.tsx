@@ -1,13 +1,14 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import formatApiError from "../_utils/format-api-error";
-import TextInputField from "../ui/components/auth/text-input-field";
-import { useDebounce } from "../_lib/use-debounce";
-import PasswordCriteria from "../ui/components/auth/password-criteria";
-import LinkText from "../ui/components/link-text";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import formatApiError from "@/app/_utils/format-api-error";
+import { useDebounce } from "@/app/_lib/use-debounce";
+import PasswordCriteria from "@/app/ui/components/auth/password-criteria";
+import TextInputField from "@/app/ui/components/auth/text-input-field";
+import LinkText from "@/app/ui/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");

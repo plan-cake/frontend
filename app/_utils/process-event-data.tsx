@@ -1,6 +1,6 @@
 import { generateWeekdayMap } from "@/app/_lib/schedule/utils";
-import { EventRange } from "../_lib/schedule/types";
-import { EventDetailsResponse } from "./fetch-data";
+import { EventRange } from "@/app/_lib/schedule/types";
+import { EventDetailsResponse } from "@/app/_utils/fetch-data";
 
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;

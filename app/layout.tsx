@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Modak, Nunito } from "next/font/google";
-import Header from "./ui/components/header/header";
 import { Providers } from "@/app/_lib/providers";
-import "./globals.css";
+import Header from "@/app/ui/components/header/header";
+import "@/app/globals.css";
 
 const modak = Modak({
   weight: "400",

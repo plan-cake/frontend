@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import useCheckMobile from "@/app/_lib/use-check-mobile";
-
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import useCheckMobile from "@/app/_lib/use-check-mobile";
 import { checkInvalidDateRangeLength } from "@/app/_lib/schedule/utils";
 
 type CalendarProps = {

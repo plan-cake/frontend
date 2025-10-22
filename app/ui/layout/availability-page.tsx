@@ -1,20 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { useAvailability } from "@/app/_lib/availability/use-availability";
 import { useRouter } from "next/navigation";
-import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
-import CopyToast from "@/app/ui/components/toasts/copy-toast";
-import TimeZoneSelector from "../components/selectors/timezone-selector";
-import { EventInfo } from "@/app/ui/components/event-info-drawer";
+
+import { useAvailability } from "@/app/_lib/availability/use-availability";
 import { EventRange } from "@/app/_lib/schedule/types";
-import formatApiError from "@/app/_utils/format-api-error";
 import { convertAvailabilityToGrid } from "@/app/_lib/availability/utils";
 import { useToast } from "@/app/_lib/toast-context";
+
 import { validateAvailabilityData } from "@/app/_utils/validate-data";
 import { SelfAvailabilityResponse } from "@/app/_utils/fetch-data";
-import HeaderSpacer from "../components/header/header-spacer";
+import formatApiError from "@/app/_utils/format-api-error";
+
+import HeaderSpacer from "@/app/ui/components/header/header-spacer";
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import CopyToast from "@/app/ui/components/toasts/copy-toast";
+import TimeZoneSelector from "@/app/ui/components/selectors/timezone-selector";
+import { EventInfo } from "@/app/ui/components/event-info-drawer";
+import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
 
 export default function AvailabilityPage({
   eventCode,

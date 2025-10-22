@@ -1,6 +1,10 @@
 import { eachDayOfInterval, parseISO } from "date-fns";
 import { AvailabilitySet } from "@/app/_lib/availability/types";
-import { EventRange, SpecificDateRange, WeekdayRange } from "../schedule/types";
+import {
+  EventRange,
+  SpecificDateRange,
+  WeekdayRange,
+} from "@/app/_lib/schedule/types";
 import {
   getAbsoluteDateRangeInUTC,
   getSelectedWeekdaysInTimezone,

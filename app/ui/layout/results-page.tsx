@@ -1,18 +1,19 @@
 "use client";
 
-import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
-import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
-import CopyToast from "@/app/ui/components/toasts/copy-toast";
-import TimeZoneSelector from "../components/selectors/timezone-selector";
-
-import { EventInfo } from "@/app/ui/components/event-info-drawer";
-import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import { useState } from "react";
+import Link from "next/link";
+import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
+
 import { EventRange } from "@/app/_lib/schedule/types";
 import { ResultsAvailabilityMap } from "@/app/_lib/availability/types";
-import Link from "next/link";
 import { AvailabilityDataResponse } from "@/app/_utils/fetch-data";
-import HeaderSpacer from "../components/header/header-spacer";
+
+import ScheduleGrid from "@/app/ui/components/schedule/schedule-grid";
+import CopyToast from "@/app/ui/components/toasts/copy-toast";
+import TimeZoneSelector from "@/app/ui/components/selectors/timezone-selector";
+import HeaderSpacer from "@/app/ui/components/header/header-spacer";
+import EventInfoDrawer from "@/app/ui/components/event-info-drawer";
+import { EventInfo } from "@/app/ui/components/event-info-drawer";
 
 export default function ResultsPage({
   eventCode,

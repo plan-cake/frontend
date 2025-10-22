@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-
 import { toZonedTime } from "date-fns-tz";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
@@ -14,10 +13,10 @@ import { createEmptyUserAvailability } from "@/app/_lib/availability/utils";
 import useCheckMobile from "@/app/_lib/use-check-mobile";
 import useGenerateTimeSlots from "@/app/_lib/use-generate-timeslots";
 
-import ScheduleHeader from "./schedule-header";
-import PreviewTimeBlock from "./timeblocks/preview-timeblock";
-import InteractiveTimeBlock from "./timeblocks/interactive-timeblock";
-import ResultsTimeBlock from "./timeblocks/results-timeblock";
+import ScheduleHeader from "@/app/ui/components/schedule/schedule-header";
+import PreviewTimeBlock from "@/app/ui/components/schedule/timeblocks/preview-timeblock";
+import InteractiveTimeBlock from "@/app/ui/components/schedule/timeblocks/interactive-timeblock";
+import ResultsTimeBlock from "@/app/ui/components/schedule/timeblocks/results-timeblock";
 
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";

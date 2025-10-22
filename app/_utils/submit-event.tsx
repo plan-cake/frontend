@@ -2,10 +2,10 @@ import {
   EventRange,
   SpecificDateRange,
   WeekdayRange,
-} from "../_lib/schedule/types";
-import { findRangeFromWeekdayMap } from "../_lib/schedule/utils";
-import { EventEditorType } from "../ui/layout/event-editor";
-import formatApiError from "./format-api-error";
+} from "@/app/_lib/schedule/types";
+import { findRangeFromWeekdayMap } from "@/app/_lib/schedule/utils";
+import { EventEditorType } from "@/app/ui/layout/event-editor";
+import formatApiError from "@/app/_utils/format-api-error";
 
 export type EventSubmitData = {
   title: string;

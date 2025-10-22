@@ -1,5 +1,8 @@
-import { EventInformation } from "./types";
-import { EventRangeReducer, EventRangeAction } from "./event-range-reducer";
+import { EventInformation } from "@/app/_lib/schedule/types";
+import {
+  EventRangeReducer,
+  EventRangeAction,
+} from "@/app/_lib/schedule/event-range-reducer";
 
 export type EventInfoAction =
   | { type: "SET_TITLE"; payload: string }

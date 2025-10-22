@@ -1,8 +1,8 @@
 import { EventCodePageProps } from "@/app/_lib/types/event-code-page-props";
 import { fetchEventDetails } from "@/app/_utils/fetch-data";
 import { processEventData } from "@/app/_utils/process-event-data";
-import EventEditor from "../../ui/layout/event-editor";
-import notFound from "../not-found";
+import EventEditor from "@/app/ui/layout/event-editor";
+import notFound from "@/app/[event-code]/not-found";
 
 export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;

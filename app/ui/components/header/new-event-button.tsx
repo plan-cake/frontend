@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { PlusIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
+import { PlusIcon } from "@radix-ui/react-icons";
 
 export default function NewEventButton() {
   const pathname = usePathname();

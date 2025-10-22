@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import LogoArea from "./logo-area";
-import AccountButton from "./account-button";
-import ThemeToggle from "./theme-toggle";
-import NewEventButton from "./new-event-button";
-import DashboardButton from "./dashboard-button";
+import LogoArea from "@/app/ui/components/header/logo-area";
+import AccountButton from "@/app/ui/components/header/account-button";
+import ThemeToggle from "@/app/ui/components/header/theme-toggle";
+import NewEventButton from "@/app/ui/components/header/new-event-button";
+import DashboardButton from "@/app/ui/components/header/dashboard-button";
 
 export default function Header() {
   const [mounted, setMounted] = useState(false);

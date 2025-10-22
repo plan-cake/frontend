@@ -1,4 +1,6 @@
-import DashboardEvent, { DashboardEventProps } from "./dashboard-event";
+import DashboardEvent, {
+  DashboardEventProps,
+} from "@/app/ui/components/dashboard/dashboard-event";
 
 export type EventGridProps = DashboardEventProps[];
 

@@ -3,8 +3,8 @@
 import { useCallback, useState } from "react";
 import * as Toast from "@radix-ui/react-toast";
 import ToastContext, { ToastData } from "@/app/_lib/toast-context";
-import ErrorToast from "../ui/components/toasts/error-toast";
-import SuccessToast from "../ui/components/toasts/success-toast";
+import ErrorToast from "@/app/ui/components/toasts/error-toast";
+import SuccessToast from "@/app/ui/components/toasts/success-toast";
 import { CheckIcon } from "@radix-ui/react-icons";
 
 export default function ToastProvider({

@@ -1,9 +1,10 @@
 "use client";
 
-import formatApiError from "@/app/_utils/format-api-error";
-import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import MessagePage from "../../ui/layout/message-page";
+import { useRouter } from "next/navigation";
+
+import formatApiError from "@/app/_utils/format-api-error";
+import MessagePage from "@/app/ui/layout/message-page";
 
 export default function Page() {
   const router = useRouter();
