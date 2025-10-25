@@ -1,0 +1,5 @@
+import EventEditor from "@/src/features/event/editor/editor";
+
+export default function Page() {
+  return <EventEditor type="new" />;
+}

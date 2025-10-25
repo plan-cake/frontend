@@ -1,0 +1,197 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { useAvailability } from "@/src/core/availability/use-availability";
+import { EventRange } from "@/src/core/event/types";
+import { convertAvailabilityToGrid } from "@/src/core/availability/utils";
+import { useToast } from "@/src/features/toast/context";
+
+import { validateAvailabilityData } from "@/src/features/event/availability/validate-data";
+import { SelfAvailabilityResponse } from "@/src/features/event/availability/fetch-data";
+import formatApiError from "@/src/lib/utils/api/format-api-error";
+
+import HeaderSpacer from "@/src/components/header-spacer";
+import ScheduleGrid from "@/src/features/event/grid/grid";
+import CopyToast from "@/src/components/copy-toast";
+import TimeZoneSelector from "@/src/features/event/components/timezone-selector";
+import { EventInfo } from "@/src/features/event/info-drawer";
+import EventInfoDrawer from "@/src/features/event/info-drawer";
+
+export default function ClientPage({
+  eventCode,
+  eventName,
+  eventRange,
+  initialData,
+}: {
+  eventCode: string;
+  eventName: string;
+  eventRange: EventRange;
+  initialData: SelfAvailabilityResponse | null;
+}) {
+  const router = useRouter();
+
+  // AVAILABILITY STATE
+  const { state, setDisplayName, setTimeZone, toggleSlot } =
+    useAvailability(initialData);
+  const { displayName, timeZone, userAvailability } = state;
+
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const createErrorToast = (message: string) => {
+    addToast({
+      type: "error",
+      id: Date.now() + Math.random(),
+      title: "ERROR",
+      message: message,
+    });
+  };
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
+    else if (e.target.value === "") {
+      setErrors((prev) => ({
+        ...prev,
+        displayName: "Please enter your name.",
+      }));
+    }
+    setDisplayName(e.target.value);
+  };
+
+  // SUBMIT AVAILABILITY
+  const handleSubmitAvailability = async () => {
+    setErrors({}); // reset errors
+
+    try {
+      const validationErrors = await validateAvailabilityData(state, eventCode);
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        Object.values(validationErrors).forEach(createErrorToast);
+        return;
+      }
+
+      const availabilityGrid = convertAvailabilityToGrid(
+        userAvailability,
+        eventRange,
+      );
+
+      const payload = {
+        event_code: eventCode,
+        display_name: displayName,
+        availability: availabilityGrid,
+        time_zone: timeZone,
+      };
+
+      const response = await fetch("/api/availability/add/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) router.push(`/${eventCode}`);
+      else createErrorToast(formatApiError(await response.json()));
+    } catch (error) {
+      console.error("Error submitting availability:", error);
+      createErrorToast("An unexpected error occurred. Please try again.");
+    }
+  };
+
+  return (
+    <div className="flex flex-col space-y-4 pl-6 pr-6">
+      <HeaderSpacer />
+      {/* Header and Button Row */}
+      <div className="flex w-full flex-wrap justify-between md:flex-row">
+        <div className="flex items-center space-x-2">
+          <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+          <EventInfoDrawer eventRange={eventRange} />
+        </div>
+
+        <div className="flex items-center gap-2">
+          <CopyToast code={eventCode} />
+          {initialData && (
+            <button
+              onClick={() => {
+                router.push(`/${eventCode}`);
+              }}
+              className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet dark:hover:text-white md:flex"
+            >
+              Cancel Edits
+            </button>
+          )}
+          <button
+            onClick={handleSubmitAvailability}
+            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet dark:hover:text-white md:flex"
+          >
+            {initialData ? "Update" : "Submit"} Availability
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
+        {/* Left Panel */}
+        <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
+          <div className="w-fit">
+            <p
+              className={`text-red text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
+            >
+              {errors.displayName ? errors.displayName : "Error Placeholder"}
+            </p>
+            Hi,{" "}
+            <input
+              required
+              type="text"
+              value={displayName}
+              onChange={handleNameChange}
+              placeholder="add your name"
+              className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
+                errors.displayName
+                  ? "border-red placeholder:text-red"
+                  : "border-violet dark:border-gray-400"
+              }`}
+            />
+            <br />
+            add your availabilities here
+          </div>
+
+          {/* Desktop-only Event Info */}
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 dark:bg-[#343249] md:block">
+            <EventInfo eventRange={eventRange} />
+          </div>
+
+          <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
+            Displaying event in
+            <span className="text-blue dark:text-red ml-1 font-bold">
+              <TimeZoneSelector
+                id="timezone-select"
+                value={timeZone}
+                onChange={setTimeZone}
+              />
+            </span>
+          </div>
+        </div>
+
+        {/* Right Panel */}
+        <ScheduleGrid
+          mode="paint"
+          eventRange={eventRange}
+          timezone={timeZone}
+          onToggleSlot={toggleSlot}
+          userAvailability={userAvailability}
+        />
+      </div>
+
+      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
+        <div
+          onClick={handleSubmitAvailability}
+          className="bg-blue dark:bg-red rounded-full p-4 text-center text-white"
+        >
+          Submit Availability
+        </div>
+      </div>
+    </div>
+  );
+}

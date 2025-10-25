@@ -1,0 +1,12 @@
+- centralize API calls to one util function
+  - separate into serverAPICall and clientAPICall
+- change process data functions into some sort of serialization thing for types
+- split globals.css up
+- change backend format + expected api input for availability to make everyone's lives easier 🥳
+- nuke weekday map PLEASE
+- turn auth pages into a component (they all look the SAME)
+- make a father toast
+- simplify add toast function to reduce copy+paste errors and repeated code
+- use message page for error.tsx
+- implement no-found
+- change all files not a component into ts file
