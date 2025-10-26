@@ -20,11 +20,11 @@ export default function EventErrorPage({
         Oops! Something went wrong.
       </h2>
 
-      <p className="mb-6 max-w-md text-red">{error.message}</p>
+      <p className="text-red mb-6 max-w-md">{error.message}</p>
 
       <button
         onClick={() => reset()}
-        className="rounded-full border-2 border-blue bg-blue px-6 py-2 text-white transition-shadow hover:shadow-lg dark:border-red dark:bg-red"
+        className="border-blue bg-blue dark:border-red dark:bg-red rounded-full border-2 px-6 py-2 text-white transition-shadow hover:shadow-lg"
       >
         Try Again
       </button>

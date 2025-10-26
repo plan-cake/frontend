@@ -22,7 +22,7 @@ export default function TextInputField(props: TextInputFieldProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={
-          "w-full rounded-full border px-4 py-2 focus:ring-2 focus:outline-none" +
+          "w-full rounded-full border px-4 py-2 focus:outline-none focus:ring-2" +
           (type === "password" ? " pr-10" : "")
         }
       />

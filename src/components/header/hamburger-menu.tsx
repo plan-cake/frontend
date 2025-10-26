@@ -43,7 +43,7 @@ export default function HamburgerMenu() {
       </button>
 
       {isOpen && (
-        <div className="absolute top-6 left-2.5 flex">
+        <div className="absolute left-2.5 top-6 flex">
           {/* Vertical Line */}
           <div className="h-38 w-1 rounded bg-lion shadow-lg" />
 

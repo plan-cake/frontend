@@ -20,7 +20,7 @@ export default function DateRangeInput({
         </label>
         <span
           id="start-date"
-          className="bg-transparent text-blue focus:outline-none dark:text-red"
+          className="text-blue dark:text-red bg-transparent focus:outline-none"
           aria-label="Start date"
         >
           {displayFrom}
@@ -36,7 +36,7 @@ export default function DateRangeInput({
         </label>
         <span
           id="end-date"
-          className="bg-transparent text-blue focus:outline-none md:text-end dark:text-red"
+          className="text-blue dark:text-red bg-transparent focus:outline-none md:text-end"
           aria-label="End date"
         >
           {displayTo}

@@ -4,7 +4,7 @@ export default function LinkText({ children }: { children: ReactNode }) {
   return (
     <span
       className={
-        "cursor-pointer hover:text-blue hover:underline dark:hover:text-red"
+        "hover:text-blue dark:hover:text-red cursor-pointer hover:underline"
       }
     >
       {children}
