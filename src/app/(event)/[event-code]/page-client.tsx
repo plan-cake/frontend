@@ -4,16 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
-import { EventRange } from "@/src/core/event/types";
-import { ResultsAvailabilityMap } from "@/src/core/availability/types";
-import { AvailabilityDataResponse } from "@/src/features/event/availability/fetch-data";
+import { EventRange } from "@/core/event/types";
+import { ResultsAvailabilityMap } from "@/core/availability/types";
+import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
 
-import ScheduleGrid from "@/src/features/event/grid/grid";
-import CopyToast from "@/src/components/copy-toast";
-import TimeZoneSelector from "@/src/features/event/components/timezone-selector";
-import HeaderSpacer from "@/src/components/header-spacer";
-import EventInfoDrawer from "@/src/features/event/info-drawer";
-import { EventInfo } from "@/src/features/event/info-drawer";
+import ScheduleGrid from "@/features/event/grid/grid";
+import CopyToast from "@/components/copy-toast";
+import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import HeaderSpacer from "@/components/header-spacer";
+import EventInfoDrawer from "@/features/event/info-drawer";
+import { EventInfo } from "@/features/event/info-drawer";
 
 export default function ClientPage({
   eventCode,

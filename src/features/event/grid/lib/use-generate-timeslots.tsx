@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { differenceInCalendarDays } from "date-fns";
-import { EventRange } from "@/src/core/event/types";
-import { expandEventRange } from "@/src/features/event/grid/lib/expand-event-range";
+import { EventRange } from "@/core/event/types";
+import { expandEventRange } from "@/features/event/grid/lib/expand-event-range";
 
 export default function useGenerateTimeSlots(
   eventRange: EventRange,

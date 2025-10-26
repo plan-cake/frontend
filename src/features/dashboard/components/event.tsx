@@ -3,11 +3,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
-import DashboardCopyButton from "@/src/features/dashboard/components/copy-button";
-import DateRangeRow from "@/src/features/dashboard/components/date-range-row";
-import WeekdayRow from "@/src/features/dashboard/components/weekday-row";
+import DashboardCopyButton from "@/features/dashboard/components/copy-button";
+import DateRangeRow from "@/features/dashboard/components/date-range-row";
+import WeekdayRow from "@/features/dashboard/components/weekday-row";
 
 export type DashboardEventProps = {
   myEvent: boolean;

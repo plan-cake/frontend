@@ -1,4 +1,4 @@
-import CustomSelect from "@/src/components/select";
+import CustomSelect from "@/components/select";
 
 type EventTypeSelectProps = {
   id: string;

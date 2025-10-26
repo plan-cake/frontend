@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import formatApiError from "@/src/lib/utils/api/format-api-error";
-import MessagePage from "@/src/components/layout/message-page";
+import formatApiError from "@/lib/utils/api/format-api-error";
+import MessagePage from "@/components/layout/message-page";
 
 export default function Page() {
   const router = useRouter();

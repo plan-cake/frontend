@@ -4,11 +4,11 @@ import React, { useRef, useState, useContext } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import formatApiError from "@/src/lib/utils/api/format-api-error";
-import { LoginContext } from "@/src/lib/providers";
-import Checkbox from "@/src/components/checkbox";
-import TextInputField from "@/src/features/auth/components/text-input-field";
-import LinkText from "@/src/components/link-text";
+import formatApiError from "@/lib/utils/api/format-api-error";
+import { LoginContext } from "@/lib/providers";
+import Checkbox from "@/components/checkbox";
+import TextInputField from "@/features/auth/components/text-input-field";
+import LinkText from "@/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");

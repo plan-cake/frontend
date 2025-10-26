@@ -3,9 +3,9 @@ import { useRouter } from "next/navigation";
 import { ExitIcon } from "@radix-ui/react-icons";
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-import { cn } from "@/src/lib/utils/classname";
-import { LoginContext } from "@/src/lib/providers";
-import formatApiError from "@/src/lib/utils/api/format-api-error";
+import { cn } from "@/lib/utils/classname";
+import { LoginContext } from "@/lib/providers";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function AccountDropdown({ children }: { children: ReactNode }) {
   const isSubmitting = useRef(false);
@@ -68,7 +68,7 @@ const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
       <DropdownMenu.Item
         className={cn(
           "flex flex-row items-center justify-between gap-4",
-          "text-md cursor-pointer rounded-sm p-2 leading-none hover:outline-none data-[highlighted]:bg-red-200 dark:data-[highlighted]:bg-violet-400",
+          "text-md dark:data-[highlighted]:bg-violet-400 cursor-pointer rounded-sm p-2 leading-none hover:outline-none data-[highlighted]:bg-red-200",
         )}
         ref={ref}
         onSelect={onSelect}

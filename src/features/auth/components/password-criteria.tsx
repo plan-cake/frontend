@@ -1,5 +1,5 @@
 import { CheckIcon, Cross2Icon } from "@radix-ui/react-icons";
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
 type PasswordCriteriaProps = {
   criteria: { [key: string]: boolean };

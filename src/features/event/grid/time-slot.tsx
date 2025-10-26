@@ -1,7 +1,7 @@
 "use client";
 
 import React, { memo } from "react";
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
 interface TimeSlotProps {
   slotIso: string;
@@ -40,7 +40,7 @@ function TimeSlot({
       draggable={false}
       className={cn(
         "relative bg-white dark:bg-violet",
-        isHovered && "ring-1 ring-blue ring-inset dark:ring-red",
+        isHovered && "ring-blue dark:ring-red ring-1 ring-inset",
         disableSelect
           ? "pointer-events-none cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
           : "cursor-cell",

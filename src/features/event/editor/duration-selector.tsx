@@ -2,9 +2,9 @@ import { useState, useEffect, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
-import CustomSelect from "@/src/components/select";
+import { cn } from "@/lib/utils/classname";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import CustomSelect from "@/components/select";
 
 const durationOptions = [
   { label: "None", value: 0 },

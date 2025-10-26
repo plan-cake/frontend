@@ -2,7 +2,7 @@ import { forwardRef } from "react";
 import * as Select from "@radix-ui/react-select";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
 // --- Simplified Types ---
 type Option = {
@@ -38,8 +38,8 @@ export default function CustomSelect({
       <Select.Trigger
         id={id}
         className={cn(
-          "inline-flex items-center rounded-md text-start text-blue focus:outline-none dark:text-red",
-          disabled && "cursor-not-allowed text-violet/50 dark:text-white/50",
+          "text-blue dark:text-red inline-flex items-center rounded-md text-start focus:outline-none",
+          disabled && "text-violet/50 cursor-not-allowed dark:text-white/50",
           className,
         )}
         aria-label="Custom select"
@@ -56,7 +56,7 @@ export default function CustomSelect({
       </Select.Trigger>
 
       <Select.Portal>
-        <Select.Content className="z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:bg-violet dark:shadow-violet-700">
+        <Select.Content className="dark:shadow-violet-700 z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:bg-violet">
           <Select.Viewport className="p-1">
             {options.map((option) => (
               <SelectItem key={option.value.toString()} value={option.value}>
@@ -82,7 +82,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
       <Select.Item
         ref={ref}
         value={value.toString()}
-        className="relative flex h-[30px] items-center rounded px-6 leading-none select-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:bg-blue data-[highlighted]:text-white dark:data-[highlighted]:bg-red dark:data-[highlighted]:text-bone"
+        className="data-[highlighted]:bg-blue dark:data-[highlighted]:bg-red relative flex h-[30px] select-none items-center rounded px-6 leading-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:text-white dark:data-[highlighted]:text-bone"
       >
         <Select.ItemText>{children}</Select.ItemText>
         <Select.ItemIndicator className="absolute left-2 inline-flex w-4 items-center justify-center">

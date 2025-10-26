@@ -1,7 +1,7 @@
 import { toZonedTime } from "date-fns-tz";
 
-import TimeSlot from "@/src/features/event/grid/time-slot";
-import BaseTimeBlock from "@/src/features/event/grid/timeblocks/base";
+import TimeSlot from "@/features/event/grid/time-slot";
+import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 
 interface PreviewTimeBlockProps {
   timeColWidth: number;

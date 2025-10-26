@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { generateDragSlots } from "@/src/core/availability/utils";
+import { generateDragSlots } from "@/core/availability/utils";
 
 type DragState = {
   startSlot: string | null;

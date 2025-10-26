@@ -3,7 +3,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
-import { EventRange } from "@/src/core/event/types";
+import { EventRange } from "@/core/event/types";
 
 function formatLabel(tz: string): string {
   try {

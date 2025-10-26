@@ -1,7 +1,7 @@
 "use client";
 
 import { CopyIcon } from "@radix-ui/react-icons";
-import { useToast } from "@/src/features/toast/context";
+import { useToast } from "@/features/toast/context";
 
 export default function CopyToast({ code }: { code: string }) {
   const { addToast } = useToast();

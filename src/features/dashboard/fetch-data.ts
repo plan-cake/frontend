@@ -1,4 +1,4 @@
-import formatApiError from "@/src/lib/utils/api/format-api-error";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
 export type DashboardEventResponse = {
   title: string;

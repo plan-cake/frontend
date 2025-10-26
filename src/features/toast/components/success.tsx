@@ -1,5 +1,5 @@
 import * as Toast from "@radix-ui/react-toast";
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
 export default function SuccessToast({
   open,
@@ -19,7 +19,7 @@ export default function SuccessToast({
       className={cn(
         "grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full bg-lion px-6 py-3 text-white shadow-xl",
         "border border-lion",
-        "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=cancel]:translate-x-0 data-[swipe=cancel]:transition-[transform_200ms_ease-out] data-[swipe=end]:animate-swipeOut data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)]",
+        "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
       )}
       open={open}
       onOpenChange={onOpenChange}

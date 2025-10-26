@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
-import { days, WeekdayMap, Weekday } from "@/src/core/event/types";
+import { days, WeekdayMap, Weekday } from "@/core/event/types";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
@@ -89,7 +89,7 @@ export default function WeekdayCalendar({
                 "aspect-square w-10 items-center justify-center rounded-full text-center",
                 "transition-all duration-200",
                 isSelected
-                  ? "bg-blue-400 text-white dark:bg-red"
+                  ? "dark:bg-red bg-blue-400 text-white"
                   : "hover:bg-gray-200 dark:hover:bg-gray-800",
               )}
             >

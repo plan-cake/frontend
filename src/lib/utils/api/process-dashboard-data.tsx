@@ -1,9 +1,9 @@
 import {
   DashboardEventResponse,
   DashboardResponse,
-} from "@/src/features/dashboard/fetch-data";
-import { DashboardEventProps } from "@/src/features/dashboard/components/event";
-import { DashboardPageProps } from "@/src/app/dashboard/page-client";
+} from "@/features/dashboard/fetch-data";
+import { DashboardEventProps } from "@/features/dashboard/components/event";
+import { DashboardPageProps } from "@/app/dashboard/page-client";
 
 function processSingleEvent(
   myEvent: boolean,

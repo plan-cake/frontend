@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { fetchAvailabilityData } from "@/src/features/event/availability/fetch-data";
-import { fetchEventDetails } from "@/src/features/event/editor/fetch-data";
-import { processEventData } from "@/src/lib/utils/api/process-event-data";
+import { fetchAvailabilityData } from "@/features/event/availability/fetch-data";
+import { fetchEventDetails } from "@/features/event/editor/fetch-data";
+import { processEventData } from "@/lib/utils/api/process-event-data";
 
-import ClientPage from "@/src/app/(event)/[event-code]/page-client";
-import { getAuthCookieString } from "@/src/lib/utils/api/cookie-utils";
-import { EventCodePageProps } from "@/src/features/event/code-page-props";
+import ClientPage from "@/app/(event)/[event-code]/page-client";
+import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
+import { EventCodePageProps } from "@/features/event/code-page-props";
 
 export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;

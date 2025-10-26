@@ -1,4 +1,4 @@
-import { EventRange, WeekdayMap } from "@/src/core/event/types";
+import { EventRange, WeekdayMap } from "@/core/event/types";
 
 export type EventRangeAction =
   | { type: "SET_RANGE_INFO"; payload: EventRange }

@@ -3,10 +3,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import formatApiError from "@/src/lib/utils/api/format-api-error";
-import { useDebounce } from "@/src/lib/hooks/use-debounce";
-import PasswordCriteria from "@/src/features/auth/components/password-criteria";
-import TextInputField from "@/src/features/auth/components/text-input-field";
+import formatApiError from "@/lib/utils/api/format-api-error";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import PasswordCriteria from "@/features/auth/components/password-criteria";
+import TextInputField from "@/features/auth/components/text-input-field";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");

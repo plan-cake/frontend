@@ -2,9 +2,9 @@ import { useCallback, useReducer } from "react";
 import {
   availabilityReducer,
   AvailabilityState,
-} from "@/src/core/availability/reducers/reducer";
-import { createUserAvailability } from "@/src/core/availability/utils";
-import { SelfAvailabilityResponse } from "@/src/features/event/availability/fetch-data";
+} from "@/core/availability/reducers/reducer";
+import { createUserAvailability } from "@/core/availability/utils";
+import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 
 export function useAvailability(initialData: SelfAvailabilityResponse | null) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;

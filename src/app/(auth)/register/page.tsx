@@ -4,11 +4,11 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-import formatApiError from "@/src/lib/utils/api/format-api-error";
-import { useDebounce } from "@/src/lib/hooks/use-debounce";
-import PasswordCriteria from "@/src/features/auth/components/password-criteria";
-import TextInputField from "@/src/features/auth/components/text-input-field";
-import LinkText from "@/src/components/link-text";
+import formatApiError from "@/lib/utils/api/format-api-error";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import PasswordCriteria from "@/features/auth/components/password-criteria";
+import TextInputField from "@/features/auth/components/text-input-field";
+import LinkText from "@/components/link-text";
 
 export default function Page() {
   const [email, setEmail] = useState("");

@@ -4,10 +4,10 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
 
-import { EventRange } from "@/src/core/event/types";
+import { EventRange } from "@/core/event/types";
 
-import ScheduleGrid from "@/src/features/event/grid/grid";
-import TimeZoneSelector from "@/src/features/event/components/timezone-selector";
+import ScheduleGrid from "@/features/event/grid/grid";
+import TimeZoneSelector from "@/features/event/components/timezone-selector";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;

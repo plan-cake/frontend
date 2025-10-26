@@ -4,13 +4,13 @@ import { useContext, useState } from "react";
 import Link from "next/link";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
-import { LoginContext } from "@/src/lib/providers";
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
-import HeaderSpacer from "@/src/components/header-spacer";
+import { cn } from "@/lib/utils/classname";
+import { LoginContext } from "@/lib/providers";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import HeaderSpacer from "@/components/header-spacer";
 import EventGrid, {
   EventGridProps,
-} from "@/src/features/dashboard/components/event-grid";
+} from "@/features/dashboard/components/event-grid";
 
 type DashboardTab = "created" | "participated";
 

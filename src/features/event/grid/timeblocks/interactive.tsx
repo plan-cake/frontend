@@ -1,10 +1,10 @@
 import { toZonedTime } from "date-fns-tz";
 
-import { AvailabilitySet } from "@/src/core/availability/types";
-import useScheduleDrag from "@/src/features/event/grid/lib/use-schedule-drag";
+import { AvailabilitySet } from "@/core/availability/types";
+import useScheduleDrag from "@/features/event/grid/lib/use-schedule-drag";
 
-import TimeSlot from "@/src/features/event/grid/time-slot";
-import BaseTimeBlock from "@/src/features/event/grid/timeblocks/base";
+import TimeSlot from "@/features/event/grid/time-slot";
+import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 
 interface InteractiveTimeBlockProps {
   timeColWidth: number;

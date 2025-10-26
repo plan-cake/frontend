@@ -4,8 +4,8 @@ import { useState } from "react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
-import { checkInvalidDateRangeLength } from "@/src/features/event/editor/validate-data";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 
 type CalendarProps = {
   earliestDate?: Date;

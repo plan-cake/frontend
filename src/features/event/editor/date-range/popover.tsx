@@ -1,10 +1,10 @@
 import { fromZonedTime } from "date-fns-tz";
 import * as Popover from "@radix-ui/react-popover";
 
-import { Calendar } from "@/src/features/event/editor/month-calendar";
-import DateRangeInput from "@/src/features/event/editor/date-range/input";
+import { Calendar } from "@/features/event/editor/month-calendar";
+import DateRangeInput from "@/features/event/editor/date-range/input";
 
-import { DateRangeProps } from "@/src/features/event/editor/date-range/date-range-props";
+import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 
 export default function DateRangePopover({
   earliestDate,

@@ -4,19 +4,19 @@ import { useState } from "react";
 import { toZonedTime } from "date-fns-tz";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import { EventRange } from "@/src/core/event/types";
+import { EventRange } from "@/core/event/types";
 import {
   AvailabilitySet,
   ResultsAvailabilityMap,
-} from "@/src/core/availability/types";
-import { createEmptyUserAvailability } from "@/src/core/availability/utils";
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
-import useGenerateTimeSlots from "@/src/features/event/grid/lib/use-generate-timeslots";
+} from "@/core/availability/types";
+import { createEmptyUserAvailability } from "@/core/availability/utils";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import useGenerateTimeSlots from "@/features/event/grid/lib/use-generate-timeslots";
 
-import ScheduleHeader from "@/src/features/event/grid/schedule-header";
-import PreviewTimeBlock from "@/src/features/event/grid/timeblocks/preview";
-import InteractiveTimeBlock from "@/src/features/event/grid/timeblocks/interactive";
-import ResultsTimeBlock from "@/src/features/event/grid/timeblocks/results";
+import ScheduleHeader from "@/features/event/grid/schedule-header";
+import PreviewTimeBlock from "@/features/event/grid/timeblocks/preview";
+import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
+import ResultsTimeBlock from "@/features/event/grid/timeblocks/results";
 
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";

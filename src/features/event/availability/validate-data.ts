@@ -1,4 +1,4 @@
-import { AvailabilityState } from "@/src/core/availability/reducers/reducer";
+import { AvailabilityState } from "@/core/availability/reducers/reducer";
 
 export async function validateAvailabilityData(
   data: AvailabilityState,

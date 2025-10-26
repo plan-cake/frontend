@@ -1,6 +1,6 @@
 import DashboardEvent, {
   DashboardEventProps,
-} from "@/src/features/dashboard/components/event";
+} from "@/features/dashboard/components/event";
 
 export type EventGridProps = DashboardEventProps[];
 

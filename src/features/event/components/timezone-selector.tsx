@@ -3,9 +3,9 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import { useTimezoneSelect, allTimezones } from "react-timezone-select";
 import * as Dialog from "@radix-ui/react-dialog";
 
-import { cn } from "@/src/lib/utils/classname";
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
-import CustomSelect from "@/src/components/select";
+import { cn } from "@/lib/utils/classname";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import CustomSelect from "@/components/select";
 
 const labelStyle = "original";
 const timezones = allTimezones;

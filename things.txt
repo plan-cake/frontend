@@ -10,3 +10,6 @@
 - use message page for error.tsx
 - implement no-found
 - change all files not a component into ts file
+- add linting for absolute paths
+- add prettier for import sorting
+–

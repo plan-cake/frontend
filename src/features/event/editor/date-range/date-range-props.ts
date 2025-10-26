@@ -1,5 +1,5 @@
 import { DateRange } from "react-day-picker";
-import { EventRange, WeekdayMap } from "@/src/core/event/types";
+import { EventRange, WeekdayMap } from "@/core/event/types";
 
 export type DateRangeProps = {
   earliestDate?: Date;

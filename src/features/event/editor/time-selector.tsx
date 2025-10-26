@@ -2,10 +2,10 @@ import { useState, useEffect, useRef } from "react";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Dialog from "@radix-ui/react-dialog";
 
-import { cn } from "@/src/lib/utils/classname";
-import useCheckMobile from "@/src/lib/hooks/use-check-mobile";
+import { cn } from "@/lib/utils/classname";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
 
-import CustomSelect from "@/src/components/select";
+import CustomSelect from "@/components/select";
 
 type TimeSelectorProps = {
   id: string;

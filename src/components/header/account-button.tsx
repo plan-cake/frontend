@@ -4,9 +4,9 @@ import { useContext, useEffect } from "react";
 import Link from "next/link";
 import { PersonIcon } from "@radix-ui/react-icons";
 
-import { LoginContext } from "@/src/lib/providers";
+import { LoginContext } from "@/lib/providers";
 
-import AccountDropdown from "@/src/components/header/account-dropdown";
+import AccountDropdown from "@/components/header/account-dropdown";
 
 export default function AccountButton() {
   const { loggedIn, setLoggedIn } = useContext(LoginContext);

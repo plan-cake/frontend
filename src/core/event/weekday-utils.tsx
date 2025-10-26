@@ -1,4 +1,4 @@
-import { WeekdayMap, Weekday, days } from "@/src/core/event/types";
+import { WeekdayMap, Weekday, days } from "@/core/event/types";
 
 export function generateWeekdayMap(
   startDay: number,

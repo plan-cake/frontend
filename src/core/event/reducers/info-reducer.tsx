@@ -1,8 +1,8 @@
-import { EventInformation } from "@/src/core/event/types";
+import { EventInformation } from "@/core/event/types";
 import {
   EventRangeReducer,
   EventRangeAction,
-} from "@/src/core/event/reducers/range-reducer";
+} from "@/core/event/reducers/range-reducer";
 
 export type EventInfoAction =
   | { type: "SET_TITLE"; payload: string }

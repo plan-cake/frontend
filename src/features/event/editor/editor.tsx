@@ -4,19 +4,19 @@ import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
-import { useEventInfo } from "@/src/core/event/use-event-info";
-import { useToast } from "@/src/features/toast/context";
-import { EventRange, SpecificDateRange } from "@/src/core/event/types";
-import submitEvent from "@/src/lib/utils/api/submit-event";
-import { validateEventData } from "@/src/features/event/editor/validate-data";
+import { cn } from "@/lib/utils/classname";
+import { useEventInfo } from "@/core/event/use-event-info";
+import { useToast } from "@/features/toast/context";
+import { EventRange, SpecificDateRange } from "@/core/event/types";
+import submitEvent from "@/lib/utils/api/submit-event";
+import { validateEventData } from "@/features/event/editor/validate-data";
 
-import TimeSelector from "@/src/features/event/editor/time-selector";
-import TimeZoneSelector from "@/src/features/event/components/timezone-selector";
-import DateRangeSelector from "@/src/features/event/editor/date-range/selector";
-import DurationSelector from "@/src/features/event/editor/duration-selector";
-import GridPreviewDialog from "@/src/features/event/grid/preview-dialog";
-import HeaderSpacer from "@/src/components/header-spacer";
+import TimeSelector from "@/features/event/editor/time-selector";
+import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import DateRangeSelector from "@/features/event/editor/date-range/selector";
+import DurationSelector from "@/features/event/editor/duration-selector";
+import GridPreviewDialog from "@/features/event/grid/preview-dialog";
+import HeaderSpacer from "@/components/header-spacer";
 
 export type EventEditorType = "new" | "edit";
 

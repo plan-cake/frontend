@@ -1,7 +1,7 @@
-import { getAuthCookieString } from "@/src/lib/utils/api/cookie-utils";
-import { fetchDashboard } from "@/src/features/dashboard/fetch-data";
-import { processDashboardData } from "@/src/lib/utils/api/process-dashboard-data";
-import ClientPage from "@/src/app/dashboard/page-client";
+import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
+import { fetchDashboard } from "@/features/dashboard/fetch-data";
+import { processDashboardData } from "@/lib/utils/api/process-dashboard-data";
+import ClientPage from "@/app/dashboard/page-client";
 
 export default async function Page() {
   const authCookies = await getAuthCookieString();

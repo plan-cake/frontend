@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 
-import { cn } from "@/src/lib/utils/classname";
+import { cn } from "@/lib/utils/classname";
 
 interface Day {
   dayKey: string;
@@ -52,7 +52,7 @@ export default function ScheduleHeader({
         return (
           <div
             key={i}
-            className="flex flex-col items-center justify-center text-sm leading-tight font-medium"
+            className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
           >
             <div>{weekday}</div>
             <div>

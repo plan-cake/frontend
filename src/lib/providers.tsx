@@ -2,7 +2,7 @@
 
 import { ThemeProvider } from "next-themes";
 import { createContext, useState } from "react";
-import ToastProvider from "@/src/features/toast/provider";
+import ToastProvider from "@/features/toast/provider";
 
 export const LoginContext = createContext<{
   loggedIn: boolean | null;

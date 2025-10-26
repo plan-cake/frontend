@@ -3,21 +3,21 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { useAvailability } from "@/src/core/availability/use-availability";
-import { EventRange } from "@/src/core/event/types";
-import { convertAvailabilityToGrid } from "@/src/core/availability/utils";
-import { useToast } from "@/src/features/toast/context";
+import { useAvailability } from "@/core/availability/use-availability";
+import { EventRange } from "@/core/event/types";
+import { convertAvailabilityToGrid } from "@/core/availability/utils";
+import { useToast } from "@/features/toast/context";
 
-import { validateAvailabilityData } from "@/src/features/event/availability/validate-data";
-import { SelfAvailabilityResponse } from "@/src/features/event/availability/fetch-data";
-import formatApiError from "@/src/lib/utils/api/format-api-error";
+import { validateAvailabilityData } from "@/features/event/availability/validate-data";
+import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
-import HeaderSpacer from "@/src/components/header-spacer";
-import ScheduleGrid from "@/src/features/event/grid/grid";
-import CopyToast from "@/src/components/copy-toast";
-import TimeZoneSelector from "@/src/features/event/components/timezone-selector";
-import { EventInfo } from "@/src/features/event/info-drawer";
-import EventInfoDrawer from "@/src/features/event/info-drawer";
+import HeaderSpacer from "@/components/header-spacer";
+import ScheduleGrid from "@/features/event/grid/grid";
+import CopyToast from "@/components/copy-toast";
+import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import { EventInfo } from "@/features/event/info-drawer";
+import EventInfoDrawer from "@/features/event/info-drawer";
 
 export default function ClientPage({
   eventCode,

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Logo from "@/src/components/logo";
+import Logo from "@/components/logo";
 
 export default function Home() {
   return (

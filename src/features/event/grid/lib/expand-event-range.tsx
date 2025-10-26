@@ -6,7 +6,7 @@ import {
   WeekdayRange,
   WeekdayTimeRange,
   WeekdayMap,
-} from "@/src/core/event/types";
+} from "@/core/event/types";
 
 /* EXPAND EVENT RANGE UTILITIES */
 
