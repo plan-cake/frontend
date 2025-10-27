@@ -1,6 +1,7 @@
 import { DateRange } from "react-day-picker";
 
 import { EventInformation } from "@/core/event/types";
+import { EventEditorType } from "@/features/event/editor/types";
 
 export async function validateEventData(
   editorType: EventEditorType,
