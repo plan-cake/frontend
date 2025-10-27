@@ -61,7 +61,7 @@ export default function Page() {
     <div className="flex h-screen items-center justify-center">
       <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
         {/* Title */}
-        <h1 className="font-display mb-4 block text-5xl leading-none text-lion md:text-8xl">
+        <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           login
         </h1>
 

@@ -17,7 +17,7 @@ export default function Loading() {
             <div className="h-8 w-3/4 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
             <div className="h-8 w-1/2 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
           </div>
-          <div className="h-70 hidden rounded-3xl bg-gray-200 dark:bg-[#343249] md:block" />
+          <div className="h-70 hidden rounded-3xl bg-gray-200 md:block dark:bg-[#343249]" />
           <div className="h-20 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
         </div>
 

@@ -62,7 +62,7 @@ export default function ClientPage({
           )}
           <CopyToast code={eventCode} />
           <Link
-            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm text-white hover:bg-blue-100 hover:text-violet"
+            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm text-white hover:bg-blue-100"
             href={`/${eventCode}/painting`}
           >
             <Pencil2Icon className="h-5 w-5" />
@@ -86,7 +86,7 @@ export default function ClientPage({
 
         {/* Sidebar for attendees */}
         <div className="md:top-25 fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0">
-          <div className="rounded-3xl bg-[#FFFFFF] p-4 shadow-md dark:bg-[#343249] md:space-y-6 md:p-6 md:shadow-none">
+          <div className="rounded-3xl bg-[#FFFFFF] p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none dark:bg-[#343249]">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
             <ul className="flex flex-wrap space-x-2 space-y-0 text-gray-700 dark:text-gray-200">
               {participants.length === 0 && (
@@ -111,11 +111,11 @@ export default function ClientPage({
             </ul>
           </div>
 
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 dark:bg-[#343249] md:block">
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
             <EventInfo eventRange={eventRange} />
           </div>
 
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249] md:block">
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-4 text-sm md:block dark:bg-[#343249]">
             Displaying event in
             <span className="text-blue dark:text-red ml-1 font-bold">
               <TimeZoneSelector

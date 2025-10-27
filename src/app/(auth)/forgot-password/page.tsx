@@ -68,7 +68,7 @@ export default function Page() {
           className="flex w-80 flex-col items-center"
         >
           {/* Title */}
-          <h1 className="font-display mb-4 block text-center text-5xl leading-none text-lion md:text-8xl">
+          <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
             forgot password
           </h1>
 

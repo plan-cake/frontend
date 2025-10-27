@@ -46,7 +46,7 @@ export default function HamburgerMenu() {
       {isOpen && (
         <div className="absolute left-2.5 top-6 flex">
           {/* Vertical Line */}
-          <div className="h-38 w-1 rounded bg-lion shadow-lg" />
+          <div className="h-38 bg-lion w-1 rounded shadow-lg" />
 
           {/* Dropdown Menu */}
           <div className="w-60 text-xl">

@@ -29,7 +29,7 @@ export default function ScheduleHeader({
       className={cn(
         preview
           ? "top-0 bg-[#FFFFFF] dark:bg-[#343248]"
-          : "top-25 bg-white dark:bg-violet",
+          : "top-25 dark:bg-violet bg-white",
         "sticky z-10 col-span-2 grid h-[50px] w-full items-center",
       )}
       style={{

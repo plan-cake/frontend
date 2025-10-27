@@ -15,9 +15,9 @@ export default function Loading() {
         <div className="h-96 w-full rounded-3xl bg-gray-200 dark:bg-[#343249]" />
 
         <div className="h-fit w-full shrink-0 space-y-4 overflow-y-auto md:w-80">
-          <div className="hidden h-20 rounded-3xl bg-gray-200 dark:bg-[#343249] md:block" />
+          <div className="hidden h-20 rounded-3xl bg-gray-200 md:block dark:bg-[#343249]" />
 
-          <div className="h-70 hidden rounded-3xl bg-gray-200 dark:bg-[#343249] md:block" />
+          <div className="h-70 hidden rounded-3xl bg-gray-200 md:block dark:bg-[#343249]" />
           <div className="h-20 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
         </div>
       </div>

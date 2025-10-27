@@ -12,7 +12,7 @@ export default function Home() {
             <span className="block text-5xl font-light md:text-7xl">
               planning made
             </span>
-            <span className="font-display mt-4 block text-center text-6xl leading-none text-lion md:text-8xl">
+            <span className="font-display text-lion mt-4 block text-center text-6xl leading-none md:text-8xl">
               stack
               <br />
               simple
@@ -40,9 +40,9 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="bg-white py-16 dark:bg-violet">
+      <section className="dark:bg-violet bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="rounded-3xl bg-bone p-8 dark:bg-gray-300">
+          <div className="bg-bone rounded-3xl p-8 dark:bg-gray-300">
             <div className="grid items-center gap-12 md:grid-cols-2">
               {/* Pancake emoji - centered on mobile */}
               <div className="order-1 flex justify-center md:order-1">
@@ -51,14 +51,14 @@ export default function Home() {
 
               {/* Content - centered on mobile, left-aligned on desktop */}
               <div className="order-2 text-center md:order-2 md:text-left">
-                <h2 className="bubble-text mb-8 text-4xl text-violet dark:text-bone md:text-6xl">
+                <h2 className="bubble-text text-violet dark:text-bone mb-8 text-4xl md:text-6xl">
                   why
                   <br />
                   <span className="text-violet dark:text-bone">plancake?</span>
                 </h2>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
                       Smart Planning
                     </h3>
                     <p className="text-violet dark:text-bone">
@@ -67,7 +67,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
                       Easy Coordination
                     </h3>
                     <p className="text-violet dark:text-bone">
@@ -76,7 +76,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-semibold text-violet dark:text-bone">
+                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
                       Perfect Results
                     </h3>
                     <p className="text-violet dark:text-bone">
@@ -92,7 +92,7 @@ export default function Home() {
       </section>
 
       {/* Golden Stack Recipe */}
-      <section className="bg-white py-16 dark:bg-violet">
+      <section className="dark:bg-violet bg-white py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="bubble-text text-4xl md:text-6xl">
@@ -106,10 +106,10 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="rounded-3xl bg-bone p-8 text-violet dark:bg-gray-300">
+          <div className="bg-bone text-violet rounded-3xl p-8 dark:bg-gray-300">
             <div className="grid gap-8 md:grid-cols-3">
               <div className="text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
+                <div className="bg-lion mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
                   <span className="text-3xl">🍳</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Mix your event</h3>
@@ -119,7 +119,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-violet">
+                <div className="bg-violet mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
                   <span className="text-3xl">📤</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Share & Stack</h3>
@@ -129,7 +129,7 @@ export default function Home() {
                 </p>
               </div>
               <div className="text-center">
-                <div className="mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full bg-lion">
+                <div className="bg-lion mx-auto mb-6 flex h-20 w-20 items-center justify-center rounded-full">
                   <span className="text-3xl">🥞</span>
                 </div>
                 <h3 className="mb-4 text-xl font-semibold">Flip & Serve</h3>
@@ -146,7 +146,7 @@ export default function Home() {
       {/* Plan Today Section */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="bubble-text mb-8 text-6xl text-lion md:text-8xl">
+          <h2 className="bubble-text text-lion mb-8 text-6xl md:text-8xl">
             PLAN TODAY
           </h2>
           <div className="mt-8">

@@ -46,7 +46,7 @@ export default function DateRangeDrawer({
           className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col"
           aria-label="Date range picker"
         >
-          <div className="rounded-t-4xl flex-1 justify-center overflow-y-auto bg-white p-8 shadow-lg dark:bg-violet">
+          <div className="rounded-t-4xl dark:bg-violet flex-1 justify-center overflow-y-auto bg-white p-8 shadow-lg">
             <div
               aria-hidden
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"

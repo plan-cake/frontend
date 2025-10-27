@@ -57,7 +57,7 @@ export default function CustomSelect({
       </Select.Trigger>
 
       <Select.Portal>
-        <Select.Content className="dark:shadow-violet-700 z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:bg-violet">
+        <Select.Content className="dark:bg-violet z-50 max-h-60 overflow-auto rounded-md border border-gray-400 bg-white shadow-lg dark:shadow-violet-700">
           <Select.Viewport className="p-1">
             {options.map((option) => (
               <SelectItem key={option.value.toString()} value={option.value}>
@@ -83,7 +83,7 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
       <Select.Item
         ref={ref}
         value={value.toString()}
-        className="data-[highlighted]:bg-blue dark:data-[highlighted]:bg-red relative flex h-[30px] select-none items-center rounded px-6 leading-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:text-white dark:data-[highlighted]:text-bone"
+        className="data-[highlighted]:bg-blue dark:data-[highlighted]:bg-red dark:data-[highlighted]:text-bone relative flex h-[30px] select-none items-center rounded px-6 leading-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:text-white"
       >
         <Select.ItemText>{children}</Select.ItemText>
         <Select.ItemIndicator className="absolute left-2 inline-flex w-4 items-center justify-center">

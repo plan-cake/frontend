@@ -43,8 +43,8 @@ export default function DashboardEvent({
 
   return (
     <Link href={`/${code}`}>
-      <div className="flex w-full flex-col rounded-lg bg-white p-4 transition-shadow hover:shadow-lg hover:shadow-black/25 dark:bg-violet">
-        <div className="rounded bg-white text-lg font-bold leading-tight dark:bg-violet">
+      <div className="dark:bg-violet flex w-full flex-col rounded-lg bg-white p-4 transition-shadow hover:shadow-lg hover:shadow-black/25">
+        <div className="dark:bg-violet rounded bg-white text-lg font-bold leading-tight">
           {title}
         </div>
         <div className="text-sm opacity-50">{code}</div>
@@ -66,7 +66,7 @@ export default function DashboardEvent({
             <button className="cursor-pointer" onClick={navigateToEdit}>
               <div
                 className={cn(
-                  "w-fit rounded-full border border-violet p-1.5 dark:border-white",
+                  "border-violet w-fit rounded-full border p-1.5 dark:border-white",
                   "hover:bg-violet/25 transition dark:hover:bg-white/25",
                 )}
               >

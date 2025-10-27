@@ -126,7 +126,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
         <button
-          className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet dark:hover:text-white md:flex"
+          className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
           onClick={submitEventInfo}
         >
           {type === "edit" ? "Update Event" : "Create Event"}

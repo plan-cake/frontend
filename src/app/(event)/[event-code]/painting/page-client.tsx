@@ -115,14 +115,14 @@ export default function ClientPage({
               onClick={() => {
                 router.push(`/${eventCode}`);
               }}
-              className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet dark:hover:text-white md:flex"
+              className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
             >
               Cancel Edits
             </button>
           )}
           <button
             onClick={handleSubmitAvailability}
-            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 hover:text-violet dark:hover:text-white md:flex"
+            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
           >
             {initialData ? "Update" : "Submit"} Availability
           </button>
@@ -157,7 +157,7 @@ export default function ClientPage({
           </div>
 
           {/* Desktop-only Event Info */}
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 dark:bg-[#343249] md:block">
+          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
             <EventInfo eventRange={eventRange} />
           </div>
 
