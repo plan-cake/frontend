@@ -23,7 +23,7 @@ export default function LogoArea() {
       <Link href="/">
         <Logo />
       </Link>
-      <span className="text-xs">v0.1.0</span>
+      <span className="text-xs">v0.1.1</span>
     </div>
   );
 }

@@ -3,6 +3,7 @@ import { DateRange } from "react-day-picker";
 import { EventInformation } from "@/core/event/types";
 
 export async function validateEventData(
+  editorType: EventEditorType,
   data: EventInformation,
 ): Promise<Record<string, string>> {
   const errors: Record<string, string> = {};
@@ -14,7 +15,7 @@ export async function validateEventData(
     errors.title = "Event name must be under 50 characters.";
   }
 
-  if (customCode) {
+  if (editorType === "new" && customCode) {
     try {
       const response = await fetch("/api/event/check-code/", {
         method: "POST",
