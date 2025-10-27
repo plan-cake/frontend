@@ -1,7 +1,9 @@
 "use client";
 
-import { ThemeProvider } from "next-themes";
 import { createContext, useState } from "react";
+
+import { ThemeProvider } from "next-themes";
+
 import ToastProvider from "@/features/toast/provider";
 
 export const LoginContext = createContext<{

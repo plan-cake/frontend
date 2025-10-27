@@ -1,5 +1,6 @@
-import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
 import { getHours, getMinutes } from "date-fns";
+import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
+
 import {
   EventRange,
   SpecificDateRange,

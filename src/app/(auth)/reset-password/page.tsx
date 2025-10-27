@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useRef, useState } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
 
-import formatApiError from "@/lib/utils/api/format-api-error";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
+import { useDebounce } from "@/lib/hooks/use-debounce";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");

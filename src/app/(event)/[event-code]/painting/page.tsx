@@ -1,11 +1,11 @@
 import { notFound } from "next/navigation";
-import { fetchSelfAvailability } from "@/features/event/availability/fetch-data";
-import { fetchEventDetails } from "@/features/event/editor/fetch-data";
-import { processEventData } from "@/lib/utils/api/process-event-data";
 
 import ClientPage from "@/app/(event)/[event-code]/painting/page-client";
+import { fetchSelfAvailability } from "@/features/event/availability/fetch-data";
 import { EventCodePageProps } from "@/features/event/code-page-props";
+import { fetchEventDetails } from "@/features/event/editor/fetch-data";
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
+import { processEventData } from "@/lib/utils/api/process-event-data";
 
 export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;

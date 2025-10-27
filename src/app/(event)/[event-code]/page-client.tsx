@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
+import Link from "next/link";
 
-import { EventRange } from "@/core/event/types";
-import { ResultsAvailabilityMap } from "@/core/availability/types";
-import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
-
-import ScheduleGrid from "@/features/event/grid/grid";
 import CopyToast from "@/components/copy-toast";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import HeaderSpacer from "@/components/header-spacer";
+import { ResultsAvailabilityMap } from "@/core/availability/types";
+import { EventRange } from "@/core/event/types";
+import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
+import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer from "@/features/event/info-drawer";
 import { EventInfo } from "@/features/event/info-drawer";
 

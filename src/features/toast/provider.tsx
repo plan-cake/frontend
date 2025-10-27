@@ -1,11 +1,13 @@
 "use client";
 
 import { useCallback, useState } from "react";
+
+import { CheckIcon } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
-import ToastContext, { ToastData } from "@/features/toast/context";
+
 import ErrorToast from "@/features/toast/components/error";
 import SuccessToast from "@/features/toast/components/success";
-import { CheckIcon } from "@radix-ui/react-icons";
+import ToastContext, { ToastData } from "@/features/toast/context";
 
 export default function ToastProvider({
   children,

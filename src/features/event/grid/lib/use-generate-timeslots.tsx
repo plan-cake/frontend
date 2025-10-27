@@ -1,6 +1,8 @@
 import { useMemo } from "react";
-import { toZonedTime } from "date-fns-tz";
+
 import { differenceInCalendarDays } from "date-fns";
+import { toZonedTime } from "date-fns-tz";
+
 import { EventRange } from "@/core/event/types";
 import { expandEventRange } from "@/features/event/grid/lib/expand-event-range";
 

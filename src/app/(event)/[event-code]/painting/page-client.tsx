@@ -1,23 +1,22 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
 
-import { useAvailability } from "@/core/availability/use-availability";
-import { EventRange } from "@/core/event/types";
-import { convertAvailabilityToGrid } from "@/core/availability/utils";
-import { useToast } from "@/features/toast/context";
-
-import { validateAvailabilityData } from "@/features/event/availability/validate-data";
-import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
-import formatApiError from "@/lib/utils/api/format-api-error";
-
-import HeaderSpacer from "@/components/header-spacer";
-import ScheduleGrid from "@/features/event/grid/grid";
 import CopyToast from "@/components/copy-toast";
+import HeaderSpacer from "@/components/header-spacer";
+import { useAvailability } from "@/core/availability/use-availability";
+import { convertAvailabilityToGrid } from "@/core/availability/utils";
+import { EventRange } from "@/core/event/types";
+import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
+import { validateAvailabilityData } from "@/features/event/availability/validate-data";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import ScheduleGrid from "@/features/event/grid/grid";
 import { EventInfo } from "@/features/event/info-drawer";
 import EventInfoDrawer from "@/features/event/info-drawer";
+import { useToast } from "@/features/toast/context";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function ClientPage({
   eventCode,

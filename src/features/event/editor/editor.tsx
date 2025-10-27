@@ -1,22 +1,22 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
 
-import { cn } from "@/lib/utils/classname";
-import { useEventInfo } from "@/core/event/use-event-info";
-import { useToast } from "@/features/toast/context";
+import HeaderSpacer from "@/components/header-spacer";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
-import submitEvent from "@/lib/utils/api/submit-event";
-import { validateEventData } from "@/features/event/editor/validate-data";
-
-import TimeSelector from "@/features/event/editor/time-selector";
+import { useEventInfo } from "@/core/event/use-event-info";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import DateRangeSelector from "@/features/event/editor/date-range/selector";
 import DurationSelector from "@/features/event/editor/duration-selector";
+import TimeSelector from "@/features/event/editor/time-selector";
+import { validateEventData } from "@/features/event/editor/validate-data";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
-import HeaderSpacer from "@/components/header-spacer";
+import { useToast } from "@/features/toast/context";
+import submitEvent from "@/lib/utils/api/submit-event";
+import { cn } from "@/lib/utils/classname";
 
 export type EventEditorType = "new" | "edit";
 

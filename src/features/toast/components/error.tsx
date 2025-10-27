@@ -1,5 +1,6 @@
-import * as Toast from "@radix-ui/react-toast";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import * as Toast from "@radix-ui/react-toast";
+
 import { cn } from "@/lib/utils/classname";
 
 export default function ErrorToast({

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+
 import MessagePage from "@/components/layout/message-page";
 
 export default function Page() {

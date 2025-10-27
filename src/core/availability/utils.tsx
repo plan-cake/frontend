@@ -1,4 +1,5 @@
 import { eachDayOfInterval, parseISO } from "date-fns";
+
 import { AvailabilitySet } from "@/core/availability/types";
 import {
   EventRange,

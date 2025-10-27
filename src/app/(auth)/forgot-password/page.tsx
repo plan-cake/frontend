@@ -1,12 +1,14 @@
 "use client";
 
+import React, { useRef, useState } from "react";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
-import formatApiError from "@/lib/utils/api/format-api-error";
+
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");

@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+
 import { useRouter, useSearchParams } from "next/navigation";
+
 import MessagePage from "@/components/layout/message-page";
 
 export default function Page() {

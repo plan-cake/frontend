@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { DateRange } from "react-day-picker";
+
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { DateRange } from "react-day-picker";
 
-import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-
-import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
 import DateRangePopover from "@/features/event/editor/date-range/popover";
 import EventTypeSelect from "@/features/event/editor/event-type-select";
+import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
+import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
 
 export default function DateRangeSelector({
   earliestDate,

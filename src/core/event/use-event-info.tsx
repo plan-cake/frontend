@@ -1,7 +1,9 @@
 import { useReducer, useCallback } from "react";
+
+import { DateRange } from "react-day-picker";
+
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
-import { DateRange } from "react-day-picker";
 
 export function useEventInfo(initialData?: {
   title: string;

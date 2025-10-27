@@ -1,16 +1,16 @@
 import { useState } from "react";
-import { fromZonedTime } from "date-fns-tz";
-import { DateRange } from "react-day-picker";
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { fromZonedTime } from "date-fns-tz";
+import { DateRange } from "react-day-picker";
 
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-
-import { Calendar } from "@/features/event/editor/month-calendar";
-import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
 import DateRangeInput from "@/features/event/editor/date-range/input";
 import EventTypeSelect from "@/features/event/editor/event-type-select";
+import { Calendar } from "@/features/event/editor/month-calendar";
+import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
+import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
 
 export default function DateRangeDrawer({
   earliestDate,

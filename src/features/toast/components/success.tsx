@@ -1,4 +1,5 @@
 import * as Toast from "@radix-ui/react-toast";
+
 import { cn } from "@/lib/utils/classname";
 
 export default function SuccessToast({

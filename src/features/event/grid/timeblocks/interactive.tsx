@@ -2,7 +2,6 @@ import { toZonedTime } from "date-fns-tz";
 
 import { AvailabilitySet } from "@/core/availability/types";
 import useScheduleDrag from "@/features/event/grid/lib/use-schedule-drag";
-
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 

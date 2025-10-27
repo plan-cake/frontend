@@ -1,4 +1,5 @@
 import { DateRange } from "react-day-picker";
+
 import { EventRange, WeekdayMap } from "@/core/event/types";
 
 export type DateRangeProps = {

@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
-import * as Select from "@radix-ui/react-select";
+
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
+import * as Select from "@radix-ui/react-select";
 
 import { cn } from "@/lib/utils/classname";
 

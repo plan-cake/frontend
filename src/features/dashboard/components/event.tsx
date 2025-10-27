@@ -1,13 +1,13 @@
 import { MouseEvent } from "react";
+
+import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
-
-import { cn } from "@/lib/utils/classname";
 
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
+import { cn } from "@/lib/utils/classname";
 
 export type DashboardEventProps = {
   myEvent: boolean;

@@ -1,7 +1,6 @@
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
-
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 

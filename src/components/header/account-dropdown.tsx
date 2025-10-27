@@ -1,11 +1,12 @@
 import { forwardRef, ReactNode, useContext, useRef } from "react";
-import { useRouter } from "next/navigation";
-import { ExitIcon } from "@radix-ui/react-icons";
-import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 
-import { cn } from "@/lib/utils/classname";
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { ExitIcon } from "@radix-ui/react-icons";
+import { useRouter } from "next/navigation";
+
 import { LoginContext } from "@/lib/providers";
 import formatApiError from "@/lib/utils/api/format-api-error";
+import { cn } from "@/lib/utils/classname";
 
 export default function AccountDropdown({ children }: { children: ReactNode }) {
   const isSubmitting = useRef(false);

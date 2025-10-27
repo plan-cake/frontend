@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils/classname";
 
 import { days, WeekdayMap, Weekday } from "@/core/event/types";
+import { cn } from "@/lib/utils/classname";
 
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
