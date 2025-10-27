@@ -4,7 +4,7 @@ import {
   WeekdayRange,
 } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
-import { EventEditorType } from "@/features/event/editor/editor";
+import { EventEditorType } from "@/features/event/editor/types";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export type EventSubmitData = {
