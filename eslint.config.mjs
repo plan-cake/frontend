@@ -45,8 +45,8 @@ const eslintConfig = [
         {
           patterns: [
             {
-              // This glob pattern matches "../", "../../", etc.
-              group: ["..*"],
+              // This glob pattern matches "./", "../", "../../", etc.
+              group: ["./*", "../*", "../**"],
               message:
                 "Use absolute imports with @/ prefix instead of relative parent imports.",
             },
