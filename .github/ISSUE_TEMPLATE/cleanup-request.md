@@ -1,7 +1,7 @@
 ---
 name: Cleanup request
 about: Ask for some code refactoring
-title: "[CLEANUP]"
+title: ''
 labels: cleanup
 assignees: ""
 ---
