@@ -1,5 +1,3 @@
-// features/toast/components/BaseToast.tsx
-
 import * as Toast from "@radix-ui/react-toast";
 
 import { cn } from "@/lib/utils/classname";
@@ -30,7 +28,6 @@ export default function BaseToast({
       onOpenChange={onOpenChange}
       duration={3000}
     >
-      {/* The icon is just passed in */}
       {icon}
 
       <Toast.Title className="col-start-2 flex text-sm font-bold">
