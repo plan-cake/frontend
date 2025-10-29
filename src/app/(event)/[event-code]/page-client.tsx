@@ -5,7 +5,7 @@ import { useState } from "react";
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
-import CopyToast from "@/components/copy-toast";
+import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
@@ -60,7 +60,7 @@ export default function ClientPage({
               <span className="hidden md:block">Edit Event</span>
             </Link>
           )}
-          <CopyToast code={eventCode} />
+          <CopyToastButton code={eventCode} />
           <Link
             className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm text-white hover:bg-blue-100"
             href={`/${eventCode}/painting`}

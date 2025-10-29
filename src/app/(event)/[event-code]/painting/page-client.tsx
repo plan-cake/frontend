@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import CopyToast from "@/components/copy-toast";
+import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import { useAvailability } from "@/core/availability/use-availability";
 import { convertAvailabilityToGrid } from "@/core/availability/utils";
@@ -109,7 +109,7 @@ export default function ClientPage({
         </div>
 
         <div className="flex items-center gap-2">
-          <CopyToast code={eventCode} />
+          <CopyToastButton code={eventCode} />
           {initialData && (
             <button
               onClick={() => {
