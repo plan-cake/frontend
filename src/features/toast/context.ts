@@ -1,12 +1,6 @@
 import { createContext, useContext } from "react";
 
-export type ToastData = {
-  id: number;
-  type: "error" | "success";
-  title: string;
-  message: string;
-  icon?: React.ReactNode;
-};
+import { ToastData } from "@/features/toast/type";
 
 export const ToastContext = createContext<{
   addToast: (data: ToastData) => void;
