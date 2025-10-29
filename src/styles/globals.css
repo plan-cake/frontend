@@ -1,0 +1,33 @@
+@import "tailwindcss";
+@import "react-day-picker/style.css";
+
+@import "./tailwind.css";
+@import "./text.css";
+@import "./frosted-glass.css";
+@import "./month-calendar.css";
+
+/* GLOBAL STYLES */
+
+:root {
+  --background: var(--color-white);
+  --foreground: var(--color-violet);
+  --calendar-accent: var(--color-blue);
+  --calendar-accent-background: var(--color-blue-100);
+}
+
+.dark {
+  --background: var(--color-violet);
+  --foreground: var(--color-bone);
+  --calendar-accent: var(--color-red);
+  --calendar-accent-background: color-mix(
+    in srgb,
+    var(--color-red-200) 25%,
+    transparent
+  );
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-nunito);
+}

@@ -1,2 +1,2 @@
 # Always normalize to LF in Git
-* text eol=lf
+text=auto eol=lf
