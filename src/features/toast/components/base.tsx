@@ -1,0 +1,46 @@
+// features/toast/components/BaseToast.tsx
+
+import * as Toast from "@radix-ui/react-toast";
+
+import { cn } from "@/lib/utils/classname";
+
+export default function BaseToast({
+  open,
+  onOpenChange,
+  title,
+  message,
+  icon,
+  toastStyle,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  message: string;
+  icon: React.ReactNode;
+  toastStyle: string;
+}) {
+  return (
+    <Toast.Root
+      className={cn(
+        "grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full px-6 py-3 text-white shadow-xl",
+        toastStyle,
+        "data-[state=closed]:animate-hide data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
+      )}
+      open={open}
+      onOpenChange={onOpenChange}
+      duration={3000}
+    >
+      {/* The icon is just passed in */}
+      {icon}
+
+      <Toast.Title className="col-start-2 flex text-sm font-bold">
+        {title}
+      </Toast.Title>
+      <Toast.Description asChild>
+        <div className="col-start-2 m-0 text-[13px] leading-[1.3]">
+          {message}
+        </div>
+      </Toast.Description>
+    </Toast.Root>
+  );
+}
