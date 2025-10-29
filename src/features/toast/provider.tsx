@@ -5,11 +5,12 @@ import { useCallback, useState } from "react";
 import {
   CheckIcon,
   CopyIcon,
+  InfoCircledIcon,
   ExclamationTriangleIcon,
 } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
 
-import BaseToast from "@/features/toast/components/base";
+import BaseToast from "@/features/toast/base";
 import ToastContext from "@/features/toast/context";
 import { ToastData } from "@/features/toast/type";
 
@@ -22,8 +23,9 @@ function getToastIcon(iconType: string) {
     case "copy":
       return <CopyIcon className={iconClass} />;
     case "success":
-    default:
       return <CheckIcon className={iconClass} />;
+    default:
+      return <InfoCircledIcon className={iconClass} />;
   }
 }
 
@@ -31,9 +33,12 @@ function getToastStyle(type: string) {
   switch (type) {
     case "error":
       return "border-red bg-red border dark:border-red-400";
-    case "success":
-    default:
+    case "copy":
       return "border-lion bg-lion border";
+    case "success":
+      return "border-lion bg-lion border";
+    default:
+      return "border-blue bg-blue border";
   }
 }
 
