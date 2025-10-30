@@ -22,7 +22,7 @@ export default function Button({
   style,
   icon,
   label,
-  shrinkOnMobile,
+  shrinkOnMobile = false,
   // tooltip,
   // disabled = false,
   isLink = false,
