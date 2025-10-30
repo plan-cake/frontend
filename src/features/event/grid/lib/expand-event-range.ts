@@ -1,5 +1,5 @@
 import { getHours, getMinutes } from "date-fns";
-import { formatInTimeZone, fromZonedTime, toZonedTime } from "date-fns-tz";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 
 import {
   EventRange,
@@ -128,11 +128,8 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   const currentUTC = new Date(eventStartUTC);
 
   while (currentUTC <= eventEndUTC) {
-    // Get the time-of-day part of the current date
-    const zonedCurrent = toZonedTime(currentUTC, range.timezone);
-
-    const currentHour = getHours(zonedCurrent);
-    const currentMinute = getMinutes(zonedCurrent);
+    const currentHour = getHours(currentUTC);
+    const currentMinute = getMinutes(currentUTC);
 
     const isAfterStartTime =
       currentHour > validStartHour ||

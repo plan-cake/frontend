@@ -1,4 +1,4 @@
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { format, formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import TimeSlot from "@/features/event/grid/time-slot";
@@ -41,9 +41,11 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
+        const timeslotIso = format(timeslot, "yyyy-MM-dd'T'HH:mm:ss");
+
         const localSlot = toZonedTime(timeslot, userTimezone);
         const localSlotIso = formatInTimeZone(
-          localSlot,
+          timeslot,
           userTimezone,
           "yyyy-MM-dd'T'HH:mm:ss",
         );
@@ -71,11 +73,11 @@ export default function ResultsTimeBlock({
         }
 
         const matchCount =
-          availabilities[localSlotIso]?.length > 0
-            ? availabilities[localSlotIso].length
+          availabilities[timeslotIso]?.length > 0
+            ? availabilities[timeslotIso].length
             : 0;
         const opacity = matchCount / numParticipants || 0;
-        const isHovered = hoveredSlot === localSlotIso;
+        const isHovered = hoveredSlot === timeslotIso;
 
         // background colors
         const opacityPercent = Math.round(opacity * 100);
