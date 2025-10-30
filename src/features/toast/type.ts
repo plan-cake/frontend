@@ -1,6 +1,6 @@
 export type ToastData = {
   id: number;
-  type: string;
+  type: "error" | "copy" | "success" | "info";
   title: string;
   message: string;
   open: boolean;
