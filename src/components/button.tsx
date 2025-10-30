@@ -44,8 +44,37 @@ export default function Button({
   const baseClasses =
     "rounded-full font-medium flex flex-row items-center gap-1";
   const cursorClass = "cursor-pointer"; // will change later with disabled and loading
+  const styleClasses = getStyleClasses(style, !!icon, !!label, shrinkOnMobile);
   const labelClass = shrinkOnMobile ? "hidden md:block" : "";
 
+  // pretty ugly, but it allows the icon to be specified without a className for DRY
+  // instead, we specify the styling (really just the size) here
+  const iconComponent =
+    icon &&
+    cloneElement(icon as ReactElement<{ className: string }>, {
+      className: "h-6 w-6 p-0.5",
+    });
+
+  const buttonContent = (
+    <div className={cn(baseClasses, cursorClass, styleClasses)}>
+      {icon && iconComponent}
+      {label && <span className={labelClass}>{label}</span>}
+    </div>
+  );
+
+  if (isLink) {
+    return <Link href={href!}>{buttonContent}</Link>;
+  } else {
+    return <button onClick={onClick}>{buttonContent}</button>;
+  }
+}
+
+function getStyleClasses(
+  style: ButtonStyle,
+  hasIcon: boolean,
+  hasLabel: boolean,
+  shrinkOnMobile: boolean,
+) {
   let paddingShrink = 0;
   let styleClasses;
   switch (style) {
@@ -65,40 +94,19 @@ export default function Button({
       styleClasses = "hover:bg-blue/25 dark:hover:bg-red/25";
       break;
   }
-
   const paddingClasses = getPaddingClasses(
-    icon,
-    label,
+    hasIcon,
+    hasLabel,
     shrinkOnMobile,
     paddingShrink,
   );
-
-  // pretty ugly, but it allows the icon to be specified without a className for DRY
-  // instead, we specify the styling (really just the size) here
-  const iconComponent =
-    icon &&
-    cloneElement(icon as ReactElement<{ className: string }>, {
-      className: "h-6 w-6 p-0.5",
-    });
-
-  const buttonContent = (
-    <div className={cn(baseClasses, cursorClass, paddingClasses, styleClasses)}>
-      {icon && iconComponent}
-      {label && <span className={labelClass}>{label}</span>}
-    </div>
-  );
-
-  if (isLink) {
-    return <Link href={href!}>{buttonContent}</Link>;
-  } else {
-    return <button onClick={onClick}>{buttonContent}</button>;
-  }
+  return cn(styleClasses, paddingClasses);
 }
 
 // I know this looks bad, but tailwind needs the full class names to be defined
 function getPaddingClasses(
-  icon?: ReactNode,
-  label?: string,
+  hasIcon?: boolean,
+  hasLabel?: boolean,
   shrinkOnMobile?: boolean,
   paddingShrink?: number,
 ) {
@@ -114,8 +122,8 @@ function getPaddingClasses(
       paddingClasses = "p-2 ";
       break;
   }
-  if (icon) {
-    if (label) {
+  if (hasIcon) {
+    if (hasLabel) {
       switch (paddingShrink) {
         case 0.5:
           paddingClasses += shrinkOnMobile ? "md:pr-3.5" : "pr-3.5";
