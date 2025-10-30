@@ -15,7 +15,7 @@ type ButtonProps = {
   label?: string;
   shrinkOnMobile?: boolean;
   // tooltip?: string; // TODO: implement tooltips
-  // disabled?: boolean; // TODO: implement disabled state
+  disabled?: boolean;
   isLink?: boolean;
   href?: string;
   onClick?: () => Promise<boolean> | boolean;
@@ -35,7 +35,7 @@ export default function Button({
   label,
   shrinkOnMobile = false,
   // tooltip,
-  // disabled = false,
+  disabled = false,
   isLink = false,
   href,
   onClick,
@@ -69,8 +69,18 @@ export default function Button({
   const baseClasses =
     "rounded-full font-medium flex flex-row items-center gap-1 relative";
   const loadingHideClass = isLoading ? "opacity-0" : "";
-  const cursorClass = isLoading ? "cursor-wait" : "cursor-pointer"; // will change later with disabled
-  const styleClasses = getStyleClasses(style, !!icon, !!label, shrinkOnMobile);
+  const cursorClass = isLoading
+    ? "cursor-default"
+    : disabled
+      ? "cursor-not-allowed"
+      : "cursor-pointer";
+  const styleClasses = getStyleClasses(
+    style,
+    !!icon,
+    !!label,
+    disabled,
+    shrinkOnMobile,
+  );
   const labelClass = shrinkOnMobile ? "hidden md:block" : "";
 
   // pretty ugly, but it allows the icon to be specified without a className for DRY
@@ -91,7 +101,9 @@ export default function Button({
     </div>
   );
 
-  if (isLink) {
+  if (disabled || isLoading) {
+    return <div>{buttonContent}</div>;
+  } else if (isLink) {
     return <Link href={href!}>{buttonContent}</Link>;
   } else {
     return <button onClick={onClickHandler}>{buttonContent}</button>;
@@ -102,25 +114,33 @@ function getStyleClasses(
   style: ButtonStyle,
   hasIcon: boolean,
   hasLabel: boolean,
+  isDisabled: boolean,
   shrinkOnMobile: boolean,
 ) {
   let paddingShrink = 0;
   let styleClasses;
   switch (style) {
     case "primary":
-      styleClasses = "bg-blue dark:bg-red text-white";
+      styleClasses = isDisabled
+        ? "bg-gray-200 text-[#ffffff] dark:bg-gray-300/25 dark:text-gray-300" // disabled
+        : "bg-blue dark:bg-red text-white"; // base
       break;
     case "secondary":
-      styleClasses =
-        "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25";
+      styleClasses = isDisabled
+        ? "border-gray-200 border-2 text-gray-300 dark:border-gray-400" // disabled
+        : "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25"; // base
       paddingShrink = 0.5;
       break;
     case "frosted glass":
-      styleClasses = "frosted-glass";
+      styleClasses = isDisabled
+        ? "frosted-glass text-violet/40 dark:text-white/40" // disabled
+        : "frosted-glass"; // base
       paddingShrink = 0.25;
       break;
     case "transparent":
-      styleClasses = "hover:bg-blue/25 dark:hover:bg-red/25";
+      styleClasses = isDisabled
+        ? "font-bold text-gray-300 dark:text-gray-400" // disabled
+        : "text-blue dark:text-red font-bold hover:bg-blue/25 dark:hover:bg-red/25"; // base
       break;
   }
   const paddingClasses = getPaddingClasses(
