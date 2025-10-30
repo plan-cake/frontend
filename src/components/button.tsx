@@ -75,7 +75,6 @@ export default function Button({
 
   // pretty ugly, but it allows the icon to be specified without a className for DRY
   // instead, we specify the styling (really just the size) here
-  // p-0.5 is to make sure the icon is the same size as the text
   const iconComponent =
     icon &&
     cloneElement(icon as ReactElement<{ className: string }>, {
