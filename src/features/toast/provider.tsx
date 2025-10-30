@@ -54,7 +54,13 @@ export default function ToastProvider({
   }, []);
 
   const removeToast = useCallback((id: number) => {
-    setToasts((prevToasts) => prevToasts.filter((toast) => toast.id !== id));
+    setToasts((prevToasts) =>
+      prevToasts.map((t) => (t.id === id ? { ...t, open: false } : t)),
+    );
+
+    setTimeout(() => {
+      setToasts((prevToasts) => prevToasts.filter((t) => t.id !== id));
+    }, 150);
   }, []);
 
   return (
@@ -69,10 +75,14 @@ export default function ToastProvider({
           return (
             <BaseToast
               key={toast.id}
-              open={true}
+              open={toast.open}
               title={toast.title}
               message={toast.message}
-              onOpenChange={(isOpen) => !isOpen && removeToast(toast.id)}
+              onOpenChange={(isOpen) => {
+                if (!isOpen) {
+                  removeToast(toast.id);
+                }
+              }}
               icon={toastIcon}
               toastStyle={toastStyle}
             />

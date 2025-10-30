@@ -3,6 +3,7 @@ export type ToastData = {
   type: string;
   title: string;
   message: string;
+  open: boolean;
 };
 
 export interface ToastErrorMessage {
