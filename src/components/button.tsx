@@ -53,13 +53,16 @@ export default function Button({
       styleClasses = "bg-blue dark:bg-red text-white";
       break;
     case "secondary":
-      styleClasses = ""; // TODO: add secondary style
+      styleClasses =
+        "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25";
+      paddingShrink = 0.5;
       break;
     case "frosted glass":
-      styleClasses = ""; // TODO: add frosted glass style
+      styleClasses = "frosted-glass";
+      paddingShrink = 0.25;
       break;
     case "transparent":
-      styleClasses = ""; // TODO: add transparent style
+      styleClasses = "hover:bg-blue/25 dark:hover:bg-red/25";
       break;
   }
 
