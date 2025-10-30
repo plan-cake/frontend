@@ -19,6 +19,14 @@ type ButtonProps = {
   isLink?: boolean;
   href?: string;
   onClick?: () => Promise<boolean> | boolean;
+  /**
+   * If true, the button will return to a normal state no matter the result of `onClick`.
+   *
+   * If false, the button will stay in a loading state after a successful action. This
+   * behavior should be used for buttons that trigger navigation.
+   * @default true
+   */
+  releaseOnSuccess?: boolean;
 };
 
 export default function Button({
@@ -31,6 +39,7 @@ export default function Button({
   isLink = false,
   href,
   onClick,
+  releaseOnSuccess = true,
 }: ButtonProps) {
   // validate props
   if (!icon && !label) throw new Error("Button must have an icon or a label");
@@ -46,8 +55,15 @@ export default function Button({
   const onClickHandler = async () => {
     if (isLoading) return;
     setIsLoading(true);
-    await onClick!();
-    setIsLoading(false);
+    const success = await onClick!();
+    if (!releaseOnSuccess) {
+      if (!success) {
+        setIsLoading(false);
+      }
+      return;
+    } else {
+      setIsLoading(false);
+    }
   };
 
   const baseClasses =
