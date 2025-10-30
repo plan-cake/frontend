@@ -2,7 +2,6 @@ import { ReactNode, ReactElement, cloneElement } from "react";
 
 import Link from "next/link";
 
-import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { cn } from "@/lib/utils/classname";
 
 type ButtonStyle = "primary" | "secondary" | "frosted glass" | "transparent";
@@ -32,22 +31,28 @@ export default function Button({
 }: ButtonProps) {
   // validate props
   if (!icon && !label) throw new Error("Button must have an icon or a label");
-  if (!icon && shrinkOnMobile)
-    throw new Error("Button cannot shrink on mobile without an icon");
+  if (shrinkOnMobile && (!icon || !label))
+    throw new Error(
+      "Button cannot shrink on mobile without both an icon and a label",
+    );
   if (isLink && !href) throw new Error("Link Button must specify href");
   if (!isLink && !onClick)
     throw new Error("Non-Link Button must specify onClick");
 
   // TODO: implement loading/waiting state
 
-  const isMobile = useCheckMobile();
-  const showLabel = label && !(shrinkOnMobile && isMobile);
   const baseClasses =
     "rounded-full font-medium flex flex-row items-center gap-1";
   const cursorClass = "cursor-pointer"; // will change later with disabled and loading
+  const labelClass = shrinkOnMobile ? "hidden md:block" : "";
   let paddingClasses = "";
   if (icon) {
-    paddingClasses = showLabel ? "pr-4 pl-2 py-2" : "p-2";
+    if (label) {
+      // don't use isMobile so this can be used on server-rendered components
+      paddingClasses = shrinkOnMobile ? "p-2 md:pr-4" : "p-2 pr-4";
+    } else {
+      paddingClasses = "p-2";
+    }
   } else {
     paddingClasses = "px-4 py-2";
   }
@@ -80,7 +85,7 @@ export default function Button({
   const buttonContent = (
     <div className={cn(baseClasses, cursorClass, paddingClasses, styleClasses)}>
       {icon && iconComponent}
-      {showLabel && <span>{label}</span>}
+      {label && <span className={labelClass}>{label}</span>}
     </div>
   );
 
