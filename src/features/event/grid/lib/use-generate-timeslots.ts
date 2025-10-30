@@ -75,6 +75,8 @@ export default function useGenerateTimeSlots(
         .values(),
     );
 
+    console.log({ dayGroupedSlots });
+
     const numDays = differenceInCalendarDays(localEndTime, localStartTime) + 1;
 
     return { timeBlocks, dayGroupedSlots, numDays, numHours, error: null };
