@@ -45,18 +45,8 @@ export default function Button({
     "rounded-full font-medium flex flex-row items-center gap-1";
   const cursorClass = "cursor-pointer"; // will change later with disabled and loading
   const labelClass = shrinkOnMobile ? "hidden md:block" : "";
-  let paddingClasses = "";
-  if (icon) {
-    if (label) {
-      // don't use isMobile so this can be used on server-rendered components
-      paddingClasses = shrinkOnMobile ? "p-2 md:pr-4" : "p-2 pr-4";
-    } else {
-      paddingClasses = "p-2";
-    }
-  } else {
-    paddingClasses = "px-4 py-2";
-  }
 
+  let paddingShrink = 0;
   let styleClasses;
   switch (style) {
     case "primary":
@@ -72,6 +62,13 @@ export default function Button({
       styleClasses = ""; // TODO: add transparent style
       break;
   }
+
+  const paddingClasses = getPaddingClasses(
+    icon,
+    label,
+    shrinkOnMobile,
+    paddingShrink,
+  );
 
   // pretty ugly, but it allows the icon to be specified without a className for DRY
   // instead, we specify the styling (really just the size) here
@@ -93,4 +90,53 @@ export default function Button({
   } else {
     return <button onClick={onClick}>{buttonContent}</button>;
   }
+}
+
+// I know this looks bad, but tailwind needs the full class names to be defined
+function getPaddingClasses(
+  icon?: ReactNode,
+  label?: string,
+  shrinkOnMobile?: boolean,
+  paddingShrink?: number,
+) {
+  let paddingClasses = "";
+  switch (paddingShrink) {
+    case 0.5:
+      paddingClasses = "p-1.5 ";
+      break;
+    case 0.25:
+      paddingClasses = "p-1.75 ";
+      break;
+    default:
+      paddingClasses = "p-2 ";
+      break;
+  }
+  if (icon) {
+    if (label) {
+      switch (paddingShrink) {
+        case 0.5:
+          paddingClasses += shrinkOnMobile ? "md:pr-3.5" : "pr-3.5";
+          break;
+        case 0.25:
+          paddingClasses += shrinkOnMobile ? "md:pr-3.75" : "pr-3.75";
+          break;
+        default:
+          paddingClasses += shrinkOnMobile ? "md:pr-4" : "pr-4";
+          break;
+      }
+    }
+  } else {
+    switch (paddingShrink) {
+      case 0.5:
+        paddingClasses += "px-3.5";
+        break;
+      case 0.25:
+        paddingClasses += "px-3.75";
+        break;
+      default:
+        paddingClasses += "px-4";
+        break;
+    }
+  }
+  return paddingClasses;
 }
