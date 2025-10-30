@@ -1,7 +1,10 @@
-import { ReactNode, ReactElement, cloneElement } from "react";
+"use client";
+
+import { ReactElement, ReactNode, cloneElement, useState } from "react";
 
 import Link from "next/link";
 
+import LoadingSpinner from "@/components/loading-spinner";
 import { cn } from "@/lib/utils/classname";
 
 type ButtonStyle = "primary" | "secondary" | "frosted glass" | "transparent";
@@ -15,7 +18,7 @@ type ButtonProps = {
   // disabled?: boolean; // TODO: implement disabled state
   isLink?: boolean;
   href?: string;
-  onClick?: () => boolean;
+  onClick?: () => Promise<boolean> | boolean;
 };
 
 export default function Button({
@@ -39,11 +42,18 @@ export default function Button({
   if (!isLink && !onClick)
     throw new Error("Non-Link Button must specify onClick");
 
-  // TODO: implement loading/waiting state
+  const [isLoading, setIsLoading] = useState(false);
+  const onClickHandler = async () => {
+    if (isLoading) return;
+    setIsLoading(true);
+    await onClick!();
+    setIsLoading(false);
+  };
 
   const baseClasses =
-    "rounded-full font-medium flex flex-row items-center gap-1";
-  const cursorClass = "cursor-pointer"; // will change later with disabled and loading
+    "rounded-full font-medium flex flex-row items-center gap-1 relative";
+  const loadingHideClass = isLoading ? "opacity-0" : "";
+  const cursorClass = isLoading ? "cursor-wait" : "cursor-pointer"; // will change later with disabled
   const styleClasses = getStyleClasses(style, !!icon, !!label, shrinkOnMobile);
   const labelClass = shrinkOnMobile ? "hidden md:block" : "";
 
@@ -52,20 +62,23 @@ export default function Button({
   const iconComponent =
     icon &&
     cloneElement(icon as ReactElement<{ className: string }>, {
-      className: "h-6 w-6 p-0.5",
+      className: cn("h-6 w-6 p-0.5", loadingHideClass),
     });
 
   const buttonContent = (
     <div className={cn(baseClasses, cursorClass, styleClasses)}>
       {icon && iconComponent}
-      {label && <span className={labelClass}>{label}</span>}
+      {label && (
+        <span className={cn(labelClass, loadingHideClass)}>{label}</span>
+      )}
+      {isLoading && <LoadingSpinner className="centered-absolute h-5 w-5" />}
     </div>
   );
 
   if (isLink) {
     return <Link href={href!}>{buttonContent}</Link>;
   } else {
-    return <button onClick={onClick}>{buttonContent}</button>;
+    return <button onClick={onClickHandler}>{buttonContent}</button>;
   }
 }
 
