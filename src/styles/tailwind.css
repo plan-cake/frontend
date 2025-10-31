@@ -62,13 +62,19 @@
 
 @layer base {
   :root {
+    --background: var(--color-white);
+    --foreground: var(--color-violet);
     --accent: var(--color-blue);
+    --accent-text: var(--color-blue-500);
     --panel-color: oklch(1 0 0);
-    --loading-color: var(--color-gray-500);
+    --loading-color: var(--color-gray-200);
   }
 
   .dark {
+    --background: var(--color-violet);
+    --foreground: var(--color-bone);
     --accent: var(--color-red);
+    --accent-text: var(--color-red-100);
     --panel-color: oklch(0.3295 0.0403 287.95);
     --loading-color: oklch(0.3295 0.0403 287.95);
   }
@@ -76,9 +82,20 @@
 
 @theme {
   /* DYNAMIC COLORS */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
   --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
   --color-panel: var(--panel-color);
   --color-loading: var(--loading-color);
+
+  /* CALENDAR COLORS */
+  --calendar-accent: var(--color-accent);
+  --calendar-accent-background: color-mix(
+    in srgb,
+    var(--color-accent) 20%,
+    transparent
+  );
 
   /* FONTS */
   --font-modak: var(--font-modak);
