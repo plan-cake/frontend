@@ -50,6 +50,10 @@ export default function Button({
 
   const baseClasses =
     "rounded-full font-medium flex flex-row items-center gap-1 relative";
+  const focusClasses = cn(
+    "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
+    "group-focus:outline-violet dark:group-focus:outline-white",
+  );
   const loadingHideClass = isLoading ? "opacity-0" : "";
   const cursorClass = isLoading
     ? "cursor-default"
@@ -75,7 +79,7 @@ export default function Button({
     });
 
   const buttonContent = (
-    <div className={cn(baseClasses, cursorClass, styleClasses)}>
+    <div className={cn(baseClasses, cursorClass, styleClasses, focusClasses)}>
       {icon && iconComponent}
       {label && (
         <span className={cn(labelClass, loadingHideClass)}>{label}</span>
@@ -91,9 +95,17 @@ export default function Button({
   if (disabled || isLoading) {
     return <div>{buttonContent}</div>;
   } else if (isLink) {
-    return <Link href={href!}>{buttonContent}</Link>;
+    return (
+      <Link className={"group focus:outline-none"} href={href!}>
+        {buttonContent}
+      </Link>
+    );
   } else {
-    return <button onClick={onClickHandler}>{buttonContent}</button>;
+    return (
+      <button className={"group focus:outline-none"} onClick={onClickHandler}>
+        {buttonContent}
+      </button>
+    );
   }
 }
 
