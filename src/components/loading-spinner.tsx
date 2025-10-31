@@ -4,8 +4,9 @@ export default function LoadingSpinner({ className }: { className?: string }) {
   return (
     <div
       className={cn(
+        "animate-spin rounded-full border-[1.5px] border-white",
         className,
-        "animate-spin rounded-full border-2 border-white border-t-transparent",
+        "border-t-transparent dark:border-t-transparent", // don't ask
       )}
     />
   );
