@@ -134,7 +134,7 @@ export type ActionButtonProps = CommonButtonProps & {
    * The function must return a boolean or a Promise that resolves to a boolean,
    * indicating whether the action was successful.
    */
-  onClick?: () => Promise<boolean> | boolean;
+  onClick: () => Promise<boolean> | boolean;
   /**
    * If specified, the button will stay in a loading state after a successful action. This
    * behavior should be used for buttons that trigger navigation, to avoid multiple clicks
@@ -150,5 +150,5 @@ export type LinkButtonProps = CommonButtonProps & {
   /**
    * The URL to navigate to when the button is clicked.
    */
-  href?: string;
+  href: string;
 };
