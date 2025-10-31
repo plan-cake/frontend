@@ -20,7 +20,7 @@ export default function Button({
   isLink = false,
   href,
   onClick,
-  releaseOnSuccess = true,
+  loadOnSuccess = false,
 }: ButtonProps) {
   // validate props
   if (!icon && !label) throw new Error("Button must have an icon or a label");
@@ -43,7 +43,7 @@ export default function Button({
     if (isLoading) return;
     setIsLoading(true);
     const success = await onClick!();
-    if (!releaseOnSuccess) {
+    if (loadOnSuccess) {
       if (!success) {
         setIsLoading(false);
       }
