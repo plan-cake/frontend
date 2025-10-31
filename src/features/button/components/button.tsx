@@ -15,7 +15,6 @@ export default function Button({
   icon,
   label,
   shrinkOnMobile = false,
-  // tooltip,
   disabled = false,
   isLink = false,
   href,
