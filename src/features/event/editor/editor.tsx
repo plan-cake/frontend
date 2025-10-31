@@ -121,7 +121,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               "border-b-1 w-full p-1 text-2xl focus:outline-none",
               errors.title
                 ? "border-red placeholder:text-red"
-                : "border-violet dark:border-gray-400",
+                : "border-gray-400",
             )}
           />
         </div>
@@ -222,7 +222,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               className={`border-b-1 w-full focus:outline-none ${
                 errors.customCode
                   ? "border-red placeholder:text-red"
-                  : "text-blue dark:text-red border-violet dark:border-gray-400"
+                  : "text-accent border-violet dark:border-gray-400"
               }`}
             />
           </div>
@@ -263,7 +263,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 placeholder="optional"
                 className={cn(
                   "border-b-1 w-full border-gray-300 focus:outline-none dark:border-gray-400",
-                  type === "new" && "text-blue dark:text-red",
+                  type === "new" && "text-accent",
                   type === "edit" && "cursor-not-allowed opacity-50",
                   errors.customCode ? "border-red placeholder:text-red" : "",
                 )}

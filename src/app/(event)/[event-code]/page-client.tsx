@@ -47,7 +47,7 @@ export default function ClientPage({
       <HeaderSpacer />
       <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">
-          <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+          <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
@@ -86,9 +86,9 @@ export default function ClientPage({
 
         {/* Sidebar for attendees */}
         <div className="md:top-25 fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0">
-          <div className="rounded-3xl bg-[#FFFFFF] p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none dark:bg-[#343249]">
+          <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none">
             <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
-            <ul className="flex flex-wrap space-x-2 space-y-0 text-gray-700 dark:text-gray-200">
+            <ul className="flex flex-wrap space-x-2 space-y-0">
               {participants.length === 0 && (
                 <li className="text-sm italic opacity-50">No attendees yet</li>
               )}
@@ -111,13 +111,13 @@ export default function ClientPage({
             </ul>
           </div>
 
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
+          <div className="bg-panel hidden rounded-3xl p-6 md:block">
             <EventInfo eventRange={eventRange} />
           </div>
 
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-4 text-sm md:block dark:bg-[#343249]">
+          <div className="bg-panel hidden rounded-3xl p-4 text-sm md:block">
             Displaying event in
-            <span className="text-blue dark:text-red ml-1 font-bold">
+            <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
                 id="timezone-select"
                 value={timezone}

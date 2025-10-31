@@ -33,7 +33,7 @@ export default function ClientPage({
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {loggedIn === false && (
-        <div className="bg-blue/20 dark:bg-red/20 flex items-center gap-4 rounded-3xl p-4">
+        <div className="bg-accent/20 flex items-center gap-4 rounded-3xl p-4">
           <InfoCircledIcon className="h-5 w-5" />
           <div>
             <h2 className="text-lg font-bold">Logged in as a Guest</h2>
@@ -41,7 +41,7 @@ export default function ClientPage({
               This data is only available from this browser.{" "}
               <Link
                 href="/register"
-                className="text-blue dark:text-red cursor-pointer font-bold hover:underline"
+                className="text-accent cursor-pointer font-bold hover:underline"
               >
                 Create an account
               </Link>{" "}
@@ -67,7 +67,7 @@ export default function ClientPage({
             setTab={setTab}
           />
         </div>
-        <div className="w-full rounded-3xl bg-[#FFFFFF] p-4 dark:bg-[#343249]">
+        <div className="bg-panel w-full rounded-3xl p-4">
           <EventGrid
             events={tab === "created" ? created_events : participated_events}
           />
@@ -95,8 +95,8 @@ function DashboardTabButton({
       className={cn(
         "text-nowrap rounded-full px-4 py-2",
         currentTab === value
-          ? "bg-blue dark:bg-red text-white"
-          : "hover:bg-blue/25 dark:hover:bg-red/25 cursor-pointer transition",
+          ? "bg-accent text-white"
+          : "hover:bg-accent/25 cursor-pointer transition",
         !isMobile && "w-full text-left",
       )}
       onClick={() => setTab(value)}

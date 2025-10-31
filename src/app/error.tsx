@@ -16,9 +16,7 @@ export default function EventErrorPage({
 
   return (
     <div className="flex h-[calc(100vh-200px)] flex-col items-center justify-center rounded-lg p-8 text-center">
-      <h2 className="mb-4 text-2xl font-bold text-gray-800 dark:text-white">
-        Oops! Something went wrong.
-      </h2>
+      <h2 className="mb-4 text-2xl font-bold">Oops! Something went wrong.</h2>
 
       <p className="text-red mb-6 max-w-md">{error.message}</p>
 

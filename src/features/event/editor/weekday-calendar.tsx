@@ -89,7 +89,7 @@ export default function WeekdayCalendar({
                 "aspect-square w-10 items-center justify-center rounded-full text-center",
                 "transition-all duration-200",
                 isSelected
-                  ? "dark:bg-red bg-blue-400 text-white"
+                  ? "bg-accent text-white"
                   : "hover:bg-gray-200 dark:hover:bg-gray-800",
               )}
             >
