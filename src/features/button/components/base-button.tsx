@@ -157,7 +157,6 @@ function getStyleClasses(
   let paddingShrink = 0;
   let styleClasses;
   let spinnerClasses = "border-white";
-  console.log("style:", style, "state:", state);
   switch (style) {
     case "primary":
       switch (state) {
