@@ -60,7 +60,26 @@
 
 /* OTHER VARIABLES */
 
+@layer base {
+  :root {
+    --accent: var(--color-blue);
+    --panel-color: oklch(1 0 0);
+    --loading-color: var(--color-gray-500);
+  }
+
+  .dark {
+    --accent: var(--color-red);
+    --panel-color: oklch(0.3295 0.0403 287.95);
+    --loading-color: oklch(0.3295 0.0403 287.95);
+  }
+}
+
 @theme {
+  /* DYNAMIC COLORS */
+  --color-accent: var(--accent);
+  --color-panel: var(--panel-color);
+  --color-loading: var(--loading-color);
+
   /* FONTS */
   --font-modak: var(--font-modak);
   --font-nunito: var(--font-nunito);
