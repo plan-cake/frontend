@@ -1,35 +1,14 @@
 "use client";
 
-import { ReactElement, ReactNode, cloneElement, useState } from "react";
+import { ReactElement, cloneElement, useState } from "react";
 
 import Link from "next/link";
 
 import LoadingSpinner from "@/components/loading-spinner";
+import { ButtonProps, ButtonStyle } from "@/features/button/props";
 import { cn } from "@/lib/utils/classname";
 
-type ButtonStyle = "primary" | "secondary" | "frosted glass" | "transparent";
-
 type ButtonState = "rest" | "loading" | "disabled";
-
-type ButtonProps = {
-  style: ButtonStyle;
-  icon?: ReactNode;
-  label?: string;
-  shrinkOnMobile?: boolean;
-  // tooltip?: string; // TODO: implement tooltips
-  disabled?: boolean;
-  isLink?: boolean;
-  href?: string;
-  onClick?: () => Promise<boolean> | boolean;
-  /**
-   * If true, the button will return to a normal state no matter the result of `onClick`.
-   *
-   * If false, the button will stay in a loading state after a successful action. This
-   * behavior should be used for buttons that trigger navigation.
-   * @default true
-   */
-  releaseOnSuccess?: boolean;
-};
 
 export default function Button({
   style,
@@ -52,6 +31,8 @@ export default function Button({
   if (isLink && !href) throw new Error("Link Button must specify href");
   if (!isLink && !onClick)
     throw new Error("Non-Link Button must specify onClick");
+  if (style === "transparent" && icon)
+    throw new Error("Transparent Button cannot have an icon");
 
   const [isLoading, setIsLoading] = useState(false);
   const onClickHandler = async () => {
