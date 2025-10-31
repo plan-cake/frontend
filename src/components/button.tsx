@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils/classname";
 
 type ButtonStyle = "primary" | "secondary" | "frosted glass" | "transparent";
 
+type ButtonState = "rest" | "loading" | "disabled";
+
 type ButtonProps = {
   style: ButtonStyle;
   icon?: ReactNode;
@@ -74,11 +76,12 @@ export default function Button({
     : disabled
       ? "cursor-not-allowed"
       : "cursor-pointer";
-  const styleClasses = getStyleClasses(
+  const buttonState = isLoading ? "loading" : disabled ? "disabled" : "rest";
+  const [styleClasses, spinnerClasses] = getStyleClasses(
     style,
     !!icon,
     !!label,
-    disabled,
+    buttonState,
     shrinkOnMobile,
   );
   const labelClass = shrinkOnMobile ? "hidden md:block" : "";
@@ -97,7 +100,11 @@ export default function Button({
       {label && (
         <span className={cn(labelClass, loadingHideClass)}>{label}</span>
       )}
-      {isLoading && <LoadingSpinner className="centered-absolute h-5 w-5" />}
+      {isLoading && (
+        <LoadingSpinner
+          className={cn("centered-absolute h-5 w-5", spinnerClasses)}
+        />
+      )}
     </div>
   );
 
@@ -114,33 +121,88 @@ function getStyleClasses(
   style: ButtonStyle,
   hasIcon: boolean,
   hasLabel: boolean,
-  isDisabled: boolean,
+  state: ButtonState,
   shrinkOnMobile: boolean,
 ) {
   let paddingShrink = 0;
   let styleClasses;
+  let spinnerClasses = "border-white";
   switch (style) {
     case "primary":
-      styleClasses = isDisabled
-        ? "bg-gray-200 text-[#ffffff] dark:bg-gray-300/25 dark:text-gray-300" // disabled
-        : "bg-blue dark:bg-red text-white"; // base
+      switch (state) {
+        case "rest":
+          styleClasses = cn(
+            "bg-blue dark:bg-red text-white",
+            "active:bg-[color-mix(in_oklab,var(--color-blue)_100%,black_10%)]",
+            "dark:active:bg-[color-mix(in_oklab,var(--color-red)_100%,black_10%)]",
+            "hover:bg-[color-mix(in_oklab,var(--color-blue)_100%,white_10%)]",
+            "dark:hover:bg-[color-mix(in_oklab,var(--color-red)_100%,white_10%)]",
+          );
+          break;
+        case "loading":
+          styleClasses = cn(
+            "bg-blue-500 dark:bg-red-200 text-white/50",
+            "bg-[color-mix(in_oklab,var(--color-blue)_100%,black_20%)]",
+            "dark:bg-[color-mix(in_oklab,var(--color-red)_100%,black_20%)]",
+          );
+          break;
+        case "disabled":
+          styleClasses =
+            "bg-gray-200 text-[#ffffff] dark:bg-gray-300/25 dark:text-gray-300";
+          break;
+      }
       break;
     case "secondary":
-      styleClasses = isDisabled
-        ? "border-gray-200 border-2 text-gray-300 dark:border-gray-400" // disabled
-        : "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25"; // base
+      switch (state) {
+        case "rest":
+          styleClasses = cn(
+            "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25",
+            "active:bg-blue/40 dark:active:bg-red/40",
+          );
+          break;
+        case "loading":
+          styleClasses =
+            "border-blue border-2 dark:border-red bg-blue/40 dark:bg-red/40";
+          break;
+        case "disabled":
+          styleClasses =
+            "border-gray-200 border-2 text-gray-300 dark:border-gray-400";
+          break;
+      }
       paddingShrink = 0.5;
+      spinnerClasses = "border-violet dark:border-white";
       break;
     case "frosted glass":
-      styleClasses = isDisabled
-        ? "frosted-glass text-violet/40 dark:text-white/40" // disabled
-        : "frosted-glass"; // base
+      switch (state) {
+        case "rest":
+          styleClasses = "frosted-glass frosted-glass-button";
+          break;
+        case "loading":
+          styleClasses = "frosted-glass frosted-glass-button-loading";
+          break;
+        case "disabled":
+          styleClasses = "frosted-glass text-violet/40 dark:text-white/40";
+          break;
+      }
       paddingShrink = 0.25;
+      spinnerClasses = "border-violet dark:border-white";
       break;
     case "transparent":
-      styleClasses = isDisabled
-        ? "font-bold text-gray-300 dark:text-gray-400" // disabled
-        : "text-blue dark:text-red font-bold hover:bg-blue/25 dark:hover:bg-red/25"; // base
+      switch (state) {
+        case "rest":
+          styleClasses = cn(
+            "text-blue dark:text-red font-bold hover:bg-blue/25 dark:hover:bg-red/25",
+            "active:bg-blue/40 dark:active:bg-red/40",
+          );
+          break;
+        case "loading":
+          styleClasses = "font-bold bg-blue/20 dark:bg-red/20";
+          break;
+        case "disabled":
+          styleClasses = "font-bold text-gray-300 dark:text-gray-400";
+          break;
+      }
+      spinnerClasses = "border-blue dark:border-red";
       break;
   }
   const paddingClasses = getPaddingClasses(
@@ -149,7 +211,7 @@ function getStyleClasses(
     shrinkOnMobile,
     paddingShrink,
   );
-  return cn(styleClasses, paddingClasses);
+  return [cn(styleClasses, paddingClasses), spinnerClasses];
 }
 
 // I know this looks bad, but tailwind needs the full class names to be defined
