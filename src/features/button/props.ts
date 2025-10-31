@@ -6,7 +6,7 @@ export type ButtonStyle =
   | "frosted glass"
   | "transparent";
 
-export type ButtonProps = {
+export type BaseButtonProps = {
   /**
    * The style of the button. There are four styles:
    * - `primary`: An important button, filled with the main accent color.

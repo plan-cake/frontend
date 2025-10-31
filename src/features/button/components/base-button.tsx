@@ -5,12 +5,12 @@ import { ReactElement, cloneElement, useEffect, useState } from "react";
 import Link from "next/link";
 
 import LoadingSpinner from "@/components/loading-spinner";
-import { ButtonProps, ButtonStyle } from "@/features/button/props";
+import { BaseButtonProps, ButtonStyle } from "@/features/button/props";
 import { cn } from "@/lib/utils/classname";
 
 type ButtonState = "rest" | "loading" | "disabled";
 
-export default function Button({
+export default function BaseButton({
   style,
   icon,
   label,
@@ -21,7 +21,7 @@ export default function Button({
   href,
   onClick,
   loadOnSuccess = false,
-}: ButtonProps) {
+}: BaseButtonProps) {
   // validate props
   if (!icon && !label) throw new Error("Button must have an icon or a label");
   if (shrinkOnMobile && (!icon || !label))
