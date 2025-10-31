@@ -16,7 +16,7 @@ export type BaseButtonProps = {
    *
    * `transparent` buttons cannot have icons.
    */
-  style: ButtonStyle;
+  buttonStyle: ButtonStyle;
   /**
    * The icon to display in the button.
    *
@@ -90,7 +90,7 @@ type CommonButtonProps = {
      *
      * `transparent` buttons cannot have icons.
      */
-  style: ButtonStyle;
+  buttonStyle: ButtonStyle;
   /**
    * The icon to display in the button.
    *

@@ -1,6 +1,12 @@
 "use client";
 
-import { ReactElement, cloneElement, useEffect, useState } from "react";
+import {
+  ReactElement,
+  cloneElement,
+  useEffect,
+  useState,
+  forwardRef,
+} from "react";
 
 import Link from "next/link";
 
@@ -10,109 +16,136 @@ import { cn } from "@/lib/utils/classname";
 
 type ButtonState = "rest" | "loading" | "disabled";
 
-export default function BaseButton({
-  style,
-  icon,
-  label,
-  shrinkOnMobile = false,
-  loading = false,
-  disabled = false,
-  isLink = false,
-  href,
-  onClick,
-  loadOnSuccess = false,
-}: BaseButtonProps) {
-  // validate props
-  if (!icon && !label) throw new Error("Button must have an icon or a label");
-  if (shrinkOnMobile && (!icon || !label))
-    throw new Error(
-      "Button cannot shrink on mobile without both an icon and a label",
-    );
-  if (isLink && !href) throw new Error("Link Button must specify href");
-  if (!isLink && !onClick)
-    throw new Error("Non-Link Button must specify onClick");
-  if (style === "transparent" && icon)
-    throw new Error("Transparent Button cannot have an icon");
+// Used for forwardRef when using libraries like Radix UI
+type Ref = HTMLButtonElement | HTMLAnchorElement;
 
-  const [isLoading, setIsLoading] = useState(loading);
-  useEffect(() => {
-    setIsLoading(loading);
-  }, [loading]);
+const BaseButton = forwardRef<Ref, BaseButtonProps>(
+  (
+    {
+      buttonStyle,
+      icon,
+      label,
+      shrinkOnMobile = false,
+      loading = false,
+      disabled = false,
+      isLink = false,
+      href,
+      onClick,
+      loadOnSuccess = false,
+      ...props // for forwardRef
+    },
+    ref, // for forwardRef
+  ) => {
+    // validate props
+    if (!icon && !label) throw new Error("Button must have an icon or a label");
+    if (shrinkOnMobile && (!icon || !label))
+      throw new Error(
+        "Button cannot shrink on mobile without both an icon and a label",
+      );
+    if (isLink && !href) throw new Error("Link Button must specify href");
+    if (!isLink && !onClick)
+      throw new Error("Non-Link Button must specify onClick");
+    if (buttonStyle === "transparent" && icon)
+      throw new Error("Transparent Button cannot have an icon");
 
-  const onClickHandler = async () => {
-    if (isLoading) return;
-    setIsLoading(true);
-    const success = await onClick!();
-    if (loadOnSuccess) {
-      if (!success) {
+    const [isLoading, setIsLoading] = useState(loading);
+    useEffect(() => {
+      setIsLoading(loading);
+    }, [loading]);
+
+    const onClickHandler = async () => {
+      if (isLoading) return;
+      setIsLoading(true);
+      const success = await onClick!();
+      if (loadOnSuccess) {
+        if (!success) {
+          setIsLoading(false);
+        }
+        return;
+      } else {
         setIsLoading(false);
       }
-      return;
+    };
+
+    const baseClasses = cn(
+      "rounded-full font-medium flex flex-row items-center gap-1 relative",
+    );
+    const focusClasses = cn(
+      "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
+      "group-focus:outline-violet dark:group-focus:outline-white",
+    );
+    const loadingHideClass = isLoading ? "opacity-0" : "";
+    const cursorClass = isLoading
+      ? "cursor-default"
+      : disabled
+        ? "cursor-not-allowed"
+        : "cursor-pointer";
+    const buttonState = isLoading ? "loading" : disabled ? "disabled" : "rest";
+    const [styleClasses, spinnerClasses] = getStyleClasses(
+      buttonStyle,
+      !!icon,
+      !!label,
+      buttonState,
+      shrinkOnMobile,
+    );
+    const labelClass = shrinkOnMobile ? "hidden md:block" : "";
+
+    // pretty ugly, but it allows the icon to be specified without a className for DRY
+    // instead, we specify the styling (really just the size) here
+    const iconComponent =
+      icon &&
+      cloneElement(icon as ReactElement<{ className: string }>, {
+        className: cn("h-6 w-6 p-0.5", loadingHideClass),
+      });
+
+    const buttonContent = (
+      <div className={cn(baseClasses, cursorClass, styleClasses, focusClasses)}>
+        {icon && iconComponent}
+        {label && (
+          <span className={cn(labelClass, loadingHideClass)}>{label}</span>
+        )}
+        {isLoading && (
+          <LoadingSpinner
+            className={cn("centered-absolute h-5 w-5", spinnerClasses)}
+          />
+        )}
+      </div>
+    );
+
+    if (disabled || isLoading) {
+      return (
+        <button disabled ref={ref as React.Ref<HTMLButtonElement>} {...props}>
+          {buttonContent}
+        </button>
+      );
+    } else if (isLink) {
+      return (
+        <Link
+          ref={ref as React.Ref<HTMLAnchorElement>}
+          {...props}
+          className={"group focus:outline-none"}
+          href={href!}
+        >
+          {buttonContent}
+        </Link>
+      );
     } else {
-      setIsLoading(false);
+      return (
+        <button
+          ref={ref as React.Ref<HTMLButtonElement>}
+          {...props}
+          className={"group focus:outline-none"}
+          onClick={onClickHandler}
+        >
+          {buttonContent}
+        </button>
+      );
     }
-  };
+  },
+);
 
-  const baseClasses =
-    "rounded-full font-medium flex flex-row items-center gap-1 relative";
-  const focusClasses = cn(
-    "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
-    "group-focus:outline-violet dark:group-focus:outline-white",
-  );
-  const loadingHideClass = isLoading ? "opacity-0" : "";
-  const cursorClass = isLoading
-    ? "cursor-default"
-    : disabled
-      ? "cursor-not-allowed"
-      : "cursor-pointer";
-  const buttonState = isLoading ? "loading" : disabled ? "disabled" : "rest";
-  const [styleClasses, spinnerClasses] = getStyleClasses(
-    style,
-    !!icon,
-    !!label,
-    buttonState,
-    shrinkOnMobile,
-  );
-  const labelClass = shrinkOnMobile ? "hidden md:block" : "";
-
-  // pretty ugly, but it allows the icon to be specified without a className for DRY
-  // instead, we specify the styling (really just the size) here
-  const iconComponent =
-    icon &&
-    cloneElement(icon as ReactElement<{ className: string }>, {
-      className: cn("h-6 w-6 p-0.5", loadingHideClass),
-    });
-
-  const buttonContent = (
-    <div className={cn(baseClasses, cursorClass, styleClasses, focusClasses)}>
-      {icon && iconComponent}
-      {label && (
-        <span className={cn(labelClass, loadingHideClass)}>{label}</span>
-      )}
-      {isLoading && (
-        <LoadingSpinner
-          className={cn("centered-absolute h-5 w-5", spinnerClasses)}
-        />
-      )}
-    </div>
-  );
-
-  if (disabled || isLoading) {
-    return <div>{buttonContent}</div>;
-  } else if (isLink) {
-    return (
-      <Link className={"group focus:outline-none"} href={href!}>
-        {buttonContent}
-      </Link>
-    );
-  } else {
-    return (
-      <button className={"group focus:outline-none"} onClick={onClickHandler}>
-        {buttonContent}
-      </button>
-    );
-  }
-}
+BaseButton.displayName = "BaseButton";
+export default BaseButton;
 
 function getStyleClasses(
   style: ButtonStyle,
@@ -124,6 +157,7 @@ function getStyleClasses(
   let paddingShrink = 0;
   let styleClasses;
   let spinnerClasses = "border-white";
+  console.log("style:", style, "state:", state);
   switch (style) {
     case "primary":
       switch (state) {
