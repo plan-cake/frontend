@@ -88,9 +88,7 @@ export default function WeekdayCalendar({
               className={cn(
                 "aspect-square w-10 items-center justify-center rounded-full text-center",
                 "transition-all duration-200",
-                isSelected
-                  ? "bg-accent text-white"
-                  : "hover:bg-gray-200 dark:hover:bg-gray-800",
+                isSelected ? "bg-accent text-white" : "hover:bg-gray-500/50",
               )}
             >
               {day}
