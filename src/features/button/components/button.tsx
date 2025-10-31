@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactElement, cloneElement, useState } from "react";
+import { ReactElement, cloneElement, useEffect, useState } from "react";
 
 import Link from "next/link";
 
@@ -15,6 +15,7 @@ export default function Button({
   icon,
   label,
   shrinkOnMobile = false,
+  loading = false,
   disabled = false,
   isLink = false,
   href,
@@ -33,7 +34,11 @@ export default function Button({
   if (style === "transparent" && icon)
     throw new Error("Transparent Button cannot have an icon");
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(loading);
+  useEffect(() => {
+    setIsLoading(loading);
+  }, [loading]);
+
   const onClickHandler = async () => {
     if (isLoading) return;
     setIsLoading(true);

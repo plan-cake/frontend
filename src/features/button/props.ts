@@ -44,6 +44,17 @@ type LinkButtonProps = {
    * @default true
    */
   releaseOnSuccess?: never;
+  /**
+   * If `true`, the button will show a loading spinner and be unclickable.
+   * 
+   * Typically, the loading state is managed internally by the button when `onClick` is
+   * provided. However, this can be helpful if a button shouldn't be accessible until
+   * something else has loaded.
+   * 
+   * This prop is only valid for non-link buttons.
+   * @default false
+   */
+  loading?: never;
 };
 
 type ActionButtonProps = {
@@ -51,6 +62,7 @@ type ActionButtonProps = {
   href?: never;
   onClick: () => Promise<boolean> | boolean;
   releaseOnSuccess?: boolean;
+  loading?: boolean;
 };
 
 type TransparentButtonProps = {
