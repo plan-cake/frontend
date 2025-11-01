@@ -2,6 +2,7 @@
 
 import { CopyIcon } from "@radix-ui/react-icons";
 
+import ActionButton from "@/features/button/components/action-button";
 import { useToast } from "@/features/toast/context";
 
 export default function CopyToast({ code }: { code: string }) {
@@ -19,6 +20,7 @@ export default function CopyToast({ code }: { code: string }) {
         message: currentURL,
         icon: <CopyIcon className="col-start-1 row-span-2 h-5 w-5" />,
       });
+      return true;
     } catch (err) {
       console.error("Failed to copy: ", err);
       addToast({
@@ -27,16 +29,16 @@ export default function CopyToast({ code }: { code: string }) {
         title: "COPY FAILED",
         message: "Could not copy link to clipboard.",
       });
+      return false;
     }
   };
 
   return (
-    <button
-      className="border-blue dark:border-red dark:hover:bg-red/25 flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm hover:bg-blue-100"
+    <ActionButton
+      buttonStyle="secondary"
+      icon={<CopyIcon />}
+      label="Copy Link"
       onClick={copyToClipboard}
-    >
-      <CopyIcon className="h-5 w-5" />
-      <span>Copy Link</span>
-    </button>
+    />
   );
 }
