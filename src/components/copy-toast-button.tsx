@@ -1,5 +1,7 @@
 "use client";
 
+import { MouseEvent } from "react";
+
 import { CopyIcon } from "@radix-ui/react-icons";
 
 import { useToast } from "@/features/toast/context";
@@ -9,23 +11,15 @@ export default function CopyToastButton({ code }: { code: string }) {
   const currentURL =
     typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
 
-  const copyToClipboard = async () => {
+  const copyToClipboard = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // avoid triggering the parent link
+
     try {
       await navigator.clipboard.writeText(currentURL);
-      addToast({
-        type: "copy",
-        id: Date.now() + Math.random(),
-        title: "COPIED EVENT LINK!",
-        message: currentURL,
-      });
+      addToast("copy", "Link copied to clipboard!");
     } catch (err) {
       console.error("Failed to copy: ", err);
-      addToast({
-        type: "error",
-        id: Date.now() + Math.random(),
-        title: "COPY FAILED",
-        message: "Could not copy link to clipboard.",
-      });
+      addToast("error", "Could not copy link to clipboard.");
     }
   };
 

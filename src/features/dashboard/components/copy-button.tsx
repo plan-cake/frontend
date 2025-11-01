@@ -18,23 +18,13 @@ export default function DashboardCopyButton({
 
   const copyToClipboard = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault(); // avoid triggering the parent link
+
     try {
       await navigator.clipboard.writeText(eventUrl);
-      addToast({
-        type: "success",
-        id: Date.now() + Math.random(),
-        title: "COPIED EVENT LINK!",
-        message: eventUrl,
-        icon: <CopyIcon className="col-start-1 row-span-2 h-5 w-5" />,
-      });
+      addToast("copy", "Link copied to clipboard!");
     } catch (err) {
       console.error("Failed to copy: ", err);
-      addToast({
-        type: "error",
-        id: Date.now() + Math.random(),
-        title: "COPY FAILED",
-        message: "Could not copy link to clipboard.",
-      });
+      addToast("error", "Could not copy link to clipboard.");
     }
   };
 
