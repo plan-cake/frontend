@@ -5,7 +5,7 @@ import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { LoginContext } from "@/lib/providers";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
 
 export default function AccountDropdown({ children }: { children: ReactNode }) {

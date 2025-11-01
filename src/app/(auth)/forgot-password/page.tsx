@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");

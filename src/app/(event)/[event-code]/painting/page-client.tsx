@@ -16,7 +16,7 @@ import ScheduleGrid from "@/features/event/grid/grid";
 import { EventInfo } from "@/features/event/info-drawer";
 import EventInfoDrawer from "@/features/event/info-drawer";
 import { useToast } from "@/features/toast/context";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function ClientPage({
   eventCode,

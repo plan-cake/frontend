@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const router = useRouter();

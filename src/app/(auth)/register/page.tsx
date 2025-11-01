@@ -9,7 +9,7 @@ import LinkText from "@/components/link-text";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
 import { useDebounce } from "@/lib/hooks/use-debounce";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
