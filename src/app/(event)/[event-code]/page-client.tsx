@@ -3,17 +3,16 @@
 import { useState } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
-import Link from "next/link";
 
 import CopyToast from "@/components/copy-toast";
 import HeaderSpacer from "@/components/header-spacer";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
+import LinkButton from "@/features/button/components/link-button";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";
-import EventInfoDrawer from "@/features/event/info-drawer";
-import { EventInfo } from "@/features/event/info-drawer";
+import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 
 export default function ClientPage({
   eventCode,
@@ -52,22 +51,21 @@ export default function ClientPage({
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
           {isCreator && (
-            <Link
-              className="border-blue dark:border-red dark:hover:bg-red/25 flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm hover:bg-blue-100"
+            <LinkButton
+              buttonStyle="secondary"
+              icon={<Pencil1Icon />}
+              label="Edit Event"
+              shrinkOnMobile
               href={`/${eventCode}/edit`}
-            >
-              <Pencil1Icon className="h-5 w-5" />
-              <span className="hidden md:block">Edit Event</span>
-            </Link>
+            />
           )}
           <CopyToast code={eventCode} />
-          <Link
-            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet flex flex-row items-center gap-2 rounded-full border-2 p-2 text-sm text-white hover:bg-blue-100"
+          <LinkButton
+            buttonStyle="primary"
+            icon={<Pencil2Icon />}
+            label={(participated ? "Edit" : "Add") + " Availability"}
             href={`/${eventCode}/painting`}
-          >
-            <Pencil2Icon className="h-5 w-5" />
-            <span>{participated ? "Edit" : "Add"} Availability</span>
-          </Link>
+          />
         </div>
       </div>
 
