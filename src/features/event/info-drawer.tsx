@@ -40,7 +40,7 @@ export default function EventInfoDrawer({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="rounded-full hover:bg-gray-100 focus:outline-none md:hidden dark:border-gray-400 dark:hover:bg-gray-700">
+        <button className="cursor-pointer rounded-full md:hidden">
           <InfoCircledIcon width={20} height={20} />
         </button>
       </Dialog.Trigger>
