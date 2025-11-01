@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import LinkText from "@/components/link-text";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action-button";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
@@ -16,7 +17,6 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordCriteria, setPasswordCriteria] = useState({});
-  const isSubmitting = React.useRef(false);
   const router = useRouter();
 
   function passwordIsStrong() {
@@ -61,57 +61,53 @@ export default function Page() {
     }
   }, [password]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-
+  const handleSubmit = async () => {
     if (!email) {
       alert("Missing email");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (!password) {
       alert("Missing password");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (!passwordIsStrong()) {
       alert("Password is not strong enough");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (confirmPassword !== password) {
       alert("Passwords do not match");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
-    await fetch("/api/auth/register/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          sessionStorage.setItem("register_email", email);
-          router.push("/register/email-sent");
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/register/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
 
-    isSubmitting.current = false;
+      if (res.ok) {
+        sessionStorage.setItem("register_email", email);
+        router.push("/register/email-sent");
+        return true;
+      } else {
+        alert(formatApiError(await res.json()));
+        return false;
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+      return false;
+    }
   };
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
+      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           register
@@ -149,17 +145,17 @@ export default function Page() {
         />
 
         {/* Register Button */}
-        <div className="flex w-full">
-          <button
-            type="submit"
-            className="bg-blue dark:bg-red mb-2 ml-auto cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-          >
-            Register
-          </button>
+        <div className="flex w-full justify-end">
+          <ActionButton
+            buttonStyle="primary"
+            label="Register"
+            onClick={handleSubmit}
+            loadOnSuccess
+          />
         </div>
 
         {/* Login Link */}
-        <div className="w-full text-right text-xs">
+        <div className="mt-2 w-full text-right text-xs">
           Already have an account?{" "}
           <Link href="/login">
             <LinkText>Login!</LinkText>

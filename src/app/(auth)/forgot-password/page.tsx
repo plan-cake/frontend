@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,44 +8,43 @@ import { useRouter } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action-button";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const isSubmitting = useRef(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-
+  const handleSubmit = async () => {
     if (!email) {
       alert("Missing email");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
-    await fetch("/api/auth/start-password-reset/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          setEmailSent(true);
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/start-password-reset/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-    isSubmitting.current = false;
+      if (res.ok) {
+        setEmailSent(true);
+        return true;
+      } else {
+        alert(formatApiError(await res.json()));
+        return false;
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+      return false;
+    }
   };
 
   return (
@@ -64,7 +63,7 @@ export default function Page() {
         />
       ) : (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={stopRefresh}
           className="flex w-80 flex-col items-center"
         >
           {/* Title */}
@@ -87,12 +86,12 @@ export default function Page() {
             </Link>
 
             {/* Email Button */}
-            <button
-              type="submit"
-              className="bg-blue dark:bg-red mb-2 cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-            >
-              Send Link
-            </button>
+            <ActionButton
+              buttonStyle="primary"
+              label="Send Link"
+              onClick={handleSubmit}
+              loadOnSuccess
+            />
           </div>
         </form>
       )}
