@@ -1,9 +1,9 @@
 import { createContext, useContext } from "react";
 
-import { ToastData } from "@/features/toast/type";
+import { ToastType } from "@/features/toast/type";
 
 export const ToastContext = createContext<{
-  addToast: (data: ToastData) => void;
+  addToast: (type: ToastType, message: string) => void;
   removeToast: (id: number) => void;
 }>({
   addToast: () => {},

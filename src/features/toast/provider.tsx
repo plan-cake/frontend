@@ -12,9 +12,9 @@ import * as Toast from "@radix-ui/react-toast";
 
 import BaseToast from "@/features/toast/base";
 import ToastContext from "@/features/toast/context";
-import { ToastData } from "@/features/toast/type";
+import { ToastData, ToastType } from "@/features/toast/type";
 
-function getToastIcon(iconType: string) {
+function getToastIcon(iconType: ToastType) {
   const iconClass = "col-start-1 row-span-2 h-5 w-5";
 
   switch (iconType) {
@@ -29,7 +29,7 @@ function getToastIcon(iconType: string) {
   }
 }
 
-function getToastStyle(type: string) {
+function getToastStyle(type: ToastType) {
   switch (type) {
     case "error":
       return "border-red bg-red border dark:border-red-400";
@@ -42,6 +42,19 @@ function getToastStyle(type: string) {
   }
 }
 
+function getToastTitle(type: ToastType) {
+  switch (type) {
+    case "error":
+      return "ERROR";
+    case "copy":
+      return "COPIED";
+    case "success":
+      return "SUCCESS";
+    default:
+      return "INFORMATION";
+  }
+}
+
 export default function ToastProvider({
   children,
 }: {
@@ -49,7 +62,15 @@ export default function ToastProvider({
 }) {
   const [toasts, setToasts] = useState<ToastData[]>([]);
 
-  const addToast = useCallback((data: ToastData) => {
+  const addToast = useCallback((type: ToastType, message: string) => {
+    const data = {
+      id: Date.now() + Math.random(),
+      type,
+      title: getToastTitle(type),
+      message,
+      open: true,
+    };
+
     setToasts((prevToasts) => [...prevToasts, data]);
   }, []);
 
