@@ -2,6 +2,8 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns/format";
+import { parse } from "date-fns/parse";
 
 import { EventRange } from "@/core/event/types";
 
@@ -80,8 +82,8 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
       <div className="space-y-4 overflow-y-auto">
         {eventRange.type === "specific" ? (
           <InfoRow label="Possible Dates">
-            {prettyDate(new Date(eventRange.dateRange.from!), "date")} –{" "}
-            {prettyDate(new Date(eventRange.dateRange.to!), "date")}
+            {formatDate(eventRange.dateRange.from, "EEE, MMMM d")} {" - "}
+            {formatDate(eventRange.dateRange.to, "EEE, MMMM d")}
           </InfoRow>
         ) : (
           <InfoRow label="Days of the Week">
@@ -95,13 +97,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         <InfoRow label="Possible Times">
           {eventRange.timeRange.from === 0 && eventRange.timeRange.to === 24
             ? "Anytime"
-            : `${prettyDate(
-                new Date(new Date().setHours(eventRange.timeRange.from, 0)),
-                "time",
-              )} - ${prettyDate(
-                new Date(new Date().setHours(eventRange.timeRange.to, 0)),
-                "time",
-              )}`}
+            : `${formatTime(eventRange.timeRange.from, "hh:mm a")} - ${formatTime(eventRange.timeRange.to, "hh:mm a")}`}
         </InfoRow>
 
         {eventRange.duration > 0 && (
@@ -129,14 +125,14 @@ function InfoRow({
   );
 }
 
-function prettyDate(date: Date, type?: "date" | "time") {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: type === "date" ? "short" : undefined,
-    month: type === "date" ? "long" : undefined,
-    day: type === "date" ? "numeric" : undefined,
-    year: undefined,
-    hour: type === "time" ? "numeric" : undefined,
-    minute: type === "time" ? "numeric" : undefined,
-    hour12: true,
-  }).format(date);
+// Helper functions to format date and time
+function formatDate(date: string, fmt: string): string {
+  const parsedDate = parse(date, "yyyy-MM-dd", new Date());
+  return format(parsedDate, fmt);
+}
+
+function formatTime(hour: number, fmt: string): string {
+  const date = new Date();
+  date.setHours(hour, 0, 0, 0);
+  return format(date, fmt);
 }
