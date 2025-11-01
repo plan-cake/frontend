@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import { useToast } from "@/features/toast/context";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -16,36 +17,57 @@ export default function Page() {
   const isSubmitting = useRef(false);
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleEmailChange = (value: string) => {
+    if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
+    else if (value === "") {
+      setErrors((prev) => ({
+        ...prev,
+        email: "Please enter an email address.",
+      }));
+    }
+    setEmail(value);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    setErrors({});
 
     if (!email) {
-      alert("Missing email");
+      setErrors((prev) => ({ ...prev, email: "Missing email" }));
       isSubmitting.current = false;
       return;
     }
 
-    await fetch("/api/auth/start-password-reset/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          setEmailSent(true);
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/start-password-reset/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-    isSubmitting.current = false;
+      if (res.ok) {
+        setEmailSent(true);
+        setEmail("");
+      } else {
+        if (res.status === 404) {
+          addToast("error", "Email not found. Please check and try again.");
+        } else {
+          addToast("error", formatApiError(await res.json()));
+        }
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      addToast("error", "An error occurred. Please try again.");
+    } finally {
+      isSubmitting.current = false;
+    }
   };
 
   return (
@@ -77,7 +99,8 @@ export default function Page() {
             type="email"
             placeholder="Email"
             value={email}
-            onChange={setEmail}
+            onChange={handleEmailChange}
+            error={errors.email}
           />
 
           <div className="flex w-full items-center justify-between">
