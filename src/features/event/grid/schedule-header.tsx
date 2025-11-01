@@ -27,9 +27,7 @@ export default function ScheduleHeader({
   return (
     <div
       className={cn(
-        preview
-          ? "top-0 bg-[#FFFFFF] dark:bg-[#343248]"
-          : "top-25 dark:bg-violet bg-white",
+        preview ? "bg-panel top-0" : "top-25 bg-background",
         "sticky z-10 col-span-2 grid h-[50px] w-full items-center",
       )}
       style={{

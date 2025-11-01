@@ -9,7 +9,7 @@ export default function DateRangeRow({
 }: DateRangeRowProps) {
   return (
     <div
-      className={`bg-blue/50 dark:bg-red/50 w-fit rounded-full px-3 py-1 text-xs font-bold text-blue-500 dark:text-red-100`}
+      className={`bg-accent/50 text-accent-text w-fit rounded-full px-3 py-1 text-xs font-bold`}
     >
       {formatDates(startDate, endDate)}
     </div>

@@ -90,7 +90,7 @@ function TimeZoneDrawer({
         asChild
         id={id}
         className={cn(
-          "text-blue dark:text-red inline-flex items-center rounded-md text-start focus:outline-none",
+          "text-accent inline-flex items-center rounded-md text-start focus:outline-none",
         )}
         aria-label="Select time"
       >
@@ -106,7 +106,7 @@ function TimeZoneDrawer({
           className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col focus:outline-none"
           aria-label="Date range picker"
         >
-          <div className="rounded-t-4xl dark:bg-violet flex-1 justify-center overflow-y-auto bg-white p-8 shadow-lg">
+          <div className="rounded-t-4xl bg-background flex-1 justify-center overflow-y-auto p-8 shadow-lg">
             <div
               aria-hidden
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
@@ -127,7 +127,7 @@ function TimeZoneDrawer({
                   }}
                   className={cn(
                     "p-4",
-                    isSelected && "bg-blue dark:bg-red rounded-full text-white",
+                    isSelected && "bg-accent rounded-full text-white",
                   )}
                 >
                   {option.label}

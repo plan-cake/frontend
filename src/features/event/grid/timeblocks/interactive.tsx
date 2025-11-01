@@ -74,10 +74,16 @@ export default function InteractiveTimeBlock({
           dragHandlers.hoveredSlot === slotIso &&
           dragHandlers.draggedSlots.size === 0;
 
-        if (isHovered || isToggling) {
-          cellClasses.push("bg-blue-200 dark:bg-red-200");
+        if (isSelected && (isHovered || isToggling)) {
+          cellClasses.push(
+            "bg-[color-mix(in_srgb,var(--color-accent),var(--color-white)_30%)]",
+          );
+        } else if (isHovered || isToggling) {
+          cellClasses.push(
+            "bg-[color-mix(in_srgb,var(--color-background),var(--color-accent)_40%)]",
+          );
         } else if (isSelected) {
-          cellClasses.push("dark:bg-red bg-blue");
+          cellClasses.push("bg-accent");
         }
 
         return (

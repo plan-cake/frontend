@@ -40,7 +40,7 @@ export default function Home() {
       </section>
 
       {/* Why Plancake Section */}
-      <section className="dark:bg-violet bg-white py-16">
+      <section>
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="bg-bone rounded-3xl p-8 dark:bg-gray-300">
             <div className="grid items-center gap-12 md:grid-cols-2">
@@ -51,35 +51,35 @@ export default function Home() {
 
               {/* Content - centered on mobile, left-aligned on desktop */}
               <div className="order-2 text-center md:order-2 md:text-left">
-                <h2 className="bubble-text text-violet dark:text-bone mb-8 text-4xl md:text-6xl">
+                <h2 className="bubble-text text-violet mb-8 text-4xl md:text-6xl">
                   why
                   <br />
-                  <span className="text-violet dark:text-bone">plancake?</span>
+                  <span className="text-violet">plancake?</span>
                 </h2>
                 <div className="space-y-6">
                   <div>
-                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
+                    <h3 className="text-violet mb-2 text-xl font-semibold">
                       Smart Planning
                     </h3>
-                    <p className="text-violet dark:text-bone">
+                    <p className="text-violet">
                       Intelligently suggest optimal meeting times based on
                       everyone&apos;s availability.
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
+                    <h3 className="text-violet mb-2 text-xl font-semibold">
                       Easy Coordination
                     </h3>
-                    <p className="text-violet dark:text-bone">
+                    <p className="text-violet">
                       Share a simple link and watch as responses stack up
                       without the back-and-forth.
                     </p>
                   </div>
                   <div>
-                    <h3 className="text-violet dark:text-bone mb-2 text-xl font-semibold">
+                    <h3 className="text-violet mb-2 text-xl font-semibold">
                       Perfect Results
                     </h3>
-                    <p className="text-violet dark:text-bone">
+                    <p className="text-violet">
                       Get the ideal meeting time that works for everyone with an
                       intuitive graph view.
                     </p>
@@ -92,7 +92,7 @@ export default function Home() {
       </section>
 
       {/* Golden Stack Recipe */}
-      <section className="dark:bg-violet bg-white py-16">
+      <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
             <h2 className="bubble-text text-4xl md:text-6xl">

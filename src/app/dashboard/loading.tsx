@@ -9,11 +9,11 @@ export default function Loading() {
 
       <div className="flex h-full flex-col gap-4 md:flex-row">
         <div className="flex flex-col gap-4">
-          <div className="h-10 w-40 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
-          <div className="h-10 w-40 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+          <div className="bg-loading h-10 w-40 rounded-3xl" />
+          <div className="bg-loading h-10 w-40 rounded-3xl" />
         </div>
 
-        <div className="h-120 w-full rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+        <div className="h-120 bg-loading w-full rounded-3xl" />
       </div>
     </div>
   );
