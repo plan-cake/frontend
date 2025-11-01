@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 
+import ActionButton from "@/features/button/components/action-button";
+
 export default function EventErrorPage({
   error,
   reset,
@@ -22,12 +24,14 @@ export default function EventErrorPage({
 
       <p className="text-red mb-6 max-w-md">{error.message}</p>
 
-      <button
-        onClick={() => reset()}
-        className="border-blue bg-blue dark:border-red dark:bg-red rounded-full border-2 px-6 py-2 text-white transition-shadow hover:shadow-lg"
-      >
-        Try Again
-      </button>
+      <ActionButton
+        buttonStyle="primary"
+        label="Try Again"
+        onClick={() => {
+          reset();
+          return true;
+        }}
+      />
     </div>
   );
 }
