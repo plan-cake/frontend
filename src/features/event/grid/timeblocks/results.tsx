@@ -97,7 +97,7 @@ export default function ResultsTimeBlock({
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerEnter={() => {
-              onHoverSlot?.(localSlotIso);
+              onHoverSlot?.(timeslotIso);
             }}
             dynamicStyle={dynamicStyle}
           />
