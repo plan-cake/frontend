@@ -1,4 +1,4 @@
-import { handleErrorResponse } from "@/lib/utils/api/format-api-error";
+import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type DashboardEventResponse = {
   title: string;
