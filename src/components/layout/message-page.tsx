@@ -1,13 +1,20 @@
-type ButtonData = {
-  type: "primary" | "secondary";
-  label: string;
-  onClick: () => void;
-};
+import { ComponentProps, ReactElement } from "react";
+
+import ActionButton from "@/features/button/components/action-button";
+import LinkButton from "@/features/button/components/link-button";
 
 type MessagePageProps = {
   title: string;
   description?: string;
-  buttons: ButtonData[];
+  /**
+   * An array of buttons to display on the page, in a row.
+   *
+   * Each element can be either an `ActionButton` or `LinkButton` component.
+   */
+  buttons: (
+    | ReactElement<ComponentProps<typeof ActionButton>>
+    | ReactElement<ComponentProps<typeof LinkButton>>
+  )[];
 };
 
 export default function MessagePage({
@@ -21,18 +28,7 @@ export default function MessagePage({
       {description && <p className="mb-4">{description}</p>}
       <div className="flex justify-center gap-4">
         {buttons.map((button, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={button.onClick}
-            className={`mb-2 cursor-pointer rounded-full px-4 py-2 font-medium transition ${
-              button.type === "primary"
-                ? "bg-blue dark:bg-red"
-                : "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue-100"
-            }`}
-          >
-            {button.label}
-          </button>
+          <div key={index}>{button}</div>
         ))}
       </div>
     </div>

@@ -2,14 +2,14 @@
 
 import { useEffect, useState } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
+import LinkButton from "@/features/button/components/link-button";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);
   const [emailVerified, setEmailVerified] = useState(false);
-  const router = useRouter();
 
   const searchParams = useSearchParams();
   const token = searchParams.get("code");
@@ -54,11 +54,12 @@ export default function Page() {
           title="Email Verified"
           description="Welcome to Plancake!"
           buttons={[
-            {
-              type: "primary",
-              label: "go to login",
-              onClick: () => router.push("/login"),
-            },
+            <LinkButton
+              key="0"
+              buttonStyle="primary"
+              label="Go to Login"
+              href="/login"
+            />,
           ]}
         />
       ) : (
@@ -66,11 +67,12 @@ export default function Page() {
           title="Failed to Verify Email"
           description="This link is invalid or has expired."
           buttons={[
-            {
-              type: "secondary",
-              label: "back to register",
-              onClick: () => router.push("/register"),
-            },
+            <LinkButton
+              key="0"
+              buttonStyle="primary"
+              label="Back to Register"
+              href="/register"
+            />,
           ]}
         />
       )}

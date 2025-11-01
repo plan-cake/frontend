@@ -3,18 +3,17 @@
 import { useState } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action-button";
+import LinkButton from "@/features/button/components/link-button";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const router = useRouter();
 
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,11 +53,12 @@ export default function Page() {
           title="Check your email"
           description={`A password reset link was sent to ${email}.`}
           buttons={[
-            {
-              type: "primary",
-              label: "back to login",
-              onClick: () => router.push("/login"),
-            },
+            <LinkButton
+              key="0"
+              buttonStyle="primary"
+              label="Back to Login"
+              href="/login"
+            />,
           ]}
         />
       ) : (
