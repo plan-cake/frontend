@@ -81,6 +81,9 @@
 }
 
 @theme {
+  /* HELPER COLORS */
+  --color-error: oklch(0.6993 0.1534 12.87);
+
   /* DYNAMIC COLORS */
   --color-background: var(--background);
   --color-foreground: var(--foreground);

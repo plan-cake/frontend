@@ -135,7 +135,7 @@ export default function ClientPage({
         <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
             <p
-              className={`text-red text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
+              className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
             >
               {errors.displayName ? errors.displayName : "Error Placeholder"}
             </p>
@@ -148,7 +148,7 @@ export default function ClientPage({
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
                 errors.displayName
-                  ? "border-red placeholder:text-red"
+                  ? "border-error placeholder:text-error"
                   : "border-gray-400"
               }`}
             />

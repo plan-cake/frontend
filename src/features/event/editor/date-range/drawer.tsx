@@ -105,7 +105,7 @@ const DateRangeDrawerSelector = ({
             <label className="flex items-center gap-2 text-start">
               Possible Dates
               {tooManyDays && (
-                <ExclamationTriangleIcon className="h-4 w-4 text-[#ED7183]" />
+                <ExclamationTriangleIcon className="text-error h-4 w-4" />
               )}
             </label>
             <DateRangeInput startDate={startDate} endDate={endDate} />
