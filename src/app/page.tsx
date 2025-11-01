@@ -1,6 +1,7 @@
-import Link from "next/link";
+import { DashboardIcon, PlusIcon } from "@radix-ui/react-icons";
 
 import Logo from "@/components/logo";
+import LinkButton from "@/features/button/components/link-button";
 
 export default function Home() {
   return (
@@ -23,18 +24,18 @@ export default function Home() {
             Stack up availability and serve the perfect meeting time.
           </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link
+            <LinkButton
+              buttonStyle="primary"
+              icon={<PlusIcon />}
+              label="Mix Your First Plan"
               href="/new-event"
-              className="bg-red rounded-full px-8 py-3 text-lg font-medium text-white"
-            >
-              Mix your first plan
-            </Link>
-            <Link
+            />
+            <LinkButton
+              buttonStyle="secondary"
+              icon={<DashboardIcon />}
+              label="View Dashboard"
               href="/dashboard"
-              className="bg-blue rounded-full px-8 py-3 text-lg font-medium text-white"
-            >
-              View Dashboard
-            </Link>
+            />
           </div>
         </div>
       </section>
@@ -149,13 +150,13 @@ export default function Home() {
           <h2 className="bubble-text text-lion mb-8 text-6xl md:text-8xl">
             PLAN TODAY
           </h2>
-          <div className="mt-8">
-            <Link
+          <div className="mt-8 flex justify-center">
+            <LinkButton
+              buttonStyle="primary"
+              icon={<PlusIcon />}
+              label="Start Planning"
               href="/new-event"
-              className="bg-blue dark:bg-red inline-block rounded-full px-8 py-3 text-lg font-semibold text-white"
-            >
-              Start Planning
-            </Link>
+            />
           </div>
           <div className="mt-12">
             <div className="mb-2">
