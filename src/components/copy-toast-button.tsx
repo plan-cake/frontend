@@ -4,7 +4,7 @@ import { CopyIcon } from "@radix-ui/react-icons";
 
 import { useToast } from "@/features/toast/context";
 
-export default function CopyToast({ code }: { code: string }) {
+export default function CopyToastButton({ code }: { code: string }) {
   const { addToast } = useToast();
   const currentURL =
     typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
@@ -13,11 +13,10 @@ export default function CopyToast({ code }: { code: string }) {
     try {
       await navigator.clipboard.writeText(currentURL);
       addToast({
-        type: "success",
+        type: "copy",
         id: Date.now() + Math.random(),
         title: "COPIED EVENT LINK!",
         message: currentURL,
-        icon: <CopyIcon className="col-start-1 row-span-2 h-5 w-5" />,
       });
     } catch (err) {
       console.error("Failed to copy: ", err);
