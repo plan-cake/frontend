@@ -69,7 +69,7 @@ const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
       <DropdownMenu.Item
         className={cn(
           "flex flex-row items-center justify-between gap-4",
-          "text-md cursor-pointer rounded-sm p-2 leading-none hover:outline-none data-[highlighted]:bg-red-200 dark:data-[highlighted]:bg-violet-400",
+          "text-md cursor-pointer rounded-sm p-2 leading-none hover:outline-none data-[highlighted]:bg-red-200/50",
         )}
         ref={ref}
         onSelect={onSelect}
