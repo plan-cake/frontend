@@ -34,9 +34,8 @@ function getToastStyle(type: ToastType) {
     case "error":
       return "bg-red";
     case "copy":
-      return "bg-lion";
     case "success":
-      return "bg-lion";
+      return "bg-violet text-white dark:bg-white dark:text-violet";
     default:
       return "bg-blue";
   }
