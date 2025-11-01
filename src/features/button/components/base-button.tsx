@@ -267,13 +267,19 @@ function getPaddingClasses(
     if (hasLabel) {
       switch (paddingShrink) {
         case 0.5:
-          paddingClasses += shrinkOnMobile ? "md:pr-3.5" : "pr-3.5";
+          paddingClasses += shrinkOnMobile
+            ? "md:pr-3.5 md:pl-2"
+            : "pr-3.5 pl-2";
           break;
         case 0.25:
-          paddingClasses += shrinkOnMobile ? "md:pr-3.75" : "pr-3.75";
+          paddingClasses += shrinkOnMobile
+            ? "md:pr-3.75 md:pl-2.25"
+            : "pr-3.75 pl-2.25";
           break;
         default:
-          paddingClasses += shrinkOnMobile ? "md:pr-4" : "pr-4";
+          paddingClasses += shrinkOnMobile
+            ? "md:pr-4 md:pl-2.5"
+            : "pr-4 pl-2.5";
           break;
       }
     }
