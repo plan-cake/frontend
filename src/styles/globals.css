@@ -8,16 +8,6 @@
 
 /* GLOBAL STYLES */
 
-:root {
-  --background: var(--color-white);
-  --foreground: var(--color-violet);
-}
-
-.dark {
-  --background: var(--color-violet);
-  --foreground: var(--color-bone);
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
