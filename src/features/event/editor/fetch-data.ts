@@ -1,4 +1,4 @@
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { handleErrorResponse } from "@/lib/utils/api/format-api-error";
 
 export type EventDetailsResponse = {
   title: string;
@@ -31,8 +31,7 @@ export async function fetchEventDetails(
   );
 
   if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch event details: " + errorMessage);
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();

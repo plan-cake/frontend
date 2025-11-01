@@ -1,4 +1,4 @@
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { handleErrorResponse } from "@/lib/utils/api/format-api-error";
 
 export type AvailabilityDataResponse = {
   is_creator: boolean;
@@ -25,8 +25,7 @@ export async function fetchAvailabilityData(
   );
 
   if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch availability data: " + errorMessage);
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();
@@ -56,7 +55,7 @@ export async function fetchSelfAvailability(
   );
 
   if (!res.ok) {
-    return null;
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();
