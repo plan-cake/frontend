@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import { useToast } from "@/features/toast/context";
 import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -19,42 +20,75 @@ export default function Page() {
   const isSubmitting = useRef(false);
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleEmailChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, email: "", api: "" }));
+    setEmail(value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, password: "", api: "" }));
+    setPassword(value);
+  };
+
+  const handleErrors = (field: string, message: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+    addToast("error", message);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (isSubmitting.current) return;
     isSubmitting.current = true;
+    setErrors({});
 
     if (!email) {
-      alert("Missing email");
+      handleErrors("email", "Missing email");
       isSubmitting.current = false;
       return;
     }
     if (!password) {
-      alert("Missing password");
+      handleErrors("password", "Missing password");
       isSubmitting.current = false;
       return;
     }
 
-    await fetch("/api/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, remember_me: rememberMe }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          setLoggedIn(true);
-          router.push("/dashboard");
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, remember_me: rememberMe }),
       });
 
-    isSubmitting.current = false;
+      if (res.ok) {
+        setLoggedIn(true);
+        router.push("/dashboard");
+        return;
+      } else {
+        const body = await res.json();
+
+        const errorMessage = formatApiError(body);
+        if (errorMessage.includes("Email:")) {
+          handleErrors("email", errorMessage.split("Email:")[1].trim());
+        } else if (errorMessage.includes("Password:")) {
+          handleErrors("password", errorMessage.split("Password:")[1].trim());
+        } else {
+          handleErrors("api", errorMessage);
+        }
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+    } finally {
+      isSubmitting.current = false;
+    }
   };
 
   return (
@@ -67,18 +101,24 @@ export default function Page() {
 
         {/* Email */}
         <TextInputField
+          id={"email"}
           type="email"
-          placeholder="Email"
+          label="Email*"
           value={email}
-          onChange={setEmail}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
         />
 
         {/* Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="Password"
+          label="Password*"
           value={password}
-          onChange={setPassword}
+          onChange={handlePasswordChange}
+          outlined
+          error={errors.password || errors.api}
         />
 
         <div className="flex w-full justify-between">
