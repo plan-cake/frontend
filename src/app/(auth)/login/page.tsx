@@ -2,10 +2,10 @@
 
 import React, { useRef, useState, useContext } from "react";
 
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { Banner } from "@/components/banner";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
@@ -109,13 +109,9 @@ export default function Page() {
 
         {/* Rate Limit Error */}
         {errors.rate_limit && (
-          <div className="bg-accent/20 mb-4 flex w-80 items-center gap-4 rounded-3xl p-4">
-            <ExclamationTriangleIcon className="h-5 w-5" />
-            <div>
-              <h2 className="text-md font-bold">Woah! Slow down</h2>
-              <div>{errors.rate_limit}</div>
-            </div>
-          </div>
+          <Banner type="error" title="Woah! Slow down" className="mb-4 w-full">
+            {errors.rate_limit}
+          </Banner>
         )}
 
         {/* Email */}
