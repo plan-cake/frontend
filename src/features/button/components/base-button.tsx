@@ -72,7 +72,7 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
     );
     const focusClasses = cn(
       "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
-      "group-focus:outline-violet dark:group-focus:outline-white",
+      "group-focus:outline-foreground",
     );
     const loadingHideClass = isLoading ? "opacity-0" : "";
     const cursorClass = isLoading
@@ -162,19 +162,14 @@ function getStyleClasses(
       switch (state) {
         case "rest":
           styleClasses = cn(
-            "bg-blue dark:bg-red text-white",
-            "active:bg-[color-mix(in_oklab,var(--color-blue)_100%,black_10%)]",
-            "dark:active:bg-[color-mix(in_oklab,var(--color-red)_100%,black_10%)]",
-            "hover:bg-[color-mix(in_oklab,var(--color-blue)_100%,white_10%)]",
-            "dark:hover:bg-[color-mix(in_oklab,var(--color-red)_100%,white_10%)]",
+            "bg-accent text-white",
+            "active:bg-[color-mix(in_oklab,var(--color-accent)_100%,black_10%)]",
+            "hover:bg-[color-mix(in_oklab,var(--color-accent)_100%,white_10%)]",
           );
           break;
         case "loading":
-          styleClasses = cn(
-            "bg-blue-500 dark:bg-red-200 text-white/50",
-            "bg-[color-mix(in_oklab,var(--color-blue)_100%,black_20%)]",
-            "dark:bg-[color-mix(in_oklab,var(--color-red)_100%,black_20%)]",
-          );
+          styleClasses =
+            "bg-[color-mix(in_oklab,var(--color-accent)_100%,black_20%)]";
           break;
         case "disabled":
           styleClasses =
@@ -185,14 +180,11 @@ function getStyleClasses(
     case "secondary":
       switch (state) {
         case "rest":
-          styleClasses = cn(
-            "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue/25",
-            "active:bg-blue/40 dark:active:bg-red/40",
-          );
+          styleClasses =
+            "border-accent hover:bg-accent/25 border-2 active:bg-accent/40";
           break;
         case "loading":
-          styleClasses =
-            "border-blue border-2 dark:border-red bg-blue/40 dark:bg-red/40";
+          styleClasses = "border-accent border-2 bg-accent/40";
           break;
         case "disabled":
           styleClasses =
@@ -200,7 +192,7 @@ function getStyleClasses(
           break;
       }
       paddingShrink = 0.5;
-      spinnerClasses = "border-violet dark:border-white";
+      spinnerClasses = "border-foreground";
       break;
     case "frosted glass":
       switch (state) {
@@ -215,24 +207,22 @@ function getStyleClasses(
           break;
       }
       paddingShrink = 0.25;
-      spinnerClasses = "border-violet dark:border-white";
+      spinnerClasses = "border-foreground";
       break;
     case "transparent":
       switch (state) {
         case "rest":
-          styleClasses = cn(
-            "text-blue dark:text-red font-bold hover:bg-blue/25 dark:hover:bg-red/25",
-            "active:bg-blue/40 dark:active:bg-red/40",
-          );
+          styleClasses =
+            "text-accent font-bold hover:bg-accent/25 active:bg-accent/40";
           break;
         case "loading":
-          styleClasses = "font-bold bg-blue/20 dark:bg-red/20";
+          styleClasses = "font-bold bg-accent/20";
           break;
         case "disabled":
           styleClasses = "font-bold text-gray-300 dark:text-gray-400";
           break;
       }
-      spinnerClasses = "border-blue dark:border-red";
+      spinnerClasses = "border-accent";
       break;
   }
   const paddingClasses = getPaddingClasses(
