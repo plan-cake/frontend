@@ -98,6 +98,23 @@ export default function ClientPage({
     }
   };
 
+  // BUTTONS
+  const cancelButton = (
+    <LinkButton
+      buttonStyle="transparent"
+      label={initialData ? "Cancel Edits" : "Cancel"}
+      href={`/${eventCode}`}
+    />
+  );
+  const submitButton = (
+    <ActionButton
+      buttonStyle="primary"
+      label={initialData ? "Update Availability" : "Submit Availability"}
+      onClick={handleSubmitAvailability}
+      loadOnSuccess
+    />
+  );
+
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
@@ -108,19 +125,8 @@ export default function ClientPage({
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="hidden items-center gap-2 md:flex">
-          {initialData && (
-            <LinkButton
-              buttonStyle="transparent"
-              label="Cancel Edits"
-              href={`/${eventCode}`}
-            />
-          )}
-          <ActionButton
-            buttonStyle="primary"
-            label={`${initialData ? "Update" : "Submit"} Availability`}
-            onClick={handleSubmitAvailability}
-            loadOnSuccess
-          />
+          {cancelButton}
+          {submitButton}
         </div>
       </div>
 
@@ -178,27 +184,7 @@ export default function ClientPage({
         />
       </div>
 
-      <MobileFooterTray
-        buttons={[
-          ...(initialData
-            ? [
-                <LinkButton
-                  key="0"
-                  buttonStyle="transparent"
-                  label="Cancel Edits"
-                  href={`/${eventCode}`}
-                />,
-              ]
-            : []),
-          <ActionButton
-            key="1"
-            buttonStyle="primary"
-            label={`${initialData ? "Update" : "Submit"} Availability`}
-            onClick={handleSubmitAvailability}
-            loadOnSuccess
-          />,
-        ]}
-      />
+      <MobileFooterTray buttons={[cancelButton, submitButton]} />
     </div>
   );
 }

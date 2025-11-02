@@ -91,6 +91,23 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     }
   };
 
+  // BUTTONS
+  const cancelButton = (
+    <LinkButton
+      buttonStyle="transparent"
+      label="Cancel Edits"
+      href={`/${initialData?.code}`}
+    />
+  );
+  const submitButton = (
+    <ActionButton
+      buttonStyle="primary"
+      label={type === "edit" ? "Update Event" : "Create Event"}
+      onClick={submitEventInfo}
+      loadOnSuccess
+    />
+  );
+
   const earliestCalendarDate = new Date(
     (initialData?.eventRange as SpecificDateRange)?.dateRange?.from,
   );
@@ -118,20 +135,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             )}
           />
         </div>
-        <div className="hidden md:flex">
-          {type === "edit" && (
-            <LinkButton
-              buttonStyle="transparent"
-              label="Cancel Edits"
-              href={`/${initialData?.code}`}
-            />
-          )}
-          <ActionButton
-            buttonStyle="primary"
-            label={(type === "edit" ? "Update" : "Create") + " Event"}
-            onClick={submitEventInfo}
-            loadOnSuccess
-          />
+        <div className="hidden gap-2 md:flex">
+          {type === "edit" && cancelButton}
+          {submitButton}
         </div>
       </div>
 
@@ -287,25 +293,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       </div>
 
       <MobileFooterTray
-        buttons={[
-          ...(type === "edit"
-            ? [
-                <LinkButton
-                  key="0"
-                  buttonStyle="transparent"
-                  label="Cancel Edits"
-                  href={`/${initialData?.code}`}
-                />,
-              ]
-            : []),
-          <ActionButton
-            key="1"
-            buttonStyle="primary"
-            label={(type === "edit" ? "Update" : "Create") + " Event"}
-            onClick={submitEventInfo}
-            loadOnSuccess
-          />,
-        ]}
+        buttons={
+          type === "edit" ? [cancelButton, submitButton] : [submitButton]
+        }
       />
     </div>
   );
