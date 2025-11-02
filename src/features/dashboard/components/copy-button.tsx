@@ -32,8 +32,8 @@ export default function DashboardCopyButton({
     <button
       onClick={copyToClipboard}
       className={cn(
-        "border-violet flex cursor-pointer items-center gap-0.5 rounded-full border px-2 py-1.5 dark:border-white",
-        "hover:bg-violet/25 transition dark:hover:bg-white/25",
+        "flex cursor-pointer items-center gap-0.5 rounded-full px-2 py-1.5",
+        "border-foreground hover:bg-foreground/20 border",
       )}
     >
       <CopyIcon className="h-4 w-4" />

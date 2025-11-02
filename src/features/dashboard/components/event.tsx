@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation";
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
-import { cn } from "@/lib/utils/classname";
 
 export type DashboardEventProps = {
   myEvent: boolean;
@@ -65,10 +64,9 @@ export default function DashboardEvent({
           {myEvent && (
             <button className="cursor-pointer" onClick={navigateToEdit}>
               <div
-                className={cn(
-                  "border-violet w-fit rounded-full border p-1.5 dark:border-white",
-                  "hover:bg-violet/25 transition dark:hover:bg-white/25",
-                )}
+                className={
+                  "border-foreground hover:bg-foreground/25 w-fit rounded-full border p-1.5"
+                }
               >
                 <Pencil1Icon className="h-4 w-4" />
               </div>
