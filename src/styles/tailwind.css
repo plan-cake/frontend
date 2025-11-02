@@ -180,7 +180,7 @@
     }
   }
 
-  @keyframes slideDownAndFade: {
+  @keyframes slideDownAndFade {
     0% {
       opacity: 0;
       transform: translateY(-2px);
