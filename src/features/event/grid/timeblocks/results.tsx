@@ -85,7 +85,7 @@ export default function ResultsTimeBlock({
           "--opacity-percent": `${opacityPercent}%`,
         };
         cellClasses.push(
-          `bg-[color-mix(in_srgb,var(--color-blue)_var(--opacity-percent),var(--color-white))] dark:bg-[color-mix(in_srgb,var(--color-red)_var(--opacity-percent),var(--color-violet))]`,
+          "bg-[color-mix(in_srgb,var(--color-accent)_var(--opacity-percent),var(--color-background))]",
         );
 
         return (

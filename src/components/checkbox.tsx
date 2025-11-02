@@ -11,14 +11,11 @@ export default function Checkbox(props: CheckboxProps) {
       <input
         type="checkbox"
         id="confirm"
-        className="checked:border-blue checked:bg-blue dark:checked:border-red dark:checked:bg-red peer h-4 w-4 appearance-none rounded-sm border border-gray-300"
+        className="checked:border-accent checked:bg-accent peer h-4 w-4 appearance-none rounded-sm border border-gray-300"
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <label
-        htmlFor="confirm"
-        className="peer-checked:text-blue dark:peer-checked:text-red text-sm"
-      >
+      <label htmlFor="confirm" className="peer-checked:text-accent text-sm">
         {label}
       </label>
     </div>

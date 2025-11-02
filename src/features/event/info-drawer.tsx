@@ -42,7 +42,7 @@ export default function EventInfoDrawer({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="rounded-full hover:bg-gray-100 focus:outline-none md:hidden dark:border-gray-400 dark:hover:bg-gray-700">
+        <button className="cursor-pointer rounded-full md:hidden">
           <InfoCircledIcon width={20} height={20} />
         </button>
       </Dialog.Trigger>
@@ -50,7 +50,7 @@ export default function EventInfoDrawer({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
-          className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col rounded-t-3xl bg-white p-8 focus:outline-none dark:bg-[#343249]"
+          className="animate-slideUp data-[state=closed]:animate-slideDown bg-panel ] fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col rounded-t-3xl p-8 focus:outline-none"
           aria-label="Event Info"
         >
           <div
@@ -73,7 +73,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
           Please note that these details are presented in respect to the{" "}
           <span className="font-bold">original event&apos;s timezone</span>{" "}
           which is{" "}
-          <span className="text-blue dark:text-red font-bold">
+          <span className="text-accent font-bold">
             {formatLabel(eventRange.timezone)}
           </span>
         </p>
@@ -120,7 +120,7 @@ function InfoRow({
   return (
     <div>
       <div className="text-sm font-medium text-gray-400">{label}</div>
-      <div className="text-blue dark:text-red">{children}</div>
+      <div className="text-accent">{children}</div>
     </div>
   );
 }

@@ -108,7 +108,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       <div className="flex w-full items-center justify-between">
         <div className="md:w-1/2">
           <p
-            className={`text-red text-right text-xs ${errors.title ? "visible" : "invisible"}`}
+            className={`text-error text-right text-xs ${errors.title ? "visible" : "invisible"}`}
           >
             {errors.title ? errors.title : "Error Placeholder"}
           </p>
@@ -120,8 +120,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             className={cn(
               "border-b-1 w-full p-1 text-2xl focus:outline-none",
               errors.title
-                ? "border-red placeholder:text-red"
-                : "border-violet dark:border-gray-400",
+                ? "border-error placeholder:text-error"
+                : "border-gray-400",
             )}
           />
         </div>
@@ -209,7 +209,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <label className="md:row-start-15 hidden text-gray-400 md:col-start-1 md:flex md:justify-between">
             {type === "new" && "Custom"} Event Code
             {errors.customCode && (
-              <ExclamationTriangleIcon className="text-red h-4 w-4" />
+              <ExclamationTriangleIcon className="text-error h-4 w-4" />
             )}
           </label>
           <div className="md:row-start-16 hidden md:col-start-1 md:block">
@@ -221,8 +221,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               placeholder="optional"
               className={`border-b-1 w-full focus:outline-none ${
                 errors.customCode
-                  ? "border-red placeholder:text-red"
-                  : "text-blue dark:text-red border-violet dark:border-gray-400"
+                  ? "border-error placeholder:text-error"
+                  : "text-accent border-gray-400"
               }`}
             />
           </div>
@@ -252,7 +252,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               <label className="flex justify-between text-gray-400">
                 {type === "new" && "Custom"} Event Code
                 {errors.customCode && (
-                  <ExclamationTriangleIcon className="text-red h-4 w-4" />
+                  <ExclamationTriangleIcon className="text-error h-4 w-4" />
                 )}
               </label>
               <input
@@ -262,10 +262,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 onChange={(e) => setCustomCode(e.target.value)}
                 placeholder="optional"
                 className={cn(
-                  "border-b-1 w-full border-gray-300 focus:outline-none dark:border-gray-400",
-                  type === "new" && "text-blue dark:text-red",
+                  "border-b-1 w-full border-gray-400 focus:outline-none",
+                  type === "new" && "text-accent",
                   type === "edit" && "cursor-not-allowed opacity-50",
-                  errors.customCode ? "border-red placeholder:text-red" : "",
+                  errors.customCode
+                    ? "border-error placeholder:text-error"
+                    : "",
                 )}
               />
             </div>
