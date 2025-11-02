@@ -1,4 +1,4 @@
-import { formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { format, formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import TimeSlot from "@/features/event/grid/time-slot";
@@ -41,9 +41,11 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
+        const timeslotIso = format(timeslot, "yyyy-MM-dd'T'HH:mm:ss");
+
         const localSlot = toZonedTime(timeslot, userTimezone);
         const localSlotIso = formatInTimeZone(
-          localSlot,
+          timeslot,
           userTimezone,
           "yyyy-MM-dd'T'HH:mm:ss",
         );
@@ -71,11 +73,11 @@ export default function ResultsTimeBlock({
         }
 
         const matchCount =
-          availabilities[localSlotIso]?.length > 0
-            ? availabilities[localSlotIso].length
+          availabilities[timeslotIso]?.length > 0
+            ? availabilities[timeslotIso].length
             : 0;
         const opacity = matchCount / numParticipants || 0;
-        const isHovered = hoveredSlot === localSlotIso;
+        const isHovered = hoveredSlot === timeslotIso;
 
         // background colors
         const opacityPercent = Math.round(opacity * 100);
@@ -83,7 +85,7 @@ export default function ResultsTimeBlock({
           "--opacity-percent": `${opacityPercent}%`,
         };
         cellClasses.push(
-          `bg-[color-mix(in_srgb,var(--color-blue)_var(--opacity-percent),var(--color-white))] dark:bg-[color-mix(in_srgb,var(--color-red)_var(--opacity-percent),var(--color-violet))]`,
+          "bg-[color-mix(in_srgb,var(--color-accent)_var(--opacity-percent),var(--color-background))]",
         );
 
         return (
@@ -95,7 +97,7 @@ export default function ResultsTimeBlock({
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerEnter={() => {
-              onHoverSlot?.(localSlotIso);
+              onHoverSlot?.(timeslotIso);
             }}
             dynamicStyle={dynamicStyle}
           />

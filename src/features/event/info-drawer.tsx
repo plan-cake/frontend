@@ -2,6 +2,8 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { format } from "date-fns/format";
+import { parse } from "date-fns/parse";
 
 import { EventRange } from "@/core/event/types";
 
@@ -40,7 +42,7 @@ export default function EventInfoDrawer({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="rounded-full hover:bg-gray-100 focus:outline-none md:hidden dark:border-gray-400 dark:hover:bg-gray-700">
+        <button className="cursor-pointer rounded-full md:hidden">
           <InfoCircledIcon width={20} height={20} />
         </button>
       </Dialog.Trigger>
@@ -48,7 +50,7 @@ export default function EventInfoDrawer({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
-          className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col rounded-t-3xl bg-white p-8 focus:outline-none dark:bg-[#343249]"
+          className="animate-slideUp data-[state=closed]:animate-slideDown bg-panel ] fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col rounded-t-3xl p-8 focus:outline-none"
           aria-label="Event Info"
         >
           <div
@@ -71,7 +73,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
           Please note that these details are presented in respect to the{" "}
           <span className="font-bold">original event&apos;s timezone</span>{" "}
           which is{" "}
-          <span className="text-blue dark:text-red font-bold">
+          <span className="text-accent font-bold">
             {formatLabel(eventRange.timezone)}
           </span>
         </p>
@@ -80,8 +82,8 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
       <div className="space-y-4 overflow-y-auto">
         {eventRange.type === "specific" ? (
           <InfoRow label="Possible Dates">
-            {prettyDate(new Date(eventRange.dateRange.from!), "date")} –{" "}
-            {prettyDate(new Date(eventRange.dateRange.to!), "date")}
+            {formatDate(eventRange.dateRange.from, "EEE, MMMM d")} {" - "}
+            {formatDate(eventRange.dateRange.to, "EEE, MMMM d")}
           </InfoRow>
         ) : (
           <InfoRow label="Days of the Week">
@@ -95,13 +97,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         <InfoRow label="Possible Times">
           {eventRange.timeRange.from === 0 && eventRange.timeRange.to === 24
             ? "Anytime"
-            : `${prettyDate(
-                new Date(new Date().setHours(eventRange.timeRange.from, 0)),
-                "time",
-              )} - ${prettyDate(
-                new Date(new Date().setHours(eventRange.timeRange.to, 0)),
-                "time",
-              )}`}
+            : `${formatTime(eventRange.timeRange.from, "hh:mm a")} - ${formatTime(eventRange.timeRange.to, "hh:mm a")}`}
         </InfoRow>
 
         {eventRange.duration > 0 && (
@@ -124,19 +120,19 @@ function InfoRow({
   return (
     <div>
       <div className="text-sm font-medium text-gray-400">{label}</div>
-      <div className="text-blue dark:text-red">{children}</div>
+      <div className="text-accent">{children}</div>
     </div>
   );
 }
 
-function prettyDate(date: Date, type?: "date" | "time") {
-  return new Intl.DateTimeFormat("en-US", {
-    weekday: type === "date" ? "short" : undefined,
-    month: type === "date" ? "long" : undefined,
-    day: type === "date" ? "numeric" : undefined,
-    year: undefined,
-    hour: type === "time" ? "numeric" : undefined,
-    minute: type === "time" ? "numeric" : undefined,
-    hour12: true,
-  }).format(date);
+// Helper functions to format date and time
+function formatDate(date: string, fmt: string): string {
+  const parsedDate = parse(date, "yyyy-MM-dd", new Date());
+  return format(parsedDate, fmt);
+}
+
+function formatTime(hour: number, fmt: string): string {
+  const date = new Date();
+  date.setHours(hour, 0, 0, 0);
+  return format(date, fmt);
 }

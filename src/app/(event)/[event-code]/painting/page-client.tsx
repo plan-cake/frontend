@@ -97,7 +97,7 @@ export default function ClientPage({
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
-          <h1 className="text-2xl dark:border-gray-400">{eventName}</h1>
+          <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
         </div>
 
@@ -128,7 +128,7 @@ export default function ClientPage({
         <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
             <p
-              className={`text-red text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
+              className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
             >
               {errors.displayName ? errors.displayName : "Error Placeholder"}
             </p>
@@ -141,8 +141,8 @@ export default function ClientPage({
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
                 errors.displayName
-                  ? "border-red placeholder:text-red"
-                  : "border-violet dark:border-gray-400"
+                  ? "border-error placeholder:text-error"
+                  : "border-gray-400"
               }`}
             />
             <br />
@@ -150,13 +150,13 @@ export default function ClientPage({
           </div>
 
           {/* Desktop-only Event Info */}
-          <div className="hidden rounded-3xl bg-[#FFFFFF] p-6 md:block dark:bg-[#343249]">
+          <div className="bg-panel hidden rounded-3xl p-6 md:block">
             <EventInfo eventRange={eventRange} />
           </div>
 
-          <div className="rounded-3xl bg-[#FFFFFF] p-4 text-sm dark:bg-[#343249]">
+          <div className="bg-panel rounded-3xl p-4 text-sm">
             Displaying event in
-            <span className="text-blue dark:text-red ml-1 font-bold">
+            <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
                 id="timezone-select"
                 value={timeZone}

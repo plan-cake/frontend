@@ -40,10 +40,10 @@ function TimeSlot({
       data-slot-iso={slotIso}
       draggable={false}
       className={cn(
-        "dark:bg-violet relative bg-white",
-        isHovered && "ring-blue dark:ring-red ring-1 ring-inset",
+        "bg-background relative",
+        isHovered && "ring-accent ring-1 ring-inset",
         disableSelect
-          ? "pointer-events-none cursor-not-allowed bg-[#FFFFFF] dark:bg-[#343249]"
+          ? "bg-panel pointer-events-none cursor-not-allowed"
           : "cursor-cell",
         cellClasses,
       )}

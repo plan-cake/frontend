@@ -42,7 +42,7 @@ function WeekdayRowIcon({
     <div
       className={cn(
         "flex h-6 w-6 items-center justify-center text-xs font-bold",
-        isActive && "bg-blue/50 dark:bg-red/50 text-blue-500 dark:text-red-100",
+        isActive && "bg-accent/50 text-accent-text",
         isStart && "rounded-l-full",
         isEnd && "rounded-r-full",
       )}
