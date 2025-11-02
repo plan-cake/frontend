@@ -71,7 +71,7 @@ export function Calendar({
         }}
       />
       {!isMobile && tooManyDays && (
-        <div className="flex items-center justify-center gap-1 font-bold text-[#ED7183]">
+        <div className="text-error flex items-center justify-center gap-1 font-bold">
           <ExclamationTriangleIcon />
           Too many days selected. Max is 30 days.
         </div>

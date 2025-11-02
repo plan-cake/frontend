@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { EventRange } from "@/core/event/types";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";
+import { cn } from "@/lib/utils/classname";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
@@ -36,11 +37,12 @@ export default function GridPreviewDialog({
       )}
       <motion.div
         layout
-        className={`flex flex-col space-y-4 overflow-hidden rounded-3xl border border-transparent bg-[#FFFFFF] dark:bg-[#343249] ${
+        className={cn(
+          "bg-panel flex flex-col space-y-4 overflow-hidden rounded-3xl border border-transparent",
           isOpen
             ? "fixed inset-0 z-50 m-auto h-[85vh] w-[85vw] p-8"
-            : "absolute inset-0 h-full w-full pb-4 pl-2 pr-4 pt-4"
-        } `}
+            : "absolute inset-0 h-full w-full pb-4 pl-2 pr-4 pt-4",
+        )}
       >
         <motion.div
           layout
@@ -49,7 +51,7 @@ export default function GridPreviewDialog({
           <label className="text-sm font-medium">Grid Preview</label>
           {isOpen ? (
             <Cross2Icon
-              className="hover:text-blue dark:hover:text-red h-5 w-5 cursor-pointer"
+              className="hover:text-accent h-5 w-5 cursor-pointer"
               onClick={() => {
                 setIsOpen(!isOpen);
                 setTimezone(eventRange.timezone);
@@ -57,7 +59,7 @@ export default function GridPreviewDialog({
             />
           ) : (
             <EnterFullScreenIcon
-              className="hover:text-blue dark:hover:text-red h-5 w-5 cursor-pointer"
+              className="hover:text-accent h-5 w-5 cursor-pointer"
               onClick={() => setIsOpen(!isOpen)}
             />
           )}
@@ -76,7 +78,7 @@ export default function GridPreviewDialog({
                 className="flex items-center text-sm md:ml-[50px]"
               >
                 See event in{" "}
-                <span className="text-blue dark:text-red ml-1 font-bold">
+                <span className="text-accent ml-1 font-bold">
                   <TimeZoneSelector
                     id="timezone-select"
                     value={timezone}
@@ -86,7 +88,7 @@ export default function GridPreviewDialog({
               </label>
               <label className="text-sm md:mr-[20px]">
                 Original Event in{" "}
-                <span className="text-blue dark:text-red font-bold">
+                <span className="text-accent font-bold">
                   {eventRange.timezone}
                 </span>
               </label>

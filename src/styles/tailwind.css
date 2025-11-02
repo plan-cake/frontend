@@ -60,7 +60,46 @@
 
 /* OTHER VARIABLES */
 
+@layer base {
+  :root {
+    --background: var(--color-white);
+    --foreground: var(--color-violet);
+    --accent: var(--color-blue);
+    --accent-text: var(--color-blue-500);
+    --panel-color: oklch(1 0 0);
+    --loading-color: var(--color-gray-200);
+  }
+
+  .dark {
+    --background: var(--color-violet);
+    --foreground: var(--color-bone);
+    --accent: var(--color-red);
+    --accent-text: var(--color-red-100);
+    --panel-color: oklch(0.3295 0.0403 287.95);
+    --loading-color: oklch(0.3295 0.0403 287.95);
+  }
+}
+
 @theme {
+  /* HELPER COLORS */
+  --color-error: oklch(0.6993 0.1534 12.87);
+
+  /* DYNAMIC COLORS */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-panel: var(--panel-color);
+  --color-loading: var(--loading-color);
+
+  /* CALENDAR COLORS */
+  --calendar-accent: var(--color-accent);
+  --calendar-accent-background: color-mix(
+    in srgb,
+    var(--color-accent) 20%,
+    transparent
+  );
+
   /* FONTS */
   --font-modak: var(--font-modak);
   --font-nunito: var(--font-nunito);
@@ -85,6 +124,7 @@
   --animate-slideDown: slideDown 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-hide: hide 100ms ease-in;
   --animate-slideIn: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-slideOut: slideOut 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-swipeOut: swipeOut 100ms ease-out;
 
   @keyframes hide {
@@ -104,6 +144,17 @@
 
     100% {
       transform: translateX(0);
+    }
+  }
+
+  @keyframes slideOut {
+    0% {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    100% {
+      opacity: 0;
+      transform: translateX(calc(100% + var(--viewport-padding)));
     }
   }
 
@@ -141,7 +192,7 @@
     }
   }
 
-  @keyframes slideDownAndFade: {
+  @keyframes slideDownAndFade {
     0% {
       opacity: 0;
       transform: translateY(-2px);
