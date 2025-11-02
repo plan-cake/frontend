@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
+import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
 import { convertAvailabilityToGrid } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
@@ -124,7 +125,7 @@ export default function ClientPage({
       </div>
 
       {/* Main Content */}
-      <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
+      <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
@@ -177,14 +178,27 @@ export default function ClientPage({
         />
       </div>
 
-      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
-        <div
-          onClick={handleSubmitAvailability}
-          className="bg-blue dark:bg-red rounded-full p-4 text-center text-white"
-        >
-          Submit Availability
-        </div>
-      </div>
+      <MobileFooterTray
+        buttons={[
+          ...(initialData
+            ? [
+                <LinkButton
+                  key="0"
+                  buttonStyle="transparent"
+                  label="Cancel Edits"
+                  href={`/${eventCode}`}
+                />,
+              ]
+            : []),
+          <ActionButton
+            key="1"
+            buttonStyle="primary"
+            label={`${initialData ? "Update" : "Submit"} Availability`}
+            onClick={handleSubmitAvailability}
+            loadOnSuccess
+          />,
+        ]}
+      />
     </div>
   );
 }

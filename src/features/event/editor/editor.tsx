@@ -6,9 +6,11 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
+import MobileFooterTray from "@/components/mobile-footer-tray";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action-button";
+import LinkButton from "@/features/button/components/link-button";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import DateRangeSelector from "@/features/event/editor/date-range/selector";
 import DurationSelector from "@/features/event/editor/duration-selector";
@@ -117,6 +119,13 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
         <div className="hidden md:flex">
+          {type === "edit" && (
+            <LinkButton
+              buttonStyle="transparent"
+              label="Cancel Edits"
+              href={`/${initialData?.code}`}
+            />
+          )}
           <ActionButton
             buttonStyle="primary"
             label={(type === "edit" ? "Update" : "Create") + " Event"}
@@ -274,17 +283,30 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
       <div className="min-h-screen md:hidden">
         <GridPreviewDialog eventRange={eventRange} />
-        <div className="h-25" />
+        <div className="h-16" />
       </div>
 
-      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
-        <div
-          className="bg-blue dark:bg-red rounded-full p-4 text-center text-white"
-          onClick={submitEventInfo}
-        >
-          {type === "edit" ? "Update Event" : "Create Event"}
-        </div>
-      </div>
+      <MobileFooterTray
+        buttons={[
+          ...(type === "edit"
+            ? [
+                <LinkButton
+                  key="0"
+                  buttonStyle="transparent"
+                  label="Cancel Edits"
+                  href={`/${initialData?.code}`}
+                />,
+              ]
+            : []),
+          <ActionButton
+            key="1"
+            buttonStyle="primary"
+            label={(type === "edit" ? "Update" : "Create") + " Event"}
+            onClick={submitEventInfo}
+            loadOnSuccess
+          />,
+        ]}
+      />
     </div>
   );
 }
