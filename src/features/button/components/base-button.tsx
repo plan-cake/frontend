@@ -68,7 +68,7 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
     };
 
     const baseClasses = cn(
-      "rounded-full font-medium flex flex-row items-center gap-1 relative",
+      "text-nowrap rounded-full font-medium flex flex-row items-center gap-1 relative",
     );
     const focusClasses = cn(
       "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
