@@ -1,37 +1,102 @@
 import { useState } from "react";
 
-import { EyeNoneIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+import {
+  EyeNoneIcon,
+  EyeOpenIcon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
+
+import { cn } from "@/lib/utils/classname";
 
 type FieldType = "text" | "email" | "password";
 
 type TextInputFieldProps = {
+  id: string;
   type: FieldType;
-  placeholder: string;
+  label: string;
   value: string;
   onChange: (value: string) => void;
+  outlined?: boolean;
+  error?: string;
 };
 
 export default function TextInputField(props: TextInputFieldProps) {
-  const { type, placeholder, value, onChange } = props;
+  const { id, type, label, value, onChange, error, outlined } = props;
   const [showPassword, setShowPassword] = useState(false);
 
+  // determine input type
+  const isPassword = type === "password";
+  const inputType = isPassword ? (showPassword ? "text" : "password") : type;
+
   return (
-    <div className="relative mb-4 flex w-full flex-row items-center">
+    <div className="relative mb-4 w-full">
+      {/* --- input field --- */}
       <input
-        type={type === "password" ? (showPassword ? "text" : "password") : type}
-        placeholder={placeholder}
+        type={inputType}
+        id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className={
-          "w-full rounded-full border px-4 py-2 focus:outline-none focus:ring-2" +
-          (type === "password" ? " pr-10" : "")
-        }
+        placeholder=" " // triggers placeholder-shown state for floating label
+        className={cn(
+          "peer w-full bg-transparent py-2",
+          "focus:outline-none",
+          outlined ? "rounded-full border px-6" : "border-b-1 px-2",
+          isPassword && "pr-10",
+
+          // borders and colors
+          "transition-colors",
+          error
+            ? "border-error text-error" // error
+            : "border-foreground", // default
+
+          // focus states
+          outlined
+            ? "focus:border-transparent focus:ring-2"
+            : "focus:ring-none",
+          error
+            ? "focus:ring-error" // error
+            : "focus:ring-foreground", // default
+        )}
       />
-      {type === "password" && (
+
+      {/* --- floating label --- */}
+      <label
+        htmlFor={id}
+        className={cn(
+          "absolute origin-[0_0] cursor-text px-1",
+          "transition-all duration-200 ease-in-out",
+          outlined ? "left-6" : "left-1",
+
+          // --- Floating Animation ---
+          // State when placeholder is shown (input is empty)
+          "peer-placeholder-shown:top-2.5 peer-placeholder-shown:scale-100",
+
+          // State when floated (on focus or when value exists)
+          "peer-focus:top-[-0.65rem] peer-focus:scale-75",
+          "peer-[:not(:placeholder-shown)]:top-[-0.65rem] peer-[:not(:placeholder-shown)]:scale-75",
+          "peer-focus:bg-background peer-[:not(:placeholder-shown)]:bg-background",
+
+          // colors
+          error
+            ? "text-error" // error
+            : "text-foreground", // default
+        )}
+      >
+        {error ? (
+          <span className="flex items-center gap-1">
+            <ExclamationTriangleIcon /> {error}
+          </span>
+        ) : (
+          label
+        )}
+      </label>
+
+      {/* --- trailing icon --- */}
+      {isPassword && (
         <button
           type="button"
           onClick={() => setShowPassword(!showPassword)}
-          className="absolute right-4 cursor-pointer"
+          className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer"
         >
           {showPassword ? (
             <EyeOpenIcon className="h-5 w-5" />
