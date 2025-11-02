@@ -48,15 +48,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const createErrorToast = (message: string) => {
-    addToast({
-      type: "error",
-      id: Date.now() + Math.random(),
-      title: "ERROR",
-      message: message,
-    });
-  };
-
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
     else if (e.target.value === "") {
@@ -80,7 +71,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
-        Object.values(validationErrors).forEach(createErrorToast);
+        Object.values(validationErrors).forEach((error) =>
+          addToast("error", error),
+        );
         return;
       }
 
@@ -92,7 +85,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       );
     } catch (error) {
       console.error("Submission failed:", error);
-      createErrorToast("An unexpected error occurred. Please try again.");
+      addToast("error", "An unexpected error occurred. Please try again.");
     } finally {
       isSubmitting.current = false;
     }

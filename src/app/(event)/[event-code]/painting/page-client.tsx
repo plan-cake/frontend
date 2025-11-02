@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import CopyToast from "@/components/copy-toast";
+import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import { useAvailability } from "@/core/availability/use-availability";
 import { convertAvailabilityToGrid } from "@/core/availability/utils";
@@ -40,15 +40,6 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const createErrorToast = (message: string) => {
-    addToast({
-      type: "error",
-      id: Date.now() + Math.random(),
-      title: "ERROR",
-      message: message,
-    });
-  };
-
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
     else if (e.target.value === "") {
@@ -68,7 +59,9 @@ export default function ClientPage({
       const validationErrors = await validateAvailabilityData(state, eventCode);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
-        Object.values(validationErrors).forEach(createErrorToast);
+        Object.values(validationErrors).forEach((error) =>
+          addToast("error", error),
+        );
         return;
       }
 
@@ -91,10 +84,10 @@ export default function ClientPage({
       });
 
       if (response.ok) router.push(`/${eventCode}`);
-      else createErrorToast(formatApiError(await response.json()));
+      else addToast("error", formatApiError(await response.json()));
     } catch (error) {
       console.error("Error submitting availability:", error);
-      createErrorToast("An unexpected error occurred. Please try again.");
+      addToast("error", "An unexpected error occurred. Please try again.");
     }
   };
 
@@ -109,7 +102,7 @@ export default function ClientPage({
         </div>
 
         <div className="flex items-center gap-2">
-          <CopyToast code={eventCode} />
+          <CopyToastButton code={eventCode} />
           {initialData && (
             <button
               onClick={() => {
