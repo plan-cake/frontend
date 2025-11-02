@@ -2,6 +2,7 @@
 
 import React, { useRef, useState, useContext } from "react";
 
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -39,7 +40,8 @@ export default function Page() {
       ...prev,
       [field]: message,
     }));
-    addToast("error", message);
+
+    if (field === "api") addToast("error", message);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -75,7 +77,13 @@ export default function Page() {
         const body = await res.json();
 
         const errorMessage = formatApiError(body);
-        if (errorMessage.includes("Email:")) {
+
+        if (res.status === 429) {
+          handleErrors(
+            "rate_limit",
+            errorMessage || "Too many login attempts. Please try again later.",
+          );
+        } else if (errorMessage.includes("Email:")) {
           handleErrors("email", errorMessage.split("Email:")[1].trim());
         } else if (errorMessage.includes("Password:")) {
           handleErrors("password", errorMessage.split("Password:")[1].trim());
@@ -92,12 +100,23 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           login
         </h1>
+
+        {/* Rate Limit Error */}
+        {errors.rate_limit && (
+          <div className="bg-accent/20 mb-4 flex w-80 items-center gap-4 rounded-3xl p-4">
+            <ExclamationTriangleIcon className="h-5 w-5" />
+            <div>
+              <h2 className="text-md font-bold">Woah! Slow down</h2>
+              <div>{errors.rate_limit}</div>
+            </div>
+          </div>
+        )}
 
         {/* Email */}
         <TextInputField
