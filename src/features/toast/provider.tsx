@@ -80,7 +80,7 @@ export default function ToastProvider({
 
     setTimeout(() => {
       setToasts((prevToasts) => prevToasts.filter((t) => t.id !== id));
-    }, 400);
+    }, 750); // duration of longest animation
   }, []);
 
   return (

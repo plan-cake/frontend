@@ -126,6 +126,7 @@
   --animate-slideIn: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-slideOut: slideOut 400ms cubic-bezier(0.16, 1, 0.3, 1);
   --animate-swipeOut: swipeOut 100ms ease-out;
+  --animate-toastBite: toastBite 0.75s;
 
   @keyframes hide {
     0% {
@@ -233,6 +234,36 @@
 
     100% {
       transform: translateY(100%);
+    }
+  }
+
+  /*
+    TOAST BITE ANIMATION
+
+    Using 3 circles for the shape and a linear gradient as a cutoff, "bites" are cut out
+    of the toast from left to right.
+  */
+  @keyframes toastBite {
+    0% {
+    }
+    33% {
+      mask:
+        radial-gradient(circle at 25% 15%, transparent 7%, black 7%),
+        radial-gradient(circle at 29% 50%, transparent 7%, black 7%),
+        radial-gradient(circle at 28% 85%, transparent 7%, black 7%),
+        linear-gradient(90deg, transparent 27%, black 27%);
+      mask-composite: intersect;
+    }
+    66% {
+      mask:
+        radial-gradient(circle at 63% 15%, transparent 7%, black 7%),
+        radial-gradient(circle at 64% 50%, transparent 7%, black 7%),
+        radial-gradient(circle at 61% 85%, transparent 7%, black 7%),
+        linear-gradient(90deg, transparent 62%, black 62%);
+      mask-composite: intersect;
+    }
+    100% {
+      mask: linear-gradient(0deg, transparent 100%);
     }
   }
 }
