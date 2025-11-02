@@ -32,13 +32,12 @@ function getToastIcon(iconType: ToastType) {
 function getToastStyle(type: ToastType) {
   switch (type) {
     case "error":
-      return "border-red bg-red border dark:border-red-400";
+      return "bg-red";
     case "copy":
-      return "border-lion bg-lion border";
     case "success":
-      return "border-lion bg-lion border";
+      return "bg-foreground text-background";
     default:
-      return "border-blue bg-blue border";
+      return "bg-blue";
   }
 }
 

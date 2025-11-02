@@ -46,7 +46,7 @@ export default function DateRangeDrawer({
           className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col"
           aria-label="Date range picker"
         >
-          <div className="rounded-t-4xl dark:bg-violet flex-1 justify-center overflow-y-auto bg-white p-8 shadow-lg">
+          <div className="rounded-t-4xl bg-background flex-1 justify-center overflow-y-auto p-8 shadow-lg">
             <div
               aria-hidden
               className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
@@ -105,7 +105,7 @@ const DateRangeDrawerSelector = ({
             <label className="flex items-center gap-2 text-start">
               Possible Dates
               {tooManyDays && (
-                <ExclamationTriangleIcon className="h-4 w-4 text-[#ED7183]" />
+                <ExclamationTriangleIcon className="text-error h-4 w-4" />
               )}
             </label>
             <DateRangeInput startDate={startDate} endDate={endDate} />

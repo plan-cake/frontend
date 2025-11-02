@@ -6,22 +6,22 @@ export default function Loading() {
       <HeaderSpacer />
 
       <div className="flex w-full flex-wrap items-center justify-between md:flex-row">
-        <div className="h-12 w-1/2 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+        <div className="bg-loading h-12 w-1/2 rounded-3xl" />
 
-        <div className="h-10 w-40 rounded-full bg-gray-200 dark:bg-[#343249]" />
+        <div className="bg-loading h-10 w-40 rounded-full" />
       </div>
 
       <div className="mb-8 flex h-full flex-col gap-4 md:mb-0 md:flex-row">
         <div className="h-fit w-full shrink-0 space-y-6 overflow-y-auto md:w-80">
           <div className="space-y-3">
-            <div className="h-8 w-3/4 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
-            <div className="h-8 w-1/2 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+            <div className="bg-loading h-8 w-3/4 rounded-3xl" />
+            <div className="bg-loading h-8 w-1/2 rounded-3xl" />
           </div>
-          <div className="h-70 hidden rounded-3xl bg-gray-200 md:block dark:bg-[#343249]" />
-          <div className="h-20 rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+          <div className="h-70 bg-loading hidden rounded-3xl md:block" />
+          <div className="bg-loading h-20 rounded-3xl" />
         </div>
 
-        <div className="h-96 w-full rounded-3xl bg-gray-200 dark:bg-[#343249]" />
+        <div className="bg-loading h-96 w-full rounded-3xl" />
       </div>
     </div>
   );
