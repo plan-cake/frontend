@@ -1,20 +1,9 @@
-import { ComponentProps, ReactElement } from "react";
-
-import ActionButton from "@/features/button/components/action-button";
-import LinkButton from "@/features/button/components/link-button";
+import { ButtonArray } from "@/features/button/button-array";
 
 type MessagePageProps = {
   title: string;
   description?: string;
-  /**
-   * An array of buttons to display on the page, in a row.
-   *
-   * Each element can be either an `ActionButton` or `LinkButton` component.
-   */
-  buttons: (
-    | ReactElement<ComponentProps<typeof ActionButton>>
-    | ReactElement<ComponentProps<typeof LinkButton>>
-  )[];
+  buttons: ButtonArray;
 };
 
 export default function MessagePage({
