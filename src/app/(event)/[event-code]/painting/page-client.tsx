@@ -98,7 +98,7 @@ export default function ClientPage({
             rate_limit: message || "Too many attempts. Please try again later.",
           }));
         } else {
-          addToast("error", formatApiError(await response.json()));
+          addToast("error", message);
         }
         return false;
       }
