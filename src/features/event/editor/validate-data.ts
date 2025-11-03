@@ -39,21 +39,16 @@ export async function validateEventData(
   }
 
   // Validate event range
-  if (
-    eventRange.type === "specific" &&
-    (!eventRange.dateRange?.from || !eventRange.dateRange?.to)
-  ) {
-    errors.dateRange = "Please select a valid date range.";
-  } else {
-    // check if the date range is more than 30 days
-    const fromDate = new Date(
-      (data.eventRange as SpecificDateRange).dateRange.from,
-    );
-    const toDate = new Date(
-      (data.eventRange as SpecificDateRange).dateRange.to,
-    );
-    if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
-      errors.dateRange = "Too many days selected. Max is 30 days.";
+  if (eventRange.type === "specific") {
+    if (!eventRange.dateRange?.from || !eventRange.dateRange?.to) {
+      errors.dateRange = "Please select a valid date range.";
+    } else {
+      // check if the date range is more than 30 days
+      const fromDate = new Date(eventRange.dateRange.from);
+      const toDate = new Date(eventRange.dateRange.to);
+      if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
+        errors.dateRange = "Too many days selected. Max is 30 days.";
+      }
     }
   }
 
