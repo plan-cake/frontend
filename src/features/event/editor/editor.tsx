@@ -247,7 +247,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               type="text"
               value={customCode}
               disabled={type === "edit"}
-              onChange={() => handleCustomCodeChange(customCode)}
+              onChange={e => handleCustomCodeChange(e.target.value)}
               placeholder="optional"
               className={`border-b-1 w-full focus:outline-none ${
                 errors.customCode
