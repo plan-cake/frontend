@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
+import { Banner } from "@/components/banner";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import TextInputField from "@/components/text-input-field";
@@ -59,6 +60,19 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTitle(e);
   };
 
+  const handleTimeRangeChange = (from: number, to: number) => {
+    if (errors.timeRange) setErrors((prev) => ({ ...prev, timeRange: "" }));
+
+    if (from >= to) {
+      setErrors((prev) => ({
+        ...prev,
+        timeRange: "Please select a valid time range.",
+      }));
+    }
+
+    setTimeRange({ from, to });
+  };
+
   const handleCustomCodeChange = (e: string) => {
     if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
     setCustomCode(e);
@@ -83,6 +97,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
+        addToast,
+        setErrors,
       );
       return success;
     } catch (error) {
@@ -116,6 +132,14 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
     <div className="flex min-h-dvh flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
+
+      {/* Rate Limit Error */}
+      {errors.rate_limit && (
+        <Banner type="error" title="Woah! Slow down" className="mb-8 w-full">
+          {errors.rate_limit}
+        </Banner>
+      )}
+
       <div className="-mb-1 flex w-full items-center justify-between">
         <div className="md:w-1/2">
           <TextInputField
@@ -148,7 +172,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         </div>
 
         {/* From/To */}
-        <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
+        <label
+          className={`flex items-center gap-2 md:col-start-1 md:row-start-2 ${errors.timeRange ? "text-error" : ""}`}
+        >
+          Possible Times
+          {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
+        </label>
         <div className="flex space-x-4 md:col-start-1 md:row-start-3">
           <label htmlFor="from-time-dropdown" className="text-gray-400">
             FROM
@@ -157,7 +186,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             id="from-time-dropdown"
             value={eventRange.timeRange.from}
             onChange={(value) =>
-              setTimeRange({ ...eventRange.timeRange, from: value })
+              handleTimeRangeChange(value, eventRange.timeRange.to)
             }
           />
         </div>
@@ -169,7 +198,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             id="to-time-dropdown"
             value={eventRange.timeRange.to}
             onChange={(value) =>
-              setTimeRange({ ...eventRange.timeRange, to: value })
+              handleTimeRangeChange(eventRange.timeRange.from, value)
             }
           />
         </div>

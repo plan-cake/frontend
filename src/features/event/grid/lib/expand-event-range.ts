@@ -121,6 +121,12 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   // Get the absolute start and end times in UTC
   const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(range);
 
+  // If event is longer than 30 days, return empty array
+  const maxDurationMs = 30 * 24 * 60 * 60 * 1000;
+  if (eventEndUTC.getTime() - eventStartUTC.getTime() > maxDurationMs) {
+    return [];
+  }
+
   // Get the valid time range for any given day in UTC
   const validStartHour = range.timeRange.from;
   const validEndHour = range.timeRange.to;

@@ -1,6 +1,11 @@
 import { DateRange } from "react-day-picker";
 
-import { EventInformation } from "@/core/event/types";
+import {
+  EventInformation,
+  SpecificDateRange,
+  WeekdayRange,
+} from "@/core/event/types";
+import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
 
 export async function validateEventData(
@@ -10,12 +15,14 @@ export async function validateEventData(
   const errors: Record<string, string> = {};
   const { title, customCode, eventRange } = data;
 
+  // Validate title
   if (!title?.trim()) {
     errors.title = "Please enter an event name.";
   } else if (title.length > 50) {
     errors.title = "Event name must be under 50 characters.";
   }
 
+  // Validate custom code for new events
   if (editorType === "new" && customCode) {
     try {
       const response = await fetch("/api/event/check-code/", {
@@ -31,13 +38,35 @@ export async function validateEventData(
     }
   }
 
+  // Validate event range
   if (
     eventRange.type === "specific" &&
     (!eventRange.dateRange?.from || !eventRange.dateRange?.to)
   ) {
     errors.dateRange = "Please select a valid date range.";
+  } else {
+    // check if the date range is more than 30 days
+    const fromDate = new Date(
+      (data.eventRange as SpecificDateRange).dateRange.from,
+    );
+    const toDate = new Date(
+      (data.eventRange as SpecificDateRange).dateRange.to,
+    );
+    if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
+      errors.dateRange = "Too many days selected. Max is 30 days.";
+    }
   }
 
+  if (eventRange.type === "weekday") {
+    const weekdayRange = findRangeFromWeekdayMap(
+      (data.eventRange as WeekdayRange).weekdays,
+    );
+    if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
+      errors.weekdayRange = "Please select at least one weekday.";
+    }
+  }
+
+  // Validate time range
   if (eventRange.timeRange.from >= eventRange.timeRange.to) {
     errors.timeRange = "Please select a valid time range.";
   }
