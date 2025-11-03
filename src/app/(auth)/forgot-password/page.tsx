@@ -1,21 +1,20 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import { useToast } from "@/features/toast/context";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [emailSent, setEmailSent] = useState(false);
-  const isSubmitting = useRef(false);
-  const router = useRouter();
 
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
@@ -35,17 +34,16 @@ export default function Page() {
     if (field === "api") addToast("error", message);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
+  const handleSubmit = async () => {
     setErrors({});
 
     if (!email) {
       handleErrors("email", "Missing email");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
     try {
@@ -58,18 +56,19 @@ export default function Page() {
       if (res.ok) {
         setEmailSent(true);
         setEmail("");
+        return true;
       } else {
         if (res.status === 404) {
           addToast("error", "Email not found. Please check and try again.");
         } else {
           addToast("error", formatApiError(await res.json()));
         }
+        return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
       addToast("error", "An error occurred. Please try again.");
-    } finally {
-      isSubmitting.current = false;
+      return false;
     }
   };
 
@@ -80,16 +79,17 @@ export default function Page() {
           title="Check your email"
           description={`A password reset link was sent to ${email}.`}
           buttons={[
-            {
-              type: "primary",
-              label: "back to login",
-              onClick: () => router.push("/login"),
-            },
+            <LinkButton
+              key="0"
+              buttonStyle="primary"
+              label="Back to Login"
+              href="/login"
+            />,
           ]}
         />
       ) : (
         <form
-          onSubmit={handleSubmit}
+          onSubmit={stopRefresh}
           className="flex w-80 flex-col items-center"
         >
           {/* Title */}
@@ -115,12 +115,12 @@ export default function Page() {
             </Link>
 
             {/* Email Button */}
-            <button
-              type="submit"
-              className="bg-blue dark:bg-red mb-2 cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-            >
-              Send Link
-            </button>
+            <ActionButton
+              buttonStyle="primary"
+              label="Send Link"
+              onClick={handleSubmit}
+              loadOnSuccess
+            />
           </div>
         </form>
       )}

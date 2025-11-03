@@ -3,9 +3,10 @@
 import { useContext, useEffect } from "react";
 
 import { PersonIcon } from "@radix-ui/react-icons";
-import Link from "next/link";
 
 import AccountDropdown from "@/components/header/account-dropdown";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import { LoginContext } from "@/lib/providers";
 
 export default function AccountButton() {
@@ -36,23 +37,16 @@ export default function AccountButton() {
   if (loggedIn) {
     return (
       <AccountDropdown>
-        <button
-          className="frosted-glass flex cursor-pointer items-center justify-center rounded-full p-2 font-medium"
-          aria-label="Open account menu"
-        >
-          <PersonIcon className="h-5 w-5" />
-        </button>
+        <ActionButton
+          buttonStyle="frosted glass"
+          icon={<PersonIcon />}
+          onClick={() => true}
+        />
       </AccountDropdown>
     );
   } else {
     return (
-      <Link
-        className="frosted-glass cursor-pointer text-nowrap rounded-full px-4 py-1.5 font-medium"
-        href="/login"
-        aria-label="Log in"
-      >
-        Log In
-      </Link>
+      <LinkButton buttonStyle="frosted glass" label="Log In" href="/login" />
     );
   }
 }

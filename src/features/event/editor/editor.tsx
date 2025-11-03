@@ -1,13 +1,16 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
+import MobileFooterTray from "@/components/mobile-footer-tray";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import DateRangeSelector from "@/features/event/editor/date-range/selector";
 import DurationSelector from "@/features/event/editor/duration-selector";
@@ -41,7 +44,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setWeekdayRange,
   } = useEventInfo(initialData);
   const { title, customCode, eventRange } = state;
-  const isSubmitting = useRef(false);
   const router = useRouter();
 
   // TOASTS AND ERROR STATES
@@ -63,8 +65,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
     setErrors({}); // reset errors
 
     try {
@@ -74,22 +74,39 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         Object.values(validationErrors).forEach((error) =>
           addToast("error", error),
         );
-        return;
+        return false;
       }
 
-      await submitEvent(
+      const success = await submitEvent(
         { title, code: customCode, eventRange },
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
       );
+      return success;
     } catch (error) {
       console.error("Submission failed:", error);
       addToast("error", "An unexpected error occurred. Please try again.");
-    } finally {
-      isSubmitting.current = false;
+      return false;
     }
   };
+
+  // BUTTONS
+  const cancelButton = (
+    <LinkButton
+      buttonStyle="transparent"
+      label="Cancel Edits"
+      href={`/${initialData?.code}`}
+    />
+  );
+  const submitButton = (
+    <ActionButton
+      buttonStyle="primary"
+      label={type === "edit" ? "Update Event" : "Create Event"}
+      onClick={submitEventInfo}
+      loadOnSuccess
+    />
+  );
 
   const earliestCalendarDate = new Date(
     (initialData?.eventRange as SpecificDateRange)?.dateRange?.from,
@@ -118,12 +135,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             )}
           />
         </div>
-        <button
-          className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
-          onClick={submitEventInfo}
-        >
-          {type === "edit" ? "Update Event" : "Create Event"}
-        </button>
+        <div className="hidden gap-2 md:flex">
+          {type === "edit" && cancelButton}
+          {submitButton}
+        </div>
       </div>
 
       <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
@@ -274,17 +289,14 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
       <div className="min-h-screen md:hidden">
         <GridPreviewDialog eventRange={eventRange} />
-        <div className="h-25" />
+        <div className="h-16" />
       </div>
 
-      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
-        <div
-          className="bg-blue dark:bg-red rounded-full p-4 text-center text-white"
-          onClick={submitEventInfo}
-        >
-          {type === "edit" ? "Update Event" : "Create Event"}
-        </div>
-      </div>
+      <MobileFooterTray
+        buttons={
+          type === "edit" ? [cancelButton, submitButton] : [submitButton]
+        }
+      />
     </div>
   );
 }

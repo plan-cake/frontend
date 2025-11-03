@@ -1,22 +1,20 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-
 import MessagePage from "@/components/layout/message-page";
+import LinkButton from "@/features/button/components/link";
 
 export default function Page() {
-  const router = useRouter();
-
   return (
     <div className="flex h-screen items-center justify-center">
       <MessagePage
         title="Password Reset Successful"
         buttons={[
-          {
-            type: "primary",
-            label: "Back to Login",
-            onClick: () => router.push("/login"),
-          },
+          <LinkButton
+            key="0"
+            buttonStyle="primary"
+            label="Back to Login"
+            href="/login"
+          />,
         ]}
       />
     </div>

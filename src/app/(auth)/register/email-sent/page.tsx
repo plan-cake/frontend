@@ -5,6 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -36,27 +38,29 @@ export default function Page() {
     timeLeft = Math.ceil(timeLeft);
     if (timeLeft > 0) {
       alert(`Slow down! ${timeLeft} seconds until you can send again.`);
-      return;
+      return false;
     }
 
-    await fetch("/api/auth/resend-register-email/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          alert("Email resent. Please check your inbox.");
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/resend-register-email/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
       });
 
-    lastEmailResend.current = Date.now();
+      if (res.ok) {
+        alert("Email resent. Please check your inbox.");
+        lastEmailResend.current = Date.now();
+        return true;
+      } else {
+        alert(formatApiError(await res.json()));
+        return false;
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+      return false;
+    }
   };
 
   return (
@@ -65,16 +69,18 @@ export default function Page() {
         title="Check your email"
         description={`A verification link was sent to ${email}.`}
         buttons={[
-          {
-            type: "secondary",
-            label: "Resend Email",
-            onClick: handleResendEmail,
-          },
-          {
-            type: "primary",
-            label: "Go to Login",
-            onClick: () => router.push("/login"),
-          },
+          <ActionButton
+            key="0"
+            buttonStyle="secondary"
+            label="Resend Email"
+            onClick={handleResendEmail}
+          />,
+          <LinkButton
+            key="1"
+            buttonStyle="primary"
+            label="Go to Login"
+            href="/login"
+          />,
         ]}
       />
     </div>

@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import { useRouter, useSearchParams } from "next/navigation";
 
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -13,7 +14,6 @@ export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordCriteria, setPasswordCriteria] = useState({});
-  const isSubmitting = useRef(false);
   const router = useRouter();
 
   const searchParams = useSearchParams();
@@ -61,59 +61,55 @@ export default function Page() {
     }
   }, [newPassword]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-
+  const handleSubmit = async () => {
     if (!pwdResetToken) {
       alert("This link is expired or invalid.");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
     if (!newPassword) {
       alert("Missing new password.");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (!passwordIsStrong()) {
       alert("Password is not strong enough");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (newPassword !== confirmPassword) {
       alert("Passwords do not match.");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
-    await fetch("/api/auth/reset-password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reset_token: pwdResetToken,
-        new_password: newPassword,
-      }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          router.push("/reset-password/success");
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
-      });
 
-    isSubmitting.current = false;
+    try {
+      const res = await fetch("/api/auth/reset-password/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          reset_token: pwdResetToken,
+          new_password: newPassword,
+        }),
+      });
+      if (res.ok) {
+        router.push("/reset-password/success");
+        return true;
+      } else {
+        alert(formatApiError(await res.json()));
+        return false;
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+      return false;
+    }
   };
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
+      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
           reset password
@@ -142,13 +138,13 @@ export default function Page() {
         />
 
         {/* Change Password Button */}
-        <div className="flex w-full">
-          <button
-            type="submit"
-            className="bg-blue dark:bg-red mb-2 ml-auto cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-          >
-            reset password
-          </button>
+        <div className="flex w-full justify-end">
+          <ActionButton
+            buttonStyle="primary"
+            label="Change Password"
+            onClick={handleSubmit}
+            loadOnSuccess
+          />
         </div>
       </form>
     </div>

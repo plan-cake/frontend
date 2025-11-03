@@ -39,7 +39,7 @@ export default async function submitEvent(
   type: EventEditorType,
   eventType: "specific" | "weekday",
   onSuccess: (code: string) => void,
-): Promise<void> {
+): Promise<boolean> {
   let apiRoute = "";
   let jsonBody: EventSubmitJsonBody;
 
@@ -56,7 +56,7 @@ export default async function submitEvent(
     );
     if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
       alert("Too many days selected. Max is 30 days.");
-      return;
+      return false;
     }
 
     jsonBody = {
@@ -80,7 +80,7 @@ export default async function submitEvent(
     );
     if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
       alert("Please select at least one weekday.");
-      return;
+      return false;
     }
 
     const dayNameToIndex: { [key: string]: number } = {
@@ -113,26 +113,30 @@ export default async function submitEvent(
     jsonBody.event_code = data.code;
   }
 
-  await fetch(apiRoute, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(jsonBody),
-  })
-    .then(async (res) => {
-      if (res.ok) {
-        const code = (await res.json()).event_code;
-        if (type === "new") {
-          onSuccess(code);
-        } else {
-          // endpoint does not return code on edit
-          onSuccess(data.code);
-        }
-      } else {
-        alert(formatApiError(await res.json()));
-      }
-    })
-    .catch((err) => {
-      console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+  try {
+
+    const res = await fetch(apiRoute, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(jsonBody),
     });
+    if (res.ok) {
+      const code = (await res.json()).event_code;
+      if (type === "new") {
+        onSuccess(code);
+        return true;
+      } else {
+        // endpoint does not return code on edit
+        onSuccess(data.code);
+        return true;
+      }
+    } else {
+      alert(formatApiError(await res.json()));
+      return false;
+    }
+  } catch (err) {
+    console.error("Fetch error:", err);
+    alert("An error occurred. Please try again.");
+    return false;
+  }
 }

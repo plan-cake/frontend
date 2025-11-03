@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +9,7 @@ import { Banner } from "@/components/banner";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
 import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
@@ -18,7 +19,6 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
-  const isSubmitting = useRef(false);
   const router = useRouter();
 
   // TOASTS AND ERROR STATES
@@ -44,22 +44,20 @@ export default function Page() {
     if (field === "api") addToast("error", message);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
+  const handleSubmit = async () => {
     setErrors({});
 
     if (!email) {
       handleErrors("email", "Missing email");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (!password) {
       handleErrors("password", "Missing password");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
     try {
@@ -72,7 +70,7 @@ export default function Page() {
       if (res.ok) {
         setLoggedIn(true);
         router.push("/dashboard");
-        return;
+        return true;
       } else {
         const body = await res.json();
 
@@ -90,18 +88,18 @@ export default function Page() {
         } else {
           handleErrors("api", errorMessage);
         }
+        return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
       alert("An error occurred. Please try again.");
-    } finally {
-      isSubmitting.current = false;
+      return false;
     }
   };
 
   return (
     <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
+      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           login
@@ -136,7 +134,7 @@ export default function Page() {
           error={errors.password || errors.api}
         />
 
-        <div className="flex w-full justify-between">
+        <div className="flex w-full items-start justify-between">
           <div className="m-0 flex flex-col gap-2">
             {/* Remember Me Checkbox */}
             <Checkbox
@@ -151,16 +149,16 @@ export default function Page() {
           </div>
 
           {/* Login Button */}
-          <button
-            type="submit"
-            className="bg-blue dark:bg-red mb-2 cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-          >
-            Login
-          </button>
+          <ActionButton
+            buttonStyle="primary"
+            label="Login"
+            onClick={handleSubmit}
+            loadOnSuccess
+          />
         </div>
 
         {/* Register Link */}
-        <div className="w-full text-right text-xs">
+        <div className="mt-2 w-full text-right text-xs">
           No account?{" "}
           <Link href="/register">
             <LinkText>Register!</LinkText>

@@ -42,6 +42,18 @@ export default function BaseToast({
         <button
           type="button"
           aria-label="Close"
+          onClick={() => {
+            if (
+              document.activeElement &&
+              document.activeElement instanceof HTMLElement
+            ) {
+              // After clicking this button, the focus would be on the toasts.
+              // If there is more than 1 toast, the focus causes the timers for all the
+              // toasts to be paused until the user clicked on something else.
+              // This just removes that focus.
+              document.activeElement.blur();
+            }
+          }}
           className={cn(
             "col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
             "opacity-0 transition-all",
