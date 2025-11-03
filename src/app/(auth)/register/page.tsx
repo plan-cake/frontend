@@ -77,10 +77,12 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
+          addToast("error", "An error occurred. Please try again.");
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
+        addToast("error", "An error occurred. Please try again.");
       });
   }, [password]);
 
