@@ -15,8 +15,6 @@ export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams.get("code");
   if (!token) {
-    setVerifying(false);
-    setEmailVerified(false);
     notFound();
   }
 
