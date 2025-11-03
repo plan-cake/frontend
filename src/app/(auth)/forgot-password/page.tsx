@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import Link from "next/link";
 
+import { Banner } from "@/components/banner";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
@@ -58,10 +59,16 @@ export default function Page() {
         setEmail("");
         return true;
       } else {
-        if (res.status === 404) {
-          addToast("error", "Email not found. Please check and try again.");
+        const body = await res.json();
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 429) {
+          handleErrors(
+            "rate_limit",
+            errorMessage || "Too many attempts. Please try again later.",
+          );
         } else {
-          addToast("error", formatApiError(await res.json()));
+          handleErrors("api", errorMessage);
         }
         return false;
       }
@@ -73,7 +80,7 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       {emailSent ? (
         <MessagePage
           title="Check your email"
@@ -96,6 +103,17 @@ export default function Page() {
           <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
             forgot password
           </h1>
+
+          {/* Rate Limit Error */}
+          {errors.rate_limit && (
+            <Banner
+              type="error"
+              title="Woah! Slow down"
+              className="mb-4 w-full"
+            >
+              {errors.rate_limit}
+            </Banner>
+          )}
 
           {/* Email */}
           <TextInputField

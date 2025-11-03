@@ -135,7 +135,7 @@ export default function Page() {
         if (res.status === 429) {
           handleErrors(
             "rate_limit",
-            errorMessage || "Too many login attempts. Please try again later.",
+            errorMessage || "Too many attempts. Please try again later.",
           );
         } else {
           handleErrors("api", errorMessage);
