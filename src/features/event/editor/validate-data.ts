@@ -1,10 +1,6 @@
 import { DateRange } from "react-day-picker";
 
-import {
-  EventInformation,
-  SpecificDateRange,
-  WeekdayRange,
-} from "@/core/event/types";
+import { EventInformation, WeekdayRange } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
 
