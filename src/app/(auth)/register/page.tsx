@@ -121,7 +121,7 @@ export default function Page() {
         router.push("/register/email-sent");
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        handleErrors("api", formatApiError(await res.json()));
         return false;
       }
     } catch (err) {
