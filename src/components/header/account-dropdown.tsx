@@ -4,6 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
+import { useToast } from "@/features/toast/context";
 import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
@@ -12,6 +13,9 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
   const isSubmitting = useRef(false);
   const { setLoggedIn } = useContext(LoginContext);
   const router = useRouter();
+
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
 
   const signOut = async () => {
     if (isSubmitting.current) return;
@@ -24,14 +28,15 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
       .then(async (res) => {
         if (res.ok) {
           setLoggedIn(false);
+          addToast("success", "Successfully logged out.");
           router.push("/login");
         } else {
-          alert(formatApiError(await res.json()));
+          addToast("error", formatApiError(await res.json()));
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+        addToast("error", "An error occurred. Please try again.");
       });
 
     isSubmitting.current = false;
