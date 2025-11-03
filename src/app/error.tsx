@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 
-import ActionButton from "@/features/button/components/action-button";
+import ActionButton from "@/features/button/components/action";
 
 export default function EventErrorPage({
   error,

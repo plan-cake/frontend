@@ -3,7 +3,7 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { usePathname } from "next/navigation";
 
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 
 export default function NewEventButton() {
   const pathname = usePathname();

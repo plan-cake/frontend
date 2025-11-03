@@ -1,7 +1,7 @@
 "use client";
 
 import MessagePage from "@/components/layout/message-page";
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 
 export default function Page() {
   return (

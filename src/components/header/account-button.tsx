@@ -5,8 +5,8 @@ import { useContext, useEffect } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
 
 import AccountDropdown from "@/components/header/account-dropdown";
-import ActionButton from "@/features/button/components/action-button";
-import LinkButton from "@/features/button/components/link-button";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import { LoginContext } from "@/lib/providers";
 
 export default function AccountButton() {

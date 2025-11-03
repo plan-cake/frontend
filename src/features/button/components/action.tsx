@@ -1,11 +1,11 @@
 import { forwardRef } from "react";
 
-import BaseButton from "@/features/button/components/base-button";
-import { LinkButtonProps } from "@/features/button/props";
+import BaseButton from "@/features/button/components/base";
+import { ActionButtonProps } from "@/features/button/props";
 
-type Ref = HTMLAnchorElement;
+type Ref = HTMLButtonElement;
 
-const LinkButton = forwardRef<Ref, LinkButtonProps>(
+const ActionButton = forwardRef<Ref, ActionButtonProps>(
   (
     {
       buttonStyle,
@@ -14,7 +14,8 @@ const LinkButton = forwardRef<Ref, LinkButtonProps>(
       shrinkOnMobile = false,
       loading = false,
       disabled = false,
-      href,
+      onClick,
+      loadOnSuccess = false,
       ...props
     },
     ref,
@@ -27,8 +28,9 @@ const LinkButton = forwardRef<Ref, LinkButtonProps>(
         shrinkOnMobile={shrinkOnMobile}
         loading={loading}
         disabled={disabled}
-        isLink={true}
-        href={href}
+        isLink={false}
+        onClick={onClick}
+        loadOnSuccess={loadOnSuccess}
         ref={ref}
         {...props}
       />
@@ -36,5 +38,5 @@ const LinkButton = forwardRef<Ref, LinkButtonProps>(
   },
 );
 
-LinkButton.displayName = "LinkButton";
-export default LinkButton;
+ActionButton.displayName = "ActionButton";
+export default ActionButton;

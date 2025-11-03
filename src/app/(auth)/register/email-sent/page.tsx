@@ -5,8 +5,8 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
-import ActionButton from "@/features/button/components/action-button";
-import LinkButton from "@/features/button/components/link-button";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {

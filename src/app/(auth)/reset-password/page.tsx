@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
-import ActionButton from "@/features/button/components/action-button";
+import ActionButton from "@/features/button/components/action";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import formatApiError from "@/lib/utils/api/format-api-error";
 

@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
-import ActionButton from "@/features/button/components/action-button";
+import ActionButton from "@/features/button/components/action";
 import { LoginContext } from "@/lib/providers";
 import formatApiError from "@/lib/utils/api/format-api-error";
 

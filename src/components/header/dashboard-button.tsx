@@ -1,6 +1,6 @@
 import { DashboardIcon } from "@radix-ui/react-icons";
 
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 
 export default function DashboardButton() {
   return (

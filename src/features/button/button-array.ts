@@ -1,7 +1,7 @@
 import { ComponentProps, ReactElement } from "react";
 
-import ActionButton from "@/features/button/components/action-button";
-import LinkButton from "@/features/button/components/link-button";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 
 /**
  * An array of buttons.

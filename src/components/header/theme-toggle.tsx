@@ -3,7 +3,7 @@
 import { useTheme } from "next-themes";
 import { FiMoon, FiSun } from "react-icons/fi";
 
-import ActionButton from "@/features/button/components/action-button";
+import ActionButton from "@/features/button/components/action";
 
 export default function FixedThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();

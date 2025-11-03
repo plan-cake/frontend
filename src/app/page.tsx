@@ -1,7 +1,7 @@
 import { DashboardIcon, PlusIcon } from "@radix-ui/react-icons";
 
 import Logo from "@/components/logo";
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 
 export default function Home() {
   return (

@@ -7,8 +7,8 @@ import Link from "next/link";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
-import ActionButton from "@/features/button/components/action-button";
-import LinkButton from "@/features/button/components/link-button";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {

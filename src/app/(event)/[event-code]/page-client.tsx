@@ -8,7 +8,7 @@ import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";

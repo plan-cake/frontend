@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
-import LinkButton from "@/features/button/components/link-button";
+import LinkButton from "@/features/button/components/link";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);
