@@ -9,6 +9,7 @@ import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
+import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
@@ -50,17 +51,17 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: string) => {
     if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
-    else if (e.target.value === "") {
+    else if (e === "") {
       setErrors((prev) => ({ ...prev, title: "Please enter an event name." }));
     }
-    setTitle(e.target.value);
+    setTitle(e);
   };
 
-  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCustomCodeChange = (e: string) => {
     if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
-    setCustomCode(e.target.value);
+    setCustomCode(e);
   };
 
   // SUBMIT EVENT INFO
@@ -115,24 +116,16 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
     <div className="flex min-h-dvh flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
-      <div className="flex w-full items-center justify-between">
+      <div className="-mb-1 flex w-full items-center justify-between">
         <div className="md:w-1/2">
-          <p
-            className={`text-error text-right text-xs ${errors.title ? "visible" : "invisible"}`}
-          >
-            {errors.title ? errors.title : "Error Placeholder"}
-          </p>
-          <input
+          <TextInputField
+            id={"event-name"}
             type="text"
+            label="Enter Event Name"
             value={title}
             onChange={handleNameChange}
-            placeholder="add event name"
-            className={cn(
-              "border-b-1 w-full p-1 text-2xl focus:outline-none",
-              errors.title
-                ? "border-error placeholder:text-error"
-                : "border-gray-400",
-            )}
+            error={errors.title || errors.api}
+            classname="text-2xl font-semibold"
           />
         </div>
         <div className="hidden gap-2 md:flex">
@@ -225,7 +218,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               type="text"
               value={customCode}
               disabled={type === "edit"}
-              onChange={handleCustomCodeChange}
+              onChange={() => handleCustomCodeChange(customCode)}
               placeholder="optional"
               className={`border-b-1 w-full focus:outline-none ${
                 errors.customCode

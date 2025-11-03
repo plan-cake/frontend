@@ -18,10 +18,12 @@ type TextInputFieldProps = {
   onChange: (value: string) => void;
   outlined?: boolean;
   error?: string;
+  classname?: string;
 };
 
 export default function TextInputField(props: TextInputFieldProps) {
-  const { id, type, label, value, onChange, error, outlined } = props;
+  const { id, type, label, value, onChange, error, outlined, classname } =
+    props;
   const [showPassword, setShowPassword] = useState(false);
 
   // determine input type
@@ -42,6 +44,7 @@ export default function TextInputField(props: TextInputFieldProps) {
           "focus:outline-none",
           outlined ? "rounded-full border px-6" : "border-b-1 px-2",
           isPassword && "pr-10",
+          classname,
 
           // borders and colors
           "transition-colors",
@@ -66,6 +69,7 @@ export default function TextInputField(props: TextInputFieldProps) {
           "absolute origin-[0_0] cursor-text px-1",
           "transition-all duration-200 ease-in-out",
           outlined ? "left-6" : "left-1",
+          classname,
 
           // --- Floating Animation ---
           // State when placeholder is shown (input is empty)
@@ -79,12 +83,12 @@ export default function TextInputField(props: TextInputFieldProps) {
           // colors
           error
             ? "text-error" // error
-            : "text-foreground", // default
+            : "text-foreground/50", // default
         )}
       >
         {error ? (
           <span className="flex items-center gap-1">
-            <ExclamationTriangleIcon /> {error}
+            <ExclamationTriangleIcon className={`${classname}`} /> {error}
           </span>
         ) : (
           label
