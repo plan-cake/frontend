@@ -7,12 +7,16 @@ import { useRouter } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
+import { useToast } from "@/features/toast/context";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const router = useRouter();
   const lastEmailResend = useRef(Date.now());
   const [email, setEmail] = useState("");
+
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
 
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("register_email");
@@ -37,7 +41,10 @@ export default function Page() {
       (emailResendCooldown - (Date.now() - lastEmailResend.current)) / 1000;
     timeLeft = Math.ceil(timeLeft);
     if (timeLeft > 0) {
-      alert(`Slow down! ${timeLeft} seconds until you can send again.`);
+      addToast(
+        "info",
+        `Slow down! ${timeLeft} seconds until you can send again.`,
+      );
       return false;
     }
 
@@ -49,16 +56,16 @@ export default function Page() {
       });
 
       if (res.ok) {
-        alert("Email resent. Please check your inbox.");
+        addToast("success", "Email resent. Please check your inbox.");
         lastEmailResend.current = Date.now();
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        addToast("error", formatApiError(await res.json()));
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      addToast("error", "An error occurred. Please try again.");
       return false;
     }
   };
