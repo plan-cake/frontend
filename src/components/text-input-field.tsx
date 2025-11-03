@@ -31,7 +31,7 @@ export default function TextInputField(props: TextInputFieldProps) {
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
   return (
-    <div className="relative mb-4 w-full">
+    <div className={`relative mb-4 w-full ${classname || ""}`}>
       {/* --- input field --- */}
       <input
         type={inputType}
@@ -44,7 +44,6 @@ export default function TextInputField(props: TextInputFieldProps) {
           "focus:outline-none",
           outlined ? "rounded-full border px-6" : "border-b-1 px-2",
           isPassword && "pr-10",
-          classname,
 
           // borders and colors
           "transition-colors",
