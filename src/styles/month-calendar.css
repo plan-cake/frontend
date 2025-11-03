@@ -1,0 +1,12 @@
+/* MONTH CALENDAR STYLES */
+
+.rdp-root {
+  --rdp-accent-color: var(--calendar-accent);
+  --rdp-accent-background-color: var(--calendar-accent-background);
+  --rdp-day_button-border: 3px solid transparent;
+}
+
+.rdp-months {
+  display: flex;
+  justify-content: center;
+}

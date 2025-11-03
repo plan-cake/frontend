@@ -3,8 +3,7 @@ name: New feature
 about: Suggest an idea for this project
 title: ''
 labels: enhancement
-assignees: ''
-
+assignees: ""
 ---
 
 **What is the new feature?**

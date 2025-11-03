@@ -3,8 +3,7 @@ name: Cleanup request
 about: Ask for some code refactoring
 title: ''
 labels: cleanup
-assignees: ''
-
+assignees: ""
 ---
 
 **What needs refactoring?**

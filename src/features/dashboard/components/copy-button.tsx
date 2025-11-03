@@ -1,0 +1,43 @@
+import { MouseEvent } from "react";
+
+import { CopyIcon } from "@radix-ui/react-icons";
+
+import { useToast } from "@/features/toast/context";
+import { cn } from "@/lib/utils/classname";
+
+export type DashboardCopyButtonProps = {
+  code: string;
+};
+
+export default function DashboardCopyButton({
+  code,
+}: DashboardCopyButtonProps) {
+  const { addToast } = useToast();
+  const eventUrl =
+    typeof window !== "undefined" ? `${window.location.origin}/${code}` : "";
+
+  const copyToClipboard = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // avoid triggering the parent link
+
+    try {
+      await navigator.clipboard.writeText(eventUrl);
+      addToast("copy", "Link copied to clipboard!");
+    } catch (err) {
+      console.error("Failed to copy: ", err);
+      addToast("error", "Could not copy link to clipboard.");
+    }
+  };
+
+  return (
+    <button
+      onClick={copyToClipboard}
+      className={cn(
+        "flex cursor-pointer items-center gap-0.5 rounded-full px-2 py-1.5",
+        "border-foreground hover:bg-foreground/20 border",
+      )}
+    >
+      <CopyIcon className="h-4 w-4" />
+      <span className="ml-1 text-xs">Copy Link</span>
+    </button>
+  );
+}
