@@ -2,11 +2,12 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, notFound } from "next/navigation";
 
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
+import { useToast } from "@/features/toast/context";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -18,10 +19,36 @@ export default function Page() {
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
+  if (!pwdResetToken) {
+    notFound(); // If no token is provided, show 404 page
+  }
 
   function passwordIsStrong() {
     return Object.keys(passwordCriteria).length === 0;
   }
+
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handlePasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, password: "", api: "" }));
+    setNewPassword(value);
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
+    setConfirmPassword(value);
+  };
+
+  const handleErrors = (field: string, message: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+
+    if (field === "api") addToast("error", message);
+  };
 
   useDebounce(() => {
     if (newPassword.length === 0) {
@@ -47,10 +74,12 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
+          addToast("error", "An error occurred. Please try again.");
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
+        addToast("error", "An error occurred. Please try again.");
       });
   }, [newPassword]);
 
@@ -66,21 +95,18 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    if (!pwdResetToken) {
-      alert("This link is expired or invalid.");
-      return false;
-    }
+    setErrors({});
 
     if (!newPassword) {
-      alert("Missing new password.");
+      handleErrors("password", "Missing new password");
       return false;
     }
     if (!passwordIsStrong()) {
-      alert("Password is not strong enough");
+      handleErrors("password", "Password is not strong enough.");
       return false;
     }
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match.");
+      handleErrors("confirmPassword", "Passwords do not match.");
       return false;
     }
 
@@ -97,18 +123,27 @@ export default function Page() {
         router.push("/reset-password/success");
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        const body = await res.json();
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 404) {
+          addToast("error", "An error occurred. Please try again.");
+        } else if (body.error["new_password"]) {
+          handleErrors("password", "Cannot reuse old password.");
+        } else {
+          handleErrors("api", errorMessage);
+        }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      addToast("error", "An error occurred. Please try again.");
       return false;
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
@@ -117,24 +152,31 @@ export default function Page() {
 
         {/* New Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="New Password"
+          label="New Password*"
           value={newPassword}
-          onChange={setNewPassword}
+          onChange={handlePasswordChange}
+          outlined
+          error={errors.password || errors.api}
         />
 
+        {/* Password Errors */}
         {!passwordIsStrong() && (
           <div className="-mt-2 mb-2 w-full px-4">
             <PasswordCriteria criteria={passwordCriteria} />
           </div>
         )}
 
-        {/* Confirm Password */}
+        {/* Retype Password */}
         <TextInputField
+          id={"confirmPassword"}
           type="password"
-          placeholder="Confirm Password"
+          label="Retype Password*"
           value={confirmPassword}
-          onChange={setConfirmPassword}
+          onChange={handleConfirmPasswordChange}
+          outlined
+          error={errors.confirmPassword || errors.api}
         />
 
         {/* Change Password Button */}
