@@ -92,7 +92,7 @@ export default function Page() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      addToast("error", "An error occurred. Please try again.");
       return false;
     }
   };
