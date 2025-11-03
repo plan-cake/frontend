@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState, useContext } from "react";
+import React, { useContext, useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/features/auth/components/text-input-field";
+import ActionButton from "@/features/button/components/action";
 import { LoginContext } from "@/lib/providers";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
@@ -16,50 +17,47 @@ export default function Page() {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const { setLoggedIn } = useContext(LoginContext);
-  const isSubmitting = useRef(false);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
+  };
 
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-
+  const handleSubmit = async () => {
     if (!email) {
       alert("Missing email");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
     if (!password) {
       alert("Missing password");
-      isSubmitting.current = false;
-      return;
+      return false;
     }
 
-    await fetch("/api/auth/login/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password, remember_me: rememberMe }),
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          setLoggedIn(true);
-          router.push("/dashboard");
-        } else {
-          alert(formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        alert("An error occurred. Please try again.");
+    try {
+      const res = await fetch("/api/auth/login/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, remember_me: rememberMe }),
       });
 
-    isSubmitting.current = false;
+      if (res.ok) {
+        setLoggedIn(true);
+        router.push("/dashboard");
+        return true;
+      } else {
+        alert(formatApiError(await res.json()));
+        return false;
+      }
+    } catch (err) {
+      console.error("Fetch error:", err);
+      alert("An error occurred. Please try again.");
+      return false;
+    }
   };
 
   return (
     <div className="flex h-screen items-center justify-center">
-      <form onSubmit={handleSubmit} className="flex w-80 flex-col items-center">
+      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           login
@@ -81,7 +79,7 @@ export default function Page() {
           onChange={setPassword}
         />
 
-        <div className="flex w-full justify-between">
+        <div className="flex w-full items-start justify-between">
           <div className="m-0 flex flex-col gap-2">
             {/* Remember Me Checkbox */}
             <Checkbox
@@ -96,16 +94,16 @@ export default function Page() {
           </div>
 
           {/* Login Button */}
-          <button
-            type="submit"
-            className="bg-blue dark:bg-red mb-2 cursor-pointer gap-2 rounded-full px-4 py-2 font-medium text-white transition"
-          >
-            Login
-          </button>
+          <ActionButton
+            buttonStyle="primary"
+            label="Login"
+            onClick={handleSubmit}
+            loadOnSuccess
+          />
         </div>
 
         {/* Register Link */}
-        <div className="w-full text-right text-xs">
+        <div className="mt-2 w-full text-right text-xs">
           No account?{" "}
           <Link href="/register">
             <LinkText>Register!</LinkText>

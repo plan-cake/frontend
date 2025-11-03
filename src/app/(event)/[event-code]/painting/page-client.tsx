@@ -4,17 +4,18 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
-import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
+import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
 import { convertAvailabilityToGrid } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
+import ActionButton from "@/features/button/components/action";
+import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { validateAvailabilityData } from "@/features/event/availability/validate-data";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";
-import { EventInfo } from "@/features/event/info-drawer";
-import EventInfoDrawer from "@/features/event/info-drawer";
+import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { useToast } from "@/features/toast/context";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
@@ -62,7 +63,7 @@ export default function ClientPage({
         Object.values(validationErrors).forEach((error) =>
           addToast("error", error),
         );
-        return;
+        return false;
       }
 
       const availabilityGrid = convertAvailabilityToGrid(
@@ -83,13 +84,36 @@ export default function ClientPage({
         body: JSON.stringify(payload),
       });
 
-      if (response.ok) router.push(`/${eventCode}`);
-      else addToast("error", formatApiError(await response.json()));
+      if (response.ok) {
+        router.push(`/${eventCode}`);
+        return true;
+      } else {
+        addToast("error", formatApiError(await response.json()));
+        return false;
+      }
     } catch (error) {
       console.error("Error submitting availability:", error);
       addToast("error", "An unexpected error occurred. Please try again.");
+      return false;
     }
   };
+
+  // BUTTONS
+  const cancelButton = (
+    <LinkButton
+      buttonStyle="transparent"
+      label={initialData ? "Cancel Edits" : "Cancel"}
+      href={`/${eventCode}`}
+    />
+  );
+  const submitButton = (
+    <ActionButton
+      buttonStyle="primary"
+      label={initialData ? "Update Availability" : "Submit Availability"}
+      onClick={handleSubmitAvailability}
+      loadOnSuccess
+    />
+  );
 
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
@@ -100,30 +124,14 @@ export default function ClientPage({
           <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
         </div>
-
-        <div className="flex items-center gap-2">
-          <CopyToastButton code={eventCode} />
-          {initialData && (
-            <button
-              onClick={() => {
-                router.push(`/${eventCode}`);
-              }}
-              className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
-            >
-              Cancel Edits
-            </button>
-          )}
-          <button
-            onClick={handleSubmitAvailability}
-            className="border-blue bg-blue dark:border-red dark:bg-red dark:hover:bg-red/25 hover:text-violet hidden rounded-full border-2 px-4 py-2 text-sm text-white transition-shadow hover:cursor-pointer hover:bg-blue-100 md:flex dark:hover:text-white"
-          >
-            {initialData ? "Update" : "Submit"} Availability
-          </button>
+        <div className="hidden items-center gap-2 md:flex">
+          {cancelButton}
+          {submitButton}
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="mb-8 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
+      <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
@@ -176,14 +184,7 @@ export default function ClientPage({
         />
       </div>
 
-      <div className="fixed bottom-1 left-0 w-full px-8 md:hidden">
-        <div
-          onClick={handleSubmitAvailability}
-          className="bg-blue dark:bg-red rounded-full p-4 text-center text-white"
-        >
-          Submit Availability
-        </div>
-      </div>
+      <MobileFooterTray buttons={[cancelButton, submitButton]} />
     </div>
   );
 }

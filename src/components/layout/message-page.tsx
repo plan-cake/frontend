@@ -1,13 +1,9 @@
-type ButtonData = {
-  type: "primary" | "secondary";
-  label: string;
-  onClick: () => void;
-};
+import { ButtonArray } from "@/features/button/button-array";
 
 type MessagePageProps = {
   title: string;
   description?: string;
-  buttons: ButtonData[];
+  buttons: ButtonArray;
 };
 
 export default function MessagePage({
@@ -21,18 +17,7 @@ export default function MessagePage({
       {description && <p className="mb-4">{description}</p>}
       <div className="flex justify-center gap-4">
         {buttons.map((button, index) => (
-          <button
-            key={index}
-            type="button"
-            onClick={button.onClick}
-            className={`mb-2 cursor-pointer rounded-full px-4 py-2 font-medium transition ${
-              button.type === "primary"
-                ? "bg-blue dark:bg-red"
-                : "border-blue dark:border-red dark:hover:bg-red/25 border-2 hover:bg-blue-100"
-            }`}
-          >
-            {button.label}
-          </button>
+          <div key={index}>{button}</div>
         ))}
       </div>
     </div>
