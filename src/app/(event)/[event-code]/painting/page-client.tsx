@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 
+import { Banner } from "@/components/banner";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
@@ -88,7 +89,17 @@ export default function ClientPage({
         router.push(`/${eventCode}`);
         return true;
       } else {
-        addToast("error", formatApiError(await response.json()));
+        const body = await response.json();
+        const message = formatApiError(body);
+
+        if (response.status === 429) {
+          setErrors((prev) => ({
+            ...prev,
+            rate_limit: message || "Too many attempts. Please try again later.",
+          }));
+        } else {
+          addToast("error", formatApiError(await response.json()));
+        }
         return false;
       }
     } catch (error) {
@@ -118,6 +129,14 @@ export default function ClientPage({
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
+
+      {/* Rate Limit Error */}
+      {errors.rate_limit && (
+        <Banner type="error" title="Woah! Slow down" className="mb-8 w-full">
+          {errors.rate_limit}
+        </Banner>
+      )}
+
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
