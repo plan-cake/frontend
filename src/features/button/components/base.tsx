@@ -71,8 +71,8 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
       "text-nowrap rounded-full font-medium flex flex-row items-center gap-1 relative",
     );
     const focusClasses = cn(
-      "group-focus:rounded-full group-focus:outline-2 group-focus:outline-offset-2",
-      "group-focus:outline-foreground",
+      "group-focus-visible:rounded-full group-focus-visible:outline-2",
+      "group-focus-visible:outline-offset-2 group-focus-visible:outline-foreground",
     );
     const loadingHideClass = isLoading ? "opacity-0" : "";
     const cursorClass = isLoading
