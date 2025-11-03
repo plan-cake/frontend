@@ -9,6 +9,7 @@ import LinkText from "@/components/link-text";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
+import { useToast } from "@/features/toast/context";
 import { useDebounce } from "@/lib/hooks/use-debounce";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -19,9 +20,32 @@ export default function Page() {
   const [passwordCriteria, setPasswordCriteria] = useState({});
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   function passwordIsStrong() {
     return Object.keys(passwordCriteria).length === 0;
   }
+
+  const handleEmailChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, email: "", api: "" }));
+    setEmail(value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, password: "", api: "" }));
+    setPassword(value);
+  };
+
+  const handleErrors = (field: string, message: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+
+    if (field === "api") addToast("error", message);
+  };
 
   useDebounce(() => {
     if (password.length === 0) {
@@ -66,20 +90,22 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
+    setErrors({});
+
     if (!email) {
-      alert("Missing email");
+      handleErrors("email", "Missing email");
       return false;
     }
     if (!password) {
-      alert("Missing password");
+      handleErrors("password", "Missing password");
       return false;
     }
     if (!passwordIsStrong()) {
-      alert("Password is not strong enough");
+      handleErrors("password", "Password is not strong enough");
       return false;
     }
     if (confirmPassword !== password) {
-      alert("Passwords do not match");
+      handleErrors("confirmPassword", "Passwords do not match");
       return false;
     }
 
@@ -100,7 +126,7 @@ export default function Page() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      addToast("error", "An error occurred. Please try again.");
       return false;
     }
   };
@@ -115,18 +141,24 @@ export default function Page() {
 
         {/* Email */}
         <TextInputField
+          id={"email"}
           type="email"
-          placeholder="Email"
+          label="Email*"
           value={email}
-          onChange={setEmail}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
         />
 
         {/* Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="Password"
+          label="Password*"
           value={password}
-          onChange={setPassword}
+          onChange={handlePasswordChange}
+          outlined
+          error={errors.password || errors.api}
         />
 
         {/* Password Errors */}
@@ -138,10 +170,13 @@ export default function Page() {
 
         {/* Retype Password */}
         <TextInputField
+          id={"confirmPassword"}
           type="password"
-          placeholder="Retype Password"
+          label="Retype Password*"
           value={confirmPassword}
           onChange={setConfirmPassword}
+          outlined
+          error={errors.confirmPassword || errors.api}
         />
 
         {/* Register Button */}
