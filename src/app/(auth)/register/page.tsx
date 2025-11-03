@@ -5,6 +5,7 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import { Banner } from "@/components/banner";
 import LinkText from "@/components/link-text";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import TextInputField from "@/features/auth/components/text-input-field";
@@ -36,6 +37,11 @@ export default function Page() {
   const handlePasswordChange = (value: string) => {
     setErrors((prev) => ({ ...prev, password: "", api: "" }));
     setPassword(value);
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
+    setConfirmPassword(value);
   };
 
   const handleErrors = (field: string, message: string) => {
@@ -121,7 +127,17 @@ export default function Page() {
         router.push("/register/email-sent");
         return true;
       } else {
-        handleErrors("api", formatApiError(await res.json()));
+        const body = await res.json();
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 429) {
+          handleErrors(
+            "rate_limit",
+            errorMessage || "Too many login attempts. Please try again later.",
+          );
+        } else {
+          handleErrors("api", errorMessage);
+        }
         return false;
       }
     } catch (err) {
@@ -132,12 +148,19 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           register
         </h1>
+
+        {/* Rate Limit Error */}
+        {errors.rate_limit && (
+          <Banner type="error" title="Woah! Slow down" className="mb-4 w-full">
+            {errors.rate_limit}
+          </Banner>
+        )}
 
         {/* Email */}
         <TextInputField
@@ -174,7 +197,7 @@ export default function Page() {
           type="password"
           label="Retype Password*"
           value={confirmPassword}
-          onChange={setConfirmPassword}
+          onChange={handleConfirmPasswordChange}
           outlined
           error={errors.confirmPassword || errors.api}
         />
