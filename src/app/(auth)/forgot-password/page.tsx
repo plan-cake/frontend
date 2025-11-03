@@ -22,14 +22,17 @@ export default function Page() {
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleEmailChange = (value: string) => {
-    if (errors.email) setErrors((prev) => ({ ...prev, email: "" }));
-    else if (value === "") {
-      setErrors((prev) => ({
-        ...prev,
-        email: "Please enter an email address.",
-      }));
-    }
+    setErrors((prev) => ({ ...prev, email: "", api: "" }));
     setEmail(value);
+  };
+
+  const handleErrors = (field: string, message: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+
+    if (field === "api") addToast("error", message);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,7 +43,7 @@ export default function Page() {
     setErrors({});
 
     if (!email) {
-      setErrors((prev) => ({ ...prev, email: "Missing email" }));
+      handleErrors("email", "Missing email");
       isSubmitting.current = false;
       return;
     }
@@ -96,11 +99,13 @@ export default function Page() {
 
           {/* Email */}
           <TextInputField
+            id={"email"}
             type="email"
-            placeholder="Email"
+            label="Email*"
             value={email}
             onChange={handleEmailChange}
-            error={errors.email}
+            outlined
+            error={errors.email || errors.api}
           />
 
           <div className="flex w-full items-center justify-between">
