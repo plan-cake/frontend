@@ -7,9 +7,8 @@ export default function NotFound() {
       <h2 className="mb-4 text-2xl font-bold">Not found :(</h2>
 
       <p className="mb-6 max-w-md">
-        Hmm, we can&apos;t seem to find the page you&apos;re looking for. The
-        link might be broken, or the page may have been moved. Please check the
-        URL and try again.
+        Hmm, we can&apos;t find what you&apos;re looking for. The link might be
+        expired or invalid. Please check the URL and try again.
       </p>
     </div>
   );
