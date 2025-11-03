@@ -7,7 +7,7 @@ import Link from "next/link";
 import { Banner } from "@/components/banner";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
-import TextInputField from "@/features/auth/components/text-input-field";
+import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { useToast } from "@/features/toast/context";

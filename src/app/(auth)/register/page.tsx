@@ -7,8 +7,8 @@ import { useRouter } from "next/navigation";
 
 import { Banner } from "@/components/banner";
 import LinkText from "@/components/link-text";
+import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
-import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
 import { useDebounce } from "@/lib/hooks/use-debounce";

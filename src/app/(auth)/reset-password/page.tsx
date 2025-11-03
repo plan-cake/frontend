@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import { useRouter, useSearchParams, notFound } from "next/navigation";
 
+import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
-import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
 import { useDebounce } from "@/lib/hooks/use-debounce";

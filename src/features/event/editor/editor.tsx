@@ -7,9 +7,9 @@ import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
+import TextInputField from "@/components/text-input-field";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
-import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
