@@ -44,6 +44,8 @@ export default function ClientPage({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const handleNameChange = useDebouncedCallback((displayName) => {
+    if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
+
     if (displayName === "") {
       setErrors((prev) => ({
         ...prev,
