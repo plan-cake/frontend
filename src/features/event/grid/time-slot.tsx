@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils/classname";
 
 interface TimeSlotProps {
   slotIso: string;
-  isSelected?: boolean;
   isHovered?: boolean;
 
   disableSelect?: boolean;
