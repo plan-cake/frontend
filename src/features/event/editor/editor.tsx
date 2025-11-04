@@ -77,6 +77,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const handleCustomCodeChange = useDebouncedCallback((customCode: string) => {
     if (type === "edit") return;
 
+    if (customCode === "") {
+      // Optionally, set an error message here if desired:
+      // setErrors((prev) => ({ ...prev, customCode: "Please enter a code." }));
+      return;
+    }
     if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
 
     const checkCustomCodeAvailability = async () => {
