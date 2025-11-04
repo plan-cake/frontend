@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import { Banner } from "@/components/banner";
 import HeaderSpacer from "@/components/header-spacer";
@@ -42,23 +43,47 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
-    else if (e.target.value === "") {
+
+    if (displayName === "") {
       setErrors((prev) => ({
         ...prev,
         displayName: "Please enter your name.",
       }));
+      return;
     }
-    setDisplayName(e.target.value);
-  };
+
+    try {
+      const response = await fetch("/api/availability/check-display-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_code: eventCode,
+          display_name: displayName,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          displayName: "This name is already taken. Please choose another.",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, displayName: "" }));
+      }
+    } catch (error) {
+      console.error("Error checking name availability:", error);
+      addToast("error", "An unexpected error occurred. Please try again.");
+    }
+  }, 300);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
     setErrors({}); // reset errors
 
     try {
-      const validationErrors = await validateAvailabilityData(state, eventCode);
+      const validationErrors = await validateAvailabilityData(state);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         Object.values(validationErrors).forEach((error) =>
@@ -164,7 +189,10 @@ export default function ClientPage({
               required
               type="text"
               value={displayName}
-              onChange={handleNameChange}
+              onChange={(e) => {
+                setDisplayName(e.target.value);
+                handleNameChange(e.target.value);
+              }}
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
                 errors.displayName

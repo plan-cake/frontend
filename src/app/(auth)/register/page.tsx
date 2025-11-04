@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import { Banner } from "@/components/banner";
 import LinkText from "@/components/link-text";
@@ -11,7 +12,6 @@ import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -34,11 +34,6 @@ export default function Page() {
     setEmail(value);
   };
 
-  const handlePasswordChange = (value: string) => {
-    setErrors((prev) => ({ ...prev, password: "", api: "" }));
-    setPassword(value);
-  };
-
   const handleConfirmPasswordChange = (value: string) => {
     setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
     setConfirmPassword(value);
@@ -53,7 +48,9 @@ export default function Page() {
     if (field === "api") addToast("error", message);
   };
 
-  useDebounce(() => {
+  const handlePasswordChange = useDebouncedCallback((password) => {
+    if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+
     if (password.length === 0) {
       setPasswordCriteria({});
       return;
@@ -84,14 +81,7 @@ export default function Page() {
         console.error("Fetch error:", err);
         addToast("error", "An error occurred. Please try again.");
       });
-  }, [password]);
-
-  useEffect(() => {
-    if (password.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
-  }, [password]);
+  }, 300);
 
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
@@ -181,7 +171,10 @@ export default function Page() {
           type="password"
           label="Password*"
           value={password}
-          onChange={handlePasswordChange}
+          onChange={(value) => {
+            setPassword(value);
+            handlePasswordChange(value);
+          }}
           outlined
           error={errors.password || errors.api}
         />
