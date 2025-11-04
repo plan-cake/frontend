@@ -9,29 +9,13 @@ export async function validateEventData(
   data: EventInformation,
 ): Promise<Record<string, string>> {
   const errors: Record<string, string> = {};
-  const { title, customCode, eventRange } = data;
+  const { title, eventRange } = data;
 
   // Validate title
   if (!title?.trim()) {
     errors.title = "Please enter an event name.";
   } else if (title.length > 50) {
     errors.title = "Event name must be under 50 characters.";
-  }
-
-  // Validate custom code for new events
-  if (editorType === "new" && customCode) {
-    try {
-      const response = await fetch("/api/event/check-code/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ custom_code: customCode }),
-      });
-      if (!response.ok) {
-        errors.customCode = "This code is unavailable. Please choose another.";
-      }
-    } catch {
-      errors.api = "Could not verify the custom code. Please try again.";
-    }
   }
 
   // Validate event range

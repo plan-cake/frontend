@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import { Banner } from "@/components/banner";
 import HeaderSpacer from "@/components/header-spacer";
@@ -73,10 +74,35 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTimeRange({ from, to });
   };
 
-  const handleCustomCodeChange = (e: string) => {
+  const handleCustomCodeChange = useDebouncedCallback((customCode: string) => {
+    if (type === "edit") return;
+
     if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
-    setCustomCode(e);
-  };
+
+    const checkCustomCodeAvailability = async () => {
+      try {
+        const response = await fetch("/api/event/check-code/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ custom_code: customCode }),
+        });
+
+        if (!response.ok) {
+          setErrors((prev) => ({
+            ...prev,
+            customCode: "This code is unavailable. Please choose another.",
+          }));
+        } else {
+          setErrors((prev) => ({ ...prev, customCode: "" }));
+        }
+      } catch (error) {
+        console.error("Error checking custom code availability:", error);
+        addToast("error", "An unexpected error occurred. Please try again.");
+      }
+    };
+
+    checkCustomCodeAvailability();
+  }, 300);
 
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
@@ -247,7 +273,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               type="text"
               value={customCode}
               disabled={type === "edit"}
-              onChange={e => handleCustomCodeChange(e.target.value)}
+              onChange={(e) => {
+                setCustomCode(e.target.value);
+                handleCustomCodeChange(e.target.value);
+              }}
               placeholder="optional"
               className={`border-b-1 w-full focus:outline-none ${
                 errors.customCode
