@@ -74,39 +74,33 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTimeRange({ from, to });
   };
 
-  const handleCustomCodeChange = useDebouncedCallback((customCode: string) => {
+  const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
     if (type === "edit") return;
 
+    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
     if (customCode === "") {
-      // Optionally, set an error message here if desired:
-      // setErrors((prev) => ({ ...prev, customCode: "Please enter a code." }));
       return;
     }
-    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
 
-    const checkCustomCodeAvailability = async () => {
-      try {
-        const response = await fetch("/api/event/check-code/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ custom_code: customCode }),
-        });
+    try {
+      const response = await fetch("/api/event/check-code/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ custom_code: customCode }),
+      });
 
-        if (!response.ok) {
-          setErrors((prev) => ({
-            ...prev,
-            customCode: "This code is unavailable. Please choose another.",
-          }));
-        } else {
-          setErrors((prev) => ({ ...prev, customCode: "" }));
-        }
-      } catch (error) {
-        console.error("Error checking custom code availability:", error);
-        addToast("error", "An unexpected error occurred. Please try again.");
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          customCode: "This code is unavailable. Please choose another.",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, customCode: "" }));
       }
-    };
-
-    checkCustomCodeAvailability();
+    } catch (error) {
+      console.error("Error checking custom code availability:", error);
+      addToast("error", "An unexpected error occurred. Please try again.");
+    }
   }, 300);
 
   // SUBMIT EVENT INFO

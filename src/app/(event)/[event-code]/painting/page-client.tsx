@@ -43,7 +43,7 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = useDebouncedCallback((displayName) => {
+  const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
 
     if (displayName === "") {
@@ -54,32 +54,28 @@ export default function ClientPage({
       return;
     }
 
-    const checkNameAvailability = async () => {
-      try {
-        const response = await fetch("/api/availability/check-display-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event_code: eventCode,
-            display_name: displayName,
-          }),
-        });
+    try {
+      const response = await fetch("/api/availability/check-display-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_code: eventCode,
+          display_name: displayName,
+        }),
+      });
 
-        if (!response.ok) {
-          setErrors((prev) => ({
-            ...prev,
-            displayName: "This name is already taken. Please choose another.",
-          }));
-        } else {
-          setErrors((prev) => ({ ...prev, displayName: "" }));
-        }
-      } catch (error) {
-        console.error("Error checking name availability:", error);
-        addToast("error", "An unexpected error occurred. Please try again.");
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          displayName: "This name is already taken. Please choose another.",
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, displayName: "" }));
       }
-    };
-
-    checkNameAvailability();
+    } catch (error) {
+      console.error("Error checking name availability:", error);
+      addToast("error", "An unexpected error occurred. Please try again.");
+    }
   }, 300);
 
   // SUBMIT AVAILABILITY
