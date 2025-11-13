@@ -170,7 +170,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <TextInputField
             id={"event-name"}
             type="text"
-            label="Enter Event Name"
+            label="Event Name"
             value={title}
             onChange={handleNameChange}
             error={errors.title || errors.api}
