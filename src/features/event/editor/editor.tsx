@@ -277,11 +277,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 handleCustomCodeChange(e.target.value);
               }}
               placeholder="optional"
-              className={`border-b-1 w-full focus:outline-none ${
-                errors.customCode
-                  ? "border-error placeholder:text-error"
-                  : "text-accent border-gray-400"
-              }`}
+              className={cn(
+                "border-b-1 w-full border-gray-400 focus:outline-none",
+                type === "new" && "text-accent",
+                type === "edit" && "text-foreground/50 cursor-not-allowed",
+                errors.customCode ? "border-error placeholder:text-error" : "",
+              )}
             />
           </div>
 
@@ -317,12 +318,15 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 type="text"
                 disabled={type === "edit"}
                 value={customCode}
-                onChange={(e) => setCustomCode(e.target.value)}
+                onChange={(e) => {
+                  setCustomCode(e.target.value);
+                  handleCustomCodeChange(e.target.value);
+                }}
                 placeholder="optional"
                 className={cn(
                   "border-b-1 w-full border-gray-400 focus:outline-none",
                   type === "new" && "text-accent",
-                  type === "edit" && "cursor-not-allowed opacity-50",
+                  type === "edit" && "text-foreground/50 cursor-not-allowed",
                   errors.customCode
                     ? "border-error placeholder:text-error"
                     : "",
