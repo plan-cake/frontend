@@ -42,7 +42,7 @@ export default function TextInputField(props: TextInputFieldProps) {
         className={cn(
           "peer w-full bg-transparent py-2",
           "focus:outline-none",
-          outlined ? "rounded-full border px-6" : "border-b-1 px-2",
+          outlined ? "rounded-full border px-4" : "border-b-1 px-2",
           isPassword && "pr-10",
 
           // borders and colors
@@ -67,7 +67,7 @@ export default function TextInputField(props: TextInputFieldProps) {
         className={cn(
           "absolute origin-[0_0] cursor-text px-1",
           "transition-all duration-200 ease-in-out",
-          outlined ? "left-6" : "left-1",
+          outlined ? "left-4" : "left-1",
           classname,
 
           // --- Floating Animation ---
