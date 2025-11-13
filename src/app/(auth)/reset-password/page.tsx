@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import { useRouter, useSearchParams, notFound } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -31,11 +31,6 @@ export default function Page() {
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handlePasswordChange = (value: string) => {
-    setErrors((prev) => ({ ...prev, password: "", api: "" }));
-    setNewPassword(value);
-  };
-
   const handleConfirmPasswordChange = (value: string) => {
     setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
     setConfirmPassword(value);
@@ -50,8 +45,10 @@ export default function Page() {
     if (field === "api") addToast("error", message);
   };
 
-  useDebounce(() => {
-    if (newPassword.length === 0) {
+  const handlePasswordChange = useDebouncedCallback((password) => {
+    if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+
+    if (password.length === 0) {
       setPasswordCriteria({});
       return;
     }
@@ -60,7 +57,7 @@ export default function Page() {
     fetch("/api/auth/check-password/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: newPassword }),
+      body: JSON.stringify({ password }),
     })
       .then((res) => {
         if (res.ok) {
@@ -81,14 +78,7 @@ export default function Page() {
         console.error("Fetch error:", err);
         addToast("error", "An error occurred. Please try again.");
       });
-  }, [newPassword]);
-
-  useEffect(() => {
-    if (newPassword.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
-  }, [newPassword]);
+  }, 300);
 
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
@@ -156,7 +146,10 @@ export default function Page() {
           type="password"
           label="New Password*"
           value={newPassword}
-          onChange={handlePasswordChange}
+          onChange={(value) => {
+            setNewPassword(value);
+            handlePasswordChange(value);
+          }}
           outlined
           error={errors.password || errors.api}
         />
