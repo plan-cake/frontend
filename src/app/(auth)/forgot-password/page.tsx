@@ -56,7 +56,6 @@ export default function Page() {
 
       if (res.ok) {
         setEmailSent(true);
-        setEmail("");
         return true;
       } else {
         const body = await res.json();
