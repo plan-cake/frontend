@@ -127,6 +127,10 @@ export default function Page() {
             "rate_limit",
             errorMessage || "Too many attempts. Please try again later.",
           );
+        } else if (errorMessage.includes("Email:")) {
+          handleErrors("email", errorMessage.split("Email:")[1].trim());
+        } else if (errorMessage.includes("Password:")) {
+          handleErrors("password", errorMessage.split("Password:")[1].trim());
         } else {
           handleErrors("api", errorMessage);
         }
