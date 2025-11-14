@@ -3,6 +3,7 @@ import { MouseEvent } from "react";
 import { CopyIcon } from "@radix-ui/react-icons";
 
 import { useToast } from "@/features/toast/context";
+import { TOAST_MESSAGES } from "@/features/toast/messages";
 import { cn } from "@/lib/utils/classname";
 
 export type DashboardCopyButtonProps = {
@@ -21,10 +22,10 @@ export default function DashboardCopyButton({
 
     try {
       await navigator.clipboard.writeText(eventUrl);
-      addToast("copy", "Link copied to clipboard!");
+      addToast("copy", TOAST_MESSAGES.COPY_LINK_SUCCESS);
     } catch (err) {
       console.error("Failed to copy: ", err);
-      addToast("error", "Could not copy link to clipboard.");
+      addToast("error", TOAST_MESSAGES.COPY_LINK_FAILURE);
     }
   };
 

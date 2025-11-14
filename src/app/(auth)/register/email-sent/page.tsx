@@ -8,6 +8,7 @@ import MessagePage from "@/components/layout/message-page";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { useToast } from "@/features/toast/context";
+import { TOAST_MESSAGES } from "@/features/toast/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -56,7 +57,7 @@ export default function Page() {
       });
 
       if (res.ok) {
-        addToast("success", "Email resent. Please check your inbox.");
+        addToast("success", TOAST_MESSAGES.SUCCESS_EMAIL_SENT);
         lastEmailResend.current = Date.now();
         return true;
       } else {
@@ -65,7 +66,7 @@ export default function Page() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      addToast("error", "An error occurred. Please try again.");
+      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
       return false;
     }
   };

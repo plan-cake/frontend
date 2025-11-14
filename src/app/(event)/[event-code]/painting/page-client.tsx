@@ -19,6 +19,7 @@ import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { useToast } from "@/features/toast/context";
+import { TOAST_MESSAGES } from "@/features/toast/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function ClientPage({
@@ -49,7 +50,7 @@ export default function ClientPage({
     if (displayName === "") {
       setErrors((prev) => ({
         ...prev,
-        displayName: "Please enter your name.",
+        displayName: TOAST_MESSAGES.ERROR_NAME_MISSING,
       }));
       return;
     }
@@ -67,14 +68,14 @@ export default function ClientPage({
       if (!response.ok) {
         setErrors((prev) => ({
           ...prev,
-          displayName: "This name is already taken. Please choose another.",
+          displayName: TOAST_MESSAGES.ERROR_NAME_TAKEN,
         }));
       } else {
         setErrors((prev) => ({ ...prev, displayName: "" }));
       }
     } catch (error) {
       console.error("Error checking name availability:", error);
-      addToast("error", "An unexpected error occurred. Please try again.");
+      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
     }
   }, 300);
 
@@ -120,7 +121,7 @@ export default function ClientPage({
         if (response.status === 429) {
           setErrors((prev) => ({
             ...prev,
-            rate_limit: message || "Too many attempts. Please try again later.",
+            rate_limit: message || TOAST_MESSAGES.ERROR_RATE_LIMIT,
           }));
         } else {
           addToast("error", message);
@@ -129,7 +130,7 @@ export default function ClientPage({
       }
     } catch (error) {
       console.error("Error submitting availability:", error);
-      addToast("error", "An unexpected error occurred. Please try again.");
+      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
       return false;
     }
   };

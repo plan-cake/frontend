@@ -12,6 +12,7 @@ import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
+import { TOAST_MESSAGES } from "@/features/toast/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -91,19 +92,19 @@ export default function Page() {
     setErrors({});
 
     if (!email) {
-      handleErrors("email", "Missing email");
+      handleErrors("email", TOAST_MESSAGES.ERROR_EMAIL_MISSING);
       return false;
     }
     if (!password) {
-      handleErrors("password", "Missing password");
+      handleErrors("password", TOAST_MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
     if (!passwordIsStrong()) {
-      handleErrors("password", "Password is not strong enough");
+      handleErrors("password", TOAST_MESSAGES.ERROR_PASSWORD_WEAK);
       return false;
     }
     if (confirmPassword !== password) {
-      handleErrors("confirmPassword", "Passwords do not match");
+      handleErrors("confirmPassword", TOAST_MESSAGES.ERROR_PASSWORD_MISMATCH);
       return false;
     }
 
@@ -125,7 +126,7 @@ export default function Page() {
         if (res.status === 429) {
           handleErrors(
             "rate_limit",
-            errorMessage || "Too many attempts. Please try again later.",
+            errorMessage || TOAST_MESSAGES.ERROR_RATE_LIMIT,
           );
         } else if (errorMessage.includes("Email:")) {
           handleErrors("email", errorMessage.split("Email:")[1].trim());
@@ -138,7 +139,7 @@ export default function Page() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      addToast("error", "An error occurred. Please try again.");
+      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
       return false;
     }
   };
