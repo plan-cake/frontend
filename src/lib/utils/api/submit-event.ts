@@ -6,6 +6,7 @@ import {
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
 import { ToastType } from "@/features/toast/type";
+import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export type EventSubmitData = {
@@ -123,8 +124,7 @@ export default async function submitEvent(
       if (res.status === 429) {
         setErrors((prev: Record<string, string>) => ({
           ...prev,
-          rate_limit:
-            errorMessage || "Too many attempts. Please try again later.",
+          rate_limit: errorMessage || MESSAGES.ERROR_RATE_LIMIT,
         }));
       } else {
         addToast("error", formatApiError(body));
@@ -134,7 +134,7 @@ export default async function submitEvent(
     }
   } catch (err) {
     console.error("Fetch error:", err);
-    addToast("error", "An error occurred. Please try again.");
+    addToast("error", MESSAGES.ERROR_GENERIC);
     return false;
   }
 }

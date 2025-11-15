@@ -12,7 +12,7 @@ import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/toast/context";
-import { TOAST_MESSAGES } from "@/features/toast/messages";
+import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
@@ -75,12 +75,12 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
-          addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+          addToast("error", MESSAGES.ERROR_GENERIC);
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+        addToast("error", MESSAGES.ERROR_GENERIC);
       });
   }, 300);
 
@@ -92,19 +92,19 @@ export default function Page() {
     setErrors({});
 
     if (!email) {
-      handleErrors("email", TOAST_MESSAGES.ERROR_EMAIL_MISSING);
+      handleErrors("email", MESSAGES.ERROR_EMAIL_MISSING);
       return false;
     }
     if (!password) {
-      handleErrors("password", TOAST_MESSAGES.ERROR_PASSWORD_MISSING);
+      handleErrors("password", MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
     if (!passwordIsStrong()) {
-      handleErrors("password", TOAST_MESSAGES.ERROR_PASSWORD_WEAK);
+      handleErrors("password", MESSAGES.ERROR_PASSWORD_WEAK);
       return false;
     }
     if (confirmPassword !== password) {
-      handleErrors("confirmPassword", TOAST_MESSAGES.ERROR_PASSWORD_MISMATCH);
+      handleErrors("confirmPassword", MESSAGES.ERROR_PASSWORD_MISMATCH);
       return false;
     }
 
@@ -124,10 +124,7 @@ export default function Page() {
         const errorMessage = formatApiError(body);
 
         if (res.status === 429) {
-          handleErrors(
-            "rate_limit",
-            errorMessage || TOAST_MESSAGES.ERROR_RATE_LIMIT,
-          );
+          handleErrors("rate_limit", errorMessage || MESSAGES.ERROR_RATE_LIMIT);
         } else if (errorMessage.includes("Email:")) {
           handleErrors("email", errorMessage.split("Email:")[1].trim());
         } else if (errorMessage.includes("Password:")) {
@@ -139,7 +136,7 @@ export default function Page() {
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };

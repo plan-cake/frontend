@@ -3,10 +3,8 @@ import { DateRange } from "react-day-picker";
 import { EventInformation, WeekdayRange } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
-import {
-  MAX_DURATION,
-  isDurationExceedingMax,
-} from "@/features/event/max-event-duration";
+import { isDurationExceedingMax } from "@/features/event/max-event-duration";
+import { MESSAGES } from "@/lib/messages";
 
 export async function validateEventData(
   editorType: EventEditorType,
@@ -17,21 +15,21 @@ export async function validateEventData(
 
   // Validate title
   if (!title?.trim()) {
-    errors.title = "Please enter an event name.";
+    errors.title = MESSAGES.ERROR_EVENT_NAME_MISSING;
   } else if (title.length > 50) {
-    errors.title = "Event name must be under 50 characters.";
+    errors.title = MESSAGES.ERROR_EVENT_NAME_LENGTH;
   }
 
   // Validate event range
   if (eventRange.type === "specific") {
     if (!eventRange.dateRange?.from || !eventRange.dateRange?.to) {
-      errors.dateRange = "Please select a valid date range.";
+      errors.dateRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
     } else {
       // check if the date range is more than 30 days
       const fromDate = new Date(eventRange.dateRange.from);
       const toDate = new Date(eventRange.dateRange.to);
       if (isDurationExceedingMax(fromDate, toDate)) {
-        errors.dateRange = `Too many days selected. Max is ${MAX_DURATION}.`;
+        errors.dateRange = MESSAGES.ERROR_EVENT_RANGE_TOO_LONG;
       }
     }
   }
@@ -41,13 +39,13 @@ export async function validateEventData(
       (data.eventRange as WeekdayRange).weekdays,
     );
     if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
-      errors.weekdayRange = "Please select at least one weekday.";
+      errors.weekdayRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
     }
   }
 
   // Validate time range
   if (eventRange.timeRange.from >= eventRange.timeRange.to) {
-    errors.timeRange = "Please select a valid time range.";
+    errors.timeRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
   }
 
   return errors;

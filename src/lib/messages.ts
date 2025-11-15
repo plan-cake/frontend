@@ -1,4 +1,6 @@
-export const TOAST_MESSAGES = {
+import { MAX_DURATION } from "@/features/event/max-event-duration";
+
+export const MESSAGES = {
   // generic errors
   ERROR_GENERIC: "An error occurred. Please try again.",
   ERROR_RATE_LIMIT: "Too many requests. Please try again later.",
@@ -9,13 +11,18 @@ export const TOAST_MESSAGES = {
   ERROR_PASSWORD_REUSE: "Cannot reuse old password.",
   ERROR_PASSWORD_WEAK: "Password is not strong enough.",
   ERROR_PASSWORD_MISMATCH: "Passwords do not match.",
+
+  // availability errors
   ERROR_NAME_MISSING: "Missing name.",
   ERROR_NAME_TAKEN: "This code is unavailable. Please choose another.",
+  ERROR_AVAILABILITY_MISSING: "Please select your availability on the grid.",
 
   // event errors
   ERROR_EVENT_NAME_MISSING: "Missing event name.",
+  ERROR_EVENT_NAME_LENGTH: "Event name must be under 50 characters.",
   ERROR_EVENT_CODE_TAKEN: "This code is unavailable. Please choose another.",
   ERROR_EVENT_RANGE_INVALID: "Please select a valid date/time range.",
+  ERROR_EVENT_RANGE_TOO_LONG: `Too many days selected. Max is ${MAX_DURATION}.`,
 
   // success messages
   SUCCESS_EMAIL_SENT: "Email resent. Please check your inbox.",

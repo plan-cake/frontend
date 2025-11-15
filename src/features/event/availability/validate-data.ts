@@ -1,4 +1,5 @@
 import { AvailabilityState } from "@/core/availability/reducers/reducer";
+import { MESSAGES } from "@/lib/messages";
 
 export async function validateAvailabilityData(
   data: AvailabilityState,
@@ -7,11 +8,11 @@ export async function validateAvailabilityData(
   const { displayName, userAvailability } = data;
 
   if (!displayName?.trim()) {
-    errors.displayName = "Please enter your name.";
+    errors.displayName = MESSAGES.ERROR_NAME_MISSING;
   }
 
   if (!userAvailability || userAvailability.size === 0) {
-    errors.availability = "Please select your availability on the grid.";
+    errors.availability = MESSAGES.ERROR_AVAILABILITY_MISSING;
   }
 
   return errors;

@@ -7,7 +7,7 @@ import { notFound, useSearchParams } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import LinkButton from "@/features/button/components/link";
 import { useToast } from "@/features/toast/context";
-import { TOAST_MESSAGES } from "@/features/toast/messages";
+import { MESSAGES } from "@/lib/messages";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);
@@ -42,7 +42,7 @@ export default function Page() {
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+          addToast("error", MESSAGES.ERROR_GENERIC);
         });
 
       setVerifying(false);

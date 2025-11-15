@@ -22,7 +22,7 @@ import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import { useToast } from "@/features/toast/context";
-import { TOAST_MESSAGES } from "@/features/toast/messages";
+import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
@@ -59,7 +59,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     else if (e === "") {
       setErrors((prev) => ({
         ...prev,
-        title: TOAST_MESSAGES.ERROR_EVENT_NAME_MISSING,
+        title: MESSAGES.ERROR_EVENT_NAME_MISSING,
       }));
     }
     setTitle(e);
@@ -71,7 +71,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     if (from >= to) {
       setErrors((prev) => ({
         ...prev,
-        timeRange: TOAST_MESSAGES.ERROR_EVENT_RANGE_INVALID,
+        timeRange: MESSAGES.ERROR_EVENT_RANGE_INVALID,
       }));
     }
 
@@ -96,14 +96,14 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       if (!response.ok) {
         setErrors((prev) => ({
           ...prev,
-          customCode: TOAST_MESSAGES.ERROR_EVENT_CODE_TAKEN,
+          customCode: MESSAGES.ERROR_EVENT_CODE_TAKEN,
         }));
       } else {
         setErrors((prev) => ({ ...prev, customCode: "" }));
       }
     } catch (error) {
       console.error("Error checking custom code availability:", error);
-      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+      addToast("error", MESSAGES.ERROR_GENERIC);
     }
   }, 300);
 
@@ -132,7 +132,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       return success;
     } catch (error) {
       console.error("Submission failed:", error);
-      addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };

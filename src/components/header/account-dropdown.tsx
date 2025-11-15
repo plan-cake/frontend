@@ -5,7 +5,7 @@ import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import { useToast } from "@/features/toast/context";
-import { TOAST_MESSAGES } from "@/features/toast/messages";
+import { MESSAGES } from "@/lib/messages";
 import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
@@ -29,7 +29,7 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
       .then(async (res) => {
         if (res.ok) {
           setLoggedIn(false);
-          addToast("success", TOAST_MESSAGES.SUCCESS_LOGOUT);
+          addToast("success", MESSAGES.SUCCESS_LOGOUT);
           router.push("/login");
         } else {
           addToast("error", formatApiError(await res.json()));
@@ -37,7 +37,7 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
+        addToast("error", MESSAGES.ERROR_GENERIC);
       });
 
     isSubmitting.current = false;
