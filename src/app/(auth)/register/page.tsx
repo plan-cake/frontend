@@ -75,12 +75,12 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
-          addToast("error", "An error occurred. Please try again.");
+          addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        addToast("error", "An error occurred. Please try again.");
+        addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
       });
   }, 300);
 
