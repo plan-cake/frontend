@@ -8,6 +8,7 @@ import {
   WeekdayTimeRange,
   WeekdayMap,
 } from "@/core/event/types";
+import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 
 /* EXPAND EVENT RANGE UTILITIES */
 
@@ -122,8 +123,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(range);
 
   // If event is longer than 30 days, return empty array
-  const maxDurationMs = 30 * 24 * 60 * 60 * 1000;
-  if (eventEndUTC.getTime() - eventStartUTC.getTime() > maxDurationMs) {
+  if (isDurationExceedingMax(eventStartUTC, eventEndUTC)) {
     return [];
   }
 

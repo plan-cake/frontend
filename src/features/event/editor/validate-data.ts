@@ -3,6 +3,10 @@ import { DateRange } from "react-day-picker";
 import { EventInformation, WeekdayRange } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
+import {
+  MAX_DURATION,
+  isDurationExceedingMax,
+} from "@/features/event/max-event-duration";
 
 export async function validateEventData(
   editorType: EventEditorType,
@@ -26,8 +30,8 @@ export async function validateEventData(
       // check if the date range is more than 30 days
       const fromDate = new Date(eventRange.dateRange.from);
       const toDate = new Date(eventRange.dateRange.to);
-      if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
-        errors.dateRange = "Too many days selected. Max is 30 days.";
+      if (isDurationExceedingMax(fromDate, toDate)) {
+        errors.dateRange = `Too many days selected. Max is ${MAX_DURATION}.`;
       }
     }
   }
