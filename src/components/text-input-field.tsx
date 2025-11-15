@@ -87,7 +87,11 @@ export default function TextInputField(props: TextInputFieldProps) {
       >
         {error ? (
           <span className="flex items-center gap-1">
-            <ExclamationTriangleIcon className={`${classname}`} /> {error}
+            <ExclamationTriangleIcon
+              className={`${classname}`}
+              aria-hidden="true"
+            />
+            {error}
           </span>
         ) : (
           label
