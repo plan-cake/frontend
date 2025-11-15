@@ -119,7 +119,7 @@ export default function Page() {
 
         if (res.status === 404) {
           addToast("error", TOAST_MESSAGES.ERROR_GENERIC);
-        } else if (body.error["new_password"]) {
+        } else if (body.error?.["new_password"]) {
           handleErrors("password", TOAST_MESSAGES.ERROR_PASSWORD_REUSE);
         } else {
           handleErrors("api", errorMessage);
