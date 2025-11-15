@@ -2,9 +2,9 @@
 
 import { useContext, useState } from "react";
 
-import { InfoCircledIcon } from "@radix-ui/react-icons";
 import Link from "next/link";
 
+import { Banner } from "@/components/banner";
 import HeaderSpacer from "@/components/header-spacer";
 import EventGrid, {
   EventGridProps,
@@ -33,22 +33,18 @@ export default function ClientPage({
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {loggedIn === false && (
-        <div className="bg-accent/20 flex items-center gap-4 rounded-3xl p-4">
-          <InfoCircledIcon className="h-5 w-5" />
+        <Banner type="info" title="Logged in as a Guest">
           <div>
-            <h2 className="text-lg font-bold">Logged in as a Guest</h2>
-            <div>
-              This data is only available from this browser.{" "}
-              <Link
-                href="/register"
-                className="text-accent cursor-pointer font-bold hover:underline"
-              >
-                Create an account
-              </Link>{" "}
-              to sync your data across devices.
-            </div>
+            This data is only available from this browser.{" "}
+            <Link
+              href="/register"
+              className="text-accent cursor-pointer font-bold hover:underline"
+            >
+              Create an account
+            </Link>{" "}
+            to sync your data across devices.
           </div>
-        </div>
+        </Banner>
       )}
       <div className={cn("flex gap-4", isMobile && "flex-col")}>
         <div className={cn("flex", !isMobile && "flex-col")}>

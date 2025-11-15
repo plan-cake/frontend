@@ -54,11 +54,11 @@ export default function DateRangeSelector({
         <div className="flex w-full flex-col justify-center gap-2">
           {eventRange?.type === "specific" ? (
             <>
-              <label className="flex items-center gap-2">
+              <label
+                className={`flex items-center gap-2 ${tooManyDays ? "text-error" : ""}`}
+              >
                 Possible Dates
-                {tooManyDays && (
-                  <ExclamationTriangleIcon className="text-error h-4 w-4" />
-                )}
+                {tooManyDays && <ExclamationTriangleIcon className="h-4 w-4" />}
               </label>
               <DateRangePopover
                 earliestDate={earliestDate}

@@ -1,4 +1,4 @@
-import formatApiError from "@/lib/utils/api/format-api-error";
+import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type DashboardEventResponse = {
   title: string;
@@ -33,8 +33,7 @@ export async function fetchDashboard(
   });
 
   if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch dashboard events: " + errorMessage);
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();

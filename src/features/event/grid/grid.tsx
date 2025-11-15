@@ -64,7 +64,7 @@ export default function ScheduleGrid({
   const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
   const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
 
-  if (numDays <= 0)
+  if (numDays <= 0 || numDays > 30)
     return <GridError message="Invalid or missing date range" />;
   if (error) return <GridError message={error} />;
 

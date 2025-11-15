@@ -1,16 +1,19 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
+import { Banner } from "@/components/banner";
 import LinkText from "@/components/link-text";
+import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
-import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
-import { useDebounce } from "@/lib/hooks/use-debounce";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { useToast } from "@/features/toast/context";
+import { MESSAGES } from "@/lib/messages";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -19,11 +22,36 @@ export default function Page() {
   const [passwordCriteria, setPasswordCriteria] = useState({});
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
   function passwordIsStrong() {
     return Object.keys(passwordCriteria).length === 0;
   }
 
-  useDebounce(() => {
+  const handleEmailChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, email: "", api: "" }));
+    setEmail(value);
+  };
+
+  const handleConfirmPasswordChange = (value: string) => {
+    setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
+    setConfirmPassword(value);
+  };
+
+  const handleErrors = (field: string, message: string) => {
+    setErrors((prev) => ({
+      ...prev,
+      [field]: message,
+    }));
+
+    if (field === "api") addToast("error", message);
+  };
+
+  const handlePasswordChange = useDebouncedCallback((password) => {
+    if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+
     if (password.length === 0) {
       setPasswordCriteria({});
       return;
@@ -47,39 +75,36 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
+          addToast("error", MESSAGES.ERROR_GENERIC);
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
+        addToast("error", MESSAGES.ERROR_GENERIC);
       });
-  }, [password]);
-
-  useEffect(() => {
-    if (password.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
-  }, [password]);
+  }, 300);
 
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   const handleSubmit = async () => {
+    setErrors({});
+
     if (!email) {
-      alert("Missing email");
+      handleErrors("email", MESSAGES.ERROR_EMAIL_MISSING);
       return false;
     }
     if (!password) {
-      alert("Missing password");
+      handleErrors("password", MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
     if (!passwordIsStrong()) {
-      alert("Password is not strong enough");
+      handleErrors("password", MESSAGES.ERROR_PASSWORD_WEAK);
       return false;
     }
     if (confirmPassword !== password) {
-      alert("Passwords do not match");
+      handleErrors("confirmPassword", MESSAGES.ERROR_PASSWORD_MISMATCH);
       return false;
     }
 
@@ -95,38 +120,65 @@ export default function Page() {
         router.push("/register/email-sent");
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        const body = await res.json();
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 429) {
+          handleErrors("rate_limit", errorMessage || MESSAGES.ERROR_RATE_LIMIT);
+        } else if (errorMessage.includes("Email:")) {
+          handleErrors("email", errorMessage.split("Email:")[1].trim());
+        } else if (errorMessage.includes("Password:")) {
+          handleErrors("password", errorMessage.split("Password:")[1].trim());
+        } else {
+          handleErrors("api", errorMessage);
+        }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           register
         </h1>
 
+        {/* Rate Limit Error */}
+        {errors.rate_limit && (
+          <Banner type="error" title="Woah! Slow down" className="mb-4 w-full">
+            {errors.rate_limit}
+          </Banner>
+        )}
+
         {/* Email */}
         <TextInputField
+          id={"email"}
           type="email"
-          placeholder="Email"
+          label="Email*"
           value={email}
-          onChange={setEmail}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
         />
 
         {/* Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="Password"
+          label="Password*"
           value={password}
-          onChange={setPassword}
+          onChange={(value) => {
+            setPassword(value);
+            handlePasswordChange(value);
+          }}
+          outlined
+          error={errors.password || errors.api}
         />
 
         {/* Password Errors */}
@@ -138,10 +190,13 @@ export default function Page() {
 
         {/* Retype Password */}
         <TextInputField
+          id={"confirmPassword"}
           type="password"
-          placeholder="Retype Password"
+          label="Retype Password*"
           value={confirmPassword}
-          onChange={setConfirmPassword}
+          onChange={handleConfirmPasswordChange}
+          outlined
+          error={errors.confirmPassword || errors.api}
         />
 
         {/* Register Button */}
