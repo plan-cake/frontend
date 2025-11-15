@@ -78,6 +78,9 @@ export default function TextInputField(props: TextInputFieldProps) {
           "peer-focus:top-[-0.65rem] peer-focus:scale-75",
           "peer-[:not(:placeholder-shown)]:top-[-0.65rem] peer-[:not(:placeholder-shown)]:scale-75",
           "peer-focus:bg-background peer-[:not(:placeholder-shown)]:bg-background",
+          outlined
+            ? ""
+            : "peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
 
           // colors
           error
