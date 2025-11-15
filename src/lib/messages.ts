@@ -30,6 +30,6 @@ export const MESSAGES = {
   SUCCESS_LOGOUT: "You have been logged out.",
 
   // copy link messages
-  COPY_LINK_SUCCESS: "Link copied to clipboard!.",
+  COPY_LINK_SUCCESS: "Link copied to clipboard!",
   COPY_LINK_FAILURE: "Failed to copy link. Please try again.",
 };
