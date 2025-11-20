@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
@@ -11,9 +10,8 @@ import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import AdvancedOptions from "@/features/event/editor/advanced-options";
 import DateRangeSelector from "@/features/event/editor/date-range/selector";
-import DurationSelector from "@/features/event/editor/duration-selector";
 import TimeSelector from "@/features/event/editor/time-selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
@@ -37,8 +35,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTitle,
     setEventType,
     setCustomCode,
-    setTimezone,
-    setDuration,
     setTimeRange,
     setDateRange,
     setWeekdayRange,
@@ -141,7 +137,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
+      <div
+        className={cn(
+          "grid w-full grid-cols-1 gap-y-2",
+          "md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1",
+        )}
+      >
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
           <DateRangeSelector
@@ -181,105 +182,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
 
-        {/* Timezone & Duration */}
-        <div className="md:contents">
-          {/* Desktop: show all options */}
-          <label className="hidden md:col-start-1 md:row-start-10 md:block">
-            Advanced Options
-          </label>
-          <label
-            htmlFor="timezone-select"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block"
-          >
-            Timezone
-          </label>
-          <div className="hidden md:col-start-1 md:row-start-12 md:block">
-            <TimeZoneSelector
-              id="timezone-select"
-              value={eventRange.timezone}
-              onChange={setTimezone}
-            />
-          </div>
-          <label
-            htmlFor="duration-select"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block"
-          >
-            Duration
-          </label>
-          <div className="md:row-start-14 hidden md:col-start-1 md:block">
-            <DurationSelector
-              id="duration-select"
-              value={eventRange.duration}
-              onChange={(v) => setDuration((v as number) || 0)}
-            />
-          </div>
-
-          <label className="md:row-start-15 hidden text-gray-400 md:col-start-1 md:flex md:justify-between">
-            {type === "new" && "Custom"} Event Code
-            {errors.customCode && (
-              <ExclamationTriangleIcon className="text-error h-4 w-4" />
-            )}
-          </label>
-          <div className="md:row-start-16 hidden md:col-start-1 md:block">
-            <input
-              type="text"
-              value={customCode}
-              disabled={type === "edit"}
-              onChange={handleCustomCodeChange}
-              placeholder="optional"
-              className={`border-b-1 w-full focus:outline-none ${
-                errors.customCode
-                  ? "border-error placeholder:text-error"
-                  : "text-accent border-gray-400"
-              }`}
-            />
-          </div>
-
-          {/* Mobile: expandable section */}
-          <details className="block md:hidden">
-            <summary className="cursor-pointer rounded px-1 py-2 font-medium">
-              Advanced Options
-            </summary>
-            <div className="mt-2 flex flex-col gap-1">
-              <label htmlFor="timezone-select" className="text-gray-400">
-                Timezone
-              </label>
-              <TimeZoneSelector
-                id="timezone-select"
-                value={eventRange.timezone}
-                onChange={setTimezone}
-              />
-              <label htmlFor="duration-select" className="text-gray-400">
-                Duration
-              </label>
-              <DurationSelector
-                id="duration-select"
-                value={eventRange.duration}
-                onChange={(v) => setDuration((v as number) || 0)}
-              />
-              <label className="flex justify-between text-gray-400">
-                {type === "new" && "Custom"} Event Code
-                {errors.customCode && (
-                  <ExclamationTriangleIcon className="text-error h-4 w-4" />
-                )}
-              </label>
-              <input
-                type="text"
-                disabled={type === "edit"}
-                value={customCode}
-                onChange={(e) => setCustomCode(e.target.value)}
-                placeholder="optional"
-                className={cn(
-                  "border-b-1 w-full border-gray-400 focus:outline-none",
-                  type === "new" && "text-accent",
-                  type === "edit" && "cursor-not-allowed opacity-50",
-                  errors.customCode
-                    ? "border-error placeholder:text-error"
-                    : "",
-                )}
-              />
-            </div>
-          </details>
+        <div className="md:content md:col-start-1 md:row-span-7 md:row-start-9 md:flex md:items-end">
+          <AdvancedOptions
+            type={type}
+            errors={errors}
+            handleCustomCodeChange={handleCustomCodeChange}
+          />
         </div>
 
         <div className="md:row-span-15 hidden flex-1 md:col-span-10 md:col-start-2 md:row-start-2 md:block">
