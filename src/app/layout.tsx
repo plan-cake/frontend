@@ -35,7 +35,7 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${modak.variable} ${nunito.variable}`}
     >
-      <body className="font-sans antialiased">
+      <body className="font-sans antialiased transition-colors duration-300 ease-in-out">
         <div className="mx-auto flex min-h-dvh max-w-[1440px] flex-col">
           <Providers>
             <Header />

@@ -50,6 +50,8 @@
 }
 
 .frosted-glass .frosted-glass-button {
+  transition: background-color 150ms ease-in-out;
+
   &:hover {
     background-color: color-mix(in srgb, var(--color-white) 30%, transparent);
     @supports (color: color-mix(in lab, red, red)) {
