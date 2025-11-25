@@ -5,60 +5,28 @@ import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import PasswordCriteria from "@/features/auth/components/password-criteria";
+import PasswordValidation from "@/features/auth/components/password-validation";
 import TextInputField from "@/features/auth/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
-import { useDebounce } from "@/lib/hooks/use-debounce";
 import formatApiError from "@/lib/utils/api/format-api-error";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordCriteria, setPasswordCriteria] = useState({});
+  const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
 
   function passwordIsStrong() {
-    return Object.keys(passwordCriteria).length === 0;
+    return Object.values(passwordCriteria).every((value) => value === true);
   }
 
-  useDebounce(() => {
-    if (newPassword.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
-
-    // Check that the password is strong enough with the API
-    fetch("/api/auth/check-password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: newPassword }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            if (data.is_strong) {
-              setPasswordCriteria({});
-              return;
-            } else {
-              setPasswordCriteria(data.criteria || {});
-            }
-          });
-        } else {
-          console.error("Fetch error:", res.status);
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
-  }, [newPassword]);
-
   useEffect(() => {
-    if (newPassword.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
+    const { criteria } = PasswordValidation(newPassword);
+    setPasswordCriteria(criteria);
   }, [newPassword]);
 
   const stopRefresh = (e: React.FormEvent) => {
@@ -121,9 +89,12 @@ export default function Page() {
           placeholder="New Password"
           value={newPassword}
           onChange={setNewPassword}
+          onFocus={() => setShowPasswordCriteria(true)}
+          onBlur={() => setShowPasswordCriteria(false)}
         />
 
-        {!passwordIsStrong() && (
+        {/* Password Errors */}
+        {showPasswordCriteria && (
           <div className="-mt-2 mb-2 w-full px-4">
             <PasswordCriteria criteria={passwordCriteria} />
           </div>

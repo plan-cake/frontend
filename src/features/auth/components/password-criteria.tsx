@@ -7,21 +7,32 @@ type PasswordCriteriaProps = {
 };
 
 export default function PasswordCriteria(props: PasswordCriteriaProps) {
+  const allCriteriaMet = Object.values(props.criteria).every((value) => value);
+
   return (
     <div className="w-full text-sm">
-      <b>Your password must:</b>
-      {Object.entries(props.criteria).map(([key, value], index) => (
-        <div
-          key={index}
-          className={cn(
-            "flex items-center gap-1",
-            value ? "line-through opacity-50" : "",
-          )}
-        >
-          {value ? <CheckIcon /> : <Cross2Icon />}
-          {key}
+      {allCriteriaMet ? (
+        <div className="flex items-center gap-1">
+          <CheckIcon />
+          <b>Password is strong!</b>
         </div>
-      ))}
+      ) : (
+        <>
+          <b>Your password must:</b>
+          {Object.entries(props.criteria).map(([key, value], index) => (
+            <div
+              key={index}
+              className={cn(
+                "flex items-center gap-1",
+                value ? "line-through opacity-50" : "",
+              )}
+            >
+              {value ? <CheckIcon /> : <Cross2Icon />}
+              {key}
+            </div>
+          ))}
+        </>
+      )}
     </div>
   );
 }
