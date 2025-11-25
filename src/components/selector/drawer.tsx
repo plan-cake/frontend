@@ -1,9 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
+import { ChevronDownIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 import { SelectorProps } from "@/components/selector/type";
+import ActionButton from "@/features/button/components/action";
 import { cn } from "@/lib/utils/classname";
 
 export default function SelectorDrawer<TValue extends string | number>({
@@ -17,6 +18,11 @@ export default function SelectorDrawer<TValue extends string | number>({
 }: SelectorProps<TValue>) {
   const [open, setOpen] = useState(false);
   const selectedItemRef = useRef<HTMLDivElement>(null);
+
+  const handleClose = () => {
+    setOpen(false);
+    return true;
+  };
 
   useEffect(() => {
     if (open) {
@@ -55,37 +61,46 @@ export default function SelectorDrawer<TValue extends string | number>({
           aria-label={dialogTitle}
           aria-describedby={dialogDescription}
         >
-          <div className="rounded-t-4xl bg-background flex-1 justify-center overflow-y-auto p-8 shadow-lg">
+          <div className="rounded-t-4xl bg-background flex flex-1 flex-col overflow-y-auto shadow-lg">
             <div
-              aria-hidden
-              className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
-            />
-            <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              {dialogTitle}
-            </Dialog.Title>
+              onPointerDown={handleClose}
+              className="bg-background sticky top-0 z-10 flex items-center gap-4 p-8 pb-4"
+            >
+              <ActionButton
+                buttonStyle="frosted glass"
+                icon={<Cross1Icon />}
+                label="Close Drawer"
+                shrinkOnMobile
+                onClick={handleClose}
+              />
 
-            {options.map((option) => {
-              const isSelected = option.value === value;
-              return (
-                <div
-                  ref={isSelected ? selectedItemRef : null}
-                  // The key needs to be a string, so we convert value to string for TValue=number cases
-                  key={String(option.value)}
-                  onClick={() => {
-                    onChange(option.value);
-                    setOpen(false);
-                  }}
-                  className={cn(
-                    "p-4 text-center",
-                    isSelected && "bg-accent rounded-full text-white",
-                    // Apply different style for timezone selector items for better text wrapping
-                    typeof option.value === "string" && "text-start",
-                  )}
-                >
-                  {option.label}
-                </div>
-              );
-            })}
+              <Dialog.Title className="mb-0 flex flex-row items-center justify-between text-lg font-semibold">
+                {dialogTitle}
+              </Dialog.Title>
+            </div>
+
+            <div className="flex-1 px-8 pb-8">
+              {options.map((option) => {
+                const isSelected = option.value === value;
+                return (
+                  <div
+                    ref={isSelected ? selectedItemRef : null}
+                    key={String(option.value)}
+                    onClick={() => {
+                      onChange(option.value);
+                      setOpen(false);
+                    }}
+                    className={cn(
+                      "cursor-pointer p-4 text-center",
+                      isSelected && "bg-accent rounded-full text-white",
+                      typeof option.value === "string" && "text-start",
+                    )}
+                  >
+                    {option.label}
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
