@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
-import FormSelectorField from "@/components/selector-field";
+import FormSelectorField from "@/components/selector/selector-field";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action";

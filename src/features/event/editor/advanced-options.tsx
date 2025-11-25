@@ -1,6 +1,6 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import FormSelectorField from "@/components/selector-field";
+import FormSelectorField from "@/components/selector/selector-field";
 import { useEventInfo } from "@/core/event/use-event-info";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import DurationSelector from "@/features/event/editor/duration-selector";

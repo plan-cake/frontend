@@ -3,38 +3,25 @@ import { forwardRef } from "react";
 import { CheckIcon, ChevronDownIcon } from "@radix-ui/react-icons";
 import * as Select from "@radix-ui/react-select";
 
+import { SelectorProps } from "@/components/selector/type";
 import { cn } from "@/lib/utils/classname";
 
-// --- Simplified Types ---
-type Option = {
-  label: string;
-  value: string | number;
-};
-
-type CustomSelectProps = {
-  id: string;
-  value: string | number;
-  options: Option[];
-  disabled?: boolean;
-  onValueChange: (value: string | number) => void;
-  placeholder?: string;
-  className?: string;
-};
-
-// --- Refactored Component ---
-export default function CustomSelect({
+export default function Dropdown<TValue extends string | number>({
   id,
+  onChange,
   value,
   options,
   disabled,
-  onValueChange,
-  placeholder,
   className,
-}: CustomSelectProps) {
+}: SelectorProps<TValue>) {
   return (
     <Select.Root
       value={value?.toString()}
-      onValueChange={(v) => onValueChange(isNaN(Number(v)) ? v : Number(v))}
+      onValueChange={(v) => {
+        // parse value back to number when possible, then cast to TValue
+        const parsed = isNaN(Number(v)) ? v : Number(v);
+        onChange(parsed as unknown as TValue);
+      }}
     >
       <Select.Trigger
         id={id}
@@ -47,7 +34,7 @@ export default function CustomSelect({
         disabled={disabled}
       >
         <span className="flex-1 truncate pr-2">
-          <Select.Value placeholder={placeholder} />
+          <Select.Value placeholder="placeholder" />
         </span>
         {disabled ? null : (
           <Select.Icon className="flex-shrink-0">
@@ -60,9 +47,9 @@ export default function CustomSelect({
         <Select.Content className="bg-background z-50 max-h-60 overflow-auto rounded-md border border-gray-400 shadow-lg dark:shadow-violet-700">
           <Select.Viewport className="p-1">
             {options.map((option) => (
-              <SelectItem key={option.value.toString()} value={option.value}>
+              <DropdownItem key={option.value.toString()} value={option.value}>
                 {option.label}
-              </SelectItem>
+              </DropdownItem>
             ))}
           </Select.Viewport>
         </Select.Content>
@@ -71,13 +58,12 @@ export default function CustomSelect({
   );
 }
 
-// --- SelectItem (Unchanged) ---
-type SelectItemProps = {
+type DropdownItemProps = {
   value: string | number;
   children: React.ReactNode;
 };
 
-const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
+const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
   ({ children, value }, ref) => {
     return (
       <Select.Item
@@ -93,4 +79,4 @@ const SelectItem = forwardRef<HTMLDivElement, SelectItemProps>(
     );
   },
 );
-SelectItem.displayName = "SelectItem";
+DropdownItem.displayName = "DropdownItem";
