@@ -1,5 +1,6 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
+import FormSelectorField from "@/components/selector-field";
 import { useEventInfo } from "@/core/event/use-event-info";
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import DurationSelector from "@/features/event/editor/duration-selector";
@@ -58,22 +59,22 @@ function Options({
 
   return (
     <>
-      <label htmlFor="timezone-select" className="text-gray-400">
-        Timezone
-      </label>
-      <TimeZoneSelector
-        id="timezone-select"
-        value={eventRange.timezone}
-        onChange={setTimezone}
-      />
-      <label htmlFor="duration-select" className="text-gray-400">
-        Duration
-      </label>
-      <DurationSelector
-        id="duration-select"
-        value={eventRange.duration}
-        onChange={(v) => setDuration((v as number) || 0)}
-      />
+      <FormSelectorField label="TIMEZONE" htmlFor="timezone-select">
+        <TimeZoneSelector
+          id="timezone-select"
+          value={eventRange.timezone}
+          onChange={setTimezone}
+        />
+      </FormSelectorField>
+
+      <FormSelectorField label="DURATION" htmlFor="duration-select">
+        <DurationSelector
+          id="duration-select"
+          value={eventRange.duration}
+          onChange={(v) => setDuration((v as number) || 0)}
+        />
+      </FormSelectorField>
+
       <label className="flex justify-between text-gray-400">
         {type === "new" && "Custom"} Event Code
         {errors.customCode && (

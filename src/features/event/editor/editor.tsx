@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
+import FormSelectorField from "@/components/selector-field";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action";
@@ -158,28 +159,26 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         {/* From/To */}
         <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
         <div className="flex space-x-4 md:col-start-1 md:row-start-3">
-          <label htmlFor="from-time-dropdown" className="text-gray-400">
-            FROM
-          </label>
-          <TimeSelector
-            id="from-time-dropdown"
-            value={eventRange.timeRange.from}
-            onChange={(value) =>
-              setTimeRange({ ...eventRange.timeRange, from: value })
-            }
-          />
+          <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
+            <TimeSelector
+              id="from-time-dropdown"
+              value={eventRange.timeRange.from}
+              onChange={(value) =>
+                setTimeRange({ ...eventRange.timeRange, from: value })
+              }
+            />
+          </FormSelectorField>
         </div>
         <div className="flex space-x-4 md:col-start-1 md:row-start-4">
-          <label htmlFor="to-time-dropdown" className="text-gray-400">
-            UNTIL
-          </label>
-          <TimeSelector
-            id="to-time-dropdown"
-            value={eventRange.timeRange.to}
-            onChange={(value) =>
-              setTimeRange({ ...eventRange.timeRange, to: value })
-            }
-          />
+          <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
+            <TimeSelector
+              id="to-time-dropdown"
+              value={eventRange.timeRange.to}
+              onChange={(value) =>
+                setTimeRange({ ...eventRange.timeRange, to: value })
+              }
+            />
+          </FormSelectorField>
         </div>
 
         <div className="md:content md:col-start-1 md:row-span-7 md:row-start-9 md:flex md:items-end">
