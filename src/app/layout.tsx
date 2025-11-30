@@ -29,13 +29,35 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  // Theme transition classes - ONLY backgrounds and borders (no text color)
+  const themeTransitionClasses = [
+    // Background and border transitions only
+    "[&_*]:transition-[background-color,border-color]",
+    "[&_*]:duration-[1200ms]",
+    "[&_*]:ease-in-out",
+
+    // Faster transitions for user interactions
+    "[&_*:hover]:duration-150",
+    "[&_*:active]:duration-150",
+    "[&_*:focus-visible]:duration-150",
+
+    // Instant transitions for specific elements
+    "[&_[data-slot-iso]]:transition-none",
+    "[&_[class*=animate-]]:transition-none",
+    "[&_[data-state]]:transition-none",
+
+    // SVG icon transitions
+    "[&_svg]:transition-[fill,stroke]",
+    "[&_svg_*]:transition-[fill,stroke]",
+  ].join(" ");
+
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${modak.variable} ${nunito.variable}`}
+      className={`${modak.variable} ${nunito.variable} ${themeTransitionClasses}`}
     >
-      <body className="font-sans antialiased transition-colors duration-300 ease-in-out">
+      <body className="font-sans antialiased !transition-[background-color] !duration-[1200ms] !ease-in-out">
         <div className="mx-auto flex min-h-dvh max-w-[1440px] flex-col">
           <Providers>
             <Header />
