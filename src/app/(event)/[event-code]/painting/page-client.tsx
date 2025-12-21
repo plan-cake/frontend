@@ -120,8 +120,8 @@ export default function ClientPage({
       <HeaderSpacer />
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
-        <div className="flex items-center space-x-2">
-          <h1 className="text-2xl">{eventName}</h1>
+        <div className="flex shrink-0 items-center space-x-2">
+          <h1 className="text-2xl font-semibold">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="hidden items-center gap-2 md:flex">
