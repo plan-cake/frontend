@@ -59,12 +59,13 @@ export function useEventInfo(initialData?: {
     dispatch({ type: "SET_DURATION", payload: duration });
   }, []);
 
-  const setTimeRange = useCallback(
-    (timeRange: { from: number; to: number }) => {
-      dispatch({ type: "SET_TIME_RANGE", payload: timeRange });
-    },
-    [],
-  );
+  const setStartTime = useCallback((time: number) => {
+    dispatch({ type: "SET_START_TIME", payload: time });
+  }, []);
+
+  const setEndTime = useCallback((time: number) => {
+    dispatch({ type: "SET_END_TIME", payload: time });
+  }, []);
 
   const setDateRange = useCallback((dateRange: DateRange | undefined) => {
     if (dateRange?.from && dateRange?.to) {
@@ -93,7 +94,8 @@ export function useEventInfo(initialData?: {
     setEventRangeInfo,
     setTimezone,
     setDuration,
-    setTimeRange,
+    setStartTime,
+    setEndTime,
     setDateRange,
     setWeekdayRange,
     resetEventInfo,

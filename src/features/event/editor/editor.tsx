@@ -36,7 +36,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTitle,
     setEventType,
     setCustomCode,
-    setTimeRange,
+    setStartTime,
+    setEndTime,
     setDateRange,
     setWeekdayRange,
   } = useEventInfo(initialData);
@@ -163,9 +164,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             <TimeSelector
               id="from-time-dropdown"
               value={eventRange.timeRange.from}
-              onChange={(value) =>
-                setTimeRange({ ...eventRange.timeRange, from: value })
-              }
+              onChange={setStartTime}
             />
           </FormSelectorField>
         </div>
@@ -174,9 +173,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             <TimeSelector
               id="to-time-dropdown"
               value={eventRange.timeRange.to}
-              onChange={(value) =>
-                setTimeRange({ ...eventRange.timeRange, to: value })
-              }
+              onChange={setEndTime}
             />
           </FormSelectorField>
         </div>
