@@ -18,16 +18,12 @@ export default function DurationSelector({
   onChange,
   value,
 }: DurationSelectorProps) {
-  const valueLabel =
-    durationOptions.find((opt) => opt.value === value)?.label || "";
-
   return (
     <Selector
       id={id}
       onChange={onChange}
       value={value}
       options={durationOptions}
-      selectLabel={valueLabel}
       dialogTitle="Select Duration"
       dialogDescription="Select a duration from the list"
     />

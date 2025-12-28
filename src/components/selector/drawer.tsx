@@ -12,12 +12,13 @@ export default function SelectorDrawer<TValue extends string | number>({
   value,
   options,
   onChange,
-  selectLabel,
   dialogTitle,
   dialogDescription,
 }: SelectorProps<TValue>) {
   const [open, setOpen] = useState(false);
   const selectedItemRef = useRef<HTMLDivElement>(null);
+
+  const selectLabel = options.find((opt) => opt.value === value)?.label || "";
 
   const handleClose = () => {
     setOpen(false);

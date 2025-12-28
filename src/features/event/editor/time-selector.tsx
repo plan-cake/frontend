@@ -19,15 +19,12 @@ export default function TimeSelector({
 
   options.push({ label: "12:00 am", value: 24 });
 
-  const valueLabel = options.find((opt) => opt.value === value)?.label || "";
-
   return (
     <Selector
       id={id}
       onChange={onChange}
       value={value}
       options={options}
-      selectLabel={valueLabel}
       dialogTitle="Select Time"
       dialogDescription="Select a time from the list"
       className="h-fit w-fit"

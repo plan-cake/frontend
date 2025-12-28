@@ -9,7 +9,6 @@ export default function Selector<TValue extends string | number>({
   onChange,
   value,
   options,
-  selectLabel,
   dialogTitle,
   dialogDescription,
   className,
@@ -26,7 +25,6 @@ export default function Selector<TValue extends string | number>({
       <div className={className}>
         <Dropdown
           id={id}
-          // The value must be passed as a string for CustomSelect to work with string-type values
           value={String(value)}
           options={options}
           onChange={handleValueChange}
@@ -41,7 +39,6 @@ export default function Selector<TValue extends string | number>({
         value={value}
         options={options}
         onChange={onChange}
-        selectLabel={selectLabel}
         dialogTitle={dialogTitle}
         dialogDescription={dialogDescription}
       />
