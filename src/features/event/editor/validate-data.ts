@@ -6,6 +6,8 @@ import { EventEditorType } from "@/features/event/editor/types";
 import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 import { MESSAGES } from "@/lib/messages";
 
+export const MAX_TITLE_LENGTH = 50;
+
 export async function validateEventData(
   editorType: EventEditorType,
   data: EventInformation,
@@ -16,7 +18,7 @@ export async function validateEventData(
   // Validate title
   if (!title?.trim()) {
     errors.title = MESSAGES.ERROR_EVENT_NAME_MISSING;
-  } else if (title.length > 50) {
+  } else if (title.length > MAX_TITLE_LENGTH) {
     errors.title = MESSAGES.ERROR_EVENT_NAME_LENGTH;
   }
 

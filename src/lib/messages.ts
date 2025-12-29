@@ -1,3 +1,4 @@
+import { MAX_TITLE_LENGTH } from "@/features/event/editor/validate-data";
 import { MAX_DURATION } from "@/features/event/max-event-duration";
 
 export const MESSAGES = {
@@ -19,7 +20,7 @@ export const MESSAGES = {
 
   // event errors
   ERROR_EVENT_NAME_MISSING: "Missing event name.",
-  ERROR_EVENT_NAME_LENGTH: "Event name must be under 50 characters.",
+  ERROR_EVENT_NAME_LENGTH: `Event name must be under ${MAX_TITLE_LENGTH} characters.`,
   ERROR_EVENT_CODE_TAKEN: "This code is unavailable. Please choose another.",
   ERROR_EVENT_RANGE_INVALID: "Please select a valid date/time range.",
   ERROR_EVENT_RANGE_TOO_LONG: `Too many days selected. Max is ${MAX_DURATION}.`,
