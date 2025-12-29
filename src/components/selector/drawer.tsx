@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { ChevronDownIcon, Cross1Icon } from "@radix-ui/react-icons";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
 import { SelectorProps } from "@/components/selector/type";
 import ActionButton from "@/features/button/components/action";
@@ -42,17 +42,14 @@ export default function SelectorDrawer<TValue extends string | number>({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
-        asChild
         id={id}
         className={cn(
-          "text-accent inline-flex items-center rounded-md text-start focus:outline-none",
+          "inline-flex items-center rounded-full text-start focus:outline-none",
+          "bg-loading text-accent px-3 py-1",
         )}
         aria-label={`Select ${dialogTitle}`}
       >
-        <div>
-          <span className="flex-1 truncate pr-2">{selectLabel}</span>
-          <ChevronDownIcon className="h-4 w-4" />
-        </div>
+        <span className="text-wrap">{selectLabel}</span>
       </Dialog.Trigger>
 
       <Dialog.Portal>

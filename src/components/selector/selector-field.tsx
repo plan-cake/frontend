@@ -17,7 +17,11 @@ export default function FormSelectorField({
 }: FormSelectorFieldProps) {
   return (
     <div
-      className={cn("flex gap-4", isVertical && "flex-col gap-2", classname)}
+      className={cn(
+        "flex items-baseline gap-4",
+        isVertical && "flex-col gap-2",
+        classname,
+      )}
     >
       <label htmlFor={htmlFor} className="text-gray-400">
         {label}

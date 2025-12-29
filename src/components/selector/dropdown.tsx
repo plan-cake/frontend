@@ -26,7 +26,7 @@ export default function Dropdown<TValue extends string | number>({
       <Select.Trigger
         id={id}
         className={cn(
-          "text-accent inline-flex items-center rounded-md text-start focus:outline-none",
+          "text-accent inline-flex items-center rounded-full text-start focus:outline-none",
           disabled && "text-foreground/50 cursor-not-allowed",
           className,
         )}

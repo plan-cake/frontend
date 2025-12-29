@@ -20,14 +20,14 @@ export default function SpecificDateRangeDisplay({
         </label>
         <span
           id="start-date"
-          className="text-accent bg-transparent focus:outline-none"
+          className="bg-loading text-accent hover:md:bg-loading rounded-full px-3 py-1 focus:outline-none md:bg-transparent"
           aria-label="Start date"
         >
           {displayFrom}
         </span>
       </div>
 
-      <span className="hidden w-fit text-gray-400 md:block">TO</span>
+      <span className="hidden w-fit py-1 text-gray-400 md:block">TO</span>
 
       {/* End Date */}
       <div className="flex w-fit items-center space-x-4">
@@ -36,7 +36,7 @@ export default function SpecificDateRangeDisplay({
         </label>
         <span
           id="end-date"
-          className="text-accent bg-transparent focus:outline-none md:text-end"
+          className="text-accent bg-loading hover:md:bg-loading rounded-full px-3 py-1 focus:outline-none md:bg-transparent md:text-end"
           aria-label="End date"
         >
           {displayTo}
