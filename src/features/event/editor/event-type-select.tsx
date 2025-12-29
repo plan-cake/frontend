@@ -1,10 +1,10 @@
-import CustomSelect from "@/components/selector/dropdown";
+import Dropdown from "@/components/selector/dropdown";
 
 type EventTypeSelectProps = {
   id: string;
   eventType: string;
-  disabled?: boolean;
   onEventTypeChange: (type: "specific" | "weekday") => void;
+  disabled?: boolean;
 };
 
 export default function EventTypeSelect({
@@ -14,7 +14,7 @@ export default function EventTypeSelect({
   onEventTypeChange,
 }: EventTypeSelectProps) {
   return (
-    <CustomSelect
+    <Dropdown
       id={id}
       options={[
         { label: "Specific Dates", value: "specific" },
@@ -22,8 +22,10 @@ export default function EventTypeSelect({
       ]}
       value={eventType === "specific" ? "specific" : "weekday"}
       disabled={disabled}
-      onValueChange={(value) =>
-        onEventTypeChange?.(value === "specific" ? "specific" : "weekday")
+      onChange={(value: string | number) =>
+        onEventTypeChange?.(
+          String(value) === "specific" ? "specific" : "weekday",
+        )
       }
       className="min-h-9 min-w-[100px] border-none"
     />

@@ -1,14 +1,14 @@
 import { format } from "date-fns";
 
-type DateRangeInputProps = {
+type SpecificDateRangeDisplayProps = {
   startDate: Date;
   endDate: Date;
 };
 
-export default function DateRangeInput({
+export default function SpecificDateRangeDisplay({
   startDate,
   endDate,
-}: DateRangeInputProps) {
+}: SpecificDateRangeDisplayProps) {
   const displayFrom = startDate ? format(startDate, "EEE MMMM d, yyyy") : "";
   const displayTo = endDate ? format(endDate, "EEE MMMM d, yyyy") : "";
   return (

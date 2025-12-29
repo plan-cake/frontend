@@ -2,7 +2,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { fromZonedTime } from "date-fns-tz";
 
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
-import DateRangeInput from "@/features/event/editor/date-range/input";
+import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 import { Calendar } from "@/features/event/editor/month-calendar";
 import { cn } from "@/lib/utils/classname";
 
@@ -24,17 +24,16 @@ export default function DateRangePopover({
 
   return (
     <Popover.Root>
-      <Popover.Trigger asChild>
-        <div>
-          <DateRangeInput startDate={startDate} endDate={endDate} />
-        </div>
+      <Popover.Trigger>
+        <SpecificDateRangeDisplay startDate={startDate} endDate={endDate} />
       </Popover.Trigger>
 
       <Popover.Portal>
         <Popover.Content
+          align="start"
           sideOffset={10}
           className={cn(
-            "bg-background z-50 rounded-md border border-gray-400 p-4 shadow-lg",
+            "bg-background z-50 rounded-2xl border border-gray-400 p-4 shadow-lg",
             "data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade",
           )}
           aria-label="Date range picker"

@@ -159,7 +159,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
         {/* From/To */}
         <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
-        <div className="flex space-x-4 md:col-start-1 md:row-start-3">
+        <div className="md:col-start-1 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
             <TimeSelector
               id="from-time-dropdown"
@@ -168,7 +168,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             />
           </FormSelectorField>
         </div>
-        <div className="flex space-x-4 md:col-start-1 md:row-start-4">
+        <div className="md:col-start-1 md:row-start-4">
           <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
             <TimeSelector
               id="to-time-dropdown"
