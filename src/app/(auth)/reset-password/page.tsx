@@ -8,7 +8,7 @@ import { useDebouncedCallback } from "use-debounce";
 import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import ActionButton from "@/features/button/components/action";
-import { useToast } from "@/features/toast/context";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -29,25 +29,17 @@ export default function Page() {
   }
 
   // TOASTS AND ERROR STATES
-  const { addToast } = useToast();
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { errors, handleError, clearAllErrors, handleGenericError } =
+    useFormErrors();
 
   const handleConfirmPasswordChange = (value: string) => {
-    setErrors((prev) => ({ ...prev, confirmPassword: "", api: "" }));
+    handleError("confirmPassword", "");
+    handleError("api", "");
     setConfirmPassword(value);
   };
 
-  const handleErrors = (field: string, message: string) => {
-    setErrors((prev) => ({
-      ...prev,
-      [field]: message,
-    }));
-
-    if (field === "api") addToast("error", message);
-  };
-
   const handlePasswordChange = useDebouncedCallback((password) => {
-    if (errors.password) setErrors((prev) => ({ ...prev, password: "" }));
+    if (errors.password) handleError("password", "");
 
     if (password.length === 0) {
       setPasswordCriteria({});
@@ -72,12 +64,12 @@ export default function Page() {
           });
         } else {
           console.error("Fetch error:", res.status);
-          addToast("error", MESSAGES.ERROR_GENERIC);
+          handleGenericError();
         }
       })
       .catch((err) => {
         console.error("Fetch error:", err);
-        addToast("error", MESSAGES.ERROR_GENERIC);
+        handleGenericError();
       });
   }, 300);
 
@@ -86,18 +78,18 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    setErrors({});
+    clearAllErrors();
 
     if (!newPassword) {
-      handleErrors("password", MESSAGES.ERROR_PASSWORD_MISSING);
+      handleError("password", MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
     if (!passwordIsStrong()) {
-      handleErrors("password", MESSAGES.ERROR_PASSWORD_WEAK);
+      handleError("password", MESSAGES.ERROR_PASSWORD_WEAK);
       return false;
     }
     if (newPassword !== confirmPassword) {
-      handleErrors("confirmPassword", MESSAGES.ERROR_PASSWORD_MISMATCH);
+      handleError("confirmPassword", MESSAGES.ERROR_PASSWORD_MISMATCH);
       return false;
     }
 
@@ -118,17 +110,17 @@ export default function Page() {
         const errorMessage = formatApiError(body);
 
         if (res.status === 404) {
-          addToast("error", MESSAGES.ERROR_GENERIC);
+          handleGenericError();
         } else if (body.error?.["new_password"]) {
-          handleErrors("password", MESSAGES.ERROR_PASSWORD_REUSE);
+          handleError("password", MESSAGES.ERROR_PASSWORD_REUSE);
         } else {
-          handleErrors("api", errorMessage);
+          handleError("api", errorMessage);
         }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+      handleGenericError();
       return false;
     }
   };

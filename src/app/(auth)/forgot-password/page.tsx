@@ -10,7 +10,7 @@ import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import { useToast } from "@/features/toast/context";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -19,21 +19,13 @@ export default function Page() {
   const [emailSent, setEmailSent] = useState(false);
 
   // TOASTS AND ERROR STATES
-  const { addToast } = useToast();
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const { errors, handleError, clearAllErrors, handleGenericError } =
+    useFormErrors();
 
   const handleEmailChange = (value: string) => {
-    setErrors((prev) => ({ ...prev, email: "", api: "" }));
+    handleError("email", "");
+    handleError("api", "");
     setEmail(value);
-  };
-
-  const handleErrors = (field: string, message: string) => {
-    setErrors((prev) => ({
-      ...prev,
-      [field]: message,
-    }));
-
-    if (field === "api") addToast("error", message);
   };
 
   const stopRefresh = (e: React.FormEvent) => {
@@ -41,10 +33,10 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    setErrors({});
+    clearAllErrors();
 
     if (!email) {
-      handleErrors("email", MESSAGES.ERROR_EMAIL_MISSING);
+      handleError("email", MESSAGES.ERROR_EMAIL_MISSING);
       return false;
     }
 
@@ -63,17 +55,17 @@ export default function Page() {
         const errorMessage = formatApiError(body);
 
         if (res.status === 429) {
-          handleErrors("rate_limit", errorMessage || MESSAGES.ERROR_RATE_LIMIT);
+          handleError("rate_limit", errorMessage);
         } else if (errorMessage.includes("Email:")) {
-          handleErrors("email", errorMessage.split("Email:")[1].trim());
+          handleError("email", errorMessage.split("Email:")[1].trim());
         } else {
-          handleErrors("api", errorMessage);
+          handleError("api", errorMessage);
         }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+      handleGenericError();
       return false;
     }
   };
