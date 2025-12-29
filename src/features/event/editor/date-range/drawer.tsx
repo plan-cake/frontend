@@ -44,7 +44,7 @@ export default function DateRangeDrawer({
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger>
+      <Dialog.Trigger className="hover:cursor-pointer">
         <SpecificDateRangeDisplay startDate={startDate} endDate={endDate} />
       </Dialog.Trigger>
 

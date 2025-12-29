@@ -24,7 +24,7 @@ export default function DateRangePopover({
 
   return (
     <Popover.Root>
-      <Popover.Trigger>
+      <Popover.Trigger className="hover:cursor-pointer">
         <SpecificDateRangeDisplay startDate={startDate} endDate={endDate} />
       </Popover.Trigger>
 
