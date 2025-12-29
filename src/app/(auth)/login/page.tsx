@@ -5,7 +5,7 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import { Banner } from "@/components/banner";
+import RateLimitBanner from "@/components/banner/rate-limit";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
@@ -98,9 +98,7 @@ export default function Page() {
 
         {/* Rate Limit Error */}
         {errors.rate_limit && (
-          <Banner type="error" title="Woah! Slow down" className="mb-4 w-full">
-            {errors.rate_limit}
-          </Banner>
+          <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
         )}
 
         {/* Email */}

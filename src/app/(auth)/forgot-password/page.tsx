@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import Link from "next/link";
 
-import { Banner } from "@/components/banner";
+import RateLimitBanner from "@/components/banner/rate-limit";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
@@ -97,13 +97,7 @@ export default function Page() {
 
           {/* Rate Limit Error */}
           {errors.rate_limit && (
-            <Banner
-              type="error"
-              title="Woah! Slow down"
-              className="mb-4 w-full"
-            >
-              {errors.rate_limit}
-            </Banner>
+            <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
           )}
 
           {/* Email */}

@@ -4,7 +4,7 @@ import { useContext, useState } from "react";
 
 import Link from "next/link";
 
-import { Banner } from "@/components/banner";
+import { Banner } from "@/components/banner/banner";
 import HeaderSpacer from "@/components/header-spacer";
 import EventGrid, {
   EventGridProps,

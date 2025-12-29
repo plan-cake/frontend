@@ -6,7 +6,7 @@ import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-import { Banner } from "@/components/banner";
+import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import TextInputField from "@/components/text-input-field";
@@ -164,9 +164,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 
       {/* Rate Limit Error */}
       {errors.rate_limit && (
-        <Banner type="error" title="Woah! Slow down" className="mb-8 w-full">
-          {errors.rate_limit}
-        </Banner>
+        <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
       )}
 
       <div className="-mb-1 flex w-full items-center justify-between">
