@@ -1,10 +1,10 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import FormSelectorField from "@/components/selector/selector-field";
 import { useEventInfo } from "@/core/event/use-event-info";
 import DurationSelector from "@/features/event/components/selectors/duration";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { EventEditorType } from "@/features/event/editor/types";
+import FormSelectorField from "@/features/selector/components/selector-field";
 import { cn } from "@/lib/utils/classname";
 
 type AdvancedOptionsProps = {

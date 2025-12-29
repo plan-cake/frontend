@@ -3,8 +3,8 @@ import { useState, useEffect, useRef } from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { Cross1Icon } from "@radix-ui/react-icons";
 
-import { SelectorProps } from "@/components/selector/type";
 import ActionButton from "@/features/button/components/action";
+import { SelectorProps } from "@/features/selector/types";
 import { cn } from "@/lib/utils/classname";
 
 export default function SelectorDrawer<TValue extends string | number>({

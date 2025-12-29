@@ -1,4 +1,4 @@
-import Dropdown from "@/components/selector/dropdown";
+import Dropdown from "@/features/selector/components/dropdown";
 
 type EventTypeSelectProps = {
   id: string;

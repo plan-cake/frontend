@@ -1,4 +1,4 @@
-import Selector from "@/components/selector/selector";
+import Selector from "@/features/selector/components/selector";
 
 const durationOptions = [
   { label: "None", value: 0 },

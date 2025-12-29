@@ -1,4 +1,4 @@
-import Selector from "@/components/selector/selector";
+import Selector from "@/features/selector/components/selector";
 
 type TimeSelectorProps = {
   id: string;

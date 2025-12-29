@@ -1,6 +1,6 @@
-import SelectorDrawer from "@/components/selector/drawer";
-import Dropdown from "@/components/selector/dropdown";
-import { SelectorProps } from "@/components/selector/type";
+import SelectorDrawer from "@/features/selector/components/drawer";
+import Dropdown from "@/features/selector/components/dropdown";
+import { SelectorProps } from "@/features/selector/types";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { cn } from "@/lib/utils/classname";
 
