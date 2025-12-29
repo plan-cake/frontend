@@ -1,9 +1,9 @@
 import * as Popover from "@radix-ui/react-popover";
 import { fromZonedTime } from "date-fns-tz";
 
+import { Calendar } from "@/features/event/editor/date-range/calendars/month";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
-import { Calendar } from "@/features/event/editor/month-calendar";
 import { cn } from "@/lib/utils/classname";
 
 export default function DateRangePopover({

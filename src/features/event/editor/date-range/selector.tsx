@@ -5,15 +5,15 @@ import * as Switch from "@radix-ui/react-switch";
 import { DateRange } from "react-day-picker";
 
 import FormSelectorField from "@/components/selector/selector-field";
+import WeekdayCalendar from "@/features/event/editor/date-range/calendars/weekday";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
+import EventTypeSelect from "@/features/event/editor/date-range/event-type-select";
 import DateRangePopover from "@/features/event/editor/date-range/popover";
-import EventTypeSelect from "@/features/event/editor/event-type-select";
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 
-export default function DateRangeSelector({
+export default function DateRangeSelection({
   earliestDate,
   eventRange,
   editing = false,
@@ -90,5 +90,4 @@ export default function DateRangeSelector({
       </div>
     </div>
   );
-  // }
 }

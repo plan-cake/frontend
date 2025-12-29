@@ -11,9 +11,9 @@ import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
+import TimeSelector from "@/features/event/components/selectors/time";
 import AdvancedOptions from "@/features/event/editor/advanced-options";
-import DateRangeSelector from "@/features/event/editor/date-range/selector";
-import TimeSelector from "@/features/event/editor/time-selector";
+import DateRangeSelection from "@/features/event/editor/date-range/selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
@@ -147,7 +147,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       >
         {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
-          <DateRangeSelector
+          <DateRangeSelection
             earliestDate={earliestCalendarDate}
             eventRange={eventRange}
             editing={type === "edit"}
