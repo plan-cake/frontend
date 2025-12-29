@@ -45,7 +45,7 @@ export default function SelectorDrawer<TValue extends string | number>({
         id={id}
         className={cn(
           "inline-flex items-center rounded-full text-start hover:cursor-pointer focus:outline-none",
-          "bg-loading text-accent px-3 py-1",
+          "bg-accent/15 active:bg-accent/20 text-accent px-3 py-1",
         )}
         aria-label={`Select ${dialogTitle}`}
       >

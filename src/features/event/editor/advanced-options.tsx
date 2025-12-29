@@ -59,7 +59,7 @@ function Options({
 
   return (
     <>
-      <FormSelectorField label="TIMEZONE" htmlFor="timezone-select" isVertical>
+      <FormSelectorField label="Timezone" htmlFor="timezone-select" isVertical>
         <TimeZoneSelector
           id="timezone-select"
           value={eventRange.timezone}
@@ -67,7 +67,7 @@ function Options({
         />
       </FormSelectorField>
 
-      <FormSelectorField label="DURATION" htmlFor="duration-select" isVertical>
+      <FormSelectorField label="Duration" htmlFor="duration-select" isVertical>
         <DurationSelector
           id="duration-select"
           value={eventRange.duration}

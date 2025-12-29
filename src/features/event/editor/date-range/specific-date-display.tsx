@@ -11,6 +11,10 @@ export default function SpecificDateRangeDisplay({
 }: SpecificDateRangeDisplayProps) {
   const displayFrom = startDate ? format(startDate, "EEE MMMM d, yyyy") : "";
   const displayTo = endDate ? format(endDate, "EEE MMMM d, yyyy") : "";
+
+  const displayStyle =
+    "text-accent bg-accent/15 active:bg-accent/25 hover:md:bg-accent/15 rounded-full px-3 py-1 focus:outline-none md:bg-transparent";
+
   return (
     <form className="flex w-full flex-col gap-y-2 md:flex-row md:gap-4">
       {/* Start Date */}
@@ -18,11 +22,7 @@ export default function SpecificDateRangeDisplay({
         <label htmlFor="start-date" className="text-gray-400 md:hidden">
           FROM
         </label>
-        <span
-          id="start-date"
-          className="bg-loading text-accent hover:md:bg-loading rounded-full px-3 py-1 focus:outline-none md:bg-transparent"
-          aria-label="Start date"
-        >
+        <span id="start-date" className={displayStyle} aria-label="Start date">
           {displayFrom}
         </span>
       </div>
@@ -34,11 +34,7 @@ export default function SpecificDateRangeDisplay({
         <label htmlFor="end-date" className="text-gray-400 md:hidden">
           UNTIL
         </label>
-        <span
-          id="end-date"
-          className="text-accent bg-loading hover:md:bg-loading rounded-full px-3 py-1 focus:outline-none md:bg-transparent md:text-end"
-          aria-label="End date"
-        >
+        <span id="end-date" className={displayStyle} aria-label="End date">
           {displayTo}
         </span>
       </div>
