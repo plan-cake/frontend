@@ -110,7 +110,7 @@ export default function Page() {
         const errorMessage = formatApiError(body);
 
         if (res.status === 404) {
-          handleGenericError();
+          handleError("api", MESSAGES.ERROR_RESET_TOKEN_INVALID);
         } else if (body.error?.["new_password"]) {
           handleError("password", MESSAGES.ERROR_PASSWORD_REUSE);
         } else {
