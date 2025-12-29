@@ -1,6 +1,5 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
-import { useEventInfo } from "@/core/event/use-event-info";
 import DurationSelector from "@/features/event/components/selectors/duration";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { EventEditorType } from "@/features/event/editor/types";
@@ -10,14 +9,17 @@ import { cn } from "@/lib/utils/classname";
 type AdvancedOptionsProps = {
   type: EventEditorType;
   errors: Record<string, string>;
+
+  // handlers and state
+  timezone: string;
+  duration: number;
+  customCode: string;
+  setTimezone: (tz: string) => void;
+  setDuration: (val: number) => void;
   handleCustomCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function AdvancedOptions({
-  type,
-  errors,
-  handleCustomCodeChange,
-}: AdvancedOptionsProps) {
+export default function AdvancedOptions(props: AdvancedOptionsProps) {
   return (
     <>
       {/* Mobile: collapsible */}
@@ -26,11 +28,7 @@ export default function AdvancedOptions({
           Advanced Options
         </summary>
         <div className="mx-4 mb-4 flex flex-col gap-1">
-          <Options
-            type={type}
-            errors={errors}
-            handleCustomCodeChange={handleCustomCodeChange}
-          />
+          <Options {...props} />
         </div>
       </details>
 
@@ -38,11 +36,7 @@ export default function AdvancedOptions({
       <div className="hidden md:block">
         <div className="font-medium">Advanced Options</div>
         <div className="mt-2 flex flex-col gap-1">
-          <Options
-            type={type}
-            errors={errors}
-            handleCustomCodeChange={handleCustomCodeChange}
-          />
+          <Options {...props} />
         </div>
       </div>
     </>
@@ -52,17 +46,19 @@ export default function AdvancedOptions({
 function Options({
   type,
   errors,
+  timezone,
+  duration,
+  customCode,
+  setTimezone,
+  setDuration,
   handleCustomCodeChange,
 }: AdvancedOptionsProps) {
-  const { state, setTimezone, setDuration } = useEventInfo();
-  const { eventRange, customCode } = state;
-
   return (
     <>
       <FormSelectorField label="Timezone" htmlFor="timezone-select" isVertical>
         <TimeZoneSelector
           id="timezone-select"
-          value={eventRange.timezone}
+          value={timezone}
           onChange={setTimezone}
         />
       </FormSelectorField>
@@ -70,7 +66,7 @@ function Options({
       <FormSelectorField label="Duration" htmlFor="duration-select" isVertical>
         <DurationSelector
           id="duration-select"
-          value={eventRange.duration}
+          value={duration}
           onChange={(v) => setDuration((v as number) || 0)}
         />
       </FormSelectorField>

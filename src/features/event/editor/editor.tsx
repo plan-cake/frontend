@@ -42,6 +42,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setEndTime,
     setDateRange,
     setWeekdayRange,
+    setTimezone,
+    setDuration,
   } = useEventInfo(initialData);
   const { title, customCode, eventRange } = state;
   const router = useRouter();
@@ -196,6 +198,11 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           <AdvancedOptions
             type={type}
             errors={errors}
+            timezone={eventRange.timezone}
+            duration={eventRange.duration}
+            customCode={customCode}
+            setTimezone={setTimezone}
+            setDuration={setDuration}
             handleCustomCodeChange={handleCustomCodeChange}
           />
         </div>
