@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
+import SegmentedControl from "@/components/segmented-control";
 import FormSelectorField from "@/components/selector/selector-field";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
@@ -16,6 +17,7 @@ import AdvancedOptions from "@/features/event/editor/advanced-options";
 import DateRangeSelection from "@/features/event/editor/date-range/selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
+import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import { useToast } from "@/features/toast/context";
 import submitEvent from "@/lib/utils/api/submit-event";
@@ -43,6 +45,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   } = useEventInfo(initialData);
   const { title, customCode, eventRange } = state;
   const router = useRouter();
+
+  const [mobileTab, setMobileTab] = useState<"details" | "preview">("details");
 
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
@@ -139,13 +143,24 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         </div>
       </div>
 
+      <div className="md:hidden">
+        <SegmentedControl
+          value={mobileTab}
+          onChange={setMobileTab}
+          options={[
+            { label: "Event Details", value: "details" },
+            { label: "Grid Preview", value: "preview" },
+          ]}
+        />
+      </div>
+
       <div
         className={cn(
-          "grid w-full grid-cols-1 gap-y-2",
+          "w-full grid-cols-1 gap-y-2",
+          mobileTab === "preview" ? "hidden md:grid" : "grid",
           "md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1",
         )}
       >
-        {/* Date range picker */}
         <div className="flex items-center md:col-span-10">
           <DateRangeSelection
             earliestDate={earliestCalendarDate}
@@ -157,7 +172,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
 
-        {/* From/To */}
         <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
         <div className="md:col-start-1 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
@@ -186,13 +200,25 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
 
+        <div className="h-16 md:hidden" />
+
         <div className="md:row-span-15 hidden flex-1 md:col-span-10 md:col-start-2 md:row-start-2 md:block">
           <GridPreviewDialog eventRange={eventRange} />
         </div>
       </div>
 
-      <div className="min-h-screen md:hidden">
-        <GridPreviewDialog eventRange={eventRange} />
+      <div
+        className={cn(
+          "bg-panel min-h-screen rounded-3xl p-4 md:hidden",
+          mobileTab === "details" ? "hidden" : "block",
+        )}
+      >
+        <ScheduleGrid
+          mode="preview"
+          eventRange={eventRange}
+          disableSelect={true}
+          timezone={eventRange.timezone}
+        />
         <div className="h-16" />
       </div>
 
