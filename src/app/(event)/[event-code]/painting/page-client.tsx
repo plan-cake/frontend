@@ -3,7 +3,9 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
+import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
@@ -17,7 +19,8 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { useToast } from "@/features/toast/context";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { MESSAGES } from "@/lib/messages";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function ClientPage({
   eventCode,
@@ -41,23 +44,47 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
-    else if (e.target.value === "") {
+
+    if (displayName === "") {
       setErrors((prev) => ({
         ...prev,
-        displayName: "Please enter your name.",
+        displayName: MESSAGES.ERROR_NAME_MISSING,
       }));
+      return;
     }
-    setDisplayName(e.target.value);
-  };
+
+    try {
+      const response = await fetch("/api/availability/check-display-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_code: eventCode,
+          display_name: displayName,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          displayName: MESSAGES.ERROR_NAME_TAKEN,
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, displayName: "" }));
+      }
+    } catch (error) {
+      console.error("Error checking name availability:", error);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+    }
+  }, 300);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
     setErrors({}); // reset errors
 
     try {
-      const validationErrors = await validateAvailabilityData(state, eventCode);
+      const validationErrors = await validateAvailabilityData(state);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         Object.values(validationErrors).forEach((error) =>
@@ -88,12 +115,22 @@ export default function ClientPage({
         router.push(`/${eventCode}`);
         return true;
       } else {
-        addToast("error", formatApiError(await response.json()));
+        const body = await response.json();
+        const message = formatApiError(body);
+
+        if (response.status === 429) {
+          setErrors((prev) => ({
+            ...prev,
+            rate_limit: message || MESSAGES.ERROR_RATE_LIMIT,
+          }));
+        } else {
+          addToast("error", message);
+        }
         return false;
       }
     } catch (error) {
       console.error("Error submitting availability:", error);
-      addToast("error", "An unexpected error occurred. Please try again.");
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };
@@ -118,6 +155,12 @@ export default function ClientPage({
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
+
+      {/* Rate Limit Error */}
+      {errors.rate_limit && (
+        <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
+      )}
+
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
@@ -145,7 +188,10 @@ export default function ClientPage({
               required
               type="text"
               value={displayName}
-              onChange={handleNameChange}
+              onChange={(e) => {
+                setDisplayName(e.target.value);
+                handleNameChange(e.target.value);
+              }}
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
                 errors.displayName

@@ -3,7 +3,9 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
+import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
@@ -20,6 +22,7 @@ import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import FormSelectorField from "@/features/selector/components/selector-field";
 import { useToast } from "@/features/toast/context";
+import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
@@ -54,18 +57,58 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = (e: string) => {
     if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
-    else if (e.target.value === "") {
-      setErrors((prev) => ({ ...prev, title: "Please enter an event name." }));
+    else if (e === "") {
+      setErrors((prev) => ({
+        ...prev,
+        title: MESSAGES.ERROR_EVENT_NAME_MISSING,
+      }));
     }
-    setTitle(e.target.value);
+    setTitle(e);
   };
 
-  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
-    setCustomCode(e.target.value);
+  const handleTimeRangeChange = (from: number, to: number) => {
+    if (errors.timeRange) setErrors((prev) => ({ ...prev, timeRange: "" }));
+
+    if (from >= to) {
+      setErrors((prev) => ({
+        ...prev,
+        timeRange: MESSAGES.ERROR_EVENT_RANGE_INVALID,
+      }));
+    }
+
+    setTimeRange({ from, to });
   };
+
+  const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
+    if (type === "edit") return;
+
+    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
+    if (customCode === "") {
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/event/check-code/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ custom_code: customCode }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          customCode: MESSAGES.ERROR_EVENT_CODE_TAKEN,
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, customCode: "" }));
+      }
+    } catch (error) {
+      console.error("Error checking custom code availability:", error);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+    }
+  }, 300);
 
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
@@ -86,11 +129,13 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
+        addToast,
+        setErrors,
       );
       return success;
     } catch (error) {
       console.error("Submission failed:", error);
-      addToast("error", "An unexpected error occurred. Please try again.");
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };
@@ -119,24 +164,22 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
     <div className="flex min-h-dvh flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
-      <div className="flex w-full items-center justify-between">
+
+      {/* Rate Limit Error */}
+      {errors.rate_limit && (
+        <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
+      )}
+
+      <div className="-mb-1 flex w-full items-center justify-between">
         <div className="md:w-1/2">
-          <p
-            className={`text-error text-right text-xs ${errors.title ? "visible" : "invisible"}`}
-          >
-            {errors.title ? errors.title : "Error Placeholder"}
-          </p>
-          <input
+          <TextInputField
+            id={"event-name"}
             type="text"
+            label="Event Name"
             value={title}
             onChange={handleNameChange}
-            placeholder="add event name"
-            className={cn(
-              "border-b-1 w-full p-1 text-2xl focus:outline-none",
-              errors.title
-                ? "border-error placeholder:text-error"
-                : "border-gray-400",
-            )}
+            error={errors.title || errors.api}
+            classname="text-2xl font-semibold"
           />
         </div>
         <div className="hidden gap-2 md:flex">

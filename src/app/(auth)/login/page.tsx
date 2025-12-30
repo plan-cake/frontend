@@ -5,12 +5,15 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import RateLimitBanner from "@/components/banner/rate-limit";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
-import TextInputField from "@/features/auth/components/text-input-field";
+import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
+import { MESSAGES } from "@/lib/messages";
 import { LoginContext } from "@/lib/providers";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
@@ -19,17 +22,35 @@ export default function Page() {
   const { setLoggedIn } = useContext(LoginContext);
   const router = useRouter();
 
+  // TOASTS AND ERROR STATES
+  const { errors, handleError, clearAllErrors, handleGenericError } =
+    useFormErrors();
+
+  const handleEmailChange = (value: string) => {
+    handleError("email", "");
+    handleError("api", "");
+    setEmail(value);
+  };
+
+  const handlePasswordChange = (value: string) => {
+    handleError("password", "");
+    handleError("api", "");
+    setPassword(value);
+  };
+
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   const handleSubmit = async () => {
+    clearAllErrors();
+
     if (!email) {
-      alert("Missing email");
+      handleError("email", MESSAGES.ERROR_EMAIL_MISSING);
       return false;
     }
     if (!password) {
-      alert("Missing password");
+      handleError("password", MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
 
@@ -45,38 +66,61 @@ export default function Page() {
         router.push("/dashboard");
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        const body = await res.json();
+
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 429) {
+          handleError("rate_limit", errorMessage);
+        } else if (errorMessage.includes("Email:")) {
+          handleError("email", errorMessage.split("Email:")[1].trim());
+        } else if (errorMessage.includes("Password:")) {
+          handleError("password", errorMessage.split("Password:")[1].trim());
+        } else {
+          handleError("api", errorMessage);
+        }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      handleGenericError();
       return false;
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
           login
         </h1>
 
+        {/* Rate Limit Error */}
+        {errors.rate_limit && (
+          <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
+        )}
+
         {/* Email */}
         <TextInputField
+          id={"email"}
           type="email"
-          placeholder="Email"
+          label="Email*"
           value={email}
-          onChange={setEmail}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
         />
 
         {/* Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="Password"
+          label="Password*"
           value={password}
-          onChange={setPassword}
+          onChange={handlePasswordChange}
+          outlined
+          error={errors.password || errors.api}
         />
 
         <div className="flex w-full items-start justify-between">
