@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -9,6 +10,7 @@ import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
+import TextInputField from "@/components/text-input-field";
 import { EventRange, SpecificDateRange } from "@/core/event/types";
 import { useEventInfo } from "@/core/event/use-event-info";
 import ActionButton from "@/features/button/components/action";
@@ -68,17 +70,28 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     setTitle(e);
   };
 
-  const handleTimeRangeChange = (from: number, to: number) => {
+  const handleTimeRangeChange = (type: string, newTime: number) => {
     if (errors.timeRange) setErrors((prev) => ({ ...prev, timeRange: "" }));
 
-    if (from >= to) {
+    // Validate time range
+    const { from, to } = eventRange.timeRange;
+    const updatedFrom = type === "start" ? newTime : from;
+    const updatedTo = type === "end" ? newTime : to;
+
+    if (updatedFrom >= updatedTo) {
       setErrors((prev) => ({
         ...prev,
         timeRange: MESSAGES.ERROR_EVENT_RANGE_INVALID,
       }));
+    } else {
+      setErrors((prev) => ({ ...prev, timeRange: "" }));
     }
 
-    setTimeRange({ from, to });
+    if (type === "start") {
+      setStartTime(newTime);
+    } else {
+      setEndTime(newTime);
+    }
   };
 
   const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
@@ -102,6 +115,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           customCode: MESSAGES.ERROR_EVENT_CODE_TAKEN,
         }));
       } else {
+        setCustomCode(customCode);
         setErrors((prev) => ({ ...prev, customCode: "" }));
       }
     } catch (error) {
@@ -217,13 +231,18 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
 
-        <label className="md:col-start-1 md:row-start-2"> Possible Times</label>
+        <label
+          className={`flex items-center gap-2 md:col-start-1 md:row-start-2 ${errors.timeRange ? "text-error" : ""}`}
+        >
+          Possible Times
+          {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
+        </label>
         <div className="md:col-start-1 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
             <TimeSelector
               id="from-time-dropdown"
               value={eventRange.timeRange.from}
-              onChange={setStartTime}
+              onChange={handleTimeRangeChange.bind(null, "start")}
             />
           </FormSelectorField>
         </div>
@@ -232,7 +251,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             <TimeSelector
               id="to-time-dropdown"
               value={eventRange.timeRange.to}
-              onChange={setEndTime}
+              onChange={handleTimeRangeChange.bind(null, "end")}
             />
           </FormSelectorField>
         </div>
@@ -249,9 +268,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             handleCustomCodeChange={handleCustomCodeChange}
           />
         </div>
-
         <div className="h-16 md:hidden" />
-
         <div className="md:row-span-15 hidden flex-1 md:col-span-10 md:col-start-2 md:row-start-2 md:block">
           <GridPreviewDialog eventRange={eventRange} />
         </div>

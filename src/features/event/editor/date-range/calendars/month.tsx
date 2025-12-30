@@ -7,6 +7,7 @@ import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import { MESSAGES } from "@/lib/messages";
 import { cn } from "@/lib/utils/classname";
 
 type CalendarProps = {
@@ -74,7 +75,7 @@ export function Calendar({
       {!isMobile && tooManyDays && (
         <div className="text-error flex items-center justify-center gap-1 font-bold">
           <ExclamationTriangleIcon />
-          Too many days selected. Max is 30 days.
+          {MESSAGES.ERROR_EVENT_RANGE_TOO_LONG}
         </div>
       )}
     </div>

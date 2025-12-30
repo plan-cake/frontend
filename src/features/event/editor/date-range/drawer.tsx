@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
@@ -10,19 +12,19 @@ import { Calendar } from "@/features/event/editor/date-range/calendars/month";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
+import { MESSAGES } from "@/lib/messages";
 
 export default function DateRangeDrawer({
   earliestDate,
   eventRange,
   setDateRange = () => {},
 }: DateRangeProps) {
+  const [tooManyDays, setTooManyDays] = useState(false);
+  const [open, setOpen] = useState(false);
+
   if (eventRange.type !== "specific") {
     return null;
   }
-
-  const [tooManyDays, setTooManyDays] = useState(false);
-
-  const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -67,9 +69,16 @@ export default function DateRangeDrawer({
 
               <Dialog.Title className="flex flex-col text-lg font-semibold">
                 Select Specific Date Range
-                <span className="text-accent text-sm font-normal">
-                  Click a start and end date
-                </span>
+                {tooManyDays ? (
+                  <span className="text-error flex items-center gap-2 text-sm">
+                    <ExclamationTriangleIcon className="h-4 w-4" />
+                    {MESSAGES.ERROR_EVENT_RANGE_TOO_LONG}
+                  </span>
+                ) : (
+                  <span className="text-accent text-sm font-normal">
+                    Click a start and end date
+                  </span>
+                )}
               </Dialog.Title>
             </div>
 
@@ -80,7 +89,7 @@ export default function DateRangeDrawer({
                 from: startDate || undefined,
                 to: endDate || undefined,
               }}
-              setDateRange={setDateRange}
+              setDateRange={checkDateRange}
             />
           </div>
         </Dialog.Content>

@@ -41,8 +41,10 @@ export default function DateRangeSelection({
           onEventTypeChange={setEventType}
         />
       </div>
-      <div className="flex w-fit flex-col justify-center gap-2">
-        <label className="flex items-center gap-2">
+      <div className="flex w-fit flex-col justify-center">
+        <label
+          className={`flex items-center gap-2 ${tooManyDays ? "text-error" : ""}`}
+        >
           Possible Dates
           {tooManyDays && (
             <ExclamationTriangleIcon className="text-error h-4 w-4" />
@@ -52,7 +54,7 @@ export default function DateRangeSelection({
         <FormSelectorField
           label="Choose Days of the Week"
           htmlFor="event-type"
-          classname="md:hidden"
+          classname="md:hidden mb-2"
         >
           <Switch.Root
             id="mode-switch"

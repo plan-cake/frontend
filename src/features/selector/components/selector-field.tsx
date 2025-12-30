@@ -18,8 +18,8 @@ export default function FormSelectorField({
   return (
     <div
       className={cn(
-        "flex items-baseline gap-4",
-        isVertical && "flex-col gap-2",
+        "flex items-center gap-4",
+        isVertical && "flex-col items-start gap-2",
         classname,
       )}
     >
