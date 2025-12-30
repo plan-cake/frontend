@@ -217,10 +217,10 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         className={cn(
           "w-full grid-cols-1 gap-y-2",
           mobileTab === "preview" ? "hidden md:grid" : "grid",
-          "md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1",
+          "md:grow md:grid-cols-[200px_1fr] md:grid-rows-[auto_repeat(7,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-1",
         )}
       >
-        <div className="flex items-center md:col-span-10">
+        <div className="md:col-span-2 md:col-start-1 md:row-start-1">
           <DateRangeSelection
             earliestDate={earliestCalendarDate}
             eventRange={eventRange}
@@ -256,7 +256,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           </FormSelectorField>
         </div>
 
-        <div className="md:content md:col-start-1 md:row-span-7 md:row-start-9 md:flex md:items-end">
+        <div className="md:content md:col-start-1 md:row-start-9 md:flex md:items-end">
           <AdvancedOptions
             type={type}
             errors={errors}
@@ -269,7 +269,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           />
         </div>
         <div className="h-16 md:hidden" />
-        <div className="md:row-span-15 hidden flex-1 md:col-span-10 md:col-start-2 md:row-start-2 md:block">
+        <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
           <GridPreviewDialog eventRange={eventRange} />
         </div>
       </div>

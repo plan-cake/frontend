@@ -12,6 +12,7 @@ import DateRangePopover from "@/features/event/editor/date-range/popover";
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 import FormSelectorField from "@/features/selector/components/selector-field";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import { cn } from "@/lib/utils/classname";
 
 export default function DateRangeSelection({
   earliestDate,
@@ -31,8 +32,13 @@ export default function DateRangeSelection({
   };
 
   return (
-    <div className="mb-4 flex w-full flex-row gap-8">
-      <div className="hidden flex-col gap-2 md:flex">
+    <div
+      className={cn(
+        "grid w-full grid-cols-1 gap-2",
+        "md:grid-cols-[200px_1fr] md:gap-4",
+      )}
+    >
+      <div className="hidden flex-col md:flex">
         <label htmlFor="event-type-select">Type</label>
         <EventTypeSelect
           id="event-type-select"

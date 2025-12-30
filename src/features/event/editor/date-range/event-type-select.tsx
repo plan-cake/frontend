@@ -27,7 +27,7 @@ export default function EventTypeSelect({
           String(value) === "specific" ? "specific" : "weekday",
         )
       }
-      className="min-h-9 min-w-[100px] border-none"
+      className="min-h-9 w-fit min-w-[100px] border-none"
     />
   );
 }
