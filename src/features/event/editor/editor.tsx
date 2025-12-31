@@ -27,6 +27,7 @@ import { useToast } from "@/features/toast/context";
 import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
+import TimeRangeSelection from "./time-range/selector";
 
 type EventEditorProps = {
   type: EventEditorType;
@@ -237,7 +238,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
           Possible Times
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
         </label>
-        <div className="md:col-start-1 md:row-start-3">
+        <div className="gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
             <TimeSelector
               id="from-time-dropdown"
@@ -245,8 +246,9 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               onChange={handleTimeRangeChange.bind(null, "start")}
             />
           </FormSelectorField>
-        </div>
-        <div className="md:col-start-1 md:row-start-4">
+
+          {/* <TimeRangeSelection /> */}
+
           <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
             <TimeSelector
               id="to-time-dropdown"
@@ -254,6 +256,8 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               onChange={handleTimeRangeChange.bind(null, "end")}
             />
           </FormSelectorField>
+
+          <TimeRangeSelection />
         </div>
 
         <div className="md:content md:col-start-1 md:row-start-9 md:flex md:items-end">
