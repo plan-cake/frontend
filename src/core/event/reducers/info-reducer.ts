@@ -35,7 +35,7 @@ export function EventInfoReducer(
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           dateRange: {
             from: new Date().toISOString(),
-            to: new Date().toISOString(),
+            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           },
           timeRange: {
             from: 9,
