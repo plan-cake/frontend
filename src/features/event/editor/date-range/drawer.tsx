@@ -4,34 +4,25 @@ import { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { ExclamationTriangleIcon, Cross1Icon } from "@radix-ui/react-icons";
-import { DateRange } from "react-day-picker";
 
 import { useEventContext } from "@/core/event/context";
 import ActionButton from "@/features/button/components/action";
 import { Calendar } from "@/features/event/editor/date-range/calendars/month";
 import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-import { MESSAGES } from "@/lib/messages";
 
 export default function DateRangeDrawer({
   earliestDate,
   startDate,
   endDate,
 }: SpecificDateRangeDisplayProps) {
-  const { setDateRange } = useEventContext();
+  const { errors, setDateRange } = useEventContext();
 
-  const [tooManyDays, setTooManyDays] = useState(false);
   const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
     return true;
-  };
-
-  const checkDateRange = (range: DateRange | undefined) => {
-    setTooManyDays(checkInvalidDateRangeLength(range));
-    setDateRange(range);
   };
 
   return (
@@ -61,10 +52,10 @@ export default function DateRangeDrawer({
 
               <Dialog.Title className="flex flex-col text-lg font-semibold">
                 Select Specific Date Range
-                {tooManyDays ? (
+                {errors.dateRange ? (
                   <span className="text-error flex items-center gap-2 text-sm">
                     <ExclamationTriangleIcon className="h-4 w-4" />
-                    {MESSAGES.ERROR_EVENT_RANGE_TOO_LONG}
+                    {errors.dateRange}
                   </span>
                 ) : (
                   <span className="text-accent text-sm font-normal">
@@ -81,7 +72,8 @@ export default function DateRangeDrawer({
                 from: startDate || undefined,
                 to: endDate || undefined,
               }}
-              setDateRange={checkDateRange}
+              setDateRange={setDateRange}
+              dateRangeError={errors.dateRange}
             />
           </div>
         </Dialog.Content>

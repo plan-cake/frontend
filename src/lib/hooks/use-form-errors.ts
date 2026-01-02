@@ -14,7 +14,7 @@ export function useFormErrors() {
    * sets a default rate limit message.
    */
   const handleError = (field: string, message: string) => {
-    if (field === "api") {
+    if (field === "api" || field === "toast") {
       addToast("error", message);
     } else if (field === "rate_limit" && !message) {
       message = MESSAGES.ERROR_RATE_LIMIT;

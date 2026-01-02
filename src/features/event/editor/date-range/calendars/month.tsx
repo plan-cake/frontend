@@ -5,9 +5,7 @@ import { useState } from "react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
 
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
-import { MESSAGES } from "@/lib/messages";
 import { cn } from "@/lib/utils/classname";
 
 type CalendarProps = {
@@ -15,6 +13,7 @@ type CalendarProps = {
   className?: string;
   selectedRange: DateRange;
   setDateRange: (range: DateRange | undefined) => void;
+  dateRangeError?: string;
 };
 
 export function Calendar({
@@ -22,6 +21,7 @@ export function Calendar({
   className,
   selectedRange,
   setDateRange,
+  dateRangeError,
 }: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -41,14 +41,6 @@ export function Calendar({
       : today;
 
   const [month, setMonth] = useState(startDate);
-  const [tooManyDays, setTooManyDays] = useState(() => {
-    return checkInvalidDateRangeLength(selectedRange);
-  });
-
-  const checkDateRange = (range: DateRange | undefined) => {
-    setTooManyDays(checkInvalidDateRangeLength(range));
-    setDateRange(range);
-  };
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
@@ -66,16 +58,16 @@ export function Calendar({
         month={month}
         onMonthChange={setMonth}
         selected={selectedRange}
-        onSelect={checkDateRange}
+        onSelect={setDateRange}
         disabled={{ before: startDate }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
         }}
       />
-      {!isMobile && tooManyDays && (
+      {!isMobile && dateRangeError && (
         <div className="text-error flex items-center justify-center gap-1 font-bold">
           <ExclamationTriangleIcon />
-          {MESSAGES.ERROR_EVENT_RANGE_TOO_LONG}
+          {dateRangeError}
         </div>
       )}
     </div>

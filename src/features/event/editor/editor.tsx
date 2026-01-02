@@ -23,7 +23,6 @@ import { validateEventData } from "@/features/event/editor/validate-data";
 import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import FormSelectorField from "@/features/selector/components/selector-field";
-import { useToast } from "@/features/toast/context";
 import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
@@ -48,56 +47,27 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
 }
 
 function EventEditorContent({ type, initialData }: EventEditorProps) {
-  const { state, setTitle, setCustomCode, setStartTime, setEndTime } =
-    useEventContext();
+  const {
+    state,
+    setTitle,
+    setCustomCode,
+    setStartTime,
+    setEndTime,
+    errors,
+    handleError,
+    clearAllErrors,
+    handleGenericError,
+  } = useEventContext();
   const { title, customCode, eventRange } = state;
   const router = useRouter();
 
   const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
 
   // TOASTS AND ERROR STATES
-  const { addToast } = useToast();
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleNameChange = (e: string) => {
-    if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
-    else if (e === "") {
-      setErrors((prev) => ({
-        ...prev,
-        title: MESSAGES.ERROR_EVENT_NAME_MISSING,
-      }));
-    }
-    setTitle(e);
-  };
-
-  const handleTimeRangeChange = (type: string, newTime: number) => {
-    if (errors.timeRange) setErrors((prev) => ({ ...prev, timeRange: "" }));
-
-    // Validate time range
-    const { from, to } = eventRange.timeRange;
-    const updatedFrom = type === "start" ? newTime : from;
-    const updatedTo = type === "end" ? newTime : to;
-
-    if (updatedFrom >= updatedTo) {
-      setErrors((prev) => ({
-        ...prev,
-        timeRange: MESSAGES.ERROR_EVENT_RANGE_INVALID,
-      }));
-    } else {
-      setErrors((prev) => ({ ...prev, timeRange: "" }));
-    }
-
-    if (type === "start") {
-      setStartTime(newTime);
-    } else {
-      setEndTime(newTime);
-    }
-  };
-
   const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
     if (type === "edit") return;
 
-    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
+    if (errors.customCode) handleError("customCode", "");
     if (customCode === "") {
       return;
     }
@@ -110,31 +80,27 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       });
 
       if (!response.ok) {
-        setErrors((prev) => ({
-          ...prev,
-          customCode: MESSAGES.ERROR_EVENT_CODE_TAKEN,
-        }));
+        handleError("customCode", MESSAGES.ERROR_EVENT_CODE_TAKEN);
       } else {
         setCustomCode(customCode);
-        setErrors((prev) => ({ ...prev, customCode: "" }));
       }
     } catch (error) {
       console.error("Error checking custom code availability:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+      handleError("api", MESSAGES.ERROR_GENERIC);
     }
   }, 300);
 
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
-    setErrors({}); // reset errors
+    clearAllErrors();
 
     try {
       const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        Object.values(validationErrors).forEach((error) =>
-          addToast("error", error),
-        );
+        Object.values(validationErrors).forEach(([field, error]) => {
+          handleError(field, error);
+          handleError("toast", error);
+        });
         return false;
       }
 
@@ -143,13 +109,13 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
-        addToast,
-        setErrors,
+        handleError,
       );
+
       return success;
     } catch (error) {
       console.error("Submission failed:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+      handleGenericError();
       return false;
     }
   };
@@ -187,7 +153,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
             type="text"
             label="Event Name"
             value={title}
-            onChange={handleNameChange}
+            onChange={setTitle}
             error={errors.title || errors.api}
             classname="text-2xl font-semibold"
           />
@@ -231,7 +197,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
             <TimeSelector
               id="from-time-dropdown"
               value={eventRange.timeRange.from}
-              onChange={handleTimeRangeChange.bind(null, "start")}
+              onChange={setStartTime}
             />
           </FormSelectorField>
 
@@ -239,7 +205,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
             <TimeSelector
               id="to-time-dropdown"
               value={eventRange.timeRange.to}
-              onChange={handleTimeRangeChange.bind(null, "end")}
+              onChange={setEndTime}
             />
           </FormSelectorField>
         </div>

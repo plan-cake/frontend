@@ -1,9 +1,6 @@
-import { useState } from "react";
-
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import * as Switch from "@radix-ui/react-switch";
 import { fromZonedTime } from "date-fns-tz";
-import { DateRange } from "react-day-picker";
 
 import { useEventContext } from "@/core/event/context";
 import { SpecificDateRange } from "@/core/event/types";
@@ -12,7 +9,6 @@ import { DateRangeProps } from "@/features/event/editor/date-range/date-range-pr
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
 import EventTypeSelect from "@/features/event/editor/date-range/event-type-select";
 import DateRangePopover from "@/features/event/editor/date-range/popover";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 import FormSelectorField from "@/features/selector/components/selector-field";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { cn } from "@/lib/utils/classname";
@@ -20,16 +16,10 @@ import { cn } from "@/lib/utils/classname";
 export default function DateRangeSelection({
   editing = false,
 }: DateRangeProps) {
-  const { state, setEventType, setWeekdayRange } = useEventContext();
+  const { state, setEventType, setWeekdayRange, errors } = useEventContext();
   const { eventRange } = state;
 
   const rangeType = eventRange?.type ?? "specific";
-  const [tooManyDays, setTooManyDays] = useState(false);
-
-  const checkDateRange = (range: DateRange | undefined) => {
-    setTooManyDays(checkInvalidDateRangeLength(range));
-    setDateRange(range);
-  };
 
   return (
     <div
@@ -44,10 +34,10 @@ export default function DateRangeSelection({
       </div>
       <div className="flex w-fit flex-col justify-center">
         <label
-          className={`flex items-center gap-2 ${tooManyDays ? "text-error" : ""}`}
+          className={`flex items-center gap-2 ${errors.dateRange ? "text-error" : ""}`}
         >
           Possible Dates
-          {tooManyDays && (
+          {errors.dateRange && (
             <ExclamationTriangleIcon className="text-error h-4 w-4" />
           )}
         </label>

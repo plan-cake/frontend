@@ -4,6 +4,13 @@ import { DateRange } from "react-day-picker";
 
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
+import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
+import { MESSAGES } from "@/lib/messages";
+
+const checkTimeRange = (from: number, to: number): boolean => {
+  return to > from;
+};
 
 export function useEventInfo(initialData?: {
   title: string;
@@ -33,15 +40,29 @@ export function useEventInfo(initialData?: {
   }
 
   const [state, dispatch] = useReducer(EventInfoReducer, initialState);
+  const { errors, handleError, handleGenericError, clearAllErrors } =
+    useFormErrors();
 
-  // DISPATCHERS
-  const setTitle = useCallback((title: string) => {
-    dispatch({ type: "SET_TITLE", payload: title });
-  }, []);
+  // DISPATCHERS (checks input, sets errors if needed)
+  const setTitle = useCallback(
+    (title: string): void => {
+      if (errors.title) handleError("title", "");
+      else if (title === "") {
+        handleError("title", MESSAGES.ERROR_EVENT_NAME_MISSING);
+      }
 
-  const setCustomCode = useCallback((code: string) => {
-    dispatch({ type: "SET_CUSTOM_CODE", payload: code });
-  }, []);
+      dispatch({ type: "SET_TITLE", payload: title });
+    },
+    [errors.title, handleError],
+  );
+
+  const setCustomCode = useCallback(
+    (code: string) => {
+      handleError("customCode", "");
+      dispatch({ type: "SET_CUSTOM_CODE", payload: code });
+    },
+    [handleError],
+  );
 
   const setEventRangeInfo = useCallback((info: EventRange) => {
     dispatch({ type: "SET_RANGE_INFO", payload: info });
@@ -59,24 +80,46 @@ export function useEventInfo(initialData?: {
     dispatch({ type: "SET_DURATION", payload: duration });
   }, []);
 
-  const setStartTime = useCallback((time: number) => {
-    dispatch({ type: "SET_START_TIME", payload: time });
-  }, []);
+  const setStartTime = useCallback(
+    (time: number) => {
+      if (checkTimeRange(time, state.eventRange.timeRange.to)) {
+        handleError("timeRange", "");
+        dispatch({ type: "SET_START_TIME", payload: time });
+      } else handleError("timeRange", MESSAGES.ERROR_EVENT_RANGE_INVALID);
+    },
+    [state, handleError],
+  );
 
-  const setEndTime = useCallback((time: number) => {
-    dispatch({ type: "SET_END_TIME", payload: time });
-  }, []);
+  const setEndTime = useCallback(
+    (time: number) => {
+      if (checkTimeRange(state.eventRange.timeRange.from, time)) {
+        handleError("timeRange", "");
+        dispatch({ type: "SET_END_TIME", payload: time });
+      } else {
+        handleError("timeRange", MESSAGES.ERROR_EVENT_RANGE_INVALID);
+      }
+    },
+    [state, handleError],
+  );
 
-  const setDateRange = useCallback((dateRange: DateRange | undefined) => {
-    if (dateRange?.from && dateRange?.to) {
-      const from = dateRange.from.toISOString();
-      const to = dateRange.to.toISOString();
-      dispatch({
-        type: "SET_DATE_RANGE",
-        payload: { from, to },
-      });
-    }
-  }, []);
+  const setDateRange = useCallback(
+    (dateRange: DateRange | undefined) => {
+      if (checkInvalidDateRangeLength(dateRange)) {
+        handleError("dateRange", MESSAGES.ERROR_EVENT_RANGE_TOO_LONG);
+        return;
+      }
+
+      if (dateRange?.from && dateRange?.to) {
+        const from = dateRange.from.toISOString();
+        const to = dateRange.to.toISOString();
+        dispatch({
+          type: "SET_DATE_RANGE",
+          payload: { from, to },
+        });
+      }
+    },
+    [handleError],
+  );
 
   const setWeekdayRange = useCallback((weekdays: WeekdayMap) => {
     dispatch({ type: "SET_WEEKDAYS", payload: { weekdays } });
@@ -99,5 +142,10 @@ export function useEventInfo(initialData?: {
     setDateRange,
     setWeekdayRange,
     resetEventInfo,
+
+    errors,
+    handleError,
+    handleGenericError,
+    clearAllErrors,
   };
 }

@@ -11,7 +11,7 @@ export default function DateRangePopover({
   startDate,
   endDate,
 }: SpecificDateRangeDisplayProps) {
-  const { setDateRange } = useEventContext();
+  const { errors, setDateRange } = useEventContext();
 
   return (
     <Popover.Root>
@@ -37,6 +37,7 @@ export default function DateRangePopover({
               to: endDate || undefined,
             }}
             setDateRange={setDateRange}
+            dateRangeError={errors.dateRange}
           />
         </Popover.Content>
       </Popover.Portal>
