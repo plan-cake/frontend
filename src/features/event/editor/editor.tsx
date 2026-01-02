@@ -11,8 +11,8 @@ import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
 import TextInputField from "@/components/text-input-field";
-import { EventRange, SpecificDateRange } from "@/core/event/types";
-import { useEventInfo } from "@/core/event/use-event-info";
+import { EventProvider, useEventContext } from "@/core/event/context";
+import { EventRange } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import TimeSelector from "@/features/event/components/selectors/time";
@@ -27,7 +27,6 @@ import { useToast } from "@/features/toast/context";
 import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
-import TimeRangeSelection from "./time-range/selector";
 
 type EventEditorProps = {
   type: EventEditorType;
@@ -38,23 +37,23 @@ type EventEditorProps = {
   };
 };
 
+type SegmentedControlOption = "details" | "preview";
+
 export default function EventEditor({ type, initialData }: EventEditorProps) {
-  const {
-    state,
-    setTitle,
-    setEventType,
-    setCustomCode,
-    setStartTime,
-    setEndTime,
-    setDateRange,
-    setWeekdayRange,
-    setTimezone,
-    setDuration,
-  } = useEventInfo(initialData);
+  return (
+    <EventProvider initialData={initialData}>
+      <EventEditorContent type={type} initialData={initialData} />
+    </EventProvider>
+  );
+}
+
+function EventEditorContent({ type, initialData }: EventEditorProps) {
+  const { state, setTitle, setCustomCode, setStartTime, setEndTime } =
+    useEventContext();
   const { title, customCode, eventRange } = state;
   const router = useRouter();
 
-  const [mobileTab, setMobileTab] = useState<"details" | "preview">("details");
+  const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
 
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
@@ -172,10 +171,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     />
   );
 
-  const earliestCalendarDate = new Date(
-    (initialData?.eventRange as SpecificDateRange)?.dateRange?.from,
-  );
-
   return (
     <div className="flex min-h-dvh flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
@@ -222,14 +217,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         )}
       >
         <div className="md:col-span-2 md:col-start-1 md:row-start-1">
-          <DateRangeSelection
-            earliestDate={earliestCalendarDate}
-            eventRange={eventRange}
-            editing={type === "edit"}
-            setEventType={setEventType}
-            setWeekdayRange={setWeekdayRange}
-            setDateRange={setDateRange}
-          />
+          <DateRangeSelection editing={type === "edit"} />
         </div>
 
         <label
@@ -247,8 +235,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             />
           </FormSelectorField>
 
-          {/* <TimeRangeSelection /> */}
-
           <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
             <TimeSelector
               id="to-time-dropdown"
@@ -256,19 +242,12 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
               onChange={handleTimeRangeChange.bind(null, "end")}
             />
           </FormSelectorField>
-
-          <TimeRangeSelection />
         </div>
 
         <div className="md:content md:col-start-1 md:row-start-9 md:flex md:items-end">
           <AdvancedOptions
-            type={type}
+            isEditing={type === "edit"}
             errors={errors}
-            timezone={eventRange.timezone}
-            duration={eventRange.duration}
-            customCode={customCode}
-            setTimezone={setTimezone}
-            setDuration={setDuration}
             handleCustomCodeChange={handleCustomCodeChange}
           />
         </div>

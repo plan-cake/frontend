@@ -1,18 +1,20 @@
+import { useEventContext } from "@/core/event/context";
 import Dropdown from "@/features/selector/components/dropdown";
+
+type EventType = "specific" | "weekday";
 
 type EventTypeSelectProps = {
   id: string;
-  eventType: string;
-  onEventTypeChange: (type: "specific" | "weekday") => void;
   disabled?: boolean;
 };
 
 export default function EventTypeSelect({
   id,
-  eventType,
   disabled = false,
-  onEventTypeChange,
 }: EventTypeSelectProps) {
+  const { state, setEventType } = useEventContext();
+  const rangeType = state.eventRange?.type || "specific";
+
   return (
     <Dropdown
       id={id}
@@ -20,13 +22,9 @@ export default function EventTypeSelect({
         { label: "Specific Dates", value: "specific" },
         { label: "Days of the Week", value: "weekday" },
       ]}
-      value={eventType === "specific" ? "specific" : "weekday"}
+      value={rangeType}
       disabled={disabled}
-      onChange={(value: string | number) =>
-        onEventTypeChange?.(
-          String(value) === "specific" ? "specific" : "weekday",
-        )
-      }
+      onChange={(value: EventType) => setEventType(value)}
       className="min-h-9 w-fit min-w-[100px] border-none"
     />
   );

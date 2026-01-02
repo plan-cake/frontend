@@ -2,8 +2,11 @@ import { useState } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import * as Switch from "@radix-ui/react-switch";
+import { fromZonedTime } from "date-fns-tz";
 import { DateRange } from "react-day-picker";
 
+import { useEventContext } from "@/core/event/context";
+import { SpecificDateRange } from "@/core/event/types";
 import WeekdayCalendar from "@/features/event/editor/date-range/calendars/weekday";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
@@ -15,14 +18,11 @@ import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { cn } from "@/lib/utils/classname";
 
 export default function DateRangeSelection({
-  earliestDate,
-  eventRange,
   editing = false,
-  setEventType = () => {},
-  setWeekdayRange = () => {},
-  setDateRange = () => {},
 }: DateRangeProps) {
-  const isMobile = useCheckMobile();
+  const { state, setEventType, setWeekdayRange } = useEventContext();
+  const { eventRange } = state;
+
   const rangeType = eventRange?.type ?? "specific";
   const [tooManyDays, setTooManyDays] = useState(false);
 
@@ -40,12 +40,7 @@ export default function DateRangeSelection({
     >
       <div className="hidden flex-col md:flex">
         <label htmlFor="event-type-select">Type</label>
-        <EventTypeSelect
-          id="event-type-select"
-          eventType={rangeType}
-          disabled={editing}
-          onEventTypeChange={setEventType}
-        />
+        <EventTypeSelect id="event-type-select" disabled={editing} />
       </div>
       <div className="flex w-fit flex-col justify-center">
         <label
@@ -76,19 +71,7 @@ export default function DateRangeSelection({
         </FormSelectorField>
 
         {eventRange?.type === "specific" ? (
-          isMobile ? (
-            <DateRangeDrawer
-              earliestDate={earliestDate}
-              eventRange={eventRange}
-              setDateRange={checkDateRange}
-            />
-          ) : (
-            <DateRangePopover
-              earliestDate={earliestDate}
-              eventRange={eventRange}
-              setDateRange={checkDateRange}
-            />
-          )
+          <SpecificDateRangeDisplay eventRange={eventRange} />
         ) : (
           <WeekdayCalendar
             selectedDays={eventRange?.weekdays}
@@ -98,4 +81,37 @@ export default function DateRangeSelection({
       </div>
     </div>
   );
+}
+
+function SpecificDateRangeDisplay({
+  eventRange,
+}: {
+  eventRange: SpecificDateRange;
+}) {
+  const isMobile = useCheckMobile();
+
+  const earliestDate = new Date(); // earliest selectable date is the current date
+  const startDate = fromZonedTime(
+    eventRange.dateRange.from,
+    eventRange.timezone,
+  );
+  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
+
+  if (isMobile) {
+    return (
+      <DateRangeDrawer
+        earliestDate={earliestDate}
+        startDate={startDate}
+        endDate={endDate}
+      />
+    );
+  } else {
+    return (
+      <DateRangePopover
+        earliestDate={earliestDate}
+        startDate={startDate}
+        endDate={endDate}
+      />
+    );
+  }
 }

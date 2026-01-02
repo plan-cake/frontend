@@ -1,26 +1,17 @@
 import * as Popover from "@radix-ui/react-popover";
-import { fromZonedTime } from "date-fns-tz";
 
+import { useEventContext } from "@/core/event/context";
 import { Calendar } from "@/features/event/editor/date-range/calendars/month";
-import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
+import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 import { cn } from "@/lib/utils/classname";
 
 export default function DateRangePopover({
   earliestDate,
-  eventRange,
-  setDateRange = () => {},
-}: DateRangeProps) {
-  // If the event range is not specific, return null
-  if (eventRange.type !== "specific") {
-    return null;
-  }
-
-  const startDate = fromZonedTime(
-    eventRange.dateRange.from,
-    eventRange.timezone,
-  );
-  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
+  startDate,
+  endDate,
+}: SpecificDateRangeDisplayProps) {
+  const { setDateRange } = useEventContext();
 
   return (
     <Popover.Root>

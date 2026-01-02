@@ -1,21 +1,15 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 
+import { useEventContext } from "@/core/event/context";
 import DurationSelector from "@/features/event/components/selectors/duration";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
-import { EventEditorType } from "@/features/event/editor/types";
 import FormSelectorField from "@/features/selector/components/selector-field";
 import { cn } from "@/lib/utils/classname";
 
 type AdvancedOptionsProps = {
-  type: EventEditorType;
+  isEditing?: boolean;
   errors: Record<string, string>;
 
-  // handlers and state
-  timezone: string;
-  duration: number;
-  customCode: string;
-  setTimezone: (tz: string) => void;
-  setDuration: (val: number) => void;
   handleCustomCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -44,21 +38,22 @@ export default function AdvancedOptions(props: AdvancedOptionsProps) {
 }
 
 function Options({
-  type,
+  isEditing = false,
   errors,
-  timezone,
-  duration,
-  customCode,
-  setTimezone,
-  setDuration,
   handleCustomCodeChange,
 }: AdvancedOptionsProps) {
+  const {
+    state: { customCode, eventRange },
+    setTimezone,
+    setDuration,
+  } = useEventContext();
+
   return (
     <>
       <FormSelectorField label="Timezone" htmlFor="timezone-select" isVertical>
         <TimeZoneSelector
           id="timezone-select"
-          value={timezone}
+          value={eventRange.timezone}
           onChange={setTimezone}
         />
       </FormSelectorField>
@@ -66,13 +61,13 @@ function Options({
       <FormSelectorField label="Duration" htmlFor="duration-select" isVertical>
         <DurationSelector
           id="duration-select"
-          value={duration}
+          value={eventRange.duration}
           onChange={(v) => setDuration((v as number) || 0)}
         />
       </FormSelectorField>
 
       <label className="flex justify-between text-gray-400">
-        {type === "new" && "Custom"} Event Code
+        {!isEditing && "Custom"} Event Code
         {errors.customCode && (
           <ExclamationTriangleIcon className="text-error h-4 w-4" />
         )}
@@ -82,11 +77,11 @@ function Options({
         value={customCode}
         onChange={handleCustomCodeChange}
         placeholder="optional"
-        disabled={type === "edit"}
+        disabled={isEditing}
         className={cn(
           "border-b-1 w-full border-gray-400 focus:outline-none",
-          type === "new" && "text-accent",
-          type === "edit" && "cursor-not-allowed opacity-50",
+          !isEditing && "text-accent",
+          isEditing && "cursor-not-allowed opacity-50",
           errors.customCode ? "border-error placeholder:text-error" : "",
         )}
       />

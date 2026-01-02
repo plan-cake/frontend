@@ -4,27 +4,25 @@ import { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { ExclamationTriangleIcon, Cross1Icon } from "@radix-ui/react-icons";
-import { fromZonedTime } from "date-fns-tz";
 import { DateRange } from "react-day-picker";
 
+import { useEventContext } from "@/core/event/context";
 import ActionButton from "@/features/button/components/action";
 import { Calendar } from "@/features/event/editor/date-range/calendars/month";
-import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
+import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
 import { MESSAGES } from "@/lib/messages";
 
 export default function DateRangeDrawer({
   earliestDate,
-  eventRange,
-  setDateRange = () => {},
-}: DateRangeProps) {
+  startDate,
+  endDate,
+}: SpecificDateRangeDisplayProps) {
+  const { setDateRange } = useEventContext();
+
   const [tooManyDays, setTooManyDays] = useState(false);
   const [open, setOpen] = useState(false);
-
-  if (eventRange.type !== "specific") {
-    return null;
-  }
 
   const handleClose = () => {
     setOpen(false);
@@ -35,12 +33,6 @@ export default function DateRangeDrawer({
     setTooManyDays(checkInvalidDateRangeLength(range));
     setDateRange(range);
   };
-
-  const startDate = fromZonedTime(
-    eventRange.dateRange.from,
-    eventRange.timezone,
-  );
-  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
