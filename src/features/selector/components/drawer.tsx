@@ -81,21 +81,27 @@ export default function SelectorDrawer<TValue extends string | number>({
               {options.map((option) => {
                 const isSelected = option.value === value;
                 return (
-                  <div
-                    ref={isSelected ? selectedItemRef : null}
+                  <button
                     key={String(option.value)}
                     onClick={() => {
                       onChange(option.value);
                       setOpen(false);
                     }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter" || e.key === " ") {
+                        e.preventDefault();
+                        onChange(option.value);
+                        setOpen(false);
+                      }
+                    }}
                     className={cn(
-                      "cursor-pointer p-4 text-center",
-                      isSelected && "bg-accent rounded-full text-white",
+                      "active:bg-accent/20 mb-2 cursor-pointer rounded-full p-4 text-center",
+                      isSelected && "bg-accent text-white",
                       typeof option.value === "string" && "text-start",
                     )}
                   >
                     {option.label}
-                  </div>
+                  </button>
                 );
               })}
             </div>
