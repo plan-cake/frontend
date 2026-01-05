@@ -1,4 +1,4 @@
-import { useReducer, useCallback } from "react";
+import { useMemo, useReducer, useCallback } from "react";
 
 import { DateRange } from "react-day-picker";
 
@@ -134,24 +134,44 @@ export function useEventInfo(initialData?: EventInformation) {
     dispatch({ type: "RESET" });
   }, []);
 
-  return {
-    state,
-    setTitle,
-    setEventType,
-    setCustomCode,
-    setEventRangeInfo,
-    setTimezone,
-    setDuration,
-    setStartTime,
-    setEndTime,
-    setDateRange,
-    setWeekdayRange,
-    resetEventInfo,
-
-    errors,
-    handleError,
-    handleGenericError,
-    batchHandleErrors,
-    clearAllErrors,
-  };
+  return useMemo(
+    () => ({
+      state,
+      setTitle,
+      setEventType,
+      setCustomCode,
+      setEventRangeInfo,
+      setTimezone,
+      setDuration,
+      setStartTime,
+      setEndTime,
+      setDateRange,
+      setWeekdayRange,
+      resetEventInfo,
+      errors,
+      handleError,
+      handleGenericError,
+      batchHandleErrors,
+      clearAllErrors,
+    }),
+    [
+      state,
+      setTitle,
+      setEventType,
+      setCustomCode,
+      setEventRangeInfo,
+      setTimezone,
+      setDuration,
+      setStartTime,
+      setEndTime,
+      setDateRange,
+      setWeekdayRange,
+      resetEventInfo,
+      errors,
+      handleError,
+      handleGenericError,
+      batchHandleErrors,
+      clearAllErrors,
+    ],
+  );
 }

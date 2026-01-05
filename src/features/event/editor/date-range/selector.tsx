@@ -27,14 +27,14 @@ export default function DateRangeSelection({
         <EventTypeSelect id="event-type-select" disabled={editing} />
       </div>
       <div className="flex w-full flex-col justify-center">
-        <label
+        <p
           className={`flex items-center gap-2 ${errors.dateRange ? "text-error" : ""}`}
         >
           Possible Dates
           {errors.dateRange && (
             <ExclamationTriangleIcon className="text-error h-4 w-4" />
           )}
-        </label>
+        </p>
 
         <FormSelectorField
           label="Choose Days of the Week"
@@ -42,7 +42,7 @@ export default function DateRangeSelection({
           classname="md:hidden mb-2"
         >
           <Switch.Root
-            id="mode-switch"
+            id="event-type"
             checked={rangeType === "weekday"}
             disabled={editing}
             onCheckedChange={(checked) =>

@@ -48,7 +48,7 @@ export default function GridPreviewDialog({
           layout
           className="mr-4 flex items-center justify-end space-x-2"
         >
-          <label className="text-sm font-medium">Grid Preview</label>
+          <p className="text-sm font-medium">Grid Preview</p>
           {isOpen ? (
             <Cross2Icon
               className="hover:text-accent h-5 w-5 cursor-pointer"

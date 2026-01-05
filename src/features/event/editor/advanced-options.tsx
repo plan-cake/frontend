@@ -1,3 +1,5 @@
+import React, { useState } from "react";
+
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -46,7 +48,8 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
     handleError,
   } = useEventContext();
 
-  // Debounced check for event code availability
+  const [localCode, setLocalCode] = useState(customCode);
+
   const checkCodeAvailability = useDebouncedCallback(async (code: string) => {
     if (isEditing || !code) return;
 
@@ -61,11 +64,13 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
     } catch {
       handleError("api", MESSAGES.ERROR_GENERIC);
     }
+
+    setCustomCode(code);
   }, 500);
 
   const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
-    setCustomCode(newValue);
+    setLocalCode(newValue);
     checkCodeAvailability(newValue);
   };
 
@@ -87,15 +92,19 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
         />
       </FormSelectorField>
 
-      <label className="flex justify-between text-gray-400">
+      <label
+        htmlFor="custom-code-input"
+        className="flex justify-between text-gray-400"
+      >
         {!isEditing && "Custom"} Event Code
         {errors.customCode && (
           <ExclamationTriangleIcon className="text-error h-4 w-4" />
         )}
       </label>
       <input
+        id="custom-code-input"
         type="text"
-        value={customCode}
+        value={localCode}
         onChange={handleCustomCodeChange}
         placeholder="optional"
         disabled={isEditing}

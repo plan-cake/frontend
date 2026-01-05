@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
@@ -31,6 +31,9 @@ type EventEditorProps = {
 };
 
 type SegmentedControlOption = "details" | "preview";
+
+const MemoizedGridPreview = memo(GridPreviewDialog);
+const MemoizedScheduleGrid = memo(ScheduleGrid);
 
 export default function EventEditor({ type, initialData }: EventEditorProps) {
   return (
@@ -148,12 +151,12 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       >
         <DateRangeSelection editing={type === "edit"} />
 
-        <label
+        <p
           className={`flex items-center gap-2 md:col-start-1 md:row-start-2 ${errors.timeRange ? "text-error" : ""}`}
         >
           Possible Times
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
-        </label>
+        </p>
         <div className="flex flex-col gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
             <TimeSelector
@@ -177,7 +180,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         </div>
         <div className="h-16 md:hidden" />
         <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
-          <GridPreviewDialog eventRange={eventRange} />
+          <MemoizedGridPreview eventRange={eventRange} />{" "}
         </div>
       </div>
 
@@ -187,7 +190,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           mobileTab === "details" ? "hidden" : "block",
         )}
       >
-        <ScheduleGrid
+        <MemoizedScheduleGrid
           mode="preview"
           eventRange={eventRange}
           disableSelect={true}

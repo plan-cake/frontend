@@ -19,10 +19,8 @@ export default function SpecificDateRangeDisplay({
     <form className="flex w-full flex-col gap-y-2 md:flex-row md:gap-4">
       {/* Start Date */}
       <div className="flex w-fit items-center space-x-4">
-        <label htmlFor="start-date" className="text-gray-400 md:hidden">
-          FROM
-        </label>
-        <span id="start-date" className={displayStyle} aria-label="Start date">
+        <p className="text-gray-400 md:hidden">FROM</p>
+        <span className={displayStyle} aria-label="Start date">
           {displayFrom}
         </span>
       </div>
@@ -31,10 +29,8 @@ export default function SpecificDateRangeDisplay({
 
       {/* End Date */}
       <div className="flex w-fit items-center space-x-4">
-        <label htmlFor="end-date" className="text-gray-400 md:hidden">
-          UNTIL
-        </label>
-        <span id="end-date" className={displayStyle} aria-label="End date">
+        <p className="text-gray-400 md:hidden">UNTIL</p>
+        <span className={displayStyle} aria-label="End date">
           {displayTo}
         </span>
       </div>
