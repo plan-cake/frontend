@@ -39,8 +39,13 @@ export function useEventInfo(initialData?: EventInformation) {
     createInitialState,
   );
 
-  const { errors, handleError, handleGenericError, clearAllErrors } =
-    useFormErrors();
+  const {
+    errors,
+    handleError,
+    handleGenericError,
+    clearAllErrors,
+    batchHandleErrors,
+  } = useFormErrors();
 
   // DISPATCHERS (checks input, sets errors if needed)
   const setTitle = useCallback(
@@ -146,6 +151,7 @@ export function useEventInfo(initialData?: EventInformation) {
     errors,
     handleError,
     handleGenericError,
+    batchHandleErrors,
     clearAllErrors,
   };
 }

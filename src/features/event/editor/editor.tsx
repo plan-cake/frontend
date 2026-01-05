@@ -50,6 +50,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
     handleError,
     clearAllErrors,
     handleGenericError,
+    batchHandleErrors,
   } = useEventContext();
   const { title, customCode, eventRange } = state;
   const router = useRouter();
@@ -63,10 +64,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
     try {
       const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
-        Object.entries(validationErrors).forEach(([field, error]) => {
-          handleError(field, error);
-          handleError("toast", error);
-        });
+        batchHandleErrors(validationErrors);
         return false;
       }
 
