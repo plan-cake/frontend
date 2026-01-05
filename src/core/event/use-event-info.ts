@@ -84,29 +84,30 @@ export function useEventInfo(initialData?: {
     (time: number) => {
       if (checkTimeRange(time, state.eventRange.timeRange.to)) {
         handleError("timeRange", "");
-        dispatch({ type: "SET_START_TIME", payload: time });
       } else handleError("timeRange", MESSAGES.ERROR_EVENT_RANGE_INVALID);
+
+      dispatch({ type: "SET_START_TIME", payload: time });
     },
-    [state, handleError],
+    [state.eventRange.timeRange.to, handleError],
   );
 
   const setEndTime = useCallback(
     (time: number) => {
       if (checkTimeRange(state.eventRange.timeRange.from, time)) {
         handleError("timeRange", "");
-        dispatch({ type: "SET_END_TIME", payload: time });
       } else {
         handleError("timeRange", MESSAGES.ERROR_EVENT_RANGE_INVALID);
       }
+
+      dispatch({ type: "SET_END_TIME", payload: time });
     },
-    [state, handleError],
+    [state.eventRange.timeRange.from, handleError],
   );
 
   const setDateRange = useCallback(
     (dateRange: DateRange | undefined) => {
       if (checkInvalidDateRangeLength(dateRange)) {
         handleError("dateRange", MESSAGES.ERROR_EVENT_RANGE_TOO_LONG);
-        return;
       }
 
       if (dateRange?.from && dateRange?.to) {
