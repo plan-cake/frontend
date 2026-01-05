@@ -11,7 +11,7 @@ import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
 import TextInputField from "@/components/text-input-field";
 import { EventProvider, useEventContext } from "@/core/event/context";
-import { EventRange } from "@/core/event/types";
+import { EventInformation } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import TimeSelector from "@/features/event/components/selectors/time";
@@ -27,11 +27,7 @@ import { cn } from "@/lib/utils/classname";
 
 type EventEditorProps = {
   type: EventEditorType;
-  initialData?: {
-    title: string;
-    code: string;
-    eventRange: EventRange;
-  };
+  initialData?: EventInformation;
 };
 
 type SegmentedControlOption = "details" | "preview";
@@ -95,7 +91,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
     <LinkButton
       buttonStyle="transparent"
       label="Cancel Edits"
-      href={`/${initialData?.code}`}
+      href={`/${initialData?.customCode}`}
     />
   );
   const submitButton = (

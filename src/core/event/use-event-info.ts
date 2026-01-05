@@ -12,14 +12,10 @@ const checkTimeRange = (from: number, to: number): boolean => {
   return to > from;
 };
 
-export function useEventInfo(initialData?: {
-  title: string;
-  code: string;
-  eventRange: EventRange;
-}) {
-  const initialState: EventInformation = {
+function createInitialState(initialData?: EventInformation): EventInformation {
+  return {
     title: initialData?.title || "",
-    customCode: initialData?.code || "",
+    customCode: initialData?.customCode || "",
     eventRange: initialData?.eventRange || {
       type: "specific",
       duration: 0,
@@ -34,12 +30,15 @@ export function useEventInfo(initialData?: {
       },
     },
   };
+}
 
-  if (!initialData?.eventRange?.duration) {
-    initialState.eventRange.duration = 0;
-  }
+export function useEventInfo(initialData?: EventInformation) {
+  const [state, dispatch] = useReducer(
+    EventInfoReducer,
+    initialData,
+    createInitialState,
+  );
 
-  const [state, dispatch] = useReducer(EventInfoReducer, initialState);
   const { errors, handleError, handleGenericError, clearAllErrors } =
     useFormErrors();
 
