@@ -11,7 +11,6 @@ import EventTypeSelect from "@/features/event/editor/date-range/event-type-selec
 import DateRangePopover from "@/features/event/editor/date-range/popover";
 import FormSelectorField from "@/features/selector/components/selector-field";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
-import { cn } from "@/lib/utils/classname";
 
 export default function DateRangeSelection({
   editing = false,
@@ -22,17 +21,12 @@ export default function DateRangeSelection({
   const rangeType = eventRange?.type ?? "specific";
 
   return (
-    <div
-      className={cn(
-        "grid w-full grid-cols-1 gap-2",
-        "md:grid-cols-[200px_1fr] md:gap-4",
-      )}
-    >
+    <div className="contents">
       <div className="hidden flex-col md:flex">
         <label htmlFor="event-type-select">Type</label>
         <EventTypeSelect id="event-type-select" disabled={editing} />
       </div>
-      <div className="flex w-fit flex-col justify-center">
+      <div className="flex w-full flex-col justify-center">
         <label
           className={`flex items-center gap-2 ${errors.dateRange ? "text-error" : ""}`}
         >

@@ -26,14 +26,15 @@ export default function Dropdown<TValue extends string | number>({
       <Select.Trigger
         id={id}
         className={cn(
-          "text-accent inline-flex items-center rounded-full text-start hover:cursor-pointer focus:outline-none",
+          "text-accent inline-flex items-center rounded-2xl text-start hover:cursor-pointer focus:outline-none",
           disabled && "text-foreground/50 cursor-not-allowed",
+          "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 text-accent px-3 py-1",
           className,
         )}
         aria-label="Custom select"
         disabled={disabled}
       >
-        <span className="flex-1 truncate pr-2">
+        <span className="flex-1 truncate text-wrap pr-2">
           <Select.Value placeholder="placeholder" />
         </span>
         {disabled ? null : (
