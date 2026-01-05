@@ -113,7 +113,7 @@ export default function ClientPage({
             <EventInfo eventRange={eventRange} />
           </div>
 
-          <div className="bg-panel hidden rounded-3xl p-4 text-sm md:block">
+          <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">
             Displaying event in
             <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
