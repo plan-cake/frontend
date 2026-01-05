@@ -4,7 +4,6 @@ import { useState } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
 
 import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
@@ -23,7 +22,6 @@ import { validateEventData } from "@/features/event/editor/validate-data";
 import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import FormSelectorField from "@/features/selector/components/selector-field";
-import { MESSAGES } from "@/lib/messages";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
@@ -50,7 +48,6 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
   const {
     state,
     setTitle,
-    setCustomCode,
     setStartTime,
     setEndTime,
     errors,
@@ -63,33 +60,6 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
 
   const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
 
-  // TOASTS AND ERROR STATES
-  const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
-    if (type === "edit") return;
-
-    if (errors.customCode) handleError("customCode", "");
-    if (customCode === "") {
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/event/check-code/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ custom_code: customCode }),
-      });
-
-      if (!response.ok) {
-        handleError("customCode", MESSAGES.ERROR_EVENT_CODE_TAKEN);
-      } else {
-        setCustomCode(customCode);
-      }
-    } catch (error) {
-      console.error("Error checking custom code availability:", error);
-      handleError("api", MESSAGES.ERROR_GENERIC);
-    }
-  }, 300);
-
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
     clearAllErrors();
@@ -97,7 +67,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
     try {
       const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
-        Object.values(validationErrors).forEach(([field, error]) => {
+        Object.entries(validationErrors).forEach(([field, error]) => {
           handleError(field, error);
           handleError("toast", error);
         });
@@ -209,11 +179,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         </div>
 
         <div className="md:content md:col-start-1 md:row-start-9 md:flex md:max-w-[250px] md:items-end">
-          <AdvancedOptions
-            isEditing={type === "edit"}
-            errors={errors}
-            handleCustomCodeChange={handleCustomCodeChange}
-          />
+          <AdvancedOptions isEditing={type === "edit"} errors={errors} />
         </div>
         <div className="h-16 md:hidden" />
         <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">

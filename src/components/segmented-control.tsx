@@ -51,6 +51,7 @@ export default function SegmentedControl<T extends string>({
         return (
           <button
             key={option.value}
+            type="button"
             onClick={() => onChange(option.value)}
             className={cn(
               "z-10 w-full rounded-full py-2 text-sm font-medium transition-colors duration-300 focus:outline-none",

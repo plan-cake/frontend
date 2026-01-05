@@ -1,16 +1,16 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import { useDebouncedCallback } from "use-debounce";
 
 import { useEventContext } from "@/core/event/context";
 import DurationSelector from "@/features/event/components/selectors/duration";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import FormSelectorField from "@/features/selector/components/selector-field";
+import { MESSAGES } from "@/lib/messages";
 import { cn } from "@/lib/utils/classname";
 
 type AdvancedOptionsProps = {
   isEditing?: boolean;
   errors: Record<string, string>;
-
-  handleCustomCodeChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
 export default function AdvancedOptions(props: AdvancedOptionsProps) {
@@ -37,16 +37,37 @@ export default function AdvancedOptions(props: AdvancedOptionsProps) {
   );
 }
 
-function Options({
-  isEditing = false,
-  errors,
-  handleCustomCodeChange,
-}: AdvancedOptionsProps) {
+function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
   const {
     state: { customCode, eventRange },
     setTimezone,
     setDuration,
+    setCustomCode,
+    handleError,
   } = useEventContext();
+
+  // Debounced check for event code availability
+  const checkCodeAvailability = useDebouncedCallback(async (code: string) => {
+    if (isEditing || !code) return;
+
+    try {
+      const response = await fetch("/api/event/check-code/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ custom_code: code }),
+      });
+      if (!response.ok)
+        handleError("customCode", MESSAGES.ERROR_EVENT_CODE_TAKEN);
+    } catch {
+      handleError("api", MESSAGES.ERROR_GENERIC);
+    }
+  }, 500);
+
+  const handleCustomCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setCustomCode(newValue);
+    checkCodeAvailability(newValue);
+  };
 
   return (
     <>
