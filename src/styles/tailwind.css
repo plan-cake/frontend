@@ -2,6 +2,9 @@
 
 /* COLOR PALETTE */
 @theme {
+  --color-pure-white: oklch(1 0 0);
+  --color-dark-purple: oklch(0.3295 0.0403 287.95);
+
   --color-white: oklch(0.9702 0 0);
   --color-violet: oklch(0.368 0.0393 288.29);
   --color-bone: oklch(0.904 0.0293 82.59);
@@ -66,7 +69,7 @@
     --foreground: var(--color-violet);
     --accent: var(--color-blue);
     --accent-text: var(--color-blue-500);
-    --panel-color: oklch(1 0 0);
+    --panel-color: var(--color-pure-white);
     --loading-color: var(--color-gray-200);
   }
 
@@ -75,8 +78,8 @@
     --foreground: var(--color-bone);
     --accent: var(--color-red);
     --accent-text: var(--color-red-100);
-    --panel-color: oklch(0.3295 0.0403 287.95);
-    --loading-color: oklch(0.3295 0.0403 287.95);
+    --panel-color: var(--color-dark-purple);
+    --loading-color: var(--color-dark-purple);
   }
 }
 
