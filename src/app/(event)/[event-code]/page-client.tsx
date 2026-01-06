@@ -13,6 +13,7 @@ import { AvailabilityDataResponse } from "@/features/event/availability/fetch-da
 import TimeZoneSelector from "@/features/event/components/timezone-selector";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
+import { cn } from "@/lib/utils/classname";
 
 export default function ClientPage({
   eventCode,
@@ -115,11 +116,17 @@ export default function ClientPage({
                 return (
                   <li
                     key={person}
-                    className={`flex items-center gap-2 transition-opacity ${
-                      hoveredSlot && !isAvailable
-                        ? "line-through opacity-50"
-                        : "opacity-100"
-                    }`}
+                    className={cn(
+                      "w-fit transition-opacity",
+                      {
+                        "bg-gray-200/25 line-through opacity-50":
+                          hoveredSlot && !isAvailable,
+                        "bg-accent/25 text-accent-text opacity-100":
+                          !hoveredSlot || isAvailable,
+                      },
+                      "rounded-full px-3 py-1 text-sm",
+                      // isAvailable && "bg-accent/20 text-accent-text",
+                    )}
                   >
                     {person}
                   </li>
