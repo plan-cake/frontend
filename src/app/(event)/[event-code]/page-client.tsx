@@ -42,7 +42,11 @@ export default function ClientPage({
 
   const handleHoveredSlot = (iso: string | null) => {
     setHoveredSlot(iso);
-    setNumberOfParticipants(availabilities[iso || ""]?.length || 0);
+    if (iso === null) {
+      setNumberOfParticipants(participants.length);
+    } else {
+      setNumberOfParticipants(availabilities[iso]?.length ?? 0);
+    }
   };
 
   /* TIMEZONE HANDLING */
@@ -100,7 +104,7 @@ export default function ClientPage({
           <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none">
             <h2 className="text-md mb-2 font-semibold">
               Attendees{" "}
-              <span className="">
+              <span>
                 {hoveredSlot
                   ? `(${numberOfParticipants}/${participants.length})`
                   : `(${participants.length}/${participants.length})`}
@@ -125,7 +129,6 @@ export default function ClientPage({
                           !hoveredSlot || isAvailable,
                       },
                       "rounded-full px-3 py-1 text-sm",
-                      // isAvailable && "bg-accent/20 text-accent-text",
                     )}
                   >
                     {person}
