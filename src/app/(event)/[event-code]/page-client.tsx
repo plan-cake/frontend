@@ -25,21 +25,33 @@ export default function ClientPage({
   eventRange: EventRange;
   initialAvailabilityData: AvailabilityDataResponse;
 }) {
-  const [timezone, setTimezone] = useState(
-    Intl.DateTimeFormat().resolvedOptions().timeZone,
-  );
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
-
-  const handleTZChange = (newTZ: string | number) => {
-    setTimezone(newTZ.toString());
-  };
-
+  /* PARTICIPANT INFO */
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
   const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
+
+  /* HOVER HANDLING */
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+  const [numberOfParticipants, setNumberOfParticipants] = useState(
+    participants.length,
+  );
+
+  const handleHoveredSlot = (iso: string | null) => {
+    setHoveredSlot(iso);
+    setNumberOfParticipants(availabilities[iso || ""]?.length || 0);
+  };
+
+  /* TIMEZONE HANDLING */
+  const [timezone, setTimezone] = useState(
+    Intl.DateTimeFormat().resolvedOptions().timeZone,
+  );
+
+  const handleTZChange = (newTZ: string | number) => {
+    setTimezone(newTZ.toString());
+  };
 
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
@@ -75,7 +87,7 @@ export default function ClientPage({
           eventRange={eventRange}
           timezone={timezone}
           hoveredSlot={hoveredSlot}
-          setHoveredSlot={setHoveredSlot}
+          setHoveredSlot={handleHoveredSlot}
           availabilities={availabilities}
           numParticipants={participants.length}
         />
@@ -85,7 +97,14 @@ export default function ClientPage({
         {/* Sidebar for attendees */}
         <div className="md:top-25 fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0">
           <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none">
-            <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
+            <h2 className="text-md mb-2 font-semibold">
+              Attendees{" "}
+              <span className="">
+                {hoveredSlot
+                  ? `(${numberOfParticipants}/${participants.length})`
+                  : `(${participants.length}/${participants.length})`}
+              </span>
+            </h2>
             <ul className="flex flex-wrap space-x-2 space-y-0">
               {participants.length === 0 && (
                 <li className="text-sm italic opacity-50">No attendees yet</li>
