@@ -90,7 +90,11 @@ export default function Page() {
           value={newPassword}
           onChange={setNewPassword}
           onFocus={() => setShowPasswordCriteria(true)}
-          onBlur={() => setShowPasswordCriteria(false)}
+          onBlur={() => {
+            if (!newPassword || passwordIsStrong()) {
+              setShowPasswordCriteria(false);
+            }
+          }}
         />
 
         {/* Password Errors */}
