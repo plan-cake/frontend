@@ -1,45 +1,53 @@
 import { DateRange } from "react-day-picker";
 
-import { EventInformation } from "@/core/event/types";
+import { EventInformation, WeekdayRange } from "@/core/event/types";
+import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
+import { isDurationExceedingMax } from "@/features/event/max-event-duration";
+import { MESSAGES } from "@/lib/messages";
+
+export const MAX_TITLE_LENGTH = 50;
 
 export async function validateEventData(
   editorType: EventEditorType,
   data: EventInformation,
 ): Promise<Record<string, string>> {
   const errors: Record<string, string> = {};
-  const { title, customCode, eventRange } = data;
+  const { title, eventRange } = data;
 
+  // Validate title
   if (!title?.trim()) {
-    errors.title = "Please enter an event name.";
-  } else if (title.length > 50) {
-    errors.title = "Event name must be under 50 characters.";
+    errors.title = MESSAGES.ERROR_EVENT_NAME_MISSING;
+  } else if (title.length > MAX_TITLE_LENGTH) {
+    errors.title = MESSAGES.ERROR_EVENT_NAME_LENGTH;
   }
 
-  if (editorType === "new" && customCode) {
-    try {
-      const response = await fetch("/api/event/check-code/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ custom_code: customCode }),
-      });
-      if (!response.ok) {
-        errors.customCode = "This code is unavailable. Please choose another.";
+  // Validate event range
+  if (eventRange.type === "specific") {
+    if (!eventRange.dateRange?.from || !eventRange.dateRange?.to) {
+      errors.dateRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
+    } else {
+      // check if the date range is more than 30 days
+      const fromDate = new Date(eventRange.dateRange.from);
+      const toDate = new Date(eventRange.dateRange.to);
+      if (isDurationExceedingMax(fromDate, toDate)) {
+        errors.dateRange = MESSAGES.ERROR_EVENT_RANGE_TOO_LONG;
       }
-    } catch {
-      errors.api = "Could not verify the custom code. Please try again.";
     }
   }
 
-  if (
-    eventRange.type === "specific" &&
-    (!eventRange.dateRange?.from || !eventRange.dateRange?.to)
-  ) {
-    errors.dateRange = "Please select a valid date range.";
+  if (eventRange.type === "weekday") {
+    const weekdayRange = findRangeFromWeekdayMap(
+      (data.eventRange as WeekdayRange).weekdays,
+    );
+    if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
+      errors.weekdayRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
+    }
   }
 
+  // Validate time range
   if (eventRange.timeRange.from >= eventRange.timeRange.to) {
-    errors.timeRange = "Please select a valid time range.";
+    errors.timeRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
   }
 
   return errors;

@@ -91,7 +91,6 @@ export default function InteractiveTimeBlock({
             key={`slot-${timeslotIdx}`}
             slotIso={slotIso}
             cellClasses={cellClasses.join(" ")}
-            isSelected={isSelected}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerDown={() =>

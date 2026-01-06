@@ -31,6 +31,7 @@
     "react-select": "^5.10.2",
     "react-timezone-select": "^3.2.8",
     "tailwind-merge": "^3.2.0",
+    "use-debounce": "^10.0.6",
     "vaul": "^1.1.2"
   },
   "devDependencies": {

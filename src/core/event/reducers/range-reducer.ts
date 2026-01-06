@@ -41,14 +41,14 @@ export function EventRangeReducer(
           type: "specific",
           dateRange: {
             from: new Date().toISOString(),
-            to: new Date().toISOString(),
+            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           },
         };
       } else {
         return {
           ...baseEvent,
           type: "weekday",
-          weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
+          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
         };
       }
     }
@@ -113,7 +113,7 @@ export function EventRangeReducer(
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           dateRange: {
             from: new Date().toISOString(),
-            to: new Date().toISOString(),
+            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           },
           timeRange: { from: 9, to: 17 },
         };
@@ -122,7 +122,7 @@ export function EventRangeReducer(
           type: "weekday",
           duration: 30,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
+          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
           timeRange: { from: 9, to: 17 },
         };
       }
