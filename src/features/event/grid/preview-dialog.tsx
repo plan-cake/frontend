@@ -51,7 +51,7 @@ export default function GridPreviewDialog({
           <p className="text-sm font-medium">Grid Preview</p>
           {isOpen ? (
             <Cross2Icon
-              className="hover:text-accent h-5 w-5 cursor-pointer"
+              className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 h-6 w-6 cursor-pointer rounded-full p-1"
               onClick={() => {
                 setIsOpen(!isOpen);
                 setTimezone(eventRange.timezone);
@@ -59,7 +59,7 @@ export default function GridPreviewDialog({
             />
           ) : (
             <EnterFullScreenIcon
-              className="hover:text-accent h-5 w-5 cursor-pointer"
+              className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 h-6 w-6 cursor-pointer rounded-full p-1"
               onClick={() => setIsOpen(!isOpen)}
             />
           )}

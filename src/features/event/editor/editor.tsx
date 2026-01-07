@@ -180,7 +180,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         </div>
         <div className="h-16 md:hidden" />
         <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
-          <MemoizedGridPreview eventRange={eventRange} />{" "}
+          <MemoizedGridPreview eventRange={eventRange} />
         </div>
       </div>
 
