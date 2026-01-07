@@ -1,7 +1,7 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import * as Switch from "@radix-ui/react-switch";
 import { fromZonedTime } from "date-fns-tz";
 
+import Switch from "@/components/switch";
 import { useEventContext } from "@/core/event/context";
 import { SpecificDateRange } from "@/core/event/types";
 import WeekdayCalendar from "@/features/event/editor/date-range/calendars/weekday";
@@ -41,17 +41,13 @@ export default function DateRangeSelection({
           htmlFor="event-type"
           classname="md:hidden mb-2"
         >
-          <Switch.Root
+          <Switch
             id="event-type"
             checked={rangeType === "weekday"}
-            disabled={editing}
             onCheckedChange={(checked) =>
               setEventType(checked ? "weekday" : "specific")
             }
-            className="data-[state=checked]:bg-accent bg-foreground/20 relative h-[25px] w-[50px] cursor-default rounded-full shadow-inner outline-none transition-colors hover:cursor-pointer"
-          >
-            <Switch.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white shadow-[0_2px_2px_rgba(0,0,0,0.1)] transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[27px]" />
-          </Switch.Root>
+          />
         </FormSelectorField>
 
         {eventRange?.type === "specific" ? (
