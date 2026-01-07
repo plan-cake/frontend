@@ -112,6 +112,8 @@ export function useEventInfo(initialData?: EventInformation) {
     (dateRange: DateRange | undefined) => {
       if (checkInvalidDateRangeLength(dateRange)) {
         handleError("dateRange", MESSAGES.ERROR_EVENT_RANGE_TOO_LONG);
+      } else {
+        handleError("dateRange", "");
       }
 
       if (dateRange?.from && dateRange?.to) {
