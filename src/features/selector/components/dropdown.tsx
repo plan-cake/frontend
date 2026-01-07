@@ -45,7 +45,7 @@ export default function Dropdown<TValue extends string | number>({
       </Select.Trigger>
 
       <Select.Portal>
-        <Select.Content className="bg-background z-50 max-h-60 overflow-auto rounded-md border border-gray-400 shadow-lg dark:shadow-violet-700">
+        <Select.Content className="bg-background z-50 max-h-60 overflow-auto rounded-2xl border border-gray-400 shadow-lg dark:shadow-violet-700">
           <Select.Viewport className="p-1">
             {options.map((option) => (
               <DropdownItem key={option.value.toString()} value={option.value}>
@@ -70,7 +70,7 @@ const DropdownItem = forwardRef<HTMLDivElement, DropdownItemProps>(
       <Select.Item
         ref={ref}
         value={value.toString()}
-        className="data-[highlighted]:bg-accent relative flex h-[30px] select-none items-center rounded px-6 leading-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:text-white"
+        className="data-[highlighted]:bg-accent relative flex h-[30px] select-none items-center rounded-xl px-6 leading-none hover:outline-none data-[disabled]:pointer-events-none data-[disabled]:text-gray-400 data-[highlighted]:text-white"
       >
         <Select.ItemText>{children}</Select.ItemText>
         <Select.ItemIndicator className="absolute left-2 inline-flex w-4 items-center justify-center">
