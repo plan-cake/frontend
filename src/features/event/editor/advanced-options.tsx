@@ -1,6 +1,10 @@
 import React, { useState } from "react";
 
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
+import * as Collapsible from "@radix-ui/react-collapsible";
+import {
+  ChevronRightIcon,
+  ExclamationTriangleIcon,
+} from "@radix-ui/react-icons";
 import { useDebouncedCallback } from "use-debounce";
 
 import { useEventContext } from "@/core/event/context";
@@ -16,26 +20,32 @@ type AdvancedOptionsProps = {
 };
 
 export default function AdvancedOptions(props: AdvancedOptionsProps) {
+  const [open, setOpen] = useState(false);
   return (
-    <>
-      {/* Mobile: collapsible */}
-      <details className="block md:hidden">
-        <summary className="cursor-pointer rounded px-1 py-2 font-medium">
-          Advanced Options
-        </summary>
-        <div className="mx-4 mb-4 flex flex-col gap-1">
-          <Options {...props} />
+    <Collapsible.Root open={open} onOpenChange={setOpen}>
+      <Collapsible.Trigger asChild>
+        <div
+          className={cn(
+            "group flex w-fit cursor-pointer items-center gap-2 rounded-full",
+          )}
+        >
+          <ChevronRightIcon
+            className={cn(
+              "h-6 w-6 transition-transform duration-200",
+              "group-hover:bg-accent/25 group-active:bg-accent/40 rounded-full p-1",
+              open && "rotate-90",
+            )}
+          />
+          <span className="text-[15px] font-semibold leading-[25px]">
+            Advanced Options
+          </span>
         </div>
-      </details>
+      </Collapsible.Trigger>
 
-      {/* Desktop: always visible (not collapsible) */}
-      <div className="hidden md:block">
-        <div className="font-medium">Advanced Options</div>
-        <div className="mt-2 flex flex-col gap-1">
-          <Options {...props} />
-        </div>
-      </div>
-    </>
+      <Collapsible.Content className="collapsible-content mt-2 flex flex-col gap-1">
+        <Options {...props} />
+      </Collapsible.Content>
+    </Collapsible.Root>
   );
 }
 
