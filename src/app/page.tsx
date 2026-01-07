@@ -5,7 +5,7 @@ import LinkButton from "@/features/button/components/link";
 
 export default function Home() {
   return (
-    <main className="min-h-screen transition-colors duration-300">
+    <main className="min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden px-4 pb-20 pt-32 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-7xl text-center">
