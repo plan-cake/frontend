@@ -65,7 +65,7 @@ export default function GridPreviewDialog({
           )}
         </motion.div>
         {isOpen ? (
-          <motion.div className="h-[85%] grow space-y-4">
+          <motion.div className="flex h-[85%] grow flex-col space-y-4">
             <ScheduleGrid
               mode="preview"
               eventRange={eventRange}
