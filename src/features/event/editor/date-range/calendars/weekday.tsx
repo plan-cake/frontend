@@ -84,7 +84,7 @@ export default function WeekdayCalendar({
               "flex h-8 items-center justify-center px-4",
               "hover:bg-accent/25 active:bg-accent/40",
               !isActive && "hover:rounded-full",
-              isActive && "bg-accent/15 text-accent-text",
+              isActive && "bg-accent/15 text-accent",
               isStart && "rounded-l-full",
               isEnd && "rounded-r-full",
             )}
