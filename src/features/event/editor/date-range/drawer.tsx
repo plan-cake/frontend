@@ -59,7 +59,7 @@ export default function DateRangeDrawer({
                   </span>
                 ) : (
                   <span className="text-accent text-sm font-normal">
-                    Click a start and end date
+                    Choose a start and end date
                   </span>
                 )}
               </Dialog.Title>
