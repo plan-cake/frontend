@@ -9,19 +9,17 @@ import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { cn } from "@/lib/utils/classname";
 
 type CalendarProps = {
-  earliestDate?: Date;
-  className?: string;
   selectedRange: DateRange;
   setDateRange: (range: DateRange | undefined) => void;
   dateRangeError?: string;
+  className?: string;
 };
 
 export function Calendar({
-  earliestDate,
-  className,
   selectedRange,
   setDateRange,
   dateRangeError,
+  className,
 }: CalendarProps) {
   const defaultClassNames = getDefaultClassNames();
 
@@ -30,17 +28,7 @@ export function Calendar({
   const hideNavigation = isMobile ? true : false;
 
   const today = new Date();
-
-  const startDate =
-    earliestDate && earliestDate < today
-      ? new Date(
-          earliestDate.getUTCFullYear(),
-          earliestDate.getUTCMonth(),
-          earliestDate.getUTCDate(),
-        )
-      : today;
-
-  const [month, setMonth] = useState(startDate);
+  const [month, setMonth] = useState(today);
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
@@ -59,7 +47,7 @@ export function Calendar({
         onMonthChange={setMonth}
         selected={selectedRange}
         onSelect={setDateRange}
-        disabled={{ before: startDate }}
+        disabled={{ before: today }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
         }}

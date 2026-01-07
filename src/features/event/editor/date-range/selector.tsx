@@ -70,7 +70,6 @@ function SpecificDateRangeDisplay({
 }) {
   const isMobile = useCheckMobile();
 
-  const earliestDate = new Date(); // earliest selectable date is the current date
   const startDate = fromZonedTime(
     eventRange.dateRange.from,
     eventRange.timezone,
@@ -78,20 +77,8 @@ function SpecificDateRangeDisplay({
   const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
 
   if (isMobile) {
-    return (
-      <DateRangeDrawer
-        earliestDate={earliestDate}
-        startDate={startDate}
-        endDate={endDate}
-      />
-    );
+    return <DateRangeDrawer startDate={startDate} endDate={endDate} />;
   } else {
-    return (
-      <DateRangePopover
-        earliestDate={earliestDate}
-        startDate={startDate}
-        endDate={endDate}
-      />
-    );
+    return <DateRangePopover startDate={startDate} endDate={endDate} />;
   }
 }

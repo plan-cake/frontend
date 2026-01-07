@@ -12,7 +12,6 @@ import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-rang
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 
 export default function DateRangeDrawer({
-  earliestDate,
   startDate,
   endDate,
 }: SpecificDateRangeDisplayProps) {
@@ -66,7 +65,6 @@ export default function DateRangeDrawer({
             </div>
 
             <Calendar
-              earliestDate={earliestDate}
               className="w-fit"
               selectedRange={{
                 from: startDate || undefined,
