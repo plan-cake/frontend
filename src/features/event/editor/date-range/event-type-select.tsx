@@ -25,7 +25,7 @@ export default function EventTypeSelect({
       value={rangeType}
       disabled={disabled}
       onChange={(value: EventType) => setEventType(value)}
-      className="min-h-9 w-fit min-w-[100px] border-none"
+      className="w-fit min-w-[100px] border-none"
     />
   );
 }

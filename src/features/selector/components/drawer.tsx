@@ -77,7 +77,7 @@ export default function SelectorDrawer<TValue extends string | number>({
               </Dialog.Title>
             </div>
 
-            <div className="flex-1 px-8 pb-8">
+            <div className="flex flex-col px-8 pb-8">
               {options.map((option) => {
                 const isSelected = option.value === value;
                 return (

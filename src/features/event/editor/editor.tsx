@@ -186,7 +186,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
 
       <div
         className={cn(
-          "bg-panel min-h-screen rounded-3xl p-4 md:hidden",
+          "bg-panel rounded-3xl p-4 md:hidden",
           mobileTab === "details" ? "hidden" : "block",
         )}
       >
@@ -196,8 +196,8 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           disableSelect={true}
           timezone={eventRange.timezone}
         />
-        <div className="h-16" />
       </div>
+      <div className="h-16 md:hidden" />
 
       <MobileFooterTray
         buttons={

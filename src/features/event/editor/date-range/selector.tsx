@@ -48,7 +48,7 @@ export default function DateRangeSelection({
             onCheckedChange={(checked) =>
               setEventType(checked ? "weekday" : "specific")
             }
-            className="data-[state=checked]:bg-accent relative h-[25px] w-[50px] cursor-default rounded-full bg-gray-200 shadow-inner outline-none transition-colors"
+            className="data-[state=checked]:bg-accent bg-foreground/20 relative h-[25px] w-[50px] cursor-default rounded-full shadow-inner outline-none transition-colors hover:cursor-pointer"
           >
             <Switch.Thumb className="block h-[21px] w-[21px] translate-x-0.5 rounded-full bg-white shadow-[0_2px_2px_rgba(0,0,0,0.1)] transition-transform duration-100 will-change-transform data-[state=checked]:translate-x-[27px]" />
           </Switch.Root>
