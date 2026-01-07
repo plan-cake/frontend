@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
@@ -20,9 +20,30 @@ export default function GridPreviewDialog({
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
 
+  useEffect(() => {
+    setTimezone(eventRange.timezone);
+  }, [eventRange.timezone]);
+
   const handleTZChange = (newTZ: string | number) => {
     setTimezone(newTZ.toString());
   };
+
+  // Close dialog on Escape key
+  const closeDialog = useCallback(() => {
+    setIsOpen(false);
+    setTimezone(eventRange.timezone);
+  }, [eventRange.timezone]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        closeDialog();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen, eventRange.timezone, closeDialog]);
 
   return (
     <div className="relative h-screen grow md:h-full md:w-full">
@@ -52,10 +73,7 @@ export default function GridPreviewDialog({
           {isOpen ? (
             <Cross2Icon
               className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 h-6 w-6 cursor-pointer rounded-full p-1"
-              onClick={() => {
-                setIsOpen(!isOpen);
-                setTimezone(eventRange.timezone);
-              }}
+              onClick={() => closeDialog()}
             />
           ) : (
             <EnterFullScreenIcon
