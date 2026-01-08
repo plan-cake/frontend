@@ -65,7 +65,7 @@ export default function TextInputField(props: TextInputFieldProps) {
         htmlFor={id}
         className={cn(
           "absolute origin-[0_0] cursor-text px-1",
-          "transition-transform duration-200 ease-in-out",
+          "transition-[top, scale] duration-200 ease-in-out",
           outlined ? "left-4" : "left-1",
           classname,
 
