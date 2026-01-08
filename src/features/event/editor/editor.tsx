@@ -55,7 +55,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
     handleGenericError,
     batchHandleErrors,
   } = useEventContext();
-  const { title, customCode, eventRange } = state;
+  const { title, customCode, eventRange, timeslots } = state;
   const router = useRouter();
 
   const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
@@ -72,7 +72,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       }
 
       const success = await submitEvent(
-        { title, code: customCode, eventRange },
+        { title, code: customCode, eventRange, timeslots },
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
@@ -180,7 +180,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         </div>
         <div className="h-16 md:hidden" />
         <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
-          <MemoizedGridPreview eventRange={eventRange} />
+          <MemoizedGridPreview eventRange={eventRange} timeslots={timeslots} />
         </div>
       </div>
 
@@ -195,6 +195,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           eventRange={eventRange}
           disableSelect={true}
           timezone={eventRange.timezone}
+          timeslots={timeslots}
         />
       </div>
       <div className="h-16 md:hidden" />

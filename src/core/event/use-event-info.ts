@@ -2,6 +2,7 @@ import { useMemo, useReducer, useCallback } from "react";
 
 import { DateRange } from "react-day-picker";
 
+import { expandEventRange } from "@/core/event/lib/expand-event-range";
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
 import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
@@ -13,22 +14,24 @@ const checkTimeRange = (from: number, to: number): boolean => {
 };
 
 function createInitialState(initialData?: EventInformation): EventInformation {
+  const defaultRange = {
+    type: "specific" as const,
+    duration: 60,
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    dateRange: {
+      from: new Date().toISOString(),
+      to: new Date().toISOString(),
+    },
+    timeRange: { from: 9, to: 17 },
+  };
+
   return {
     title: initialData?.title || "",
     customCode: initialData?.customCode || "",
-    eventRange: initialData?.eventRange || {
-      type: "specific",
-      duration: 0,
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      dateRange: {
-        from: new Date().toISOString(),
-        to: new Date().toISOString(),
-      },
-      timeRange: {
-        from: 9,
-        to: 17,
-      },
-    },
+    eventRange: initialData?.eventRange || defaultRange,
+    timeslots:
+      initialData?.timeslots ||
+      expandEventRange(initialData?.eventRange || defaultRange),
   };
 }
 

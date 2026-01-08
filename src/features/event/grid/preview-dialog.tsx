@@ -12,10 +12,12 @@ import { cn } from "@/lib/utils/classname";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
+  timeslots: Date[];
 }
 
 export default function GridPreviewDialog({
   eventRange,
+  timeslots,
 }: GridPreviewDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
@@ -89,6 +91,7 @@ export default function GridPreviewDialog({
               eventRange={eventRange}
               disableSelect
               timezone={timezone}
+              timeslots={timeslots}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <label
@@ -119,6 +122,7 @@ export default function GridPreviewDialog({
               eventRange={eventRange}
               disableSelect={true}
               timezone={eventRange.timezone}
+              timeslots={timeslots}
             />
           </motion.div>
         )}

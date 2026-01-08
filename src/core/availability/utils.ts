@@ -2,14 +2,14 @@ import { eachDayOfInterval, parseISO } from "date-fns";
 
 import { AvailabilitySet } from "@/core/availability/types";
 import {
+  getAbsoluteDateRangeInUTC,
+  getSelectedWeekdaysInTimezone,
+} from "@/core/event/lib/expand-event-range";
+import {
   EventRange,
   SpecificDateRange,
   WeekdayRange,
 } from "@/core/event/types";
-import {
-  getAbsoluteDateRangeInUTC,
-  getSelectedWeekdaysInTimezone,
-} from "@/features/event/grid/lib/expand-event-range";
 
 // Creates an empty UserAvailability object
 export const createEmptyUserAvailability = (): AvailabilitySet => {

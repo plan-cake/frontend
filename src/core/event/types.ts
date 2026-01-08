@@ -4,6 +4,7 @@ export type EventInformation = {
   title: string;
   customCode: string;
   eventRange: EventRange;
+  timeslots: Date[];
 };
 
 // discriminated union for event ranges - this is your single source of truth
