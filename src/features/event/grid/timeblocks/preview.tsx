@@ -1,5 +1,7 @@
-import { toZonedTime } from "date-fns-tz";
-
+import {
+  getGridCoordinates,
+  getBaseCellClasses,
+} from "@/features/event/grid/lib/timeslot-utils";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 
@@ -32,29 +34,21 @@ export default function PreviewTimeBlock({
     >
       {timeslots.map((timeslot, timeslotIdx) => {
         const slotIso = timeslot.toISOString();
-        const localSlot = toZonedTime(timeslot, userTimezone);
 
-        const currentDayKey = localSlot.toLocaleDateString("en-CA");
-        const dayIndex = visibleDayKeys.indexOf(currentDayKey);
-        if (dayIndex === -1) return null;
-
-        const gridColumn = dayIndex + 1;
-        const gridRow =
-          (localSlot.getHours() - startHour) * 4 +
-          Math.floor(localSlot.getMinutes() / 15) +
-          1;
+        const coords = getGridCoordinates(
+          timeslot,
+          visibleDayKeys,
+          userTimezone,
+          startHour,
+        );
+        if (!coords) return null;
+        const { row: gridRow, column: gridColumn } = coords;
 
         // borders
-        const cellClasses: string[] = [];
-        if (gridRow < numQuarterHours) {
-          cellClasses.push("border-b");
-
-          if (gridRow % 4 === 0) {
-            cellClasses.push("border-solid border-gray-400");
-          } else {
-            cellClasses.push("border-dashed border-gray-400");
-          }
-        }
+        const cellClasses: string[] = getBaseCellClasses(
+          gridRow,
+          numQuarterHours,
+        );
 
         return (
           <TimeSlot
