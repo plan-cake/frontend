@@ -70,7 +70,7 @@ function SpecificDateRangeDisplay({
 }) {
   const isMobile = useCheckMobile();
 
-  const earliestDate = new Date(); // earliest selectable date is the current date
+  const earliestDate = new Date(eventRange.dateRange.from);
   const startDate = fromZonedTime(
     eventRange.dateRange.from,
     eventRange.timezone,
