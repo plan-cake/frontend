@@ -13,6 +13,7 @@ import {
   WeekdayRange,
   WeekdayTimeRange,
   WeekdayMap,
+  DaySlot,
 } from "@/core/event/types";
 import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 
@@ -153,7 +154,7 @@ export function getSelectedWeekdaysInTimezone(
  * expands a high-level EventRange into a concrete list of days and time slots
  * for the user's  local timezone
  */
-export function expandEventRange(range: EventRange): Date[] {
+export function expandEventRange(range: EventRange): DaySlot[] {
   if (range.type === "specific") {
     return generateSlotsForSpecificRange(range);
   } else {
@@ -161,7 +162,7 @@ export function expandEventRange(range: EventRange): Date[] {
   }
 }
 
-function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
+function generateSlotsForSpecificRange(range: SpecificDateRange): DaySlot[] {
   if (!range.dateRange.from || !range.dateRange.to) {
     return [];
   }
@@ -186,7 +187,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   }
 
   // Generate Slots
-  const slots: Date[] = [];
+  const daySlots: DaySlot[] = [];
   const days = eachDayOfInterval({
     start: parseISO(startDateStr),
     end: parseISO(endDateStr),
@@ -201,16 +202,27 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
       range.timeRange,
     );
 
-    slots.push(...generateSlotsBetween(startUTC, endUTC));
+    const slots = generateSlotsBetween(startUTC, endUTC);
+
+    // get other metadata
+    const dayKey = dayStr;
+    const dayLabel = formatInTimeZone(day, range.timezone, "EEE MMM dd");
+
+    daySlots.push({
+      date: day,
+      dayKey,
+      dayLabel,
+      timeslots: slots,
+    });
   }
 
-  return slots;
+  return daySlots;
 }
 
-function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
+function generateSlotsForWeekdayRange(range: WeekdayRange): DaySlot[] {
   if (range.type !== "weekday") return [];
 
-  const slots: Date[] = [];
+  const daySlots: DaySlot[] = [];
   const dayIndexMap: Record<string, number> = {
     Sun: 0,
     Mon: 1,
@@ -241,9 +253,20 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
         range.timeRange,
       );
 
-      slots.push(...generateSlotsBetween(startUTC, endUTC));
+      const slots = generateSlotsBetween(startUTC, endUTC);
+
+      // get other metadata
+      const dayKey = dayStr;
+      const dayLabel = formatInTimeZone(currentDay, range.timezone, "EEE");
+
+      daySlots.push({
+        date: currentDay,
+        dayKey,
+        dayLabel,
+        timeslots: slots,
+      });
     }
   }
 
-  return slots;
+  return daySlots;
 }
