@@ -1,4 +1,10 @@
-import { getHours, getMinutes } from "date-fns";
+import {
+  addDays,
+  addMinutes,
+  eachDayOfInterval,
+  isBefore,
+  parseISO,
+} from "date-fns";
 import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 
 import {
@@ -11,6 +17,48 @@ import {
 import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 
 /* EXPAND EVENT RANGE UTILITIES */
+
+/**
+ * Helper: Generates 15-minute slots between two absolute UTC times.
+ * range: [start, end)
+ */
+function generateSlotsBetween(startUTC: Date, endUTC: Date): Date[] {
+  const slots: Date[] = [];
+  let current = startUTC;
+
+  while (isBefore(current, endUTC)) {
+    slots.push(new Date(current));
+    current = addMinutes(current, 15);
+  }
+  return slots;
+}
+
+/**
+ * Helper: Constructs the absolute Start and End UTC times for a specific "calendar day"
+ * in the target timezone, given the hour constraints.
+ */
+function getDailyBoundariesInUTC(
+  dateIsoStr: string, // "YYYY-MM-DD"
+  timezone: string,
+  timeRange: { from: number; to: number },
+) {
+  // Construct ISO strings for the target timezone
+  const startStr = `${dateIsoStr}T${String(timeRange.from).padStart(2, "0")}:00:00`;
+  const startUTC = fromZonedTime(startStr, timezone);
+
+  let endUTC: Date;
+  if (timeRange.to === 24) {
+    const dateObj = parseISO(dateIsoStr);
+    const nextDay = addDays(dateObj, 1);
+    const nextDayStr = nextDay.toISOString().split("T")[0];
+    endUTC = fromZonedTime(`${nextDayStr}T00:00:00`, timezone);
+  } else {
+    const endStr = `${dateIsoStr}T${String(timeRange.to).padStart(2, "0")}:00:00`;
+    endUTC = fromZonedTime(endStr, timezone);
+  }
+
+  return { startUTC, endUTC };
+}
 
 function getTimeStrings(timeRange: { from: number; to: number }) {
   const fromHour = String(timeRange.from).padStart(2, "0");
@@ -114,64 +162,86 @@ export function expandEventRange(range: EventRange): Date[] {
 }
 
 function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
-  const slots: Date[] = [];
   if (!range.dateRange.from || !range.dateRange.to) {
     return [];
   }
 
-  // Get the absolute start and end times in UTC
-  const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(range);
+  // Validate Duration
+  const startDateStr = range.dateRange.from.split("T")[0];
+  const endDateStr = range.dateRange.to.split("T")[0];
 
-  // If event is longer than 30 days, return empty array
+  const { startUTC: eventStartUTC } = getDailyBoundariesInUTC(
+    startDateStr,
+    range.timezone,
+    range.timeRange,
+  );
+  const { endUTC: eventEndUTC } = getDailyBoundariesInUTC(
+    endDateStr,
+    range.timezone,
+    range.timeRange,
+  );
+
   if (isDurationExceedingMax(eventStartUTC, eventEndUTC)) {
     return [];
   }
 
-  // Get the valid time range for any given day in UTC
-  const validStartHour = range.timeRange.from;
-  const validEndHour = range.timeRange.to;
+  // Generate Slots
+  const slots: Date[] = [];
+  const days = eachDayOfInterval({
+    start: parseISO(startDateStr),
+    end: parseISO(endDateStr),
+  });
 
-  const currentUTC = new Date(eventStartUTC);
+  for (const day of days) {
+    const dayStr = day.toISOString().split("T")[0];
 
-  while (currentUTC <= eventEndUTC) {
-    const currentHour = getHours(currentUTC);
-    const currentMinute = getMinutes(currentUTC);
+    const { startUTC, endUTC } = getDailyBoundariesInUTC(
+      dayStr,
+      range.timezone,
+      range.timeRange,
+    );
 
-    const isAfterStartTime =
-      currentHour > validStartHour ||
-      (currentHour === validStartHour && currentMinute >= 0);
-
-    const isBeforeEndTime =
-      currentHour < validEndHour ||
-      (currentHour === validEndHour && currentMinute < 0);
-
-    if (isAfterStartTime && isBeforeEndTime) {
-      slots.push(new Date(currentUTC));
-    }
-
-    currentUTC.setUTCMinutes(currentUTC.getUTCMinutes() + 15);
+    slots.push(...generateSlotsBetween(startUTC, endUTC));
   }
 
   return slots;
 }
 
 function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
+  if (range.type !== "weekday") return [];
+
   const slots: Date[] = [];
-  if (range.type !== "weekday") {
-    return [];
-  }
+  const dayIndexMap: Record<string, number> = {
+    Sun: 0,
+    Mon: 1,
+    Tue: 2,
+    Wed: 3,
+    Thu: 4,
+    Fri: 5,
+    Sat: 6,
+  };
 
-  const selectedDays = getSelectedWeekdaysInTimezone(range);
-  if (selectedDays.length === 0) {
-    return [];
-  }
+  // generic reference week starting on a Sunday
+  const referenceStart = new Date("2012-01-01T00:00:00");
 
-  for (const day of selectedDays) {
-    const { slotTimeUTC, dayEndUTC } = day;
+  for (let i = 0; i < 7; i++) {
+    // current day in the reference week
+    const currentDay = addDays(referenceStart, i);
+    const currentDayIndex = currentDay.getDay();
+    const dayName = Object.keys(dayIndexMap).find(
+      (key) => dayIndexMap[key] === currentDayIndex,
+    );
 
-    while (slotTimeUTC < dayEndUTC) {
-      slots.push(new Date(slotTimeUTC));
-      slotTimeUTC.setUTCMinutes(slotTimeUTC.getUTCMinutes() + 15);
+    if (dayName && range.weekdays[dayName as keyof typeof range.weekdays]) {
+      const dayStr = currentDay.toISOString().split("T")[0];
+
+      const { startUTC, endUTC } = getDailyBoundariesInUTC(
+        dayStr,
+        range.timezone,
+        range.timeRange,
+      );
+
+      slots.push(...generateSlotsBetween(startUTC, endUTC));
     }
   }
 
