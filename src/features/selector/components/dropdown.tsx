@@ -29,6 +29,8 @@ export default function Dropdown<TValue extends string | number>({
           "text-accent inline-flex items-center rounded-2xl text-start hover:cursor-pointer focus:outline-none",
           disabled && "text-foreground/50 cursor-not-allowed",
           "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 text-accent px-3 py-1",
+          disabled &&
+            "cursor-not-allowed bg-gray-200/50 text-gray-500 hover:cursor-not-allowed hover:bg-gray-200/50 active:bg-gray-200/50",
           className,
         )}
         aria-label="Custom select"
