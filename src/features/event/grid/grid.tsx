@@ -49,7 +49,7 @@ export default function ScheduleGrid({
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const { timeBlocks, daySlots, numDays, error } = useGenerateTimeSlots(
+  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
     eventRange,
     timezone,
   );
@@ -61,12 +61,12 @@ export default function ScheduleGrid({
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
 
-  if (!daySlots || numDays <= 0 || numDays > 30)
+  const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
+  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
+
+  if (numDays <= 0 || numDays > 30)
     return <GridError message="Invalid or missing date range" />;
   if (error) return <GridError message={error} />;
-
-  const visibleDays = daySlots.slice(startIndex, endIndex);
-  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
 
   return (
     <div
