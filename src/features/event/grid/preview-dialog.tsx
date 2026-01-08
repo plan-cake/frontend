@@ -9,6 +9,7 @@ import { EventRange } from "@/core/event/types";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import { cn } from "@/lib/utils/classname";
+import { findTimezoneLabel } from "@/lib/utils/date-time-format";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
@@ -110,7 +111,7 @@ export default function GridPreviewDialog({
               <label className="text-sm md:mr-[20px]">
                 Original Event in{" "}
                 <span className="text-accent font-bold">
-                  {eventRange.timezone}
+                  {findTimezoneLabel(eventRange.timezone)}
                 </span>
               </label>
             </div>

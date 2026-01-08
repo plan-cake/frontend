@@ -5,21 +5,19 @@ import {
   isBefore,
   parseISO,
 } from "date-fns";
-import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 
 import {
   EventRange,
   SpecificDateRange,
   WeekdayRange,
-  WeekdayTimeRange,
-  WeekdayMap,
 } from "@/core/event/types";
 import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 
 /* EXPAND EVENT RANGE UTILITIES */
 
 /**
- * Helper: Generates 15-minute slots between two absolute UTC times.
+ * Generates 15-minute slots between two absolute UTC times.
  * range: [start, end)
  */
 function generateSlotsBetween(startUTC: Date, endUTC: Date): Date[] {
@@ -34,119 +32,30 @@ function generateSlotsBetween(startUTC: Date, endUTC: Date): Date[] {
 }
 
 /**
- * Helper: Constructs the absolute Start and End UTC times for a specific "calendar day"
+ * Constructs the absolute Start and End UTC times for a specific "calendar day"
  * in the target timezone, given the hour constraints.
  */
 function getDailyBoundariesInUTC(
   dateIsoStr: string, // "YYYY-MM-DD"
   timezone: string,
-  timeRange: { from: number; to: number },
+  timeRange: { from: string; to: string },
 ) {
   // Construct ISO strings for the target timezone
-  const startStr = `${dateIsoStr}T${String(timeRange.from).padStart(2, "0")}:00:00`;
+  const startStr = `${dateIsoStr}T${timeRange.from}:00`;
   const startUTC = fromZonedTime(startStr, timezone);
 
   let endUTC: Date;
-  if (timeRange.to === 24) {
+  if (timeRange.to === "00:00" || timeRange.to === "24:00") {
     const dateObj = parseISO(dateIsoStr);
     const nextDay = addDays(dateObj, 1);
     const nextDayStr = nextDay.toISOString().split("T")[0];
     endUTC = fromZonedTime(`${nextDayStr}T00:00:00`, timezone);
   } else {
-    const endStr = `${dateIsoStr}T${String(timeRange.to).padStart(2, "0")}:00:00`;
+    const endStr = `${dateIsoStr}T${timeRange.to}:00`;
     endUTC = fromZonedTime(endStr, timezone);
   }
 
   return { startUTC, endUTC };
-}
-
-function getTimeStrings(timeRange: { from: number; to: number }) {
-  const fromHour = String(timeRange.from).padStart(2, "0");
-  const toHour =
-    timeRange.to === 24 ? "23:59" : String(timeRange.to).padStart(2, "0");
-  return { fromHour, toHour };
-}
-
-export function getAbsoluteDateRangeInUTC(eventRange: SpecificDateRange): {
-  eventStartUTC: Date;
-  eventEndUTC: Date;
-} {
-  const startDateString = eventRange.dateRange.from.split("T")[0];
-  const endDateString = eventRange.dateRange.to.split("T")[0];
-  const { fromHour: startTimeString, toHour: endTimeString } = getTimeStrings(
-    eventRange.timeRange,
-  );
-  const eventStartUTC = fromZonedTime(
-    `${startDateString}T${startTimeString}`,
-    eventRange.timezone,
-  );
-  const eventEndUTC = fromZonedTime(
-    `${endDateString}T${endTimeString}`,
-    eventRange.timezone,
-  );
-
-  return { eventStartUTC, eventEndUTC };
-}
-
-export function getSelectedWeekdaysInTimezone(
-  range: WeekdayRange,
-): WeekdayTimeRange[] {
-  const dayNameToIndex: { [key: string]: number } = {
-    Sun: 0,
-    Mon: 1,
-    Tue: 2,
-    Wed: 3,
-    Thu: 4,
-    Fri: 5,
-    Sat: 6,
-  };
-
-  const selectedDayIndexes = new Set<number>();
-  for (const dayName in range.weekdays) {
-    if (range.weekdays[dayName as keyof WeekdayMap] === 1) {
-      selectedDayIndexes.add(dayNameToIndex[dayName]);
-    }
-  }
-
-  if (selectedDayIndexes.size === 0) {
-    return [];
-  }
-
-  // 01/01/2012 is a sunday
-  const startOfWeekInViewerTz = fromZonedTime(
-    "2012-01-01T00:00:00",
-    range.timezone,
-  );
-
-  const { fromHour: startTimeString, toHour: endTimeString } = getTimeStrings(
-    range.timeRange,
-  );
-
-  const selectedDatesUTC: WeekdayTimeRange[] = [];
-  for (let i = 0; i < 7; i++) {
-    const currentDay = new Date(startOfWeekInViewerTz);
-    currentDay.setDate(startOfWeekInViewerTz.getDate() + i);
-    if (selectedDayIndexes.has(currentDay.getDay())) {
-      const dateString = formatInTimeZone(
-        currentDay,
-        range.timezone,
-        "yyyy-MM-dd",
-      );
-
-      const slotTimeUTC = fromZonedTime(
-        `${dateString}T${startTimeString}`,
-        range.timezone,
-      );
-      const dayEndUTC = fromZonedTime(
-        `${dateString}T${endTimeString}`,
-        range.timezone,
-      );
-
-      selectedDatesUTC.push({ slotTimeUTC, dayEndUTC });
-    }
-  }
-
-  return selectedDatesUTC;
 }
 
 /**

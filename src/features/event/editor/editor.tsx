@@ -14,14 +14,13 @@ import { EventProvider, useEventContext } from "@/core/event/context";
 import { EventInformation } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import TimeSelector from "@/features/event/components/selectors/time";
 import AdvancedOptions from "@/features/event/editor/advanced-options";
 import DateRangeSelection from "@/features/event/editor/date-range/selector";
+import TimeRangeSelection from "@/features/event/editor/time-range/selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
 import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
-import FormSelectorField from "@/features/selector/components/selector-field";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
@@ -47,8 +46,6 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
   const {
     state,
     setTitle,
-    setStartTime,
-    setEndTime,
     errors,
     handleError,
     clearAllErrors,
@@ -158,21 +155,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
         </p>
         <div className="flex flex-col gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
-          <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
-            <TimeSelector
-              id="from-time-dropdown"
-              value={eventRange.timeRange.from}
-              onChange={setStartTime}
-            />
-          </FormSelectorField>
-
-          <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
-            <TimeSelector
-              id="to-time-dropdown"
-              value={eventRange.timeRange.to}
-              onChange={setEndTime}
-            />
-          </FormSelectorField>
+          <TimeRangeSelection />
         </div>
 
         <div className="md:content md:col-start-1 md:row-start-9 md:flex md:max-w-[250px] md:items-end">

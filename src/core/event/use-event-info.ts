@@ -2,6 +2,7 @@ import { useMemo, useReducer, useCallback } from "react";
 
 import { DateRange } from "react-day-picker";
 
+import { DEFAULT_RANGE_SPECIFIC } from "@/core/event/lib/default-range";
 import { expandEventRange } from "@/core/event/lib/expand-event-range";
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
@@ -9,29 +10,23 @@ import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-da
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 
-const checkTimeRange = (from: number, to: number): boolean => {
-  return to > from;
+const checkTimeRange = (startTime: string, endTime: string): boolean => {
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const [endHour, endMinute] = endTime.split(":").map(Number);
+
+  if (endHour > startHour) return true;
+  if (endHour === startHour && endMinute > startMinute) return true;
+  return false;
 };
 
 function createInitialState(initialData?: EventInformation): EventInformation {
-  const defaultRange = {
-    type: "specific" as const,
-    duration: 60,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    dateRange: {
-      from: new Date().toISOString(),
-      to: new Date().toISOString(),
-    },
-    timeRange: { from: 9, to: 17 },
-  };
-
   return {
     title: initialData?.title || "",
     customCode: initialData?.customCode || "",
-    eventRange: initialData?.eventRange || defaultRange,
+    eventRange: initialData?.eventRange || DEFAULT_RANGE_SPECIFIC,
     timeslots:
       initialData?.timeslots ||
-      expandEventRange(initialData?.eventRange || defaultRange),
+      expandEventRange(initialData?.eventRange || DEFAULT_RANGE_SPECIFIC),
   };
 }
 
@@ -88,7 +83,7 @@ export function useEventInfo(initialData?: EventInformation) {
   }, []);
 
   const setStartTime = useCallback(
-    (time: number) => {
+    (time: string) => {
       if (checkTimeRange(time, state.eventRange.timeRange.to)) {
         handleError("timeRange", "");
       } else handleError("timeRange", MESSAGES.ERROR_EVENT_RANGE_INVALID);
@@ -99,7 +94,7 @@ export function useEventInfo(initialData?: EventInformation) {
   );
 
   const setEndTime = useCallback(
-    (time: number) => {
+    (time: string) => {
       if (checkTimeRange(state.eventRange.timeRange.from, time)) {
         handleError("timeRange", "");
       } else {

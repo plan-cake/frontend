@@ -5,18 +5,12 @@ import {
   DashboardResponse,
 } from "@/features/dashboard/fetch-data";
 
-const timeToHour = (timeStr: string): number => {
-  if (!timeStr) return 0;
-  const [hours, minutes] = timeStr.split(":").map(Number);
-  return hours + minutes / 60;
-};
-
 function processSingleEvent(
   myEvent: boolean,
   eventData: DashboardEventResponse,
 ): DashboardEventProps {
-  const startHour = timeToHour(eventData.start_time);
-  const endHour = timeToHour(eventData.end_time);
+  const startTime = eventData.start_time.substring(0, 5);
+  const endTime = eventData.end_time.substring(0, 5);
 
   if (eventData.event_type === "Date") {
     const data: DashboardEventProps = {
@@ -24,8 +18,8 @@ function processSingleEvent(
       code: eventData.event_code,
       title: eventData.title,
       type: "specific",
-      startHour: startHour,
-      endHour: endHour,
+      startTime: startTime,
+      endTime: endTime,
       startDate: eventData.start_date,
       endDate: eventData.end_date,
     };
@@ -39,8 +33,8 @@ function processSingleEvent(
       code: eventData.event_code,
       title: eventData.title,
       type: "weekday",
-      startHour: startHour,
-      endHour: endHour,
+      startTime: startTime,
+      endTime: endTime,
       startWeekday: startWeekday,
       endWeekday: endWeekday,
     };

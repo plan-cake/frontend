@@ -4,12 +4,6 @@ import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
 
-const timeToHour = (timeStr: string): number => {
-  if (!timeStr) return 0;
-  const [hours, minutes] = timeStr.split(":").map(Number);
-  return hours + minutes / 60;
-};
-
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
   eventRange: EventRange;
@@ -21,8 +15,8 @@ export function processEventData(eventData: EventDetailsResponse): {
   });
   let eventRange: EventRange;
 
-  const startHour = timeToHour(eventData.start_time);
-  const endHour = timeToHour(eventData.end_time);
+  const startTime = eventData.start_time.substring(0, 5);
+  const endTime = eventData.end_time.substring(0, 5);
 
   if (eventData.event_type === "Date") {
     eventRange = {
@@ -34,8 +28,8 @@ export function processEventData(eventData: EventDetailsResponse): {
         to: eventData.end_date!,
       },
       timeRange: {
-        from: startHour,
-        to: endHour,
+        from: startTime,
+        to: endTime,
       },
     };
   } else {
@@ -50,8 +44,8 @@ export function processEventData(eventData: EventDetailsResponse): {
       timezone: eventData.time_zone,
       weekdays: weekdays,
       timeRange: {
-        from: startHour,
-        to: endHour,
+        from: startTime,
+        to: endTime,
       },
     };
   }

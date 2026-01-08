@@ -7,14 +7,15 @@ import { useRouter } from "next/navigation";
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
+import { formatTimeRange } from "@/lib/utils/date-time-format";
 
 export type DashboardEventProps = {
   myEvent: boolean;
   code: string;
   title: string;
   type: "specific" | "weekday";
-  startHour: number;
-  endHour: number;
+  startTime: string;
+  endTime: string;
   startDate?: string;
   endDate?: string;
   startWeekday?: number;
@@ -26,8 +27,8 @@ export default function DashboardEvent({
   code,
   title,
   type,
-  startHour,
-  endHour,
+  startTime,
+  endTime,
   startDate,
   endDate,
   startWeekday,
@@ -57,7 +58,7 @@ export default function DashboardEvent({
         </div>
         <div className="flex items-center gap-2">
           <ClockIcon className="h-5 w-5" />
-          {formatTimeRange(startHour, endHour)}
+          {formatTimeRange(startTime, endTime)}
         </div>
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />
@@ -76,20 +77,4 @@ export default function DashboardEvent({
       </div>
     </Link>
   );
-}
-
-function formatHour(hour: number): string {
-  if (hour === 0 || hour === 24) {
-    return "12am";
-  }
-  const period = hour >= 12 ? "pm" : "am";
-  const adjustedHour = hour % 12 === 0 ? 12 : hour % 12;
-  return `${adjustedHour}${period}`;
-}
-
-function formatTimeRange(startHour: number, endHour: number): string {
-  if (startHour === 0 && endHour === 24) {
-    return "All day";
-  }
-  return `${formatHour(startHour)} - ${formatHour(endHour)}`;
 }

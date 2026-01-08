@@ -1,0 +1,62 @@
+import { format, parse } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
+
+/* TIMEZONE UTILS */
+
+export function findTimezoneLabel(tzValue: string): string {
+  return formatInTimeZone(new Date(), tzValue, "zzzz");
+}
+
+/* DATE UTILS */
+
+export function formatDateRange(fromDate: string, toDate: string): string {
+  const format = "MMMM d";
+  const fromFormatted = formatDate(fromDate, format);
+  const toFormatted = formatDate(toDate, format);
+
+  if (fromDate === toDate) {
+    return fromFormatted;
+  } else if (fromDate.slice(0, 7) === toDate.slice(0, 7)) {
+    const fromDay = parse(fromDate, "yyyy-MM-dd", new Date()).getDate();
+    const toDay = parse(toDate, "yyyy-MM-dd", new Date()).getDate();
+    const monthStr = formatDate(fromDate, "MMMM");
+    return `${monthStr} ${fromDay}-${toDay}`;
+  }
+  return `${fromFormatted} - ${toFormatted}`;
+}
+
+export function formatDate(date: string, fmt: string): string {
+  const parsedDate = parse(date, "yyyy-MM-dd", new Date());
+  return format(parsedDate, fmt);
+}
+
+/* TIME UTILS */
+
+export function formatTimeRange(startTime: string, endTime: string): string {
+  if (!startTime || !endTime) return "";
+
+  if (startTime === "00:00" && endTime === "24:00") {
+    return "All day";
+  }
+
+  return `${formatTime(startTime)} - ${formatTime(endTime)}`;
+}
+
+export function formatTime(time: string): string {
+  const parsedDate = parse(time, "HH:mm", new Date());
+  return format(parsedDate, "h:mm aaa");
+}
+
+export function convert24To12(time24: string): string {
+  if (!time24) return "";
+
+  const date = parse(time24, "HH:mm", new Date());
+  return format(date, "hh:mm a");
+}
+
+export function convert12To24(time12: string): string {
+  if (!time12) return "";
+
+  const date = parse(time12, "hh:mm a", new Date());
+  return format(date, "HH:mm");
+}

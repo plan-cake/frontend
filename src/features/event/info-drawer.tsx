@@ -2,37 +2,13 @@
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
-import { format } from "date-fns/format";
-import { parse } from "date-fns/parse";
 
 import { EventRange } from "@/core/event/types";
-
-function formatLabel(tz: string): string {
-  try {
-    const now = new Date();
-    const offset =
-      new Intl.DateTimeFormat("en-US", {
-        timeZone: tz,
-        hour12: false,
-        hour: "2-digit",
-        minute: "2-digit",
-        timeZoneName: "shortOffset",
-      })
-        .formatToParts(now)
-        .find((p) => p.type === "timeZoneName")?.value || "";
-
-    // Try to normalize to GMT+/-HH:MM
-    const match = offset.match(/GMT([+-]\d{1,2})(?::(\d{2}))?/);
-    const hours = match?.[1] ?? "0";
-    const minutes = match?.[2] ?? "00";
-    const fullOffset = `GMT${hours}:${minutes}`;
-
-    const city = tz.split("/").slice(-1)[0].replaceAll("_", " ");
-    return `${city} (${fullOffset})`;
-  } catch {
-    return tz;
-  }
-}
+import {
+  findTimezoneLabel,
+  formatDateRange,
+  formatTimeRange,
+} from "@/lib/utils/date-time-format";
 
 export default function EventInfoDrawer({
   eventRange,
@@ -74,7 +50,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
           <span className="font-bold">original event&apos;s timezone</span>{" "}
           which is{" "}
           <span className="text-accent font-bold">
-            {formatLabel(eventRange.timezone)}
+            {findTimezoneLabel(eventRange.timezone)}
           </span>
         </p>
       </div>
@@ -82,8 +58,10 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
       <div className="space-y-4 overflow-y-auto">
         {eventRange.type === "specific" ? (
           <InfoRow label="Possible Dates">
-            {formatDate(eventRange.dateRange.from, "EEE, MMMM d")} {" - "}
-            {formatDate(eventRange.dateRange.to, "EEE, MMMM d")}
+            {formatDateRange(
+              eventRange.dateRange.from,
+              eventRange.dateRange.to,
+            )}
           </InfoRow>
         ) : (
           <InfoRow label="Days of the Week">
@@ -95,9 +73,7 @@ export function EventInfo({ eventRange }: { eventRange: EventRange }) {
         )}
 
         <InfoRow label="Possible Times">
-          {eventRange.timeRange.from === 0 && eventRange.timeRange.to === 24
-            ? "Anytime"
-            : `${formatTime(eventRange.timeRange.from, "hh:mm a")} - ${formatTime(eventRange.timeRange.to, "hh:mm a")}`}
+          {formatTimeRange(eventRange.timeRange.from, eventRange.timeRange.to)}
         </InfoRow>
 
         {eventRange.duration > 0 && (
@@ -123,16 +99,4 @@ function InfoRow({
       <div className="text-accent">{children}</div>
     </div>
   );
-}
-
-// Helper functions to format date and time
-function formatDate(date: string, fmt: string): string {
-  const parsedDate = parse(date, "yyyy-MM-dd", new Date());
-  return format(parsedDate, fmt);
-}
-
-function formatTime(hour: number, fmt: string): string {
-  const date = new Date();
-  date.setHours(hour, 0, 0, 0);
-  return format(date, fmt);
 }

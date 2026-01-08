@@ -1,11 +1,15 @@
+import {
+  DEFAULT_RANGE_SPECIFIC,
+  DEFAULT_RANGE_WEEKDAY,
+} from "@/core/event/lib/default-range";
 import { EventRange, WeekdayMap } from "@/core/event/types";
 
 export type EventRangeAction =
   | { type: "SET_RANGE_INFO"; payload: EventRange }
   | { type: "SET_RANGE_TYPE"; payload: "specific" | "weekday" }
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
-  | { type: "SET_START_TIME"; payload: number }
-  | { type: "SET_END_TIME"; payload: number }
+  | { type: "SET_START_TIME"; payload: string }
+  | { type: "SET_END_TIME"; payload: string }
   | {
       type: "SET_WEEKDAYS";
       payload: { weekdays: Partial<Record<keyof WeekdayMap, 0 | 1>> };
@@ -118,24 +122,9 @@ export function EventRangeReducer(
 
     case "RESET": {
       if (state.type === "specific") {
-        return {
-          type: "specific",
-          duration: 30,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          dateRange: {
-            from: new Date().toISOString(),
-            to: new Date().toISOString(),
-          },
-          timeRange: { from: 9, to: 17 },
-        };
+        return DEFAULT_RANGE_SPECIFIC;
       } else {
-        return {
-          type: "weekday",
-          duration: 30,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
-          timeRange: { from: 9, to: 17 },
-        };
+        return DEFAULT_RANGE_WEEKDAY;
       }
     }
 
