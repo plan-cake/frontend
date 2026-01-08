@@ -7,6 +7,7 @@ import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specifi
 import { cn } from "@/lib/utils/classname";
 
 export default function DateRangePopover({
+  earliestDate,
   startDate,
   endDate,
 }: SpecificDateRangeDisplayProps) {
@@ -29,6 +30,7 @@ export default function DateRangePopover({
           aria-label="Date range picker"
         >
           <Calendar
+            earliestDate={earliestDate}
             className="w-fit"
             selectedRange={{
               from: startDate || undefined,
