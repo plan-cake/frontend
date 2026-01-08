@@ -70,7 +70,7 @@ export default function WeekdayCalendar({
   const rangeEnd = activeIndices.length ? Math.max(...activeIndices) : -1;
 
   return (
-    <div className="flex w-fit select-none">
+    <div className="flex w-full select-none flex-row flex-wrap">
       {days.map((day, index) => {
         const isActive = index >= rangeStart && index <= rangeEnd;
         const isStart = index === rangeStart;
@@ -81,9 +81,9 @@ export default function WeekdayCalendar({
             key={day}
             onClick={() => handleRangeSelect(day)}
             className={cn(
-              "flex h-8 items-center justify-center px-4",
+              "flex h-10 w-10 items-center justify-center px-6",
               "hover:bg-accent/25 active:bg-accent/40",
-              !isActive && "hover:rounded-full",
+              !isActive && "rounded-full",
               isActive && "bg-accent/15 text-accent",
               isStart && "rounded-l-full",
               isEnd && "rounded-r-full",
