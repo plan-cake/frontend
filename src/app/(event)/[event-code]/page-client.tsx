@@ -18,11 +18,13 @@ export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialAvailabilityData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialAvailabilityData: AvailabilityDataResponse;
 }) {
   const [timezone, setTimezone] = useState(
@@ -78,6 +80,7 @@ export default function ClientPage({
           setHoveredSlot={setHoveredSlot}
           availabilities={availabilities}
           numParticipants={participants.length}
+          timeslots={timeslots}
         />
 
         <div className="h-25" />

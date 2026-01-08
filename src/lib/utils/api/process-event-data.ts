@@ -2,12 +2,23 @@ import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
 
+const timeToHour = (timeStr: string): number => {
+  if (!timeStr) return 0;
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours + minutes / 60;
+};
+
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
 } {
   const eventName: string = eventData.title;
+  const timeslots: Date[] = eventData.timeslots.map((ts) => new Date(ts));
   let eventRange: EventRange;
+
+  const startHour = timeToHour(eventData.start_time);
+  const endHour = timeToHour(eventData.end_time);
 
   if (eventData.event_type === "Date") {
     eventRange = {
@@ -19,26 +30,27 @@ export function processEventData(eventData: EventDetailsResponse): {
         to: eventData.end_date!,
       },
       timeRange: {
-        from: eventData.start_hour,
-        to: eventData.end_hour,
+        from: startHour,
+        to: endHour,
       },
     };
   } else {
-    const weekdays = generateWeekdayMap(
-      eventData.start_weekday!,
-      eventData.end_weekday!,
-    );
+    const startDayIndex = new Date(eventData.start_date!).getUTCDay();
+    const endDayIndex = new Date(eventData.end_date!).getUTCDay();
+
+    const weekdays = generateWeekdayMap(startDayIndex, endDayIndex);
+
     eventRange = {
       type: "weekday",
       duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       weekdays: weekdays,
       timeRange: {
-        from: eventData.start_hour,
-        to: eventData.end_hour,
+        from: startHour,
+        to: endHour,
       },
     };
   }
 
-  return { eventName, eventRange };
+  return { eventName, eventRange, timeslots };
 }

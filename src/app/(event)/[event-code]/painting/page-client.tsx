@@ -26,11 +26,13 @@ export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
@@ -227,6 +229,7 @@ export default function ClientPage({
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
+          timeslots={timeslots}
         />
       </div>
 

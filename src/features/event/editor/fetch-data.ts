@@ -3,14 +3,13 @@ import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 export type EventDetailsResponse = {
   title: string;
   duration?: number;
-  start_hour: number;
-  end_hour: number;
   time_zone: string;
+  timeslots: string[];
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
-  start_weekday?: number;
-  end_weekday?: number;
+  start_time: string;
+  end_time: string;
 };
 
 export async function fetchEventDetails(

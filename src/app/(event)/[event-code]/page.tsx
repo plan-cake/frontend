@@ -20,14 +20,15 @@ export default async function Page({ params }: EventCodePageProps) {
     fetchAvailabilityData(eventCode, authCookies),
   ]);
 
-  // Process the data here, on the server!
-  const { eventName, eventRange } = processEventData(initialEventData);
+  const { eventName, eventRange, timeslots } =
+    processEventData(initialEventData);
 
   return (
     <ClientPage
       eventCode={eventCode}
-      eventName={eventName} // Pass the processed name
-      eventRange={eventRange} // Pass the processed range
+      eventName={eventName}
+      eventRange={eventRange}
+      timeslots={timeslots}
       initialAvailabilityData={availabilityData}
     />
   );
