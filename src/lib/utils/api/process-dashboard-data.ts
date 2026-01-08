@@ -5,32 +5,44 @@ import {
   DashboardResponse,
 } from "@/features/dashboard/fetch-data";
 
+const timeToHour = (timeStr: string): number => {
+  if (!timeStr) return 0;
+  const [hours, minutes] = timeStr.split(":").map(Number);
+  return hours + minutes / 60;
+};
+
 function processSingleEvent(
   myEvent: boolean,
   eventData: DashboardEventResponse,
 ): DashboardEventProps {
+  const startHour = timeToHour(eventData.start_time);
+  const endHour = timeToHour(eventData.end_time);
+
   if (eventData.event_type === "Date") {
     const data: DashboardEventProps = {
       myEvent: myEvent,
       code: eventData.event_code,
       title: eventData.title,
       type: "specific",
-      startHour: eventData.start_hour,
-      endHour: eventData.end_hour,
+      startHour: startHour,
+      endHour: endHour,
       startDate: eventData.start_date,
       endDate: eventData.end_date,
     };
     return data;
   } else {
+    const startWeekday = new Date(eventData.start_date!).getUTCDay();
+    const endWeekday = new Date(eventData.end_date!).getUTCDay();
+
     const data: DashboardEventProps = {
       myEvent: myEvent,
       code: eventData.event_code,
       title: eventData.title,
       type: "weekday",
-      startHour: eventData.start_hour,
-      endHour: eventData.end_hour,
-      startWeekday: eventData.start_weekday,
-      endWeekday: eventData.end_weekday,
+      startHour: startHour,
+      endHour: endHour,
+      startWeekday: startWeekday,
+      endWeekday: endWeekday,
     };
     return data;
   }
