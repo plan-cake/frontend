@@ -9,6 +9,7 @@ export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
   eventRange: EventRange;
   timeslots: Date[];
+  isCreator: boolean;
 } {
   const eventName: string = eventData.title;
   const timeslots: Date[] = eventData.timeslots.map((ts) => {
@@ -51,5 +52,5 @@ export function processEventData(eventData: EventDetailsResponse): {
     };
   }
 
-  return { eventName, eventRange, timeslots };
+  return { eventName, eventRange, timeslots, isCreator: eventData.is_creator };
 }

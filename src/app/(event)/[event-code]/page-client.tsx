@@ -20,12 +20,14 @@ export default function ClientPage({
   eventRange,
   timeslots,
   initialAvailabilityData,
+  isCreator,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
   timeslots: Date[];
   initialAvailabilityData: AvailabilityDataResponse;
+  isCreator: boolean;
 }) {
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
@@ -38,7 +40,6 @@ export default function ClientPage({
 
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
-  const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};

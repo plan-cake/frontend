@@ -20,7 +20,7 @@ export default async function Page({ params }: EventCodePageProps) {
     fetchAvailabilityData(eventCode, authCookies),
   ]);
 
-  const { eventName, eventRange, timeslots } =
+  const { eventName, eventRange, timeslots, isCreator } =
     processEventData(initialEventData);
 
   return (
@@ -30,6 +30,7 @@ export default async function Page({ params }: EventCodePageProps) {
       eventRange={eventRange}
       timeslots={timeslots}
       initialAvailabilityData={availabilityData}
+      isCreator={isCreator}
     />
   );
 }

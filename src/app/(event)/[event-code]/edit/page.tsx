@@ -12,12 +12,17 @@ export default async function Page({ params }: EventCodePageProps) {
   }
 
   const eventData = await fetchEventDetails(eventCode);
-  const { eventName, eventRange } = processEventData(eventData);
+  const { eventName, eventRange, timeslots } = processEventData(eventData);
 
   return (
     <EventEditor
       type="edit"
-      initialData={{ title: eventName, customCode: eventCode, eventRange }}
+      initialData={{
+        title: eventName,
+        customCode: eventCode,
+        eventRange,
+        timeslots,
+      }}
     />
   );
 }

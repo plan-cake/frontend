@@ -5,6 +5,7 @@ export type EventDetailsResponse = {
   duration?: number;
   time_zone: string;
   timeslots: string[];
+  is_creator: boolean;
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
