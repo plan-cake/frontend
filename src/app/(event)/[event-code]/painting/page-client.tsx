@@ -135,14 +135,18 @@ export default function ClientPage({
   const cancelButton = (
     <LinkButton
       buttonStyle="transparent"
-      label={initialData ? "Cancel Edits" : "Cancel"}
+      label={initialData?.display_name ? "Cancel Edits" : "Cancel"}
       href={`/${eventCode}`}
     />
   );
   const submitButton = (
     <ActionButton
       buttonStyle="primary"
-      label={initialData ? "Update Availability" : "Submit Availability"}
+      label={
+        initialData?.display_name
+          ? "Update Availability"
+          : "Submit Availability"
+      }
       onClick={handleSubmitAvailability}
       loadOnSuccess
     />
