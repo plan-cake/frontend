@@ -1,3 +1,5 @@
+import { parseISO } from "date-fns";
+
 import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
@@ -14,7 +16,9 @@ export function processEventData(eventData: EventDetailsResponse): {
   timeslots: Date[];
 } {
   const eventName: string = eventData.title;
-  const timeslots: Date[] = eventData.timeslots.map((ts) => new Date(ts));
+  const timeslots: Date[] = eventData.timeslots.map((ts) => {
+    return parseISO(ts + "Z");
+  });
   let eventRange: EventRange;
 
   const startHour = timeToHour(eventData.start_time);

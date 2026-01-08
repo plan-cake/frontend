@@ -9,7 +9,6 @@ import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
-import { convertAvailabilityToGrid } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
@@ -95,15 +94,10 @@ export default function ClientPage({
         return false;
       }
 
-      const availabilityGrid = convertAvailabilityToGrid(
-        userAvailability,
-        eventRange,
-      );
-
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: availabilityGrid,
+        availability: Array.from(userAvailability),
         time_zone: timeZone,
       };
 

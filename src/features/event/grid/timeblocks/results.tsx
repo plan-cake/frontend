@@ -1,4 +1,4 @@
-import { format, formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { toZonedTime } from "date-fns-tz";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import TimeSlot from "@/features/event/grid/time-slot";
@@ -41,14 +41,8 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
-        const timeslotIso = format(timeslot, "yyyy-MM-dd'T'HH:mm:ss");
-
+        const timeslotIso = timeslot.toISOString().split(".")[0];
         const localSlot = toZonedTime(timeslot, userTimezone);
-        const localSlotIso = formatInTimeZone(
-          timeslot,
-          userTimezone,
-          "yyyy-MM-dd'T'HH:mm:ss",
-        );
 
         const currentDayKey = localSlot.toLocaleDateString("en-CA");
         const dayIndex = visibleDayKeys.indexOf(currentDayKey);
@@ -91,7 +85,7 @@ export default function ResultsTimeBlock({
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}
-            slotIso={localSlotIso}
+            slotIso={timeslotIso}
             cellClasses={cellClasses.join(" ")}
             isHovered={isHovered}
             gridColumn={gridColumn}

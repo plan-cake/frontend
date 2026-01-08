@@ -1,5 +1,7 @@
 import { useCallback, useReducer } from "react";
 
+import { parseISO } from "date-fns";
+
 import {
   availabilityReducer,
   AvailabilityState,
@@ -12,7 +14,7 @@ export function useAvailability(initialData: SelfAvailabilityResponse | null) {
   const isoStrings = [];
   if (initialData && initialData.available_dates) {
     for (const dateStr of initialData.available_dates) {
-      isoStrings.push(new Date(dateStr).toISOString());
+      isoStrings.push(parseISO(dateStr + "Z").toISOString());
     }
   }
 
