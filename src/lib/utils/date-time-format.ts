@@ -32,6 +32,13 @@ export function formatDate(date: string, fmt: string): string {
 
 /* TIME UTILS */
 
+export function formatApiTime(apiTime: string, eventTimezone: string): string {
+  const todayDate = format(new Date(), "yyyy-MM-dd");
+  const isoString = `${todayDate}T${apiTime}Z`;
+  const localDate = new Date(isoString);
+  return formatInTimeZone(localDate, eventTimezone, "HH:mm");
+}
+
 export function formatTimeRange(startTime: string, endTime: string): string {
   if (!startTime || !endTime) return "";
 

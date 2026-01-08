@@ -4,13 +4,14 @@ import {
   DashboardEventResponse,
   DashboardResponse,
 } from "@/features/dashboard/fetch-data";
+import { formatApiTime } from "@/lib/utils/date-time-format";
 
 function processSingleEvent(
   myEvent: boolean,
   eventData: DashboardEventResponse,
 ): DashboardEventProps {
-  const startTime = eventData.start_time.substring(0, 5);
-  const endTime = eventData.end_time.substring(0, 5);
+  const startTime = formatApiTime(eventData.start_time, eventData.time_zone);
+  const endTime = formatApiTime(eventData.end_time, eventData.time_zone);
 
   if (eventData.event_type === "Date") {
     const data: DashboardEventProps = {

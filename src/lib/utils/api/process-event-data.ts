@@ -3,6 +3,7 @@ import { parseISO } from "date-fns";
 import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
+import { formatApiTime } from "@/lib/utils/date-time-format";
 
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
@@ -15,8 +16,8 @@ export function processEventData(eventData: EventDetailsResponse): {
   });
   let eventRange: EventRange;
 
-  const startTime = eventData.start_time.substring(0, 5);
-  const endTime = eventData.end_time.substring(0, 5);
+  const startTime = formatApiTime(eventData.start_time, eventData.time_zone);
+  const endTime = formatApiTime(eventData.end_time, eventData.time_zone);
 
   if (eventData.event_type === "Date") {
     eventRange = {
