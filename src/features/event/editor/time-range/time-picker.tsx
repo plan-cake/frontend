@@ -13,12 +13,14 @@ type TimePickerProps = {
   onTimeChange: (newTime: string) => void;
 
   visibleCount?: number;
+  fontSize?: number;
 };
 
 export default function TimePicker({
   time,
   onTimeChange,
   visibleCount = 3,
+  fontSize = 16,
 }: TimePickerProps) {
   const [pickerValue, setPickerValue] = useState(convert24To12(time));
 
@@ -36,7 +38,7 @@ export default function TimePicker({
 
   const wheelStyle = {
     root: { display: "flex", width: "fit-content", padding: "0 8px" },
-    item: { fontSize: "16px" },
+    item: { fontSize: `${fontSize}px` },
     overlayTop: {
       background:
         "linear-gradient(to bottom, color-mix(in srgb, var(--color-background), transparent 20%) 5%, transparent)",

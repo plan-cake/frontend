@@ -143,7 +143,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         className={cn(
           "w-full grid-cols-1 gap-y-2",
           mobileTab === "preview" ? "hidden md:grid" : "grid",
-          "md:grow md:grid-cols-[auto_1fr] md:grid-rows-[auto_repeat(7,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-2",
+          "md:grow md:grid-cols-[auto_1fr] md:grid-rows-[auto_repeat(8,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-2",
         )}
       >
         <DateRangeSelection editing={type === "edit"} />
@@ -154,11 +154,11 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           Possible Times
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
         </p>
-        <div className="flex flex-col gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
+        <div className="flex flex-col gap-2 md:col-start-1 md:row-span-8 md:row-start-3">
           <TimeRangeSelection />
         </div>
 
-        <div className="md:content md:col-start-1 md:row-start-9 md:flex md:max-w-[250px] md:items-end">
+        <div className="md:content md:col-start-1 md:row-start-10 md:flex md:max-w-[250px] md:items-end">
           <AdvancedOptions isEditing={type === "edit"} errors={errors} />
         </div>
         <div className="h-16 md:hidden" />

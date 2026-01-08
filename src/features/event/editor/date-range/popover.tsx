@@ -1,3 +1,5 @@
+import { useState } from "react";
+
 import * as Popover from "@radix-ui/react-popover";
 
 import { useEventContext } from "@/core/event/context";
@@ -11,11 +13,16 @@ export default function DateRangePopover({
   endDate,
 }: SpecificDateRangeDisplayProps) {
   const { errors, setDateRange } = useEventContext();
+  const [open, setOpen] = useState(false);
 
   return (
-    <Popover.Root>
+    <Popover.Root open={open} onOpenChange={setOpen}>
       <Popover.Trigger className="hover:cursor-pointer">
-        <SpecificDateRangeDisplay startDate={startDate} endDate={endDate} />
+        <SpecificDateRangeDisplay
+          startDate={startDate}
+          endDate={endDate}
+          open={open}
+        />
       </Popover.Trigger>
 
       <Popover.Portal>
