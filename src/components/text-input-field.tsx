@@ -16,14 +16,26 @@ type TextInputFieldProps = {
   label: string;
   value: string;
   onChange: (value: string) => void;
+  onFocus?: () => void;
+  onBlur?: () => void;
   outlined?: boolean;
   error?: string;
   classname?: string;
 };
 
 export default function TextInputField(props: TextInputFieldProps) {
-  const { id, type, label, value, onChange, error, outlined, classname } =
-    props;
+  const {
+    id,
+    type,
+    label,
+    value,
+    onChange,
+    onFocus,
+    onBlur,
+    error,
+    outlined,
+    classname,
+  } = props;
   const [showPassword, setShowPassword] = useState(false);
 
   // determine input type
@@ -38,6 +50,8 @@ export default function TextInputField(props: TextInputFieldProps) {
         id={id}
         value={value}
         onChange={(e) => onChange(e.target.value)}
+        onFocus={onFocus}
+        onBlur={onBlur}
         placeholder=" " // triggers placeholder-shown state for floating label
         className={cn(
           "peer w-full bg-transparent py-2",
