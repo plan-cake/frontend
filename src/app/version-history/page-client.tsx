@@ -138,7 +138,7 @@ function MajorVersion({
         extend={extendLine}
       />
       <div>
-        <ul className="relative left-8 list-disc space-y-2 pr-8">
+        <ul className="relative left-8 list-disc pr-8">
           {versionData.changes
             .concat(versionData.bugFixes ?? [])
             .map((change) => (
@@ -168,7 +168,7 @@ function MinorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <ul className="relative left-8 list-disc space-y-2 pr-8">
+      <ul className="relative left-8 list-disc pr-8">
         {versionData.changes.map((change) => (
           <li key={change}>{change}</li>
         ))}
