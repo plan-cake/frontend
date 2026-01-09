@@ -10,9 +10,9 @@ export function findTimezoneLabel(tzValue: string): string {
 /* DATE UTILS */
 
 export function formatDateRange(fromDate: string, toDate: string): string {
-  const format = "MMMM d";
-  const fromFormatted = formatDate(fromDate, format);
-  const toFormatted = formatDate(toDate, format);
+  const dateFormat = "MMMM d";
+  const fromFormatted = formatDate(fromDate, dateFormat);
+  const toFormatted = formatDate(toDate, dateFormat);
 
   if (fromDate === toDate) {
     return fromFormatted;

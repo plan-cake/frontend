@@ -6,18 +6,12 @@ import { DEFAULT_RANGE_SPECIFIC } from "@/core/event/lib/default-range";
 import { expandEventRange } from "@/core/event/lib/expand-event-range";
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
 import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
+import {
+  checkDateRange,
+  checkTimeRange,
+} from "@/features/event/editor/validate-data";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
-
-const checkTimeRange = (startTime: string, endTime: string): boolean => {
-  const [startHour, startMinute] = startTime.split(":").map(Number);
-  const [endHour, endMinute] = endTime.split(":").map(Number);
-
-  if (endHour > startHour) return true;
-  if (endHour === startHour && endMinute > startMinute) return true;
-  return false;
-};
 
 function createInitialState(initialData?: EventInformation): EventInformation {
   return {
@@ -107,8 +101,8 @@ export function useEventInfo(initialData?: EventInformation) {
   );
 
   const setDateRange = useCallback(
-    (dateRange: DateRange | undefined) => {
-      if (checkInvalidDateRangeLength(dateRange)) {
+    (dateRange: DateRange) => {
+      if (checkDateRange(dateRange.from, dateRange.to)) {
         handleError("dateRange", MESSAGES.ERROR_EVENT_RANGE_TOO_LONG);
       } else {
         handleError("dateRange", "");

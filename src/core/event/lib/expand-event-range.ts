@@ -12,7 +12,7 @@ import {
   SpecificDateRange,
   WeekdayRange,
 } from "@/core/event/types";
-import { isDurationExceedingMax } from "@/features/event/max-event-duration";
+import { checkDateRange } from "@/features/event/editor/validate-data";
 
 /* EXPAND EVENT RANGE UTILITIES */
 
@@ -90,7 +90,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
     range.timeRange,
   );
 
-  if (isDurationExceedingMax(eventStartUTC, eventEndUTC)) {
+  if (checkDateRange(eventStartUTC, eventEndUTC)) {
     return [];
   }
 
