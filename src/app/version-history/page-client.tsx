@@ -137,12 +137,10 @@ function MajorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <ul className="relative left-8 list-disc pr-8">
-        {versionData.changes
-          .concat(versionData.bugFixes ?? [])
-          .map((change) => (
-            <li key={change}>{change}</li>
-          ))}
+      <ul className="px-4">
+        {versionData.changes.map((change) => (
+          <li key={change}>- {change}</li>
+        ))}
       </ul>
     </div>
   );
@@ -166,9 +164,9 @@ function MinorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <ul className="relative left-8 list-disc pr-8">
+      <ul className="px-4">
         {versionData.changes.map((change) => (
-          <li key={change}>{change}</li>
+          <li key={change}>- {change}</li>
         ))}
       </ul>
     </div>
