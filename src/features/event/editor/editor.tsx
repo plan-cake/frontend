@@ -1,123 +1,73 @@
 "use client";
 
-import { useState } from "react";
+import { useState, memo } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
 
 import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
+import SegmentedControl from "@/components/segmented-control";
 import TextInputField from "@/components/text-input-field";
-import { EventRange, SpecificDateRange } from "@/core/event/types";
-import { useEventInfo } from "@/core/event/use-event-info";
+import { EventProvider, useEventContext } from "@/core/event/context";
+import { EventInformation } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
-import DateRangeSelector from "@/features/event/editor/date-range/selector";
-import DurationSelector from "@/features/event/editor/duration-selector";
-import TimeSelector from "@/features/event/editor/time-selector";
+import TimeSelector from "@/features/event/components/selectors/time";
+import AdvancedOptions from "@/features/event/editor/advanced-options";
+import DateRangeSelection from "@/features/event/editor/date-range/selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
+import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
-import { useToast } from "@/features/toast/context";
-import { MESSAGES } from "@/lib/messages";
+import FormSelectorField from "@/features/selector/components/selector-field";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
 type EventEditorProps = {
   type: EventEditorType;
-  initialData?: {
-    title: string;
-    code: string;
-    eventRange: EventRange;
-  };
+  initialData?: EventInformation;
 };
 
+type SegmentedControlOption = "details" | "preview";
+
+const MemoizedGridPreview = memo(GridPreviewDialog);
+const MemoizedScheduleGrid = memo(ScheduleGrid);
+
 export default function EventEditor({ type, initialData }: EventEditorProps) {
+  return (
+    <EventProvider initialData={initialData}>
+      <EventEditorContent type={type} initialData={initialData} />
+    </EventProvider>
+  );
+}
+
+function EventEditorContent({ type, initialData }: EventEditorProps) {
   const {
     state,
     setTitle,
-    setEventType,
-    setCustomCode,
-    setTimezone,
-    setDuration,
-    setTimeRange,
-    setDateRange,
-    setWeekdayRange,
-  } = useEventInfo(initialData);
+    setStartTime,
+    setEndTime,
+    errors,
+    handleError,
+    clearAllErrors,
+    handleGenericError,
+    batchHandleErrors,
+  } = useEventContext();
   const { title, customCode, eventRange } = state;
   const router = useRouter();
 
-  // TOASTS AND ERROR STATES
-  const { addToast } = useToast();
-  const [errors, setErrors] = useState<Record<string, string>>({});
-
-  const handleNameChange = (e: string) => {
-    if (errors.title) setErrors((prev) => ({ ...prev, title: "" }));
-    else if (e === "") {
-      setErrors((prev) => ({
-        ...prev,
-        title: MESSAGES.ERROR_EVENT_NAME_MISSING,
-      }));
-    }
-    setTitle(e);
-  };
-
-  const handleTimeRangeChange = (from: number, to: number) => {
-    if (errors.timeRange) setErrors((prev) => ({ ...prev, timeRange: "" }));
-
-    if (from >= to) {
-      setErrors((prev) => ({
-        ...prev,
-        timeRange: MESSAGES.ERROR_EVENT_RANGE_INVALID,
-      }));
-    }
-
-    setTimeRange({ from, to });
-  };
-
-  const handleCustomCodeChange = useDebouncedCallback(async (customCode) => {
-    if (type === "edit") return;
-
-    if (errors.customCode) setErrors((prev) => ({ ...prev, customCode: "" }));
-    if (customCode === "") {
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/event/check-code/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ custom_code: customCode }),
-      });
-
-      if (!response.ok) {
-        setErrors((prev) => ({
-          ...prev,
-          customCode: MESSAGES.ERROR_EVENT_CODE_TAKEN,
-        }));
-      } else {
-        setErrors((prev) => ({ ...prev, customCode: "" }));
-      }
-    } catch (error) {
-      console.error("Error checking custom code availability:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
-    }
-  }, 300);
+  const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
 
   // SUBMIT EVENT INFO
   const submitEventInfo = async () => {
-    setErrors({}); // reset errors
+    clearAllErrors();
 
     try {
       const validationErrors = await validateEventData(type, state);
       if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        Object.values(validationErrors).forEach((error) =>
-          addToast("error", error),
-        );
+        batchHandleErrors(validationErrors);
         return false;
       }
 
@@ -126,13 +76,13 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
-        addToast,
-        setErrors,
+        handleError,
       );
+
       return success;
     } catch (error) {
       console.error("Submission failed:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+      handleGenericError();
       return false;
     }
   };
@@ -142,7 +92,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
     <LinkButton
       buttonStyle="transparent"
       label="Cancel Edits"
-      href={`/${initialData?.code}`}
+      href={`/${initialData?.customCode}`}
     />
   );
   const submitButton = (
@@ -152,10 +102,6 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
       onClick={submitEventInfo}
       loadOnSuccess
     />
-  );
-
-  const earliestCalendarDate = new Date(
-    (initialData?.eventRange as SpecificDateRange)?.dateRange?.from,
   );
 
   return (
@@ -174,7 +120,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             type="text"
             label="Event Name"
             value={title}
-            onChange={handleNameChange}
+            onChange={setTitle}
             error={errors.title || errors.api}
             classname="text-2xl font-semibold"
           />
@@ -185,168 +131,73 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
         </div>
       </div>
 
-      <div className="grid w-full grid-cols-1 gap-y-2 md:grow md:grid-cols-[200px_repeat(10,minmax(0,1fr))] md:grid-rows-[auto_repeat(15,minmax(0,1fr))] md:gap-x-4 md:gap-y-1">
-        {/* Date range picker */}
-        <div className="flex items-center md:col-span-10">
-          <DateRangeSelector
-            earliestDate={earliestCalendarDate}
-            eventRange={eventRange}
-            editing={type === "edit"}
-            setEventType={setEventType}
-            setWeekdayRange={setWeekdayRange}
-            setDateRange={setDateRange}
-          />
-        </div>
+      <div className="md:hidden">
+        <SegmentedControl
+          value={mobileTab}
+          onChange={setMobileTab}
+          options={[
+            { label: "Event Details", value: "details" },
+            { label: "Grid Preview", value: "preview" },
+          ]}
+        />
+      </div>
 
-        {/* From/To */}
-        <label
+      <div
+        className={cn(
+          "w-full grid-cols-1 gap-y-2",
+          mobileTab === "preview" ? "hidden md:grid" : "grid",
+          "md:grow md:grid-cols-[auto_1fr] md:grid-rows-[auto_repeat(7,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-2",
+        )}
+      >
+        <DateRangeSelection editing={type === "edit"} />
+
+        <p
           className={`flex items-center gap-2 md:col-start-1 md:row-start-2 ${errors.timeRange ? "text-error" : ""}`}
         >
           Possible Times
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
-        </label>
-        <div className="flex space-x-4 md:col-start-1 md:row-start-3">
-          <label htmlFor="from-time-dropdown" className="text-gray-400">
-            FROM
-          </label>
-          <TimeSelector
-            id="from-time-dropdown"
-            value={eventRange.timeRange.from}
-            onChange={(value) =>
-              handleTimeRangeChange(value, eventRange.timeRange.to)
-            }
-          />
-        </div>
-        <div className="flex space-x-4 md:col-start-1 md:row-start-4">
-          <label htmlFor="to-time-dropdown" className="text-gray-400">
-            UNTIL
-          </label>
-          <TimeSelector
-            id="to-time-dropdown"
-            value={eventRange.timeRange.to}
-            onChange={(value) =>
-              handleTimeRangeChange(eventRange.timeRange.from, value)
-            }
-          />
+        </p>
+        <div className="flex flex-col gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
+          <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
+            <TimeSelector
+              id="from-time-dropdown"
+              value={eventRange.timeRange.from}
+              onChange={setStartTime}
+            />
+          </FormSelectorField>
+
+          <FormSelectorField label="UNTIL" htmlFor="to-time-dropdown">
+            <TimeSelector
+              id="to-time-dropdown"
+              value={eventRange.timeRange.to}
+              onChange={setEndTime}
+            />
+          </FormSelectorField>
         </div>
 
-        {/* Timezone & Duration */}
-        <div className="md:contents">
-          {/* Desktop: show all options */}
-          <label className="hidden md:col-start-1 md:row-start-10 md:block">
-            Advanced Options
-          </label>
-          <label
-            htmlFor="timezone-select"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-11 md:block"
-          >
-            Timezone
-          </label>
-          <div className="hidden md:col-start-1 md:row-start-12 md:block">
-            <TimeZoneSelector
-              id="timezone-select"
-              value={eventRange.timezone}
-              onChange={setTimezone}
-            />
-          </div>
-          <label
-            htmlFor="duration-select"
-            className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block"
-          >
-            Duration
-          </label>
-          <div className="md:row-start-14 hidden md:col-start-1 md:block">
-            <DurationSelector
-              id="duration-select"
-              value={eventRange.duration}
-              onChange={(v) => setDuration((v as number) || 0)}
-            />
-          </div>
-
-          <label className="md:row-start-15 hidden text-gray-400 md:col-start-1 md:flex md:justify-between">
-            {type === "new" && "Custom"} Event Code
-            {errors.customCode && (
-              <ExclamationTriangleIcon className="text-error h-4 w-4" />
-            )}
-          </label>
-          <div className="md:row-start-16 hidden md:col-start-1 md:block">
-            <input
-              type="text"
-              value={customCode}
-              disabled={type === "edit"}
-              onChange={(e) => {
-                setCustomCode(e.target.value);
-                handleCustomCodeChange(e.target.value);
-              }}
-              placeholder="optional"
-              className={cn(
-                "border-b-1 w-full border-gray-400 focus:outline-none",
-                type === "new" && "text-accent",
-                type === "edit" && "text-foreground/50 cursor-not-allowed",
-                errors.customCode ? "border-error placeholder:text-error" : "",
-              )}
-            />
-          </div>
-
-          {/* Mobile: expandable section */}
-          <details className="block md:hidden">
-            <summary className="cursor-pointer rounded px-1 py-2 font-medium">
-              Advanced Options
-            </summary>
-            <div className="mt-2 flex flex-col gap-1">
-              <label htmlFor="timezone-select" className="text-gray-400">
-                Timezone
-              </label>
-              <TimeZoneSelector
-                id="timezone-select"
-                value={eventRange.timezone}
-                onChange={setTimezone}
-              />
-              <label htmlFor="duration-select" className="text-gray-400">
-                Duration
-              </label>
-              <DurationSelector
-                id="duration-select"
-                value={eventRange.duration}
-                onChange={(v) => setDuration((v as number) || 0)}
-              />
-              <label className="flex justify-between text-gray-400">
-                {type === "new" && "Custom"} Event Code
-                {errors.customCode && (
-                  <ExclamationTriangleIcon className="text-error h-4 w-4" />
-                )}
-              </label>
-              <input
-                type="text"
-                disabled={type === "edit"}
-                value={customCode}
-                onChange={(e) => {
-                  setCustomCode(e.target.value);
-                  handleCustomCodeChange(e.target.value);
-                }}
-                placeholder="optional"
-                className={cn(
-                  "border-b-1 w-full border-gray-400 focus:outline-none",
-                  type === "new" && "text-accent",
-                  type === "edit" && "text-foreground/50 cursor-not-allowed",
-                  errors.customCode
-                    ? "border-error placeholder:text-error"
-                    : "",
-                )}
-              />
-            </div>
-          </details>
+        <div className="md:content md:col-start-1 md:row-start-9 md:flex md:max-w-[250px] md:items-end">
+          <AdvancedOptions isEditing={type === "edit"} errors={errors} />
         </div>
-
-        <div className="md:row-span-15 hidden flex-1 md:col-span-10 md:col-start-2 md:row-start-2 md:block">
-          <GridPreviewDialog eventRange={eventRange} />
+        <div className="h-16 md:hidden" />
+        <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
+          <MemoizedGridPreview eventRange={eventRange} />
         </div>
       </div>
 
-      <div className="min-h-screen md:hidden">
-        <GridPreviewDialog eventRange={eventRange} />
-        <div className="h-16" />
+      <div
+        className={cn(
+          "bg-panel rounded-3xl p-4 md:hidden",
+          mobileTab === "details" ? "hidden" : "block",
+        )}
+      >
+        <MemoizedScheduleGrid
+          mode="preview"
+          eventRange={eventRange}
+          disableSelect={true}
+          timezone={eventRange.timezone}
+        />
       </div>
+      <div className="h-16 md:hidden" />
 
       <MobileFooterTray
         buttons={

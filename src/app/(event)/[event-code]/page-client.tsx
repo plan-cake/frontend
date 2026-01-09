@@ -10,7 +10,7 @@ import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { cn } from "@/lib/utils/classname";

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { EnterFullScreenIcon, Cross2Icon } from "@radix-ui/react-icons";
 import { motion } from "framer-motion";
 
 import { EventRange } from "@/core/event/types";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import { cn } from "@/lib/utils/classname";
 
@@ -20,9 +20,30 @@ export default function GridPreviewDialog({
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
 
+  useEffect(() => {
+    setTimezone(eventRange.timezone);
+  }, [eventRange.timezone]);
+
   const handleTZChange = (newTZ: string | number) => {
     setTimezone(newTZ.toString());
   };
+
+  // Close dialog on Escape key
+  const closeDialog = useCallback(() => {
+    setIsOpen(false);
+    setTimezone(eventRange.timezone);
+  }, [eventRange.timezone]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isOpen) {
+        closeDialog();
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => window.removeEventListener("keydown", handleEscape);
+  }, [isOpen, eventRange.timezone, closeDialog]);
 
   return (
     <div className="relative h-screen grow md:h-full md:w-full">
@@ -48,24 +69,21 @@ export default function GridPreviewDialog({
           layout
           className="mr-4 flex items-center justify-end space-x-2"
         >
-          <label className="text-sm font-medium">Grid Preview</label>
+          <p className="text-sm font-medium">Grid Preview</p>
           {isOpen ? (
             <Cross2Icon
-              className="hover:text-accent h-5 w-5 cursor-pointer"
-              onClick={() => {
-                setIsOpen(!isOpen);
-                setTimezone(eventRange.timezone);
-              }}
+              className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 h-6 w-6 cursor-pointer rounded-full p-1"
+              onClick={() => closeDialog()}
             />
           ) : (
             <EnterFullScreenIcon
-              className="hover:text-accent h-5 w-5 cursor-pointer"
+              className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 h-6 w-6 cursor-pointer rounded-full p-1"
               onClick={() => setIsOpen(!isOpen)}
             />
           )}
         </motion.div>
         {isOpen ? (
-          <motion.div className="h-[85%] grow space-y-4">
+          <motion.div className="flex h-[85%] grow flex-col space-y-4">
             <ScheduleGrid
               mode="preview"
               eventRange={eventRange}

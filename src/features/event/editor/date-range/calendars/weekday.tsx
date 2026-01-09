@@ -8,17 +8,14 @@ import { cn } from "@/lib/utils/classname";
 type WeekdayCalendarProps = {
   selectedDays: WeekdayMap;
   onChange: (map: WeekdayMap) => void;
-  inDrawer?: boolean;
 };
 
 export default function WeekdayCalendar({
   selectedDays,
   onChange,
 }: WeekdayCalendarProps) {
-  // const [startMonday, setStartMonday] = useState(false);
-  // const reorderedDays = startMonday ? [...days.slice(1), days[0]] : days;
-
   const [startDay, setStartDay] = useState<Weekday | null>(null);
+
   useEffect(() => {
     const hasSelection = Object.values(selectedDays).some((val) => val === 1);
     if (hasSelection) {
@@ -35,33 +32,22 @@ export default function WeekdayCalendar({
     onChange(newSelection);
   }, [selectedDays, onChange]);
 
-  // for toggling only one day at a time
-  // currently not in use
-  // const handleDayClick = (day: Weekday) => {
-  //   const newSelectedDays = { ...selectedDays };
-  //   newSelectedDays[day] = newSelectedDays[day] === 1 ? 0 : 1;
-  //   onChange(newSelectedDays);
-  // };
-
   const handleRangeSelect = (day: Weekday) => {
     if (!startDay) {
-      // set it as the start of the range
       setStartDay(day);
 
-      // clear previous selections and select this day
       const newSelection: WeekdayMap = { ...selectedDays };
       days.forEach((d) => (newSelection[d] = 0));
       newSelection[day] = 1;
       onChange(newSelection);
     } else {
-      // complete range
+      // End of selection (Complete Range)
       const newSelection: WeekdayMap = { ...selectedDays };
       days.forEach((d) => (newSelection[d] = 0));
 
       const startIndex = days.indexOf(startDay);
       const endIndex = days.indexOf(day);
 
-      // determine the range boundaries
       const [min, max] = [
         Math.min(startIndex, endIndex),
         Math.max(startIndex, endIndex),
@@ -76,31 +62,37 @@ export default function WeekdayCalendar({
     }
   };
 
-  return (
-    <div className="flex space-y-2">
-      <div className="grid grid-cols-7 gap-x-2">
-        {days.map((day) => {
-          const isSelected = selectedDays[day] === 1;
-          return (
-            <button
-              key={day}
-              onClick={() => handleRangeSelect(day)}
-              className={cn(
-                "aspect-square w-10 items-center justify-center rounded-full text-center",
-                isSelected ? "bg-accent text-white" : "hover:bg-gray-500/50",
-              )}
-            >
-              {day}
-            </button>
-          );
-        })}
-      </div>
+  const activeIndices = days
+    .map((day, i) => (selectedDays[day] === 1 ? i : -1))
+    .filter((i) => i !== -1);
 
-      {/* <Checkbox
-        label="Start on Monday"
-        checked={startMonday}
-        onChange={setStartMonday}
-      /> */}
+  const rangeStart = activeIndices.length ? Math.min(...activeIndices) : -1;
+  const rangeEnd = activeIndices.length ? Math.max(...activeIndices) : -1;
+
+  return (
+    <div className="flex w-full select-none flex-row flex-wrap">
+      {days.map((day, index) => {
+        const isActive = index >= rangeStart && index <= rangeEnd;
+        const isStart = index === rangeStart;
+        const isEnd = index === rangeEnd;
+
+        return (
+          <button
+            key={day}
+            onClick={() => handleRangeSelect(day)}
+            className={cn(
+              "flex h-8 w-10 items-center justify-center px-6",
+              "hover:bg-accent/25 active:bg-accent/40",
+              !isActive && "rounded-full",
+              isActive && "bg-accent/15 text-accent",
+              isStart && "rounded-l-full",
+              isEnd && "rounded-r-full",
+            )}
+          >
+            {day}
+          </button>
+        );
+      })}
     </div>
   );
 }

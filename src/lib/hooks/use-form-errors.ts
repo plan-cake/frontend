@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 
 import { useToast } from "@/features/toast/context";
 import { MESSAGES } from "@/lib/messages";
@@ -7,37 +7,63 @@ export function useFormErrors() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { addToast } = useToast();
 
-  /*
-   * Sets an error message for a specific field.
-   * If the field is "api", also shows a toast notification.
-   * If the field is "rate_limit" and no message is provided,
-   * sets a default rate limit message.
-   */
-  const handleError = (field: string, message: string) => {
-    if (field === "api") {
-      addToast("error", message);
-    } else if (field === "rate_limit" && !message) {
-      message = MESSAGES.ERROR_RATE_LIMIT;
-    }
+  const clearAllErrors = useCallback(() => setErrors({}), []);
 
-    setErrors((prev) => ({
-      ...prev,
-      [field]: message,
-    }));
-  };
+  const handleError = useCallback(
+    (field: string, message: string) => {
+      // clear error if message is empty
+      if (!message) {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[field];
+          return newErrors;
+        });
+        return;
+      }
 
-  // Clears all error messages
-  const clearAllErrors = () => setErrors({});
+      // show toast for api and toast errors
+      if (field === "api" || field === "toast") {
+        addToast("error", message);
+      } else if (field === "rate_limit" && !message) {
+        message = MESSAGES.ERROR_RATE_LIMIT;
+      }
 
-  // Helper for generic try/catch blocks
-  const handleGenericError = () => {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: message,
+      }));
+    },
+    [addToast],
+  );
+
+  const handleGenericError = useCallback(() => {
     addToast("error", MESSAGES.ERROR_GENERIC);
-  };
+  }, [addToast]);
 
-  return {
-    errors,
-    handleError,
-    clearAllErrors,
-    handleGenericError,
-  };
+  const batchHandleErrors = useCallback(
+    (newErrors: Record<string, string>) => {
+      setErrors((prev) => ({ ...prev, ...newErrors }));
+      for (const message of Object.values(newErrors)) {
+        addToast("error", message);
+      }
+    },
+    [addToast],
+  );
+
+  return useMemo(
+    () => ({
+      errors,
+      handleError,
+      clearAllErrors,
+      handleGenericError,
+      batchHandleErrors,
+    }),
+    [
+      errors,
+      handleError,
+      clearAllErrors,
+      handleGenericError,
+      batchHandleErrors,
+    ],
+  );
 }
