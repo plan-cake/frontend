@@ -4,7 +4,8 @@ export type ButtonStyle =
   | "primary"
   | "secondary"
   | "frosted glass"
-  | "transparent";
+  | "transparent"
+  | "danger";
 
 export type BaseButtonProps = {
   /**
