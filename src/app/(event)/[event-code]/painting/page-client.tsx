@@ -133,7 +133,7 @@ export default function ClientPage({
       {/* Main Content */}
       <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
+        <div className="md:top-25 h-fit w-full shrink-0 space-y-4 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
             <p
               className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
