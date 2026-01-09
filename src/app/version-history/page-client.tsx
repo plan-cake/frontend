@@ -166,6 +166,11 @@ function MinorVersion({
   isLast: boolean;
   extendLine: boolean;
 }) {
+  const releaseDate = versionData.date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  });
+
   return (
     <div className="mt-4 flex">
       <TimelineSegment
@@ -173,11 +178,17 @@ function MinorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <ul className="px-4">
-        {versionData.changes.map((change) => (
-          <li key={change}>- {change}</li>
-        ))}
-      </ul>
+      <div className="px-4">
+        <div className="flex gap-2">
+          <span className="font-bold">{versionData.version}</span>
+          <span className="text-foreground/50 italic">{releaseDate}</span>
+        </div>
+        <ul>
+          {versionData.changes.map((change) => (
+            <li key={change}>- {change}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
