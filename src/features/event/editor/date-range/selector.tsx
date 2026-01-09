@@ -47,6 +47,7 @@ export default function DateRangeSelection({
             onCheckedChange={(checked) =>
               setEventType(checked ? "weekday" : "specific")
             }
+            disabled={editing}
           />
         </FormSelectorField>
 
