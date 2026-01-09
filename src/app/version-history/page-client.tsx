@@ -13,8 +13,8 @@ export default function ClientPage({
   versionHistoryData: VersionHistoryData;
 }) {
   return (
-    <div className="mx-auto flex min-h-screen flex-col justify-end px-8">
-      <div className="flex flex-col gap-8">
+    <div className="flex min-h-screen flex-col justify-end">
+      <div className="mx-auto flex flex-col gap-8 px-8">
         {versionHistoryData.map((version, index) => {
           const isCurrent = index === versionHistoryData.length - 1;
           const hasMinorVersions =
@@ -57,8 +57,8 @@ export default function ClientPage({
       </div>
       <div className="sticky bottom-0 z-20">
         <div className="from-background bottom-0 left-0 h-8 w-full bg-gradient-to-t to-transparent" />
-        <div className="bg-background flex pb-8">
-          <h1 className="font-display text-lion mt-4 text-center text-7xl md:text-8xl">
+        <div className="bg-background flex justify-center pb-4">
+          <h1 className="font-display text-lion mt-2 px-8 text-center text-6xl md:mt-4 md:text-8xl">
             Version History
           </h1>
         </div>
