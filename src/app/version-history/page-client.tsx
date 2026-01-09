@@ -1,7 +1,5 @@
 "use client";
 
-import { Fragment } from "react";
-
 import {
   MajorVersionData,
   MinorVersionData,
@@ -14,45 +12,51 @@ export default function ClientPage({
 }: {
   versionHistoryData: VersionHistoryData;
 }) {
-  const fadeHeight = "h-8";
-
   return (
     <div className="mx-auto flex min-h-screen flex-col justify-end px-8">
-      <div className="flex flex-col gap-4">
-        <div className={fadeHeight} /> {/* Bottom spacer to avoid cutoff */}
-        {versionHistoryData.map((version, index) => (
-          <Fragment key={version.version}>
-            <MajorVersion
-              key={version.version}
-              versionData={version}
-              isCurrent={index === versionHistoryData.length - 1}
-              isLast={
-                index === versionHistoryData.length - 1 &&
-                (!version.minorVersions || version.minorVersions.length === 0)
+      <div className="flex flex-col gap-8">
+        {versionHistoryData.map((version, index) => {
+          const isCurrent = index === versionHistoryData.length - 1;
+          const hasMinorVersions =
+            version.minorVersions && version.minorVersions.length > 0;
+
+          return (
+            <div
+              className={
+                isCurrent ? "bg-panel outline-panel outline-16 rounded-3xl" : ""
               }
-            />
-            {version.minorVersions &&
-              version.minorVersions.map((minorVersion, minorIndex) => (
-                <MinorVersion
-                  key={minorVersion.version}
-                  versionData={minorVersion}
-                  isCurrent={index === versionHistoryData.length - 1}
-                  isLast={
-                    index === versionHistoryData.length - 1 &&
-                    minorIndex === version.minorVersions!.length - 1
-                  }
-                />
-              ))}
-          </Fragment>
-        ))}
+              key={version.version}
+            >
+              <MajorVersion
+                key={version.version}
+                versionData={version}
+                isCurrent={isCurrent}
+                isLast={isCurrent && !hasMinorVersions}
+                extendLine={!isCurrent && !hasMinorVersions}
+              />
+              {version.minorVersions &&
+                version.minorVersions.map((minorVersion, minorIndex) => {
+                  const isLastMinor =
+                    minorIndex === version.minorVersions!.length - 1;
+
+                  return (
+                    <MinorVersion
+                      key={minorVersion.version}
+                      versionData={minorVersion}
+                      isCurrent={isCurrent}
+                      isLast={isCurrent && isLastMinor}
+                      extendLine={!isCurrent && isLastMinor}
+                    />
+                  );
+                })}
+            </div>
+          );
+        })}
+        {/* Bottom spacer to avoid fade cutoff */}
+        <div />
       </div>
       <div className="sticky bottom-0 z-20">
-        <div
-          className={cn(
-            fadeHeight,
-            "from-background bottom-0 left-0 w-full bg-gradient-to-t to-transparent",
-          )}
-        />
+        <div className="from-background bottom-0 left-0 h-8 w-full bg-gradient-to-t to-transparent" />
         <div className="bg-background flex pb-8">
           <h1 className="font-display text-lion mt-4 text-center text-7xl md:text-8xl">
             Version History
@@ -67,10 +71,12 @@ function TimelineSegment({
   version,
   isCurrent,
   isLast,
+  extend,
 }: {
   version?: string;
   isCurrent: boolean;
   isLast: boolean;
+  extend: boolean;
 }) {
   return (
     <div className="relative w-20 flex-shrink-0">
@@ -79,6 +85,7 @@ function TimelineSegment({
           className={cn(
             "absolute left-[50%] top-4 z-0 h-[calc(100%+6px)] translate-x-[-50%] border-l-2",
             isCurrent ? "border-accent" : "border-foreground",
+            extend ? "h-[calc(100%+6px+12px)]" : "",
           )}
         />
       )}
@@ -107,10 +114,12 @@ function MajorVersion({
   versionData,
   isCurrent,
   isLast,
+  extendLine,
 }: {
   versionData: MajorVersionData;
   isCurrent: boolean;
   isLast: boolean;
+  extendLine: boolean;
 }) {
   return (
     <div className="flex">
@@ -118,6 +127,7 @@ function MajorVersion({
         version={versionData.version}
         isCurrent={isCurrent}
         isLast={isLast}
+        extend={extendLine}
       />
       <div>
         <ul className="relative left-6 list-disc space-y-2">
@@ -136,14 +146,20 @@ function MinorVersion({
   versionData,
   isCurrent,
   isLast,
+  extendLine,
 }: {
   versionData: MinorVersionData;
   isCurrent: boolean;
   isLast: boolean;
+  extendLine: boolean;
 }) {
   return (
-    <div className="flex">
-      <TimelineSegment isCurrent={isCurrent} isLast={isLast} />
+    <div className="mt-4 flex">
+      <TimelineSegment
+        isCurrent={isCurrent}
+        isLast={isLast}
+        extend={extendLine}
+      />
       <div>
         <ul className="relative left-6 list-disc space-y-2">
           {versionData.changes.map((change) => (
