@@ -46,7 +46,7 @@ export default function ClientPage({
           </Fragment>
         ))}
       </div>
-      <div className="bg-background sticky bottom-0 pb-8">
+      <div className="bg-background sticky bottom-0 z-20 pb-8">
         <h1 className="font-display text-lion mt-8 text-center text-7xl md:text-8xl">
           Version History
         </h1>
