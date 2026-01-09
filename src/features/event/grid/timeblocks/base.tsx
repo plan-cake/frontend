@@ -53,7 +53,7 @@ export default function BaseTimeBlock({
       </div>
 
       <div
-        className="grid w-full gap-x-[1px] border border-gray-400 bg-gray-400"
+        className="bg-foreground/75 border-foreground/75 grid w-full gap-x-[1px] border"
         style={{
           gridTemplateColumns: `repeat(${visibleDaysCount}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
