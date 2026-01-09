@@ -17,7 +17,7 @@ export default async function Page({ params }: EventCodePageProps) {
   return (
     <EventEditor
       type="edit"
-      initialData={{ title: eventName, code: eventCode, eventRange }}
+      initialData={{ title: eventName, customCode: eventCode, eventRange }}
     />
   );
 }
