@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 
 import HeaderSpacer from "@/components/header-spacer";
 import {
@@ -13,6 +14,11 @@ export default function ClientPage({
 }: {
   versionHistoryData: VersionHistoryData;
 }) {
+  // On load, scroll to the bottom
+  useEffect(() => {
+    window.scrollTo(0, document.body.scrollHeight);
+  }, []);
+
   return (
     <div className="flex min-h-screen flex-col justify-end">
       <div className="mx-auto flex flex-col gap-8 px-8">
