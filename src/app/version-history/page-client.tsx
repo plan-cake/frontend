@@ -129,6 +129,12 @@ function MajorVersion({
   isLast: boolean;
   extendLine: boolean;
 }) {
+  const releaseDate = versionData.date.toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <div className="flex">
       <TimelineSegment
@@ -137,11 +143,14 @@ function MajorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <ul className="px-4">
-        {versionData.changes.map((change) => (
-          <li key={change}>- {change}</li>
-        ))}
-      </ul>
+      <div className="px-4">
+        <span className="text-foreground/50 italic">{releaseDate}</span>
+        <ul>
+          {versionData.changes.map((change) => (
+            <li key={change}>- {change}</li>
+          ))}
+        </ul>
+      </div>
     </div>
   );
 }
