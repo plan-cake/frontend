@@ -27,10 +27,9 @@ export default function Dropdown<TValue extends string | number>({
         id={id}
         className={cn(
           "text-accent inline-flex items-center rounded-2xl text-start hover:cursor-pointer focus:outline-none",
-          disabled && "text-foreground/50 cursor-not-allowed",
-          "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 text-accent px-3 py-1",
+          "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 px-3 py-1",
           disabled &&
-            "cursor-not-allowed bg-gray-200/50 text-gray-500 hover:cursor-not-allowed hover:bg-gray-200/50 active:bg-gray-200/50",
+            "bg-foreground/20 text-foreground hover:bg-foreground/20 active:bg-foreground/20 cursor-not-allowed opacity-50 hover:cursor-not-allowed",
           className,
         )}
         aria-label="Custom select"
