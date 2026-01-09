@@ -1,5 +1,8 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+
+import { ChevronRightIcon } from "@radix-ui/react-icons";
+import * as Collapsible from "@radix-ui/react-collapsible";
 
 import HeaderSpacer from "@/components/header-spacer";
 import {
@@ -166,6 +169,8 @@ function MinorVersion({
   isLast: boolean;
   extendLine: boolean;
 }) {
+  const [open, setOpen] = useState(false);
+
   const releaseDate = versionData.date.toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
@@ -179,15 +184,28 @@ function MinorVersion({
         extend={extendLine}
       />
       <div className="px-4">
-        <div className="flex gap-2">
-          <span className="font-bold">{versionData.version}</span>
-          <span className="text-foreground/50 italic">{releaseDate}</span>
-        </div>
-        <ul>
-          {versionData.changes.map((change) => (
-            <li key={change}>- {change}</li>
-          ))}
-        </ul>
+        <Collapsible.Root open={open} onOpenChange={setOpen}>
+          <Collapsible.Trigger asChild className="cursor-pointer">
+            <div className="group flex items-center gap-2">
+              <span className="font-bold">{versionData.version}</span>
+              <span className="text-foreground/50 italic">{releaseDate}</span>
+              <ChevronRightIcon
+                className={cn(
+                  "h-6 w-6 transition-transform duration-200",
+                  "group-hover:bg-accent/25 group-active:bg-accent/40 rounded-full p-1",
+                  open && "rotate-90",
+                )}
+              />
+            </div>
+          </Collapsible.Trigger>
+          <Collapsible.Content className="collapsible-content">
+            <ul>
+              {versionData.changes.map((change) => (
+                <li key={change}>- {change}</li>
+              ))}
+            </ul>
+          </Collapsible.Content>
+        </Collapsible.Root>
       </div>
     </div>
   );
