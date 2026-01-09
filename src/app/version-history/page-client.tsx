@@ -23,7 +23,7 @@ export default function ClientPage({
           return (
             <div
               className={
-                isCurrent ? "bg-panel outline-panel outline-16 rounded-3xl" : ""
+                isCurrent ? "bg-panel outline-panel outline-16 rounded-xl" : ""
               }
               key={version.version}
             >
@@ -79,7 +79,7 @@ function TimelineSegment({
   extend: boolean;
 }) {
   return (
-    <div className="relative w-20 flex-shrink-0">
+    <div className="relative w-10 flex-shrink-0">
       {!isLast && (
         <div
           className={cn(
@@ -130,7 +130,7 @@ function MajorVersion({
         extend={extendLine}
       />
       <div>
-        <ul className="relative left-6 list-disc space-y-2">
+        <ul className="relative left-8 list-disc space-y-2 pr-8">
           {versionData.changes
             .concat(versionData.bugFixes ?? [])
             .map((change) => (
@@ -160,13 +160,11 @@ function MinorVersion({
         isLast={isLast}
         extend={extendLine}
       />
-      <div>
-        <ul className="relative left-6 list-disc space-y-2">
-          {versionData.changes.map((change) => (
-            <li key={change}>{change}</li>
-          ))}
-        </ul>
-      </div>
+      <ul className="relative left-8 list-disc space-y-2 pr-8">
+        {versionData.changes.map((change) => (
+          <li key={change}>{change}</li>
+        ))}
+      </ul>
     </div>
   );
 }
