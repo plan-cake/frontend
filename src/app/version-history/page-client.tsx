@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import * as Collapsible from "@radix-ui/react-collapsible";
 import { ChevronRightIcon } from "@radix-ui/react-icons";
@@ -17,9 +17,11 @@ export default function ClientPage({
 }: {
   versionHistoryData: VersionHistoryData;
 }) {
+  const bottomRef = useRef<HTMLDivElement | null>(null);
+
   // On load, scroll to the bottom
   useEffect(() => {
-    window.scrollTo(0, document.body.scrollHeight);
+    bottomRef.current?.scrollIntoView({ behavior: "instant" });
   }, []);
 
   return (
@@ -64,7 +66,7 @@ export default function ClientPage({
           );
         })}
         {/* Bottom spacer to avoid fade cutoff */}
-        <div />
+        <div ref={bottomRef} />
       </div>
       <div className="sticky bottom-0 z-20">
         <div className="from-background bottom-0 left-0 h-8 w-full bg-gradient-to-t to-transparent" />
