@@ -59,8 +59,8 @@ function getDailyBoundariesInUTC(
 }
 
 /**
- * expands a high-level EventRange into a concrete list of days and time slots
- * for the user's  local timezone
+ * Expands a high-level EventRange into a concrete list of UTC time slots,
+ * generated based on the event's timezone constraints.
  */
 export function expandEventRange(range: EventRange): Date[] {
   if (range.type === "specific") {
