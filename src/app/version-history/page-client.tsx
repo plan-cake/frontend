@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
-import { ChevronRightIcon } from "@radix-ui/react-icons";
 import * as Collapsible from "@radix-ui/react-collapsible";
+import { ChevronRightIcon } from "@radix-ui/react-icons";
 
 import HeaderSpacer from "@/components/header-spacer";
 import {
@@ -132,6 +132,8 @@ function MajorVersion({
   isLast: boolean;
   extendLine: boolean;
 }) {
+  const [bugsOpen, setBugsOpen] = useState(false);
+
   const releaseDate = versionData.date.toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
@@ -153,6 +155,33 @@ function MajorVersion({
             <li key={change}>- {change}</li>
           ))}
         </ul>
+        {versionData.bugFixes && versionData.bugFixes.length > 0 && (
+          <Collapsible.Root
+            open={bugsOpen}
+            onOpenChange={setBugsOpen}
+            className="ml-3"
+          >
+            <Collapsible.Trigger asChild>
+              <div className="group mt-2 flex cursor-pointer items-center gap-2">
+                <span className="font-semibold">Bug Fixes</span>
+                <ChevronRightIcon
+                  className={cn(
+                    "h-6 w-6 transition-transform duration-200",
+                    "group-hover:bg-accent/25 group-active:bg-accent/40 rounded-full p-1",
+                    bugsOpen && "rotate-90",
+                  )}
+                />
+              </div>
+            </Collapsible.Trigger>
+            <Collapsible.Content className="collapsible-content">
+              <ul>
+                {versionData.bugFixes!.map((bugFix) => (
+                  <li key={bugFix}>- {bugFix}</li>
+                ))}
+              </ul>
+            </Collapsible.Content>
+          </Collapsible.Root>
+        )}
       </div>
     </div>
   );
