@@ -1,4 +1,4 @@
-import { cn } from "@poursha98/react-ios-time-picker";
+import { cn } from "@/lib/utils/classname";
 import { format } from "date-fns";
 
 type SpecificDateRangeDisplayProps = {
