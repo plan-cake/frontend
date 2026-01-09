@@ -204,7 +204,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
             htmlFor="duration-select"
             className="hidden text-gray-400 md:col-start-1 md:row-start-13 md:block"
           >
-            Duration
+            Intended Duration
           </label>
           <div className="md:row-start-14 hidden md:col-start-1 md:block">
             <DurationSelector
@@ -250,7 +250,7 @@ export default function EventEditor({ type, initialData }: EventEditorProps) {
                 onChange={setTimezone}
               />
               <label htmlFor="duration-select" className="text-gray-400">
-                Duration
+                Intended Duration
               </label>
               <DurationSelector
                 id="duration-select"
