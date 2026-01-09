@@ -5,7 +5,6 @@ import {
 } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
-import { ToastType } from "@/features/toast/type";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -41,8 +40,7 @@ export default async function submitEvent(
   type: EventEditorType,
   eventType: "specific" | "weekday",
   onSuccess: (code: string) => void,
-  addToast: (type: ToastType, message: string) => void,
-  setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>,
+  handleError: (field: string, message: string) => void,
 ): Promise<boolean> {
   let apiRoute = "";
   let jsonBody: EventSubmitJsonBody;
@@ -122,19 +120,16 @@ export default async function submitEvent(
       const errorMessage = formatApiError(body);
 
       if (res.status === 429) {
-        setErrors((prev: Record<string, string>) => ({
-          ...prev,
-          rate_limit: errorMessage || MESSAGES.ERROR_RATE_LIMIT,
-        }));
+        handleError("rate_limit", errorMessage);
       } else {
-        addToast("error", formatApiError(body));
+        handleError("toast", formatApiError(body));
       }
 
       return false;
     }
   } catch (err) {
     console.error("Fetch error:", err);
-    addToast("error", MESSAGES.ERROR_GENERIC);
+    handleError("toast", MESSAGES.ERROR_GENERIC);
     return false;
   }
 }
