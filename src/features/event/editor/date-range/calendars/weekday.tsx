@@ -81,7 +81,7 @@ export default function WeekdayCalendar({
             key={day}
             onClick={() => handleRangeSelect(day)}
             className={cn(
-              "flex h-10 w-10 items-center justify-center px-6",
+              "flex h-8 w-10 items-center justify-center px-6",
               "hover:bg-accent/25 active:bg-accent/40",
               !isActive && "rounded-full",
               isActive && "bg-accent/15 text-accent",
