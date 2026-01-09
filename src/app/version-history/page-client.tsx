@@ -21,7 +21,7 @@ export default function ClientPage({
 
   return (
     <div className="flex min-h-screen flex-col justify-end">
-      <div className="mx-auto flex flex-col gap-8 px-8">
+      <div className="max-w-200 mx-auto flex w-full flex-col gap-8 px-8">
         <HeaderSpacer scrollable />
         {versionHistoryData.map((version, index) => {
           const isCurrent = index === versionHistoryData.length - 1;
