@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import Link from "next/link";
 
+import LinkText from "@/components/link-text";
 import Logo from "@/components/logo";
 
 export default function LogoArea() {
@@ -23,7 +24,9 @@ export default function LogoArea() {
       <Link href="/">
         <Logo />
       </Link>
-      <span className="text-xs">v0.1.2</span>
+      <Link href="/version-history" className="text-xs">
+        <LinkText>v0.1.2</LinkText>
+      </Link>
     </div>
   );
 }
