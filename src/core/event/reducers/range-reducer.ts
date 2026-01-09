@@ -4,7 +4,8 @@ export type EventRangeAction =
   | { type: "SET_RANGE_INFO"; payload: EventRange }
   | { type: "SET_RANGE_TYPE"; payload: "specific" | "weekday" }
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
-  | { type: "SET_TIME_RANGE"; payload: { from: number; to: number } }
+  | { type: "SET_START_TIME"; payload: number }
+  | { type: "SET_END_TIME"; payload: number }
   | {
       type: "SET_WEEKDAYS";
       payload: { weekdays: Partial<Record<keyof WeekdayMap, 0 | 1>> };
@@ -41,14 +42,14 @@ export function EventRangeReducer(
           type: "specific",
           dateRange: {
             from: new Date().toISOString(),
-            to: new Date().toISOString(),
+            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           },
         };
       } else {
         return {
           ...baseEvent,
           type: "weekday",
-          weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
+          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
         };
       }
     }
@@ -67,12 +68,22 @@ export function EventRangeReducer(
       };
     }
 
-    case "SET_TIME_RANGE": {
+    case "SET_START_TIME": {
       return {
         ...state,
         timeRange: {
-          from: action.payload.from,
-          to: action.payload.to,
+          from: action.payload,
+          to: state.timeRange.to,
+        },
+      };
+    }
+
+    case "SET_END_TIME": {
+      return {
+        ...state,
+        timeRange: {
+          from: state.timeRange.from,
+          to: action.payload,
         },
       };
     }
@@ -113,7 +124,7 @@ export function EventRangeReducer(
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
           dateRange: {
             from: new Date().toISOString(),
-            to: new Date().toISOString(),
+            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
           },
           timeRange: { from: 9, to: 17 },
         };
@@ -122,7 +133,7 @@ export function EventRangeReducer(
           type: "weekday",
           duration: 30,
           timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          weekdays: { Sun: 0, Mon: 0, Tue: 0, Wed: 0, Thu: 0, Fri: 0, Sat: 0 },
+          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
           timeRange: { from: 9, to: 17 },
         };
       }

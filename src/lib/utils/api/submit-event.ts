@@ -5,7 +5,8 @@ import {
 } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { MESSAGES } from "@/lib/messages";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export type EventSubmitData = {
   title: string;
@@ -39,6 +40,7 @@ export default async function submitEvent(
   type: EventEditorType,
   eventType: "specific" | "weekday",
   onSuccess: (code: string) => void,
+  handleError: (field: string, message: string) => void,
 ): Promise<boolean> {
   let apiRoute = "";
   let jsonBody: EventSubmitJsonBody;
@@ -46,18 +48,6 @@ export default async function submitEvent(
   if (eventType === "specific") {
     apiRoute =
       type === "new" ? "/api/event/date-create/" : "/api/event/date-edit/";
-
-    // check if the date range is more than 30 days
-    const fromDate = new Date(
-      (data.eventRange as SpecificDateRange).dateRange.from,
-    );
-    const toDate = new Date(
-      (data.eventRange as SpecificDateRange).dateRange.to,
-    );
-    if (toDate.getTime() - fromDate.getTime() > 30 * 24 * 60 * 60 * 1000) {
-      alert("Too many days selected. Max is 30 days.");
-      return false;
-    }
 
     jsonBody = {
       title: data.title,
@@ -78,10 +68,6 @@ export default async function submitEvent(
     const weekdayRange = findRangeFromWeekdayMap(
       (data.eventRange as WeekdayRange).weekdays,
     );
-    if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
-      alert("Please select at least one weekday.");
-      return false;
-    }
 
     const dayNameToIndex: { [key: string]: number } = {
       Sun: 0,
@@ -114,7 +100,6 @@ export default async function submitEvent(
   }
 
   try {
-
     const res = await fetch(apiRoute, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -131,12 +116,20 @@ export default async function submitEvent(
         return true;
       }
     } else {
-      alert(formatApiError(await res.json()));
+      const body = await res.json();
+      const errorMessage = formatApiError(body);
+
+      if (res.status === 429) {
+        handleError("rate_limit", errorMessage);
+      } else {
+        handleError("toast", formatApiError(body));
+      }
+
       return false;
     }
   } catch (err) {
     console.error("Fetch error:", err);
-    alert("An error occurred. Please try again.");
+    handleError("toast", MESSAGES.ERROR_GENERIC);
     return false;
   }
 }
