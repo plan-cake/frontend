@@ -46,10 +46,18 @@ export default function ClientPage({
           </Fragment>
         ))}
       </div>
-      <div className="bg-background sticky bottom-0 z-20 pb-8">
-        <h1 className="font-display text-lion mt-8 text-center text-7xl md:text-8xl">
-          Version History
-        </h1>
+      <div className="sticky bottom-0 z-20">
+        <div
+          className={cn(
+            fadeHeight,
+            "from-background bottom-0 left-0 w-full bg-gradient-to-t to-transparent",
+          )}
+        />
+        <div className="bg-background flex pb-8">
+          <h1 className="font-display text-lion mt-4 text-center text-7xl md:text-8xl">
+            Version History
+          </h1>
+        </div>
       </div>
     </div>
   );
