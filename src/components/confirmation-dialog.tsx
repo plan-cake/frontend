@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import {
@@ -10,15 +10,16 @@ import {
 import ActionButton from "@/features/button/components/action";
 import { cn } from "@/lib/utils/classname";
 
-type ConfirmationDialogProps = {
-  title: string;
-  description: string;
-  onConfirm: () => boolean | Promise<boolean>;
-  children: React.ReactNode;
-  disabled?: boolean;
-};
-
 type ConfirmationDialogTypes = "warning" | "delete" | "sucess" | "info";
+
+function getButtonStyle(iconType: ConfirmationDialogTypes) {
+  switch (iconType) {
+    case "delete":
+      return "danger";
+    default:
+      return "primary";
+  }
+}
 
 function getDialogIcon(iconType: ConfirmationDialogTypes) {
   const iconClass = "h-10 w-10";
@@ -52,12 +53,24 @@ function getDialogIcon(iconType: ConfirmationDialogTypes) {
   }
 }
 
+type ConfirmationDialogProps = {
+  type: ConfirmationDialogTypes;
+  title: string;
+  description: React.ReactNode;
+  onConfirm: () => boolean | Promise<boolean>;
+  children: React.ReactNode;
+  disabled?: boolean;
+  showIcon?: boolean;
+};
+
 export default function ConfirmationDialog({
+  type,
   title,
   description,
   onConfirm,
   children: triggerElement,
   disabled = false,
+  showIcon = false,
 }: ConfirmationDialogProps) {
   const [open, setOpen] = useState(false);
 
@@ -90,10 +103,16 @@ export default function ConfirmationDialog({
         {triggerElement}
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 z-40 bg-gray-700/40" />
-        <Dialog.Content className="bg-panel data-[state=open]:animate-contentShow fixed left-1/2 top-1/2 z-40 max-h-[85vh] w-[75vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-3xl p-[25px] shadow-[var(--shadow-6)] focus:outline-none md:w-[25vw]">
+        <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
+        <Dialog.Content
+          className={cn(
+            "fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
+            "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
+            "max-w-3xl",
+          )}
+        >
           <Dialog.Title className="flex flex-col items-center gap-4">
-            {/* {getDialogIcon("delete")} */}
+            {showIcon && getDialogIcon(type)}
             <p className="text-lg font-bold">{title}</p>
           </Dialog.Title>
           <Dialog.Description className="mt-2 text-center">
@@ -107,7 +126,7 @@ export default function ConfirmationDialog({
               onClick={handleClose}
             />
             <ActionButton
-              buttonStyle="primary"
+              buttonStyle={getButtonStyle(type)}
               label="Confirm"
               onClick={handleConfirm}
             />

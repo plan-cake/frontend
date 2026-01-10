@@ -194,7 +194,7 @@ export default function ClientPage({
               </button>
             </div>
 
-            <ul className="flex flex-wrap space-x-2 space-y-2">
+            <ul className="flex flex-wrap gap-2">
               {participants.length === 0 && (
                 <li className="text-sm italic opacity-50">No attendees yet</li>
               )}
@@ -205,20 +205,26 @@ export default function ClientPage({
                 return (
                   <ConfirmationDialog
                     key={person}
+                    type="delete"
                     title="Remove Participant"
-                    description={`Are you sure you want to remove ${person}?`}
+                    description={
+                      <span>
+                        Are you sure you want to remove{" "}
+                        <span className="font-bold">{person}</span>?
+                      </span>
+                    }
                     onConfirm={() => handleRemoveParticipant(person)}
                     disabled={!removingParticipants}
                   >
                     <li
                       key={person}
                       className={cn(
-                        // Layout & Grouping
-                        "relative flex items-center justify-center", // Added relative/group/flex
+                        // layout
+                        "relative flex items-center justify-center",
                         "w-fit transition-all duration-200",
                         "rounded-full px-3 py-1 text-sm",
 
-                        // Availability Logic (Background colors)
+                        // availability state
                         {
                           "bg-gray-200/25 line-through opacity-50":
                             hoveredSlot && !isAvailable,
@@ -226,19 +232,17 @@ export default function ClientPage({
                             !hoveredSlot || isAvailable,
                         },
 
-                        // Hover State (The red background)
+                        // hover state
                         isCreator &&
                           removingParticipants &&
                           participants.length > 0 &&
                           "hover:bg-red animate-wiggle group hover:cursor-pointer hover:text-white hover:opacity-100",
                       )}
                     >
-                      {/* 1. The Text: Controls the width, hides on hover */}
                       <span className="transition-opacity duration-200 group-hover:opacity-0">
                         {person}
                       </span>
 
-                      {/* 2. The Icon: Absolute overlay, shows on hover */}
                       <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
                         <TrashIcon className="h-4 w-4" />
                       </div>
