@@ -224,6 +224,25 @@ function getStyleClasses(
       }
       spinnerClasses = "border-accent";
       break;
+    case "danger":
+      switch (state) {
+        case "rest":
+          styleClasses = cn(
+            "bg-error text-violet",
+            "active:bg-[color-mix(in_oklab,var(--color-error)_100%,black_10%)]",
+            "hover:bg-[color-mix(in_oklab,var(--color-error)_100%,white_10%)]",
+          );
+          break;
+        case "loading":
+          styleClasses =
+            "bg-[color-mix(in_oklab,var(--color-error)_100%,black_20%)]";
+          break;
+        case "disabled":
+          styleClasses =
+            "bg-gray-200 text-[#ffffff] dark:bg-gray-300/25 dark:text-gray-300";
+          break;
+      }
+      break;
   }
   const paddingClasses = getPaddingClasses(
     hasIcon,
