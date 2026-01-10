@@ -179,7 +179,7 @@ export default function ClientPage({
               </h2>
               <button
                 className={cn(
-                  "text-red rounded-full p-2 text-sm font-semibold",
+                  "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
                   "hover:bg-red/25 active:bg-red/40",
                 )}
                 onClick={() => setRemovingParticipants(!removingParticipants)}
@@ -198,9 +198,11 @@ export default function ClientPage({
               {participants.length === 0 && (
                 <li className="text-sm italic opacity-50">No attendees yet</li>
               )}
-              {participants.map((person: string) => {
+              {participants.map((person: string, index: number) => {
                 const isAvailable =
                   availabilities[hoveredSlot || ""]?.includes(person);
+
+                const delay = (index % 4) * -0.1;
 
                 return (
                   <ConfirmationDialog
@@ -218,6 +220,9 @@ export default function ClientPage({
                   >
                     <li
                       key={person}
+                      style={{
+                        animationDelay: `${delay}s`,
+                      }}
                       className={cn(
                         // layout
                         "relative flex items-center justify-center",
@@ -236,7 +241,7 @@ export default function ClientPage({
                         isCreator &&
                           removingParticipants &&
                           participants.length > 0 &&
-                          "hover:bg-red animate-wiggle group hover:cursor-pointer hover:text-white hover:opacity-100",
+                          "hover:bg-red animate-wiggle group scale-105 hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
                       )}
                     >
                       <span className="transition-opacity duration-200 group-hover:opacity-0">
