@@ -1,7 +1,7 @@
 import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
-import { formatApiTime, DateTimeToDate } from "@/lib/utils/date-time-format";
+import { formatApiTime, parseIsoDateTime } from "@/lib/utils/date-time-format";
 
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
@@ -11,7 +11,7 @@ export function processEventData(eventData: EventDetailsResponse): {
 } {
   const eventName: string = eventData.title;
   const timeslots: Date[] = eventData.timeslots.map((ts) => {
-    return DateTimeToDate(ts);
+    return parseIsoDateTime(ts);
   });
   let eventRange: EventRange;
 
