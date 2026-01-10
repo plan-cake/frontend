@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, startTransition } from "react";
 
 import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
 
@@ -15,6 +15,8 @@ export default function AttendeesPanel({
   isCreator,
   currentUser,
   eventCode,
+  removeOptimisticParticipant,
+  updateOptimisticAvailabilities,
 }: {
   hoveredSlot: string | null;
   participants: string[];
@@ -22,6 +24,8 @@ export default function AttendeesPanel({
   isCreator: boolean;
   currentUser: string;
   eventCode: string;
+  removeOptimisticParticipant: (person: string) => void;
+  updateOptimisticAvailabilities: (person: string) => void;
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const showSelfRemove =
@@ -40,6 +44,17 @@ export default function AttendeesPanel({
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
+
+  const handleRemovePerson = async (person: string) => {
+    // IMMEDIATE: Update the UI right now
+    startTransition(() => {
+      removeOptimisticParticipant(person);
+      updateOptimisticAvailabilities(person);
+    });
+
+    // BACKGROUND: Call the server action
+    return await removePerson(eventCode, person, isCreator);
+  };
 
   return (
     <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-2 md:p-6 md:shadow-none">
@@ -68,7 +83,7 @@ export default function AttendeesPanel({
             type="delete"
             title="Remove Yourself?"
             description="Are you sure you want to remove yourself from this event?"
-            onConfirm={() => removePerson(eventCode, currentUser, isCreator)}
+            onConfirm={() => handleRemovePerson(currentUser)}
           >
             <button
               className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 rounded-full p-2 text-sm font-semibold"
@@ -94,7 +109,7 @@ export default function AttendeesPanel({
                 !hoveredSlot || availabilities[hoveredSlot]?.includes(person)
               }
               isRemoving={isRemoving && isCreator}
-              onRemove={() => removePerson(eventCode, person, isCreator)}
+              onRemove={() => handleRemovePerson(person)}
             />
           );
         })}
