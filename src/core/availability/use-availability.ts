@@ -1,20 +1,19 @@
 import { useCallback, useReducer } from "react";
 
-import { parseISO } from "date-fns";
-
 import {
   availabilityReducer,
   AvailabilityState,
 } from "@/core/availability/reducers/reducer";
 import { createUserAvailability } from "@/core/availability/utils";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
+import { formatDateTime } from "@/lib/utils/date-time-format";
 
 export function useAvailability(initialData: SelfAvailabilityResponse | null) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isoStrings = [];
   if (initialData && initialData.available_dates) {
     for (const dateStr of initialData.available_dates) {
-      isoStrings.push(parseISO(dateStr + "Z").toISOString());
+      isoStrings.push(formatDateTime(dateStr));
     }
   }
 

@@ -1,10 +1,22 @@
-import { format, parse } from "date-fns";
+import { format, parse, parseISO } from "date-fns";
 import { formatInTimeZone } from "date-fns-tz";
 
 /* TIMEZONE UTILS */
 
 export function findTimezoneLabel(tzValue: string): string {
   return formatInTimeZone(new Date(), tzValue, "zzzz");
+}
+
+/* DATETIME CONVERSION UTILS
+ * from python datetime string (ISO 8601) to Date object
+ */
+
+export function formatDateTime(timeslot: string): string {
+  return DateTimeToDate(timeslot).toISOString();
+}
+
+export function DateTimeToDate(slotIso: string): Date {
+  return parseISO(slotIso + "Z");
 }
 
 /* DATE UTILS */
@@ -32,10 +44,13 @@ export function formatDate(date: string, fmt: string): string {
 
 /* TIME UTILS */
 
+/*
+ * Converts an API time string (in UTC) to the event's local time string.
+ */
 export function formatApiTime(apiTime: string, eventTimezone: string): string {
   const todayDate = format(new Date(), "yyyy-MM-dd");
-  const isoString = `${todayDate}T${apiTime}Z`;
-  const localDate = new Date(isoString);
+  const UTC_isoString = `${todayDate}T${apiTime}Z`;
+  const localDate = new Date(UTC_isoString);
   return formatInTimeZone(localDate, eventTimezone, "HH:mm");
 }
 
