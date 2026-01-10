@@ -13,6 +13,7 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
 
 export default function ClientPage({
   eventCode,
@@ -63,6 +64,9 @@ export default function ClientPage({
   const handleTZChange = (newTZ: string | number) => {
     setTimezone(newTZ.toString());
   };
+
+  /* ERROR HANDLING */
+  const { handleError } = useFormErrors();
 
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
@@ -117,6 +121,7 @@ export default function ClientPage({
             eventCode={eventCode}
             removeOptimisticParticipant={removeOptimisticParticipant}
             updateOptimisticAvailabilities={updateOptimisticAvailabilities}
+            handleError={handleError}
           />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">

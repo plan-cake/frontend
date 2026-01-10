@@ -8,6 +8,7 @@ export async function removePerson(
   eventCode: string,
   person: string,
   isCreator: boolean,
+  handleError: (field: string, message: string) => void,
 ) {
   const authCookies = await getAuthCookieString();
   const baseUrl = process.env.API_URL;
@@ -31,7 +32,7 @@ export async function removePerson(
     });
 
     if (!response.ok) {
-      console.log("Failed to remove participant:", response.statusText);
+      handleError("toast", response.statusText);
       return false;
     }
 
@@ -42,6 +43,7 @@ export async function removePerson(
 
     return true;
   } catch (error) {
+    handleError("toast", "Error removing participant");
     console.error("Error removing participant:", error);
     return false;
   }

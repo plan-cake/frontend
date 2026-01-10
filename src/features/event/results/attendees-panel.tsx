@@ -17,6 +17,7 @@ export default function AttendeesPanel({
   eventCode,
   removeOptimisticParticipant,
   updateOptimisticAvailabilities,
+  handleError,
 }: {
   hoveredSlot: string | null;
   participants: string[];
@@ -26,7 +27,9 @@ export default function AttendeesPanel({
   eventCode: string;
   removeOptimisticParticipant: (person: string) => void;
   updateOptimisticAvailabilities: (person: string) => void;
+  handleError: (field: string, message: string) => void;
 }) {
+  /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
   const showSelfRemove =
     !isCreator && currentUser && participants.includes(currentUser);
@@ -53,7 +56,7 @@ export default function AttendeesPanel({
     });
 
     // BACKGROUND: Call the server action
-    return await removePerson(eventCode, person, isCreator);
+    return await removePerson(eventCode, person, isCreator, handleError);
   };
 
   return (
