@@ -33,6 +33,7 @@ export default function ClientPage({
   /* PARTICIPANT INFO */
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
+  const userName = initialAvailabilityData.user_display_name || "";
 
   /* PARTICIPANT STATES */
   const [participants, setParticipants] = useState(
@@ -103,6 +104,7 @@ export default function ClientPage({
             participants={participants}
             availabilities={availabilities}
             isCreator={isCreator}
+            currentUser={userName}
             eventCode={eventCode}
             setParticipants={setParticipants}
             setAvailabilities={setAvailabilities}

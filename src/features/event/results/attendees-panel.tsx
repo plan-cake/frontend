@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { CheckIcon, EraserIcon } from "@radix-ui/react-icons";
+import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
 
+import ConfirmationDialog from "@/components/confirmation-dialog";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
 import { cn } from "@/lib/utils/classname";
@@ -11,6 +12,7 @@ export default function AttendeesPanel({
   participants,
   availabilities,
   isCreator,
+  currentUser,
   eventCode,
   setParticipants,
   setAvailabilities,
@@ -19,6 +21,7 @@ export default function AttendeesPanel({
   participants: string[];
   availabilities: ResultsAvailabilityMap;
   isCreator: boolean;
+  currentUser: string;
   eventCode: string;
   setParticipants: React.Dispatch<React.SetStateAction<string[]>>;
   setAvailabilities: React.Dispatch<
@@ -26,6 +29,8 @@ export default function AttendeesPanel({
   >;
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
+  const showSelfRemove =
+    !isCreator && currentUser && participants.includes(currentUser);
 
   const activeCount = useMemo(() => {
     if (!hoveredSlot) return participants.length;
@@ -42,38 +47,69 @@ export default function AttendeesPanel({
   }, []);
 
   const handleRemove = async (person: string) => {
-    if (!isCreator) return false;
+    if (isCreator) {
+      try {
+        const response = await fetch("/api/availability/remove/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_code: eventCode,
+            display_name: person,
+          }),
+        });
 
-    try {
-      const response = await fetch("/api/availability/remove/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_code: eventCode,
-          display_name: person,
-        }),
-      });
+        if (!response.ok) {
+          console.log("Failed to remove participant:", response.statusText);
+          return false;
+        }
 
-      if (!response.ok) {
-        console.log("Failed to remove participant:", response.statusText);
+        setParticipants((prev) => prev.filter((p) => p !== person));
+        setAvailabilities((prev) => {
+          const updated = { ...prev };
+          for (const slot in updated) {
+            updated[slot] = updated[slot].filter((p) => p !== person);
+          }
+          return updated;
+        });
+
+        if (participants.length <= 1) setIsRemoving(false);
+
+        return true;
+      } catch (error) {
+        console.error("Error removing participant:", error);
         return false;
       }
+    } else {
+      try {
+        const response = await fetch("/api/availability/remove-self/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            event_code: eventCode,
+          }),
+        });
 
-      setParticipants((prev) => prev.filter((p) => p !== person));
-      setAvailabilities((prev) => {
-        const updated = { ...prev };
-        for (const slot in updated) {
-          updated[slot] = updated[slot].filter((p) => p !== person);
+        if (!response.ok) {
+          console.log("Failed to remove participant:", response.statusText);
+          return false;
         }
-        return updated;
-      });
 
-      if (participants.length <= 1) setIsRemoving(false);
+        setParticipants((prev) => prev.filter((p) => p !== person));
+        setAvailabilities((prev) => {
+          const updated = { ...prev };
+          for (const slot in updated) {
+            updated[slot] = updated[slot].filter((p) => p !== person);
+          }
+          return updated;
+        });
 
-      return true;
-    } catch (error) {
-      console.error("Error removing participant:", error);
-      return false;
+        if (participants.length <= 1) setIsRemoving(false);
+
+        return true;
+      } catch (error) {
+        console.error("Error removing participant:", error);
+        return false;
+      }
     }
   };
 
@@ -83,7 +119,7 @@ export default function AttendeesPanel({
         <h2 className="text-md font-semibold">
           Attendees <span>{`(${activeCount}/${participants.length})`}</span>
         </h2>
-        {participants.length > 0 && (
+        {participants.length > 0 && isCreator && (
           <button
             className={cn(
               "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
@@ -97,6 +133,22 @@ export default function AttendeesPanel({
               <EraserIcon className="h-5 w-5" />
             )}
           </button>
+        )}
+
+        {showSelfRemove && (
+          <ConfirmationDialog
+            type="delete"
+            title="Remove Yourself?"
+            description="Are you sure you want to remove yourself from this event?"
+            onConfirm={() => handleRemove(currentUser)}
+          >
+            <button
+              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 rounded-full p-2 text-sm font-semibold"
+              aria-label="Remove self"
+            >
+              <TrashIcon className="h-5 w-5" />
+            </button>
+          </ConfirmationDialog>
         )}
       </div>
 
