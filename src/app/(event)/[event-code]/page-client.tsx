@@ -6,7 +6,7 @@ import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
-import { ResultsAvailabilityMap } from "@/core/availability/types";
+// import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -36,12 +36,8 @@ export default function ClientPage({
   const userName = initialAvailabilityData.user_display_name || "";
 
   /* PARTICIPANT STATES */
-  const [participants, setParticipants] = useState(
-    initialAvailabilityData.participants || [],
-  );
-  const [availabilities, setAvailabilities] = useState<ResultsAvailabilityMap>(
-    initialAvailabilityData.availability || {},
-  );
+  const participants = initialAvailabilityData.participants || [];
+  const availabilities = initialAvailabilityData.availability || {};
 
   /* HOVER HANDLING */
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
@@ -106,8 +102,6 @@ export default function ClientPage({
             isCreator={isCreator}
             currentUser={userName}
             eventCode={eventCode}
-            setParticipants={setParticipants}
-            setAvailabilities={setAvailabilities}
           />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">

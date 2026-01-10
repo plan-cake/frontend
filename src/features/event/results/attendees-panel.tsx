@@ -5,6 +5,7 @@ import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
 import ConfirmationDialog from "@/components/confirmation-dialog";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
+import { removePerson } from "@/features/event/results/remove-person";
 import { cn } from "@/lib/utils/classname";
 
 export default function AttendeesPanel({
@@ -14,8 +15,6 @@ export default function AttendeesPanel({
   isCreator,
   currentUser,
   eventCode,
-  setParticipants,
-  setAvailabilities,
 }: {
   hoveredSlot: string | null;
   participants: string[];
@@ -23,10 +22,6 @@ export default function AttendeesPanel({
   isCreator: boolean;
   currentUser: string;
   eventCode: string;
-  setParticipants: React.Dispatch<React.SetStateAction<string[]>>;
-  setAvailabilities: React.Dispatch<
-    React.SetStateAction<ResultsAvailabilityMap>
-  >;
 }) {
   const [isRemoving, setIsRemoving] = useState(false);
   const showSelfRemove =
@@ -45,73 +40,6 @@ export default function AttendeesPanel({
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
-
-  const handleRemove = async (person: string) => {
-    if (isCreator) {
-      try {
-        const response = await fetch("/api/availability/remove/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event_code: eventCode,
-            display_name: person,
-          }),
-        });
-
-        if (!response.ok) {
-          console.log("Failed to remove participant:", response.statusText);
-          return false;
-        }
-
-        setParticipants((prev) => prev.filter((p) => p !== person));
-        setAvailabilities((prev) => {
-          const updated = { ...prev };
-          for (const slot in updated) {
-            updated[slot] = updated[slot].filter((p) => p !== person);
-          }
-          return updated;
-        });
-
-        if (participants.length <= 1) setIsRemoving(false);
-
-        return true;
-      } catch (error) {
-        console.error("Error removing participant:", error);
-        return false;
-      }
-    } else {
-      try {
-        const response = await fetch("/api/availability/remove-self/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            event_code: eventCode,
-          }),
-        });
-
-        if (!response.ok) {
-          console.log("Failed to remove participant:", response.statusText);
-          return false;
-        }
-
-        setParticipants((prev) => prev.filter((p) => p !== person));
-        setAvailabilities((prev) => {
-          const updated = { ...prev };
-          for (const slot in updated) {
-            updated[slot] = updated[slot].filter((p) => p !== person);
-          }
-          return updated;
-        });
-
-        if (participants.length <= 1) setIsRemoving(false);
-
-        return true;
-      } catch (error) {
-        console.error("Error removing participant:", error);
-        return false;
-      }
-    }
-  };
 
   return (
     <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-2 md:p-6 md:shadow-none">
@@ -140,7 +68,7 @@ export default function AttendeesPanel({
             type="delete"
             title="Remove Yourself?"
             description="Are you sure you want to remove yourself from this event?"
-            onConfirm={() => handleRemove(currentUser)}
+            onConfirm={() => removePerson(eventCode, currentUser, isCreator)}
           >
             <button
               className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 rounded-full p-2 text-sm font-semibold"
@@ -166,7 +94,7 @@ export default function AttendeesPanel({
                 !hoveredSlot || availabilities[hoveredSlot]?.includes(person)
               }
               isRemoving={isRemoving && isCreator}
-              onRemove={() => handleRemove(person)}
+              onRemove={() => removePerson(eventCode, person, isCreator)}
             />
           );
         })}
