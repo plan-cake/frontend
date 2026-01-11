@@ -33,7 +33,7 @@ export function formatDateTime(timeslot: string): string {
 // expects two date strings in "YYYY-MM-DD" format
 // returns a formatted date range string.
 // If both dates are the same, return a single date. If both dates are
-// in the same month, omit the month from the 'to' date. Otherwise, it the
+// in the same month, omit the month from the 'to' date. Otherwise, the
 // full range is shown.
 export function formatDateRange(fromDate: string, toDate: string): string {
   const dateFormat = "MMMM d";
