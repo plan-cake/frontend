@@ -9,6 +9,45 @@ export function findTimezoneLabel(tzValue: string): string {
   return formatInTimeZone(new Date(), tzValue, "zzzz");
 }
 
+// expects UTC time and date strings
+// returns an object with time, date, and weekday number localized to the
+// event's timezone.
+// This is used to convert stored UTC times to the event's timezone and can be
+// used on both the server and client side.
+export function getZonedDetails(
+  utcTime: string,
+  utcDate: string,
+  timezone: string,
+): { time: string; date: string; weekday: number } {
+  const utcIso = `${utcDate}T${utcTime}Z`;
+  const dateObj = new Date(utcIso);
+
+  return {
+    time: formatInTimeZone(dateObj, timezone, "HH:mm"), // "09:00"
+    date: formatInTimeZone(dateObj, timezone, "yyyy-MM-dd"), // "2025-11-01"
+    weekday: parseInt(formatInTimeZone(dateObj, timezone, "i")) % 7, // 0-6 (Sun-Sat)
+  };
+}
+
+// expects UTC time and date strings
+// returns an object with time, date, and weekday number in the local timezone.
+// This is used to convert stored UTC times to the user's local timezone
+// and is intended for client-side use only since it relies on the browser's timezone.
+// If used on the server side, it will default to the server's timezone.
+export function getLocalDetails(
+  utcTime: string,
+  utcDate: string,
+): { time: string; date: string; weekday: number } {
+  const utcIsoString = `${utcDate}T${utcTime}Z`;
+  const dateObj = parseISO(utcIsoString);
+
+  return {
+    time: format(dateObj, "HH:mm"),
+    date: format(dateObj, "yyyy-MM-dd"),
+    weekday: dateObj.getDay(),
+  };
+}
+
 /*
  * DATETIME CONVERSION UTILS
  * from python datetime string (ISO 8601) to Date object.
@@ -59,17 +98,6 @@ export function formatDate(date: string, fmt: string): string {
 }
 
 /* TIME UTILS */
-
-// expects a time string from the API in "HH:mm" format in UTC
-// and an event timezone (e.g., "America/New_York")
-// returns the time convered to and formatted in the event's timezone
-// in "HH:mm" format
-export function formatApiTime(apiTime: string, eventTimezone: string): string {
-  const todayDate = format(new Date(), "yyyy-MM-dd");
-  const UTC_isoString = `${todayDate}T${apiTime}Z`;
-  const localDate = new Date(UTC_isoString);
-  return formatInTimeZone(localDate, eventTimezone, "HH:mm");
-}
 
 // expects two time strings in "HH:mm" format
 // returns a formatted time range string.

@@ -1,7 +1,10 @@
 import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
-import { formatApiTime, parseIsoDateTime } from "@/lib/utils/date-time-format";
+import {
+  getZonedDetails,
+  parseIsoDateTime,
+} from "@/lib/utils/date-time-format";
 
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
@@ -15,8 +18,17 @@ export function processEventData(eventData: EventDetailsResponse): {
   });
   let eventRange: EventRange;
 
-  const startTime = formatApiTime(eventData.start_time, eventData.time_zone);
-  const endTime = formatApiTime(eventData.end_time, eventData.time_zone);
+  const start = getZonedDetails(
+    eventData.start_time,
+    eventData.start_date!,
+    eventData.time_zone,
+  );
+
+  const end = getZonedDetails(
+    eventData.end_time,
+    eventData.end_date!,
+    eventData.time_zone,
+  );
 
   if (eventData.event_type === "Date") {
     eventRange = {
@@ -24,28 +36,24 @@ export function processEventData(eventData: EventDetailsResponse): {
       duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       dateRange: {
-        from: eventData.start_date!,
-        to: eventData.end_date!,
+        from: start.date,
+        to: end.date,
       },
       timeRange: {
-        from: startTime,
-        to: endTime,
+        from: start.time,
+        to: end.time,
       },
     };
   } else {
-    const startDayIndex = new Date(eventData.start_date!).getUTCDay();
-    const endDayIndex = new Date(eventData.end_date!).getUTCDay();
-
-    const weekdays = generateWeekdayMap(startDayIndex, endDayIndex);
-
+    const weekdays = generateWeekdayMap(start.weekday, end.weekday);
     eventRange = {
       type: "weekday",
       duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       weekdays: weekdays,
       timeRange: {
-        from: startTime,
-        to: endTime,
+        from: start.time,
+        to: end.time,
       },
     };
   }
