@@ -32,7 +32,6 @@ export default function TimeSelector({
       options={options}
       dialogTitle="Select Time"
       dialogDescription="Select a time from the list"
-      className="h-fit w-fit"
     />
   );
 }

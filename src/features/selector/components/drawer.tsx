@@ -14,9 +14,10 @@ export default function SelectorDrawer<TValue extends string | number>({
   onChange,
   dialogTitle,
   dialogDescription,
+  textStart = false,
 }: SelectorProps<TValue>) {
   const [open, setOpen] = useState(false);
-  const selectedItemRef = useRef<HTMLDivElement>(null);
+  const selectedItemRef = useRef<HTMLButtonElement>(null);
 
   const selectLabel = options.find((opt) => opt.value === value)?.label || "";
 
@@ -58,7 +59,6 @@ export default function SelectorDrawer<TValue extends string | number>({
         <Dialog.Content
           className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col focus:outline-none"
           aria-label={dialogTitle}
-          aria-describedby={dialogDescription}
         >
           <div className="rounded-t-4xl bg-background flex flex-1 flex-col overflow-y-auto shadow-lg">
             <div
@@ -76,6 +76,10 @@ export default function SelectorDrawer<TValue extends string | number>({
               <Dialog.Title className="mb-0 flex flex-row items-center justify-between text-lg font-semibold">
                 {dialogTitle}
               </Dialog.Title>
+
+              <Dialog.Description className="sr-only">
+                {dialogDescription || "Select an option from the list below"}
+              </Dialog.Description>
             </div>
 
             <div className="flex flex-col px-8 pb-8">
@@ -83,6 +87,7 @@ export default function SelectorDrawer<TValue extends string | number>({
                 const isSelected = option.value === value;
                 return (
                   <button
+                    ref={isSelected ? selectedItemRef : null}
                     key={String(option.value)}
                     onClick={() => {
                       onChange(option.value);
@@ -98,7 +103,7 @@ export default function SelectorDrawer<TValue extends string | number>({
                     className={cn(
                       "active:bg-accent/20 mb-2 cursor-pointer rounded-full p-4 text-center",
                       isSelected && "bg-accent text-white",
-                      typeof option.value === "string" && "text-start",
+                      textStart && "text-start",
                     )}
                   >
                     {option.label}
