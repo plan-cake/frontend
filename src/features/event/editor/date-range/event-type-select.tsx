@@ -23,7 +23,7 @@ export default function EventTypeSelect({
         { label: "Days of the Week", value: "weekday" },
       ]}
       value={rangeType}
-      disabled={disabled}
+      disabled={true}
       onChange={(value: EventType) => setEventType(value)}
       className="w-fit min-w-[100px] border-none"
     />
