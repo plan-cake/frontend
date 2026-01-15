@@ -7,7 +7,10 @@ import { useRouter } from "next/navigation";
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
-import { formatTimeRange, getLocalDetails } from "@/lib/utils/date-time-format";
+import {
+  formatTimeRange,
+  getTimezoneDetails,
+} from "@/lib/utils/date-time-format";
 
 export type DashboardEventProps = {
   myEvent: boolean;
@@ -36,11 +39,19 @@ export default function DashboardEvent({
 
   // Memoized local start and end details
   const start = useMemo(
-    () => getLocalDetails(dateTimeProps.startTime, dateTimeProps.startDate),
+    () =>
+      getTimezoneDetails({
+        time: dateTimeProps.startTime,
+        date: dateTimeProps.startDate,
+      }),
     [dateTimeProps.startTime, dateTimeProps.startDate],
   );
   const end = useMemo(
-    () => getLocalDetails(dateTimeProps.endTime, dateTimeProps.endDate),
+    () =>
+      getTimezoneDetails({
+        time: dateTimeProps.endTime,
+        date: dateTimeProps.endDate,
+      }),
     [dateTimeProps.endTime, dateTimeProps.endDate],
   );
 

@@ -1,20 +1,29 @@
 "use client";
 
+import { useMemo } from "react";
+
 import * as Dialog from "@radix-ui/react-dialog";
 import { InfoCircledIcon } from "@radix-ui/react-icons";
+import { addDays } from "date-fns";
+import { format } from "date-fns-tz/format";
 
-import { EventRange } from "@/core/event/types";
+import { EventRange, days } from "@/core/event/types";
+import WeekdayRow from "@/features/dashboard/components/weekday-row";
 import {
-  findTimezoneLabel,
   formatDateRange,
   formatTimeRange,
+  getTimezoneDetails,
 } from "@/lib/utils/date-time-format";
+
+type EventInfoProps = {
+  eventRange: EventRange;
+  timezone: string;
+};
 
 export default function EventInfoDrawer({
   eventRange,
-}: {
-  eventRange: EventRange;
-}) {
+  timezone,
+}: EventInfoProps) {
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
@@ -33,55 +42,81 @@ export default function EventInfoDrawer({
             aria-hidden
             className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
           />
-          <EventInfo eventRange={eventRange} />
+          <EventInfo eventRange={eventRange} timezone={timezone} />
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
   );
 }
 
-export function EventInfo({ eventRange }: { eventRange: EventRange }) {
+export function EventInfo({ eventRange, timezone }: EventInfoProps) {
+  const startTime = eventRange.timeRange.from;
+  const endTime = eventRange.timeRange.to;
+
+  let startDate, endDate;
+  if (eventRange.type === "specific") {
+    startDate = eventRange.dateRange.from;
+    endDate = eventRange.dateRange.to;
+  } else {
+    const activeDays = days
+      .map((day, i) => (eventRange.weekdays[day] === 1 ? i : -1))
+      .filter((i) => i !== -1);
+
+    if (activeDays.length > 0) {
+      const referenceStart = new Date("2012-01-01T00:00:00");
+      startDate = format(addDays(referenceStart, activeDays[0]), "yyyy-MM-dd");
+      endDate = format(
+        addDays(referenceStart, activeDays[activeDays.length - 1]),
+        "yyyy-MM-dd",
+      );
+    }
+  }
+
+  const start = useMemo(
+    () =>
+      getTimezoneDetails({
+        time: startTime,
+        date: startDate!,
+        fromTZ: eventRange.timezone,
+        toTZ: timezone,
+      }),
+    [startTime, startDate, eventRange.timezone, timezone],
+  );
+
+  const end = useMemo(
+    () =>
+      getTimezoneDetails({
+        time: endTime,
+        date: endDate!,
+        fromTZ: eventRange.timezone,
+        toTZ: timezone,
+      }),
+    [endTime, endDate, eventRange.timezone, timezone],
+  );
+
   return (
-    <section>
-      <div className="sticky top-0 mb-4 items-center justify-between">
-        <h1 className="font-semibold">Event Details</h1>
-        <p className="text-xs">
-          Please note that these details are presented in respect to the{" "}
-          <span className="font-bold">original event&apos;s timezone</span>{" "}
-          which is{" "}
-          <span className="text-accent font-bold">
-            {findTimezoneLabel(eventRange.timezone)}
-          </span>
-        </p>
-      </div>
+    <section className="space-y-2 overflow-y-auto">
+      <h1 className="font-semibold">Event Details</h1>
 
-      <div className="space-y-4 overflow-y-auto">
-        {eventRange.type === "specific" ? (
-          <InfoRow label="Possible Dates">
-            {formatDateRange(
-              eventRange.dateRange.from,
-              eventRange.dateRange.to,
-            )}
-          </InfoRow>
-        ) : (
-          <InfoRow label="Days of the Week">
-            {Object.entries(eventRange.weekdays)
-              .filter(([, val]) => val === 1)
-              .map(([day]) => day)
-              .join(", ")}
-          </InfoRow>
-        )}
-
-        <InfoRow label="Possible Times">
-          {formatTimeRange(eventRange.timeRange.from, eventRange.timeRange.to)}
+      {eventRange.type === "specific" ? (
+        <InfoRow label="Possible Dates">
+          {formatDateRange(start.date, end.date)}
         </InfoRow>
+      ) : (
+        <InfoRow label="Days of the Week">
+          <WeekdayRow startWeekday={start.weekday} endWeekday={end.weekday} />
+        </InfoRow>
+      )}
 
-        {eventRange.duration > 0 && (
-          <InfoRow label="Intended Duration">
-            {eventRange.duration} minutes
-          </InfoRow>
-        )}
-      </div>
+      <InfoRow label="Possible Times">
+        {formatTimeRange(start.time, end.time)}
+      </InfoRow>
+
+      {eventRange.duration > 0 && (
+        <InfoRow label="Intended Duration">
+          {eventRange.duration} minutes
+        </InfoRow>
+      )}
     </section>
   );
 }

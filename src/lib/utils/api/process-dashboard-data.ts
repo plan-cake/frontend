@@ -13,7 +13,7 @@ function processSingleEvent(
     myEvent: myEvent,
     code: eventData.event_code,
     title: eventData.title,
-    type: "specific",
+    type: eventData.event_type === "Date" ? "specific" : "weekday",
     startTime: eventData.start_time,
     endTime: eventData.end_time,
     startDate: eventData.start_date!,

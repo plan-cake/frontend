@@ -1,5 +1,5 @@
 import { format, parse, parseISO } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
+import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
 
 /* TIMEZONE UTILS */
 
@@ -9,43 +9,48 @@ export function findTimezoneLabel(tzValue: string): string {
   return formatInTimeZone(new Date(), tzValue, "zzzz");
 }
 
-// expects UTC time and date strings
-// returns an object with time, date, and weekday number localized to the
-// event's timezone.
-// This is used to convert stored UTC times to the event's timezone and can be
-// used on both the server and client side.
-export function getZonedDetails(
-  utcTime: string,
-  utcDate: string,
-  timezone: string,
-): { time: string; date: string; weekday: number } {
-  const utcIso = `${utcDate}T${utcTime}Z`;
-  const dateObj = new Date(utcIso);
+// Expects time and date strings along with optional source and target timezones
+// Returns an object with time, date, and weekday number converted between timezones
+// If there are no timezones provided, it assumes inputs are in UTC and returns them
+// formatted in the local timezone.
+type TimezoneDetailsInput = {
+  time: string;
+  date: string;
+  fromTZ?: string;
+  toTZ?: string;
+};
+export function getTimezoneDetails({
+  time,
+  date,
+  fromTZ,
+  toTZ,
+}: TimezoneDetailsInput): { time: string; date: string; weekday: number } {
+  let dateObj: Date;
 
-  return {
-    time: formatInTimeZone(dateObj, timezone, "HH:mm"), // "09:00"
-    date: formatInTimeZone(dateObj, timezone, "yyyy-MM-dd"), // "2025-11-01"
-    weekday: parseInt(formatInTimeZone(dateObj, timezone, "i")) % 7, // 0-6 (Sun-Sat)
-  };
-}
+  if (fromTZ) {
+    const tzIso = `${date}T${time}`;
+    dateObj = fromZonedTime(tzIso, fromTZ);
+  } else {
+    const utcIsoString = `${date}T${time}Z`;
+    dateObj = parseISO(utcIsoString);
+  }
 
-// expects UTC time and date strings
-// returns an object with time, date, and weekday number in the local timezone.
-// This is used to convert stored UTC times to the user's local timezone
-// and is intended for client-side use only since it relies on the browser's timezone.
-// If used on the server side, it will default to the server's timezone.
-export function getLocalDetails(
-  utcTime: string,
-  utcDate: string,
-): { time: string; date: string; weekday: number } {
-  const utcIsoString = `${utcDate}T${utcTime}Z`;
-  const dateObj = parseISO(utcIsoString);
-
-  return {
-    time: format(dateObj, "HH:mm"),
-    date: format(dateObj, "yyyy-MM-dd"),
-    weekday: dateObj.getDay(),
-  };
+  if (toTZ) {
+    const convertedTime = formatInTimeZone(dateObj, toTZ, "HH:mm");
+    const convertedDate = formatInTimeZone(dateObj, toTZ, "yyyy-MM-dd");
+    const convertedWeekday = parseInt(formatInTimeZone(dateObj, toTZ, "i")) % 7; // 0-6 (Sun-Sat)
+    return {
+      time: convertedTime,
+      date: convertedDate,
+      weekday: convertedWeekday,
+    };
+  } else {
+    return {
+      time: format(dateObj, "HH:mm"),
+      date: format(dateObj, "yyyy-MM-dd"),
+      weekday: dateObj.getDay(),
+    };
+  }
 }
 
 /*

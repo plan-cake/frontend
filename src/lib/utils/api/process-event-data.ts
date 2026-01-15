@@ -2,7 +2,7 @@ import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
 import {
-  getZonedDetails,
+  getTimezoneDetails,
   parseIsoDateTime,
 } from "@/lib/utils/date-time-format";
 
@@ -18,17 +18,17 @@ export function processEventData(eventData: EventDetailsResponse): {
   });
   let eventRange: EventRange;
 
-  const start = getZonedDetails(
-    eventData.start_time,
-    eventData.start_date!,
-    eventData.time_zone,
-  );
+  const start = getTimezoneDetails({
+    time: eventData.start_time,
+    date: eventData.start_date!,
+    toTZ: eventData.time_zone,
+  });
 
-  const end = getZonedDetails(
-    eventData.end_time,
-    eventData.end_date!,
-    eventData.time_zone,
-  );
+  const end = getTimezoneDetails({
+    time: eventData.end_time,
+    date: eventData.end_date!,
+    toTZ: eventData.time_zone,
+  });
 
   if (eventData.event_type === "Date") {
     eventRange = {
