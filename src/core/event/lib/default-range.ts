@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 import { SpecificDateRange, WeekdayRange } from "@/core/event/types";
 
 const defaultTimeRange = { from: "09:00", to: "17:00" };
@@ -7,9 +9,10 @@ export const DEFAULT_RANGE_SPECIFIC: SpecificDateRange = {
   duration: 60,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   dateRange: {
-    from: new Date().toISOString(),
-    to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    from: format(new Date(), "yyyy-MM-dd"),
+    to: format(new Date(Date.now() + 2 * 24 * 60 * 60 * 1000), "yyyy-MM-dd"),
   },
+
   timeRange: defaultTimeRange,
 };
 

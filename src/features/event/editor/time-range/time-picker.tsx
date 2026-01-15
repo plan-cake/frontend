@@ -11,7 +11,6 @@ import { convert12To24, convert24To12 } from "@/lib/utils/date-time-format";
 type TimePickerProps = {
   time: string;
   onTimeChange: (newTime: string) => void;
-
   visibleCount?: number;
   fontSize?: number;
 };
@@ -22,6 +21,7 @@ export default function TimePicker({
   visibleCount = 3,
   fontSize = 16,
 }: TimePickerProps) {
+  // pickerValue acts as our "previous" state during changes
   const [pickerValue, setPickerValue] = useState(convert24To12(time));
 
   // Sync internal state if the external prop changes
@@ -30,10 +30,48 @@ export default function TimePicker({
   }, [time]);
 
   const handleChange = (newTime12: string) => {
-    setPickerValue(newTime12);
+    const [oldHourStr, oldRest] = pickerValue.split(":");
+    const oldHour = parseInt(oldHourStr, 10);
+    const oldPeriod = oldRest.split(" ")[1];
 
-    const time24 = convert12To24(newTime12);
-    onTimeChange(time24);
+    const [newHourStr, newRest] = newTime12.split(":");
+    const newHour = parseInt(newHourStr, 10);
+    const newMinute = newRest.split(" ")[0];
+    const newPeriod = newRest.split(" ")[1];
+
+    let finalTime = newTime12;
+
+    // Only run auto-flip logic if the user didn't manually change the period
+    if (oldPeriod === newPeriod && oldHour !== newHour) {
+      // 1. Normalize hours to 0-11 range (12 becomes 0) for easier math
+      const o = oldHour === 12 ? 0 : oldHour;
+      const n = newHour === 12 ? 0 : newHour;
+
+      // 2. Calculate circular distance (how many steps forward?)
+      // Examples: 10->12 is diff 2. 1->11 is diff 10.
+      const diff = (n - o + 12) % 12;
+
+      // 3. Determine if we crossed the 11->12 (or 12->11) boundary
+      let crossedBoundary = false;
+
+      if (diff > 0 && diff <= 6) {
+        // Forward movement (e.g., 10 -> 12)
+        // If we moved forward but the number got smaller (e.g., 11 -> 0), we wrapped.
+        if (n < o) crossedBoundary = true;
+      } else if (diff > 6) {
+        // Backward movement (e.g., 1 -> 11)
+        // If we moved backward but the number got bigger (e.g., 0 -> 11), we wrapped.
+        if (n > o) crossedBoundary = true;
+      }
+
+      if (crossedBoundary) {
+        const toggledPeriod = newPeriod === "AM" ? "PM" : "AM";
+        finalTime = `${newHourStr}:${newMinute} ${toggledPeriod}`;
+      }
+    }
+
+    setPickerValue(finalTime);
+    onTimeChange(convert12To24(finalTime));
   };
 
   const wheelStyle = {

@@ -1,5 +1,6 @@
 import { useMemo, useReducer, useCallback } from "react";
 
+import { format } from "date-fns";
 import { DateRange } from "react-day-picker";
 
 import { DEFAULT_RANGE_SPECIFIC } from "@/core/event/lib/default-range";
@@ -101,16 +102,17 @@ export function useEventInfo(initialData?: EventInformation) {
   );
 
   const setDateRange = useCallback(
-    (dateRange: DateRange) => {
-      if (checkDateRange(dateRange.from, dateRange.to)) {
+    (dateRange: DateRange | undefined) => {
+      if (checkDateRange(dateRange?.from, dateRange?.to)) {
         handleError("dateRange", MESSAGES.ERROR_EVENT_RANGE_TOO_LONG);
       } else {
         handleError("dateRange", "");
       }
 
       if (dateRange?.from && dateRange?.to) {
-        const from = dateRange.from.toISOString();
-        const to = dateRange.to.toISOString();
+        const from = format(dateRange.from, "yyyy-MM-dd");
+        const to = format(dateRange.to, "yyyy-MM-dd");
+
         dispatch({
           type: "SET_DATE_RANGE",
           payload: { from, to },

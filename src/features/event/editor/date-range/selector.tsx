@@ -1,5 +1,5 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { fromZonedTime } from "date-fns-tz";
+import { parseISO } from "date-fns";
 
 import Switch from "@/components/switch";
 import { useEventContext } from "@/core/event/context";
@@ -71,12 +71,9 @@ function SpecificDateRangeDisplay({
 }) {
   const isMobile = useCheckMobile();
 
-  const earliestDate = new Date(eventRange.dateRange.from);
-  const startDate = fromZonedTime(
-    eventRange.dateRange.from,
-    eventRange.timezone,
-  );
-  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
+  const earliestDate = parseISO(eventRange.dateRange.from);
+  const startDate = parseISO(eventRange.dateRange.from);
+  const endDate = parseISO(eventRange.dateRange.to);
 
   if (isMobile) {
     return (

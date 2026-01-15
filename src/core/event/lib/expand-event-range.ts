@@ -4,6 +4,7 @@ import {
   eachDayOfInterval,
   isBefore,
   parseISO,
+  format,
 } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
@@ -102,7 +103,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   });
 
   for (const day of days) {
-    const dayStr = day.toISOString().split("T")[0];
+    const dayStr = format(day, "yyyy-MM-dd");
 
     const { startUTC, endUTC } = getDailyBoundariesInUTC(
       dayStr,
@@ -142,7 +143,7 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
     );
 
     if (dayName && range.weekdays[dayName as keyof typeof range.weekdays]) {
-      const dayStr = currentDay.toISOString().split("T")[0];
+      const dayStr = format(currentDay, "yyyy-MM-dd");
 
       const { startUTC, endUTC } = getDailyBoundariesInUTC(
         dayStr,
