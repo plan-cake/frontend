@@ -228,7 +228,7 @@ function getStyleClasses(
       switch (state) {
         case "rest":
           styleClasses = cn(
-            "bg-error text-violet",
+            "bg-error text-white font-semibold",
             "active:bg-[color-mix(in_oklab,var(--color-error)_100%,black_10%)]",
             "hover:bg-[color-mix(in_oklab,var(--color-error)_100%,white_10%)]",
           );
