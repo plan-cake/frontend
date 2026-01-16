@@ -6,30 +6,58 @@
   border-style: var(--tw-border-style);
   border-width: 1px;
   /* dark background */
-  background-color: color-mix(in srgb, var(--color-violet) 20%, transparent);
+  background-color: color-mix(
+    in srgb,
+    var(--color-violet) 20%,
+    color-mix(in srgb, var(--color-background) 50%, transparent)
+  );
   @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-violet) 20%, transparent);
+    background-color: color-mix(
+      in oklab,
+      var(--color-violet) 20%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
   }
   /* dark border */
-  border-color: color-mix(in srgb, var(--color-violet) 40%, transparent);
+  border-color: color-mix(
+    in srgb,
+    var(--color-violet) 40%,
+    color-mix(in srgb, var(--color-background) 50%, transparent)
+  );
   @supports (color: color-mix(in lab, red, red)) {
-    border-color: color-mix(in oklab, var(--color-violet) 40%, transparent);
+    border-color: color-mix(
+      in oklab,
+      var(--color-violet) 40%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
   }
   /* dark mode stuff */
   &:where(.dark, .dark *) {
     /* light background */
-    background-color: color-mix(in srgb, var(--color-white) 10%, transparent);
+    background-color: color-mix(
+      in srgb,
+      var(--color-white) 10%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
     @supports (color: color-mix(in lab, red, red)) {
       background-color: color-mix(
         in oklab,
         var(--color-white) 10%,
-        transparent
+        color-mix(in srgb, var(--color-background) 50%, transparent)
       );
     }
     /* light border */
-    border-color: color-mix(in srgb, var(--color-white) 20%, transparent);
+    border-color: color-mix(
+      in srgb,
+      var(--color-white) 20%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
     @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(in oklab, var(--color-white) 20%, transparent);
+      border-color: color-mix(
+        in oklab,
+        var(--color-white) 20%,
+        color-mix(in srgb, var(--color-background) 50%, transparent)
+      );
     }
   }
 
