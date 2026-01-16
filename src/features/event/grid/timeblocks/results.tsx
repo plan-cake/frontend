@@ -88,6 +88,9 @@ export default function ResultsTimeBlock({
             onPointerEnter={() => {
               onHoverSlot?.(timeslotIso);
             }}
+            onPointerLeave={() => {
+              onHoverSlot?.(null);
+            }}
             dynamicStyle={dynamicStyle}
           />
         );
