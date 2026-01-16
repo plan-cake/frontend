@@ -61,14 +61,18 @@ export default function AttendeesPanel({
 
   return (
     <div className="bg-panel space-y-2 rounded-3xl p-6 shadow-md md:shadow-none">
-      <div className="flex min-h-9 justify-between">
-        <h2 className="text-md font-semibold">
-          Attendees <span>{`(${activeCount}/${participants.length})`}</span>
-        </h2>
+      <div className="flex justify-between">
+        <div className="flex flex-col">
+          <h2 className="text-md font-semibold">Attendees</h2>
+          {participants.length > 0 && (
+            <span className="text-sm">{`${activeCount}/${participants.length} available`}</span>
+          )}
+        </div>
+
         {participants.length > 0 && isCreator && (
           <button
             className={cn(
-              "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
+              "text-red bg-red/15 h-9 w-9 rounded-full p-2 text-sm font-semibold",
               "hover:bg-red/25 active:bg-red/40",
             )}
             onClick={() => setIsRemoving(!isRemoving)}
@@ -89,7 +93,7 @@ export default function AttendeesPanel({
             onConfirm={() => handleRemovePerson(currentUser)}
           >
             <button
-              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 rounded-full p-2 text-sm font-semibold"
+              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 rounded-full p-2 text-sm font-semibold"
               aria-label="Remove self"
             >
               <TrashIcon className="h-5 w-5" />
