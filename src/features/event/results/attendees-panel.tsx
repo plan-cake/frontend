@@ -60,8 +60,8 @@ export default function AttendeesPanel({
   };
 
   return (
-    <div className="bg-panel space-y-2 rounded-3xl p-4 shadow-md md:p-6 md:shadow-none">
-      <div className="flex min-h-9 items-center justify-between">
+    <div className="bg-panel space-y-2 rounded-3xl p-6 shadow-md md:shadow-none">
+      <div className="flex min-h-9 justify-between">
         <h2 className="text-md font-semibold">
           Attendees <span>{`(${activeCount}/${participants.length})`}</span>
         </h2>
