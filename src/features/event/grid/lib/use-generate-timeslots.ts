@@ -4,15 +4,14 @@ import { differenceInCalendarDays } from "date-fns";
 import { toZonedTime } from "date-fns-tz";
 
 import { EventRange } from "@/core/event/types";
-import { expandEventRange } from "@/features/event/grid/lib/expand-event-range";
 
 export default function useGenerateTimeSlots(
   eventRange: EventRange,
+  timeslots: Date[],
   timezone: string,
 ) {
   return useMemo(() => {
-    const daySlots = expandEventRange(eventRange);
-    if (daySlots.length === 0) {
+    if (timeslots.length === 0) {
       return {
         timeBlocks: [],
         dayGroupedSlots: [],
@@ -22,8 +21,8 @@ export default function useGenerateTimeSlots(
       };
     }
 
-    const localStartTime = toZonedTime(daySlots[0], timezone);
-    const localEndTime = toZonedTime(daySlots[daySlots.length - 1], timezone);
+    const localStartTime = toZonedTime(timeslots[0], timezone);
+    const localEndTime = toZonedTime(timeslots[timeslots.length - 1], timezone);
 
     const localStartHour = localStartTime.getHours();
     const localEndHour = localEndTime.getHours();
@@ -42,7 +41,7 @@ export default function useGenerateTimeSlots(
     }
 
     const dayGroupedSlots = Array.from(
-      daySlots
+      timeslots
         .reduce((daysMap, slot) => {
           const zonedDate = toZonedTime(slot, timezone);
           const dayKey = zonedDate.toLocaleDateString("en-CA");
@@ -78,5 +77,5 @@ export default function useGenerateTimeSlots(
     const numDays = differenceInCalendarDays(localEndTime, localStartTime) + 1;
 
     return { timeBlocks, dayGroupedSlots, numDays, numHours, error: null };
-  }, [eventRange, timezone]);
+  }, [eventRange, timezone, timeslots]);
 }

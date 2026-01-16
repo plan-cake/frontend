@@ -2,85 +2,65 @@
 
 import React, { useEffect, useState } from "react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, notFound } from "next/navigation";
 
+import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
-import TextInputField from "@/features/auth/components/text-input-field";
+import PasswordValidation from "@/features/auth/components/password-validation";
 import ActionButton from "@/features/button/components/action";
-import { useDebounce } from "@/lib/hooks/use-debounce";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
+import { MESSAGES } from "@/lib/messages";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordCriteria, setPasswordCriteria] = useState({});
+  const [showPasswordCriteria, setShowPasswordCriteria] = useState(false);
   const router = useRouter();
 
   const searchParams = useSearchParams();
   const pwdResetToken = searchParams.get("token");
-
-  function passwordIsStrong() {
-    return Object.keys(passwordCriteria).length === 0;
+  if (!pwdResetToken) {
+    notFound(); // If no token is provided, show 404 page
   }
 
-  useDebounce(() => {
-    if (newPassword.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
+  function passwordIsStrong() {
+    return Object.values(passwordCriteria).every((value) => value === true);
+  }
 
-    // Check that the password is strong enough with the API
-    fetch("/api/auth/check-password/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ password: newPassword }),
-    })
-      .then((res) => {
-        if (res.ok) {
-          res.json().then((data) => {
-            if (data.is_strong) {
-              setPasswordCriteria({});
-              return;
-            } else {
-              setPasswordCriteria(data.criteria || {});
-            }
-          });
-        } else {
-          console.error("Fetch error:", res.status);
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-      });
-  }, [newPassword]);
+  // TOASTS AND ERROR STATES
+  const { errors, handleError, clearAllErrors, handleGenericError } =
+    useFormErrors();
+
+  const handleConfirmPasswordChange = (value: string) => {
+    handleError("confirmPassword", "");
+    handleError("api", "");
+    setConfirmPassword(value);
+  };
 
   useEffect(() => {
-    if (newPassword.length === 0) {
-      setPasswordCriteria({});
-      return;
-    }
-  }, [newPassword]);
+      const { criteria } = PasswordValidation(newPassword);
+      setPasswordCriteria(criteria);
+    }, [newPassword]);
 
   const stopRefresh = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   const handleSubmit = async () => {
-    if (!pwdResetToken) {
-      alert("This link is expired or invalid.");
-      return false;
-    }
+    clearAllErrors();
 
     if (!newPassword) {
-      alert("Missing new password.");
+      handleError("password", MESSAGES.ERROR_PASSWORD_MISSING);
       return false;
     }
     if (!passwordIsStrong()) {
-      alert("Password is not strong enough");
+      handleError("password", MESSAGES.ERROR_PASSWORD_WEAK);
       return false;
     }
     if (newPassword !== confirmPassword) {
-      alert("Passwords do not match.");
+      handleError("confirmPassword", MESSAGES.ERROR_PASSWORD_MISMATCH);
       return false;
     }
 
@@ -97,18 +77,27 @@ export default function Page() {
         router.push("/reset-password/success");
         return true;
       } else {
-        alert(formatApiError(await res.json()));
+        const body = await res.json();
+        const errorMessage = formatApiError(body);
+
+        if (res.status === 404) {
+          handleError("api", MESSAGES.ERROR_RESET_TOKEN_INVALID);
+        } else if (body.error?.["new_password"]) {
+          handleError("password", MESSAGES.ERROR_PASSWORD_REUSE);
+        } else {
+          handleError("api", errorMessage);
+        }
         return false;
       }
     } catch (err) {
       console.error("Fetch error:", err);
-      alert("An error occurred. Please try again.");
+      handleGenericError();
       return false;
     }
   };
 
   return (
-    <div className="flex h-screen items-center justify-center">
+    <div className="flex h-screen flex-col items-center justify-center gap-4">
       <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
         {/* Title */}
         <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
@@ -117,24 +106,39 @@ export default function Page() {
 
         {/* New Password */}
         <TextInputField
+          id={"password"}
           type="password"
-          placeholder="New Password"
+          label="New Password*"
           value={newPassword}
-          onChange={setNewPassword}
+          onChange={(value) => {
+            setNewPassword(value);
+          }}
+          onFocus={() => setShowPasswordCriteria(true)}
+          onBlur={() => {
+            if (!newPassword || passwordIsStrong()) {
+              setShowPasswordCriteria(false);
+            }
+          }}
+          outlined
+          error={errors.password || errors.api}
         />
 
-        {!passwordIsStrong() && (
+        {/* Password Errors */}
+        {showPasswordCriteria && (
           <div className="-mt-2 mb-2 w-full px-4">
             <PasswordCriteria criteria={passwordCriteria} />
           </div>
         )}
 
-        {/* Confirm Password */}
+        {/* Retype Password */}
         <TextInputField
+          id={"confirmPassword"}
           type="password"
-          placeholder="Confirm Password"
+          label="Retype Password*"
           value={confirmPassword}
-          onChange={setConfirmPassword}
+          onChange={handleConfirmPasswordChange}
+          outlined
+          error={errors.confirmPassword || errors.api}
         />
 
         {/* Change Password Button */}

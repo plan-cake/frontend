@@ -1,89 +1,97 @@
-import { useState } from "react";
-
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { DateRange } from "react-day-picker";
+import { parseISO } from "date-fns";
 
+// import Switch from "@/components/switch";
+import { useEventContext } from "@/core/event/context";
+import { SpecificDateRange } from "@/core/event/types";
+import WeekdayCalendar from "@/features/event/editor/date-range/calendars/weekday";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
+// import EventTypeSelect from "@/features/event/editor/date-range/event-type-select";
 import DateRangePopover from "@/features/event/editor/date-range/popover";
-import EventTypeSelect from "@/features/event/editor/event-type-select";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
+// import FormSelectorField from "@/features/selector/components/selector-field";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 
-export default function DateRangeSelector({
-  earliestDate,
-  eventRange,
-  editing = false,
-  setEventType = () => {},
-  setWeekdayRange = () => {},
-  setDateRange = () => {},
-}: DateRangeProps) {
-  const isMobile = useCheckMobile();
-  const rangeType = eventRange?.type ?? "specific";
-  const [tooManyDays, setTooManyDays] = useState(false);
+export default function DateRangeSelection(
+  {
+    // editing = false,
+  }: DateRangeProps,
+) {
+  const { state, setWeekdayRange, errors } = useEventContext();
+  const { eventRange } = state;
 
-  const checkDateRange = (range: DateRange | undefined) => {
-    setTooManyDays(checkInvalidDateRangeLength(range));
-    setDateRange(range);
-  };
+  // const rangeType = eventRange?.type ?? "specific";
+
+  return (
+    <div className="contents">
+      <div className="hidden flex-col md:flex">
+        {/* <label htmlFor="event-type-select">Type</label> */}
+        {/* <EventTypeSelect id="event-type-select" disabled={editing} /> */}
+      </div>
+      <div className="flex w-full flex-col justify-center">
+        <p
+          className={`flex items-center gap-2 ${errors.dateRange ? "text-error" : ""}`}
+        >
+          Possible Dates
+          {errors.dateRange && (
+            <ExclamationTriangleIcon className="text-error h-4 w-4" />
+          )}
+        </p>
+
+        {/* <FormSelectorField
+          label="Choose Days of the Week"
+          htmlFor="event-type"
+          classname="md:hidden mb-2"
+        >
+          <Switch
+            id="event-type"
+            checked={rangeType === "weekday"}
+            onCheckedChange={(checked) =>
+              setEventType(checked ? "weekday" : "specific")
+            }
+            disabled={editing}
+          />
+        </FormSelectorField> */}
+
+        {eventRange?.type === "specific" ? (
+          <SpecificDateRangeDisplay eventRange={eventRange} />
+        ) : (
+          <WeekdayCalendar
+            selectedDays={eventRange?.weekdays}
+            onChange={setWeekdayRange}
+          />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function SpecificDateRangeDisplay({
+  eventRange,
+}: {
+  eventRange: SpecificDateRange;
+}) {
+  const isMobile = useCheckMobile();
+
+  const earliestDate = parseISO(eventRange.dateRange.from);
+  const startDate = parseISO(eventRange.dateRange.from);
+  const endDate = parseISO(eventRange.dateRange.to);
 
   if (isMobile) {
     return (
       <DateRangeDrawer
         earliestDate={earliestDate}
-        eventRange={eventRange}
-        editing={editing}
-        setEventType={setEventType}
-        setWeekdayRange={setWeekdayRange}
-        setDateRange={setDateRange}
+        startDate={startDate}
+        endDate={endDate}
       />
     );
   } else {
     return (
-      <div className="mb-4 flex w-full flex-row gap-8">
-        <div className="flex flex-col gap-2">
-          <label htmlFor="event-type-select">Type</label>
-          <EventTypeSelect
-            id="event-type-select"
-            eventType={rangeType}
-            disabled={editing}
-            onEventTypeChange={setEventType}
-          />
-        </div>
-        <div className="flex w-full flex-col justify-center gap-2">
-          {eventRange?.type === "specific" ? (
-            <>
-              <label className="flex items-center gap-2">
-                Possible Dates
-                {tooManyDays && (
-                  <ExclamationTriangleIcon className="text-error h-4 w-4" />
-                )}
-              </label>
-              <DateRangePopover
-                earliestDate={earliestDate}
-                eventRange={eventRange}
-                setDateRange={checkDateRange}
-              />
-            </>
-          ) : (
-            <WeekdayCalendar
-              selectedDays={
-                eventRange?.weekdays ?? {
-                  Sun: 0,
-                  Mon: 0,
-                  Tue: 0,
-                  Wed: 0,
-                  Thu: 0,
-                  Fri: 0,
-                  Sat: 0,
-                }
-              }
-              onChange={setWeekdayRange}
-            />
-          )}
-        </div>
-      </div>
+      <DateRangePopover
+        earliestDate={earliestDate}
+        startDate={startDate}
+        endDate={endDate}
+      />
     );
   }
 }

@@ -1,45 +1,72 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useOptimistic } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
-import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
+import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
+import AttendeesPanel from "@/features/event/results/attendees-panel";
+import { useFormErrors } from "@/lib/hooks/use-form-errors";
 
 export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialAvailabilityData,
+  isCreator,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialAvailabilityData: AvailabilityDataResponse;
+  isCreator: boolean;
 }) {
+  /* PARTICIPANT INFO */
+  const participated: boolean =
+    initialAvailabilityData.user_display_name != null;
+  const userName = initialAvailabilityData.user_display_name || "";
+
+  /* PARTICIPANT STATES */
+  const participants = initialAvailabilityData.participants || [];
+  const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
+    participants,
+    (state, personToRemove: string) =>
+      state.filter((p) => p !== personToRemove),
+  );
+
+  const availabilities = initialAvailabilityData.availability || {};
+  const [optimisticAvailabilities, updateOptimisticAvailabilities] =
+    useOptimistic(availabilities, (state, person: string) => {
+      const updatedState = { ...state };
+      for (const slot in updatedState) {
+        updatedState[slot] = updatedState[slot].filter((p) => p !== person);
+      }
+      return updatedState;
+    });
+
+  /* HOVER HANDLING */
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+
+  /* TIMEZONE HANDLING */
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   const handleTZChange = (newTZ: string | number) => {
     setTimezone(newTZ.toString());
   };
 
-  const participated: boolean =
-    initialAvailabilityData.user_display_name != null;
-  const isCreator: boolean = initialAvailabilityData.is_creator || false;
-  const participants: string[] = initialAvailabilityData.participants || [];
-  const availabilities: ResultsAvailabilityMap =
-    initialAvailabilityData.availability || {};
+  /* ERROR HANDLING */
+  const { handleError } = useFormErrors();
 
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
@@ -47,7 +74,7 @@ export default function ClientPage({
       <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
           {isCreator && (
@@ -76,44 +103,32 @@ export default function ClientPage({
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
-          availabilities={availabilities}
-          numParticipants={participants.length}
+          availabilities={optimisticAvailabilities}
+          numParticipants={optimisticParticipants.length}
+          timeslots={timeslots}
         />
 
         <div className="h-25" />
 
         {/* Sidebar for attendees */}
         <div className="md:top-25 fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0">
-          <div className="bg-panel rounded-3xl p-4 shadow-md md:space-y-6 md:p-6 md:shadow-none">
-            <h2 className="mb-2 text-lg font-semibold">Attendees</h2>
-            <ul className="flex flex-wrap space-x-2 space-y-0">
-              {participants.length === 0 && (
-                <li className="text-sm italic opacity-50">No attendees yet</li>
-              )}
-              {participants.map((person: string) => {
-                const isAvailable =
-                  availabilities[hoveredSlot || ""]?.includes(person);
-                return (
-                  <li
-                    key={person}
-                    className={`flex items-center gap-2 transition-opacity ${
-                      hoveredSlot && !isAvailable
-                        ? "line-through opacity-50"
-                        : "opacity-100"
-                    }`}
-                  >
-                    {person}
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
+          <AttendeesPanel
+            hoveredSlot={hoveredSlot}
+            participants={optimisticParticipants}
+            availabilities={optimisticAvailabilities}
+            isCreator={isCreator}
+            currentUser={userName}
+            eventCode={eventCode}
+            removeOptimisticParticipant={removeOptimisticParticipant}
+            updateOptimisticAvailabilities={updateOptimisticAvailabilities}
+            handleError={handleError}
+          />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timezone} />
           </div>
 
-          <div className="bg-panel hidden rounded-3xl p-4 text-sm md:block">
+          <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">
             Displaying event in
             <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector

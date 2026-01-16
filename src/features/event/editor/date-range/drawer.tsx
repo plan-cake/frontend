@@ -1,43 +1,38 @@
+"use client";
+
 import { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { fromZonedTime } from "date-fns-tz";
-import { DateRange } from "react-day-picker";
+import { ExclamationTriangleIcon, Cross1Icon } from "@radix-ui/react-icons";
 
-import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
-import DateRangeInput from "@/features/event/editor/date-range/input";
-import EventTypeSelect from "@/features/event/editor/event-type-select";
-import { Calendar } from "@/features/event/editor/month-calendar";
-import { checkInvalidDateRangeLength } from "@/features/event/editor/validate-data";
-import WeekdayCalendar from "@/features/event/editor/weekday-calendar";
+import { useEventContext } from "@/core/event/context";
+import ActionButton from "@/features/button/components/action";
+import { Calendar } from "@/features/event/editor/date-range/calendars/month";
+import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-range/date-range-props";
+import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 
 export default function DateRangeDrawer({
   earliestDate,
-  eventRange,
-  editing = false,
-  setEventType = () => {},
-  setWeekdayRange = () => {},
-  setDateRange = () => {},
-}: DateRangeProps) {
-  const rangeType = eventRange?.type ?? "specific";
-  const [tooManyDays, setTooManyDays] = useState(false);
+  startDate,
+  endDate,
+}: SpecificDateRangeDisplayProps) {
+  const { errors, setDateRange } = useEventContext();
 
-  const checkDateRange = (range: DateRange | undefined) => {
-    setTooManyDays(checkInvalidDateRangeLength(range));
-    setDateRange(range);
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+    return true;
   };
 
   return (
-    <Dialog.Root>
-      <Dialog.Trigger asChild>
-        <div className="cursor-pointer" aria-label="Open date range picker">
-          <DateRangeDrawerSelector
-            eventRange={eventRange}
-            setEventType={setEventType}
-            tooManyDays={tooManyDays}
-          />
-        </div>
+    <Dialog.Root open={open} onOpenChange={setOpen}>
+      <Dialog.Trigger className="hover:cursor-pointer">
+        <SpecificDateRangeDisplay
+          startDate={startDate}
+          endDate={endDate}
+          open={open}
+        />
       </Dialog.Trigger>
 
       <Dialog.Portal>
@@ -46,27 +41,47 @@ export default function DateRangeDrawer({
           className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col"
           aria-label="Date range picker"
         >
-          <div className="rounded-t-4xl bg-background flex-1 justify-center overflow-y-auto p-8 shadow-lg">
+          <div className="rounded-t-4xl bg-background flex flex-1 flex-col overflow-y-auto shadow-lg">
             <div
-              aria-hidden
-              className="sticky mx-auto mb-8 h-1.5 w-12 flex-shrink-0 rounded-full bg-gray-300"
-            />
-            <Dialog.Title className="mb-2 flex flex-row items-center justify-between text-lg font-semibold">
-              <label htmlFor="event-type-select">Select Date Range</label>
-              <EventTypeSelect
-                id="event-type-select"
-                eventType={rangeType}
-                onEventTypeChange={setEventType}
-                disabled={editing}
+              onPointerDown={handleClose}
+              className="bg-background sticky top-0 z-10 flex items-center gap-4 p-8 pb-4"
+            >
+              <ActionButton
+                buttonStyle="frosted glass"
+                icon={<Cross1Icon />}
+                label="Close Drawer"
+                shrinkOnMobile
+                onClick={handleClose}
               />
-            </Dialog.Title>
 
-            <DateRangeDrawerSelector
+              <Dialog.Title className="flex flex-col text-lg font-semibold">
+                Select Specific Date Range
+                {errors.dateRange ? (
+                  <span className="text-error flex items-center gap-2 text-sm">
+                    <ExclamationTriangleIcon className="h-4 w-4" />
+                    {errors.dateRange}
+                  </span>
+                ) : (
+                  <span className="text-accent text-sm font-normal">
+                    Choose a start and end date
+                  </span>
+                )}
+              </Dialog.Title>
+
+              <Dialog.Description className="sr-only">
+                Select a date range using the calendar below
+              </Dialog.Description>
+            </div>
+
+            <Calendar
               earliestDate={earliestDate}
-              eventRange={eventRange}
-              displayCalendar={true}
-              setWeekdayRange={setWeekdayRange}
-              setDateRange={checkDateRange}
+              className="w-fit"
+              selectedRange={{
+                from: startDate || undefined,
+                to: endDate || undefined,
+              }}
+              setDateRange={setDateRange}
+              dateRangeError={errors.dateRange}
             />
           </div>
         </Dialog.Content>
@@ -74,64 +89,3 @@ export default function DateRangeDrawer({
     </Dialog.Root>
   );
 }
-
-const DateRangeDrawerSelector = ({
-  earliestDate,
-  eventRange,
-  displayCalendar,
-  tooManyDays,
-  setWeekdayRange = () => {},
-  setDateRange = () => {},
-}: DateRangeProps) => {
-  if (eventRange?.type === "specific") {
-    const startDate = fromZonedTime(
-      eventRange.dateRange.from,
-      eventRange.timezone,
-    );
-    const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
-    return (
-      <div className="flex flex-col space-y-2">
-        {displayCalendar ? (
-          <Calendar
-            earliestDate={earliestDate}
-            selectedRange={{
-              from: startDate || undefined,
-              to: endDate || undefined,
-            }}
-            setDateRange={setDateRange}
-          />
-        ) : (
-          <>
-            <label className="flex items-center gap-2 text-start">
-              Possible Dates
-              {tooManyDays && (
-                <ExclamationTriangleIcon className="text-error h-4 w-4" />
-              )}
-            </label>
-            <DateRangeInput startDate={startDate} endDate={endDate} />
-          </>
-        )}
-      </div>
-    );
-  }
-  return (
-    <div className="flex flex-col space-y-2">
-      {!displayCalendar && <label className="text-start">Dates</label>}
-      <WeekdayCalendar
-        selectedDays={
-          eventRange?.weekdays ?? {
-            Sun: 0,
-            Mon: 0,
-            Tue: 0,
-            Wed: 0,
-            Thu: 0,
-            Fri: 0,
-            Sat: 0,
-          }
-        }
-        onChange={setWeekdayRange}
-        inDrawer={true}
-      />
-    </div>
-  );
-};

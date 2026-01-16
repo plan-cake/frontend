@@ -1,7 +1,6 @@
-import formatApiError from "@/lib/utils/api/format-api-error";
+import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type AvailabilityDataResponse = {
-  is_creator: boolean;
   user_display_name: string | null;
   participants: string[];
   availability: Record<string, string[]>;
@@ -25,8 +24,7 @@ export async function fetchAvailabilityData(
   );
 
   if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch availability data: " + errorMessage);
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();
@@ -56,7 +54,10 @@ export async function fetchSelfAvailability(
   );
 
   if (!res.ok) {
-    return null;
+    // 400 error is expected if the user has not submitted availability yet
+    if (res.status !== 400) {
+      handleErrorResponse(res.status, await res.json());
+    }
   }
 
   return res.json();
