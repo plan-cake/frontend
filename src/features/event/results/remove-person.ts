@@ -36,8 +36,6 @@ export async function removePerson(
       return false;
     }
 
-    console.log("Participant removed successfully");
-
     // Revalidate the event page to reflect changes
     revalidatePath(`/${eventCode}`);
 

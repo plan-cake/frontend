@@ -10,7 +10,7 @@ import {
 import ActionButton from "@/features/button/components/action";
 import { cn } from "@/lib/utils/classname";
 
-type ConfirmationDialogTypes = "warning" | "delete" | "sucess" | "info";
+type ConfirmationDialogTypes = "warning" | "delete" | "success" | "info";
 
 function getButtonStyle(iconType: ConfirmationDialogTypes) {
   switch (iconType) {
@@ -38,7 +38,7 @@ function getDialogIcon(iconType: ConfirmationDialogTypes) {
           <ExclamationTriangleIcon className={iconClass} />
         </div>
       );
-    case "sucess":
+    case "success":
       return (
         <div className={cn(iconWrapperClass, "bg-foreground/40")}>
           <CheckIcon className={iconClass} />
