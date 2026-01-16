@@ -129,7 +129,7 @@ function InfoRow({
   children: React.ReactNode;
 }) {
   return (
-    <div>
+    <div className="space-y-1">
       <div className="text-sm font-medium text-gray-400">{label}</div>
       <div className="text-accent">{children}</div>
     </div>
