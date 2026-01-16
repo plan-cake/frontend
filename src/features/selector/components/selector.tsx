@@ -12,6 +12,7 @@ export default function Selector<TValue extends string | number>({
   dialogTitle,
   dialogDescription,
   className,
+  textStart = false,
 }: SelectorProps<TValue>) {
   const isMobile = useCheckMobile();
 
@@ -41,6 +42,7 @@ export default function Selector<TValue extends string | number>({
         onChange={onChange}
         dialogTitle={dialogTitle}
         dialogDescription={dialogDescription}
+        textStart={textStart}
       />
     );
   }

@@ -1,10 +1,10 @@
-import { DateRange } from "react-day-picker";
-
 import { EventInformation, WeekdayRange } from "@/core/event/types";
 import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
-import { isDurationExceedingMax } from "@/features/event/max-event-duration";
 import { MESSAGES } from "@/lib/messages";
+
+export const MAX_DURATION_MS = 30 * 24 * 60 * 60 * 1000;
+export const MAX_DURATION = "30 days";
 
 export const MAX_TITLE_LENGTH = 50;
 
@@ -30,7 +30,7 @@ export async function validateEventData(
       // check if the date range is more than 30 days
       const fromDate = new Date(eventRange.dateRange.from);
       const toDate = new Date(eventRange.dateRange.to);
-      if (isDurationExceedingMax(fromDate, toDate)) {
+      if (checkDateRange(fromDate, toDate)) {
         errors.dateRange = MESSAGES.ERROR_EVENT_RANGE_TOO_LONG;
       }
     }
@@ -46,19 +46,31 @@ export async function validateEventData(
   }
 
   // Validate time range
-  if (eventRange.timeRange.from >= eventRange.timeRange.to) {
+  if (!checkTimeRange(eventRange.timeRange.from, eventRange.timeRange.to)) {
     errors.timeRange = MESSAGES.ERROR_EVENT_RANGE_INVALID;
   }
 
   return errors;
 }
 
-export function checkInvalidDateRangeLength(
-  range: DateRange | undefined,
+export function checkDateRange(
+  start: Date | undefined,
+  end: Date | undefined,
 ): boolean {
-  if (range?.from && range?.to) {
-    const diffTime = range.to.getTime() - range.from.getTime();
-    return diffTime > 30 * 24 * 60 * 60 * 1000; // more than 30 days
+  if (start && end) {
+    const diffTime = end.getTime() - start.getTime();
+    return diffTime > MAX_DURATION_MS;
   }
+  return false;
+}
+
+export function checkTimeRange(startTime: string, endTime: string): boolean {
+  if (endTime === "00:00") return true;
+
+  const [startHour, startMinute] = startTime.split(":").map(Number);
+  const [endHour, endMinute] = endTime.split(":").map(Number);
+
+  if (endHour > startHour) return true;
+  if (endHour === startHour && endMinute > startMinute) return true;
   return false;
 }

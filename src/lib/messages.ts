@@ -1,5 +1,7 @@
-import { MAX_TITLE_LENGTH } from "@/features/event/editor/validate-data";
-import { MAX_DURATION } from "@/features/event/max-event-duration";
+import {
+  MAX_TITLE_LENGTH,
+  MAX_DURATION,
+} from "@/features/event/editor/validate-data";
 
 export const MESSAGES = {
   // generic errors

@@ -56,7 +56,7 @@ export default function BaseToast({
           }}
           className={cn(
             "col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
-            "opacity-0 transition-all",
+            "opacity-0 transition-opacity duration-200 ease-in-out",
             "focus:opacity-100 group-hover:opacity-100",
             "hover:bg-black/20 focus:outline-none focus:ring-2 focus:ring-white/50",
           )}

@@ -1,4 +1,4 @@
-import { MouseEvent } from "react";
+import { MouseEvent, useMemo } from "react";
 
 import { ClockIcon, Pencil1Icon } from "@radix-ui/react-icons";
 import Link from "next/link";
@@ -7,7 +7,10 @@ import { useRouter } from "next/navigation";
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
-import { formatTimeRange } from "@/lib/utils/date-time-format";
+import {
+  formatTimeRange,
+  getTimezoneDetails,
+} from "@/lib/utils/date-time-format";
 
 export type DashboardEventProps = {
   myEvent: boolean;
@@ -16,10 +19,8 @@ export type DashboardEventProps = {
   type: "specific" | "weekday";
   startTime: string;
   endTime: string;
-  startDate?: string;
-  endDate?: string;
-  startWeekday?: number;
-  endWeekday?: number;
+  startDate: string;
+  endDate: string;
 };
 
 export default function DashboardEvent({
@@ -27,12 +28,7 @@ export default function DashboardEvent({
   code,
   title,
   type,
-  startTime,
-  endTime,
-  startDate,
-  endDate,
-  startWeekday,
-  endWeekday,
+  ...dateTimeProps
 }: DashboardEventProps) {
   const router = useRouter();
 
@@ -40,6 +36,24 @@ export default function DashboardEvent({
     e.preventDefault(); // prevent the link behind it triggering
     router.push(`/${code}/edit`);
   }
+
+  // Memoized local start and end details
+  const start = useMemo(
+    () =>
+      getTimezoneDetails({
+        time: dateTimeProps.startTime,
+        date: dateTimeProps.startDate,
+      }),
+    [dateTimeProps.startTime, dateTimeProps.startDate],
+  );
+  const end = useMemo(
+    () =>
+      getTimezoneDetails({
+        time: dateTimeProps.endTime,
+        date: dateTimeProps.endDate,
+      }),
+    [dateTimeProps.endTime, dateTimeProps.endDate],
+  );
 
   return (
     <Link href={`/${code}`}>
@@ -50,15 +64,15 @@ export default function DashboardEvent({
         <div className="text-sm opacity-50">{code}</div>
         <div className="mb-2 mt-1">
           {type === "specific" && (
-            <DateRangeRow startDate={startDate!} endDate={endDate!} />
+            <DateRangeRow startDate={start.date} endDate={end.date} />
           )}
           {type === "weekday" && (
-            <WeekdayRow startWeekday={startWeekday!} endWeekday={endWeekday!} />
+            <WeekdayRow startWeekday={start.weekday} endWeekday={end.weekday} />
           )}
         </div>
         <div className="flex items-center gap-2">
           <ClockIcon className="h-5 w-5" />
-          {formatTimeRange(startTime, endTime)}
+          {formatTimeRange(start.time, end.time)}
         </div>
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />

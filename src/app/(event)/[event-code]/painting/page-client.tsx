@@ -165,7 +165,7 @@ export default function ClientPage({
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
         </div>
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
@@ -176,7 +176,7 @@ export default function ClientPage({
       {/* Main Content */}
       <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
+        <div className="md:top-25 h-fit w-full shrink-0 space-y-4 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
             <p
               className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
@@ -205,10 +205,10 @@ export default function ClientPage({
 
           {/* Desktop-only Event Info */}
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timeZone} />
           </div>
 
-          <div className="bg-panel rounded-3xl p-4 text-sm">
+          <div className="bg-panel rounded-3xl p-6 text-sm">
             Displaying event in
             <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
