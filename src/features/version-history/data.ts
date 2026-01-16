@@ -27,6 +27,22 @@ export function getVersionHistoryData(): VersionHistoryData {
                 },
             ],
         },
+        {
+            version: "v0.2",
+            date: new Date(2026, 0, 16),
+            changes: [
+                "Added functionality for event participant removal",
+                "Added a version history page",
+                "Updated error handling across the site",
+                "Updated certain parts of the event editor",
+                "Improved readability of \"Frosted Glass\"-styled components",
+                "Temporarily disabled weekday events for fixes",
+            ],
+            bugFixes: [
+                "Fixed the theme transition on the landing page",
+            ],
+            minorVersions: [],
+        },
     ];
 }
 
