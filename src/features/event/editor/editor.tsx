@@ -47,15 +47,15 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
   const {
     state,
     setTitle,
-    setStartTime,
-    setEndTime,
     errors,
     handleError,
     clearAllErrors,
     handleGenericError,
     batchHandleErrors,
+    setStartTime,
+    setEndTime,
   } = useEventContext();
-  const { title, customCode, eventRange } = state;
+  const { title, customCode, eventRange, timeslots } = state;
   const router = useRouter();
 
   const [mobileTab, setMobileTab] = useState<SegmentedControlOption>("details");
@@ -72,7 +72,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       }
 
       const success = await submitEvent(
-        { title, code: customCode, eventRange },
+        { title, code: customCode, eventRange, timeslots },
         type,
         eventRange.type,
         (code: string) => router.push(`/${code}`),
@@ -146,7 +146,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
         className={cn(
           "w-full grid-cols-1 gap-y-2",
           mobileTab === "preview" ? "hidden md:grid" : "grid",
-          "md:grow md:grid-cols-[auto_1fr] md:grid-rows-[auto_repeat(7,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-2",
+          "md:grow md:grid-cols-[auto_1fr] md:grid-rows-[auto_repeat(8,minmax(0,25px))_1fr_25px] md:gap-x-4 md:gap-y-2",
         )}
       >
         <DateRangeSelection editing={type === "edit"} />
@@ -157,7 +157,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           Possible Times
           {errors.timeRange && <ExclamationTriangleIcon className="h-4 w-4" />}
         </p>
-        <div className="flex flex-col gap-2 md:col-start-1 md:row-span-7 md:row-start-3">
+        <div className="flex flex-col gap-2 md:col-start-1 md:row-span-8 md:row-start-3">
           <FormSelectorField label="FROM" htmlFor="from-time-dropdown">
             <TimeSelector
               id="from-time-dropdown"
@@ -175,12 +175,12 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           </FormSelectorField>
         </div>
 
-        <div className="md:content md:col-start-1 md:row-start-9 md:flex md:max-w-[250px] md:items-end">
+        <div className="md:content md:col-start-1 md:row-start-10 md:flex md:max-w-[250px] md:items-end">
           <AdvancedOptions isEditing={type === "edit"} errors={errors} />
         </div>
         <div className="h-16 md:hidden" />
         <div className="hidden flex-1 md:col-start-2 md:row-span-9 md:row-start-2 md:block">
-          <MemoizedGridPreview eventRange={eventRange} />
+          <MemoizedGridPreview eventRange={eventRange} timeslots={timeslots} />
         </div>
       </div>
 
@@ -195,6 +195,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
           eventRange={eventRange}
           disableSelect={true}
           timezone={eventRange.timezone}
+          timeslots={timeslots}
         />
       </div>
       <div className="h-16 md:hidden" />

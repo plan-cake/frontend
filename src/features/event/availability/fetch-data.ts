@@ -1,7 +1,6 @@
 import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type AvailabilityDataResponse = {
-  is_creator: boolean;
   user_display_name: string | null;
   participants: string[];
   availability: Record<string, string[]>;

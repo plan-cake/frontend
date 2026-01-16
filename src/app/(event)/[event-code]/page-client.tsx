@@ -19,17 +19,20 @@ export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialAvailabilityData,
+  isCreator,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialAvailabilityData: AvailabilityDataResponse;
+  isCreator: boolean;
 }) {
   /* PARTICIPANT INFO */
   const participated: boolean =
     initialAvailabilityData.user_display_name != null;
-  const isCreator: boolean = initialAvailabilityData.is_creator || false;
   const participants: string[] = initialAvailabilityData.participants || [];
   const availabilities: ResultsAvailabilityMap =
     initialAvailabilityData.availability || {};
@@ -64,7 +67,7 @@ export default function ClientPage({
       <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
           {isCreator && (
@@ -95,6 +98,7 @@ export default function ClientPage({
           setHoveredSlot={handleHoveredSlot}
           availabilities={availabilities}
           numParticipants={participants.length}
+          timeslots={timeslots}
         />
 
         <div className="h-25" />
@@ -139,7 +143,7 @@ export default function ClientPage({
           </div>
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timezone} />
           </div>
 
           <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">

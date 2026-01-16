@@ -9,7 +9,6 @@ import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
-import { convertAvailabilityToGrid } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
@@ -26,11 +25,13 @@ export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
@@ -93,15 +94,10 @@ export default function ClientPage({
         return false;
       }
 
-      const availabilityGrid = convertAvailabilityToGrid(
-        userAvailability,
-        eventRange,
-      );
-
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: availabilityGrid,
+        availability: Array.from(userAvailability),
         time_zone: timeZone,
       };
 
@@ -139,14 +135,18 @@ export default function ClientPage({
   const cancelButton = (
     <LinkButton
       buttonStyle="transparent"
-      label={initialData ? "Cancel Edits" : "Cancel"}
+      label={initialData?.display_name ? "Cancel Edits" : "Cancel"}
       href={`/${eventCode}`}
     />
   );
   const submitButton = (
     <ActionButton
       buttonStyle="primary"
-      label={initialData ? "Update Availability" : "Submit Availability"}
+      label={
+        initialData?.display_name
+          ? "Update Availability"
+          : "Submit Availability"
+      }
       onClick={handleSubmitAvailability}
       loadOnSuccess
     />
@@ -165,7 +165,7 @@ export default function ClientPage({
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
         </div>
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
@@ -205,7 +205,7 @@ export default function ClientPage({
 
           {/* Desktop-only Event Info */}
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timeZone} />
           </div>
 
           <div className="bg-panel rounded-3xl p-6 text-sm">
@@ -227,6 +227,7 @@ export default function ClientPage({
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
+          timeslots={timeslots}
         />
       </div>
 

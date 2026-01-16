@@ -9,13 +9,16 @@ import { EventRange } from "@/core/event/types";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import { cn } from "@/lib/utils/classname";
+import { findTimezoneLabel } from "@/lib/utils/date-time-format";
 
 interface GridPreviewDialogProps {
   eventRange: EventRange;
+  timeslots: Date[];
 }
 
 export default function GridPreviewDialog({
   eventRange,
+  timeslots,
 }: GridPreviewDialogProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [timezone, setTimezone] = useState(eventRange.timezone);
@@ -89,6 +92,7 @@ export default function GridPreviewDialog({
               eventRange={eventRange}
               disableSelect
               timezone={timezone}
+              timeslots={timeslots}
             />
             <div className="flex flex-col md:flex-row md:items-center md:justify-between">
               <label
@@ -107,7 +111,7 @@ export default function GridPreviewDialog({
               <label className="text-sm md:mr-[20px]">
                 Original Event in{" "}
                 <span className="text-accent font-bold">
-                  {eventRange.timezone}
+                  {findTimezoneLabel(eventRange.timezone)}
                 </span>
               </label>
             </div>
@@ -119,6 +123,7 @@ export default function GridPreviewDialog({
               eventRange={eventRange}
               disableSelect={true}
               timezone={eventRange.timezone}
+              timeslots={timeslots}
             />
           </motion.div>
         )}

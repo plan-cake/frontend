@@ -9,31 +9,17 @@ function processSingleEvent(
   myEvent: boolean,
   eventData: DashboardEventResponse,
 ): DashboardEventProps {
-  if (eventData.event_type === "Date") {
-    const data: DashboardEventProps = {
-      myEvent: myEvent,
-      code: eventData.event_code,
-      title: eventData.title,
-      type: "specific",
-      startHour: eventData.start_hour,
-      endHour: eventData.end_hour,
-      startDate: eventData.start_date,
-      endDate: eventData.end_date,
-    };
-    return data;
-  } else {
-    const data: DashboardEventProps = {
-      myEvent: myEvent,
-      code: eventData.event_code,
-      title: eventData.title,
-      type: "weekday",
-      startHour: eventData.start_hour,
-      endHour: eventData.end_hour,
-      startWeekday: eventData.start_weekday,
-      endWeekday: eventData.end_weekday,
-    };
-    return data;
-  }
+  const data: DashboardEventProps = {
+    myEvent: myEvent,
+    code: eventData.event_code,
+    title: eventData.title,
+    type: eventData.event_type === "Date" ? "specific" : "weekday",
+    startTime: eventData.start_time,
+    endTime: eventData.end_time,
+    startDate: eventData.start_date!,
+    endDate: eventData.end_date!,
+  };
+  return data;
 }
 
 export function processDashboardData(

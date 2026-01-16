@@ -1,6 +1,8 @@
-import { format, formatInTimeZone, toZonedTime } from "date-fns-tz";
-
 import { ResultsAvailabilityMap } from "@/core/availability/types";
+import {
+  getGridCoordinates,
+  getBaseCellClasses,
+} from "@/features/event/grid/lib/timeslot-utils";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 
@@ -41,36 +43,23 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
-        const timeslotIso = format(timeslot, "yyyy-MM-dd'T'HH:mm:ss");
+        const timeslotIso = timeslot.toISOString();
 
-        const localSlot = toZonedTime(timeslot, userTimezone);
-        const localSlotIso = formatInTimeZone(
+        const coords = getGridCoordinates(
           timeslot,
+          visibleDayKeys,
           userTimezone,
-          "yyyy-MM-dd'T'HH:mm:ss",
+          startHour,
         );
-
-        const currentDayKey = localSlot.toLocaleDateString("en-CA");
-        const dayIndex = visibleDayKeys.indexOf(currentDayKey);
-        if (dayIndex === -1) return null;
-
-        const gridColumn = dayIndex + 1;
-        const gridRow =
-          (localSlot.getHours() - startHour) * 4 +
-          Math.floor(localSlot.getMinutes() / 15) +
-          1;
+        if (!coords) return null;
+        const { row: gridRow, column: gridColumn } = coords;
 
         // borders
-        const cellClasses: string[] = ["cursor-default"];
-        if (gridRow < numQuarterHours) {
-          cellClasses.push("border-b");
-
-          if (gridRow % 4 === 0) {
-            cellClasses.push("border-solid border-gray-400");
-          } else {
-            cellClasses.push("border-dashed border-gray-400");
-          }
-        }
+        const cellClasses: string[] = getBaseCellClasses(
+          gridRow,
+          numQuarterHours,
+        );
+        cellClasses.push("cursor-default");
 
         const matchCount =
           availabilities[timeslotIso]?.length > 0
@@ -91,7 +80,7 @@ export default function ResultsTimeBlock({
         return (
           <TimeSlot
             key={`slot-${timeslotIdx}`}
-            slotIso={localSlotIso}
+            slotIso={timeslotIso}
             cellClasses={cellClasses.join(" ")}
             isHovered={isHovered}
             gridColumn={gridColumn}

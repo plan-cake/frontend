@@ -14,4 +14,5 @@ export type SelectorProps<TValue extends string | number> = {
   // for mobile drawer
   dialogTitle?: string;
   dialogDescription?: string;
+  textStart?: boolean;
 };

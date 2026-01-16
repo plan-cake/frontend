@@ -28,7 +28,11 @@ export default function DateRangeDrawer({
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger className="hover:cursor-pointer">
-        <SpecificDateRangeDisplay startDate={startDate} endDate={endDate} />
+        <SpecificDateRangeDisplay
+          startDate={startDate}
+          endDate={endDate}
+          open={open}
+        />
       </Dialog.Trigger>
 
       <Dialog.Portal>
@@ -63,6 +67,10 @@ export default function DateRangeDrawer({
                   </span>
                 )}
               </Dialog.Title>
+
+              <Dialog.Description className="sr-only">
+                Select a date range using the calendar below
+              </Dialog.Description>
             </div>
 
             <Calendar

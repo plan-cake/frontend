@@ -3,14 +3,12 @@ import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 export type DashboardEventResponse = {
   title: string;
   duration?: number;
-  start_hour: number;
-  end_hour: number;
+  start_time: string;
+  end_time: string;
   time_zone: string;
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
-  start_weekday?: number;
-  end_weekday?: number;
   event_code: string;
 };
 

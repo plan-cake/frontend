@@ -1,30 +1,32 @@
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { fromZonedTime } from "date-fns-tz";
+import { parseISO } from "date-fns";
 
-import Switch from "@/components/switch";
+// import Switch from "@/components/switch";
 import { useEventContext } from "@/core/event/context";
 import { SpecificDateRange } from "@/core/event/types";
 import WeekdayCalendar from "@/features/event/editor/date-range/calendars/weekday";
 import { DateRangeProps } from "@/features/event/editor/date-range/date-range-props";
 import DateRangeDrawer from "@/features/event/editor/date-range/drawer";
-import EventTypeSelect from "@/features/event/editor/date-range/event-type-select";
+// import EventTypeSelect from "@/features/event/editor/date-range/event-type-select";
 import DateRangePopover from "@/features/event/editor/date-range/popover";
-import FormSelectorField from "@/features/selector/components/selector-field";
+// import FormSelectorField from "@/features/selector/components/selector-field";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 
-export default function DateRangeSelection({
-  editing = false,
-}: DateRangeProps) {
-  const { state, setEventType, setWeekdayRange, errors } = useEventContext();
+export default function DateRangeSelection(
+  {
+    // editing = false,
+  }: DateRangeProps,
+) {
+  const { state, setWeekdayRange, errors } = useEventContext();
   const { eventRange } = state;
 
-  const rangeType = eventRange?.type ?? "specific";
+  // const rangeType = eventRange?.type ?? "specific";
 
   return (
     <div className="contents">
       <div className="hidden flex-col md:flex">
-        <label htmlFor="event-type-select">Type</label>
-        <EventTypeSelect id="event-type-select" disabled={editing} />
+        {/* <label htmlFor="event-type-select">Type</label> */}
+        {/* <EventTypeSelect id="event-type-select" disabled={editing} /> */}
       </div>
       <div className="flex w-full flex-col justify-center">
         <p
@@ -36,7 +38,7 @@ export default function DateRangeSelection({
           )}
         </p>
 
-        <FormSelectorField
+        {/* <FormSelectorField
           label="Choose Days of the Week"
           htmlFor="event-type"
           classname="md:hidden mb-2"
@@ -49,7 +51,7 @@ export default function DateRangeSelection({
             }
             disabled={editing}
           />
-        </FormSelectorField>
+        </FormSelectorField> */}
 
         {eventRange?.type === "specific" ? (
           <SpecificDateRangeDisplay eventRange={eventRange} />
@@ -71,12 +73,9 @@ function SpecificDateRangeDisplay({
 }) {
   const isMobile = useCheckMobile();
 
-  const earliestDate = new Date(eventRange.dateRange.from);
-  const startDate = fromZonedTime(
-    eventRange.dateRange.from,
-    eventRange.timezone,
-  );
-  const endDate = fromZonedTime(eventRange.dateRange.to, eventRange.timezone);
+  const earliestDate = parseISO(eventRange.dateRange.from);
+  const startDate = parseISO(eventRange.dateRange.from);
+  const endDate = parseISO(eventRange.dateRange.to);
 
   if (isMobile) {
     return (

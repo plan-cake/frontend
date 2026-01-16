@@ -1,11 +1,18 @@
+// import { format, addDays, differenceInCalendarDays, parseISO } from "date-fns";
+// import { formatInTimeZone, fromZonedTime } from "date-fns-tz";
+
+import {
+  DEFAULT_RANGE_SPECIFIC,
+  DEFAULT_RANGE_WEEKDAY,
+} from "@/core/event/lib/default-range";
 import { EventRange, WeekdayMap } from "@/core/event/types";
 
 export type EventRangeAction =
   | { type: "SET_RANGE_INFO"; payload: EventRange }
   | { type: "SET_RANGE_TYPE"; payload: "specific" | "weekday" }
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
-  | { type: "SET_START_TIME"; payload: number }
-  | { type: "SET_END_TIME"; payload: number }
+  | { type: "SET_START_TIME"; payload: string }
+  | { type: "SET_END_TIME"; payload: string }
   | {
       type: "SET_WEEKDAYS";
       payload: { weekdays: Partial<Record<keyof WeekdayMap, 0 | 1>> };
@@ -40,16 +47,13 @@ export function EventRangeReducer(
         return {
           ...baseEvent,
           type: "specific",
-          dateRange: {
-            from: new Date().toISOString(),
-            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-          },
+          dateRange: DEFAULT_RANGE_SPECIFIC.dateRange,
         };
       } else {
         return {
           ...baseEvent,
           type: "weekday",
-          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
+          weekdays: DEFAULT_RANGE_WEEKDAY.weekdays,
         };
       }
     }
@@ -110,32 +114,70 @@ export function EventRangeReducer(
     }
 
     case "SET_TIMEZONE": {
+      const newTz = action.payload;
+
+      // Logic: If Specific Date, ensure the Start Time is not in the past in the new TZ.
+      // If it is, shift the dates forward so they are valid.
+      // if (state.type === "specific") {
+      //   const { dateRange, timeRange } = state;
+      //   const now = new Date();
+
+      //   // 1. Interpret existing "Wall Time" in the New Timezone
+      //   // e.g., "2025-01-11 09:00" interpreted as Shanghai Time
+      //   const wallStartIso = `${dateRange.from}T${timeRange.from}`;
+      //   const startInNewZone = fromZonedTime(wallStartIso, newTz);
+
+      //   // 2. Check if that time has already passed
+      //   if (startInNewZone < now) {
+      //     // 3. Find "Today" and "Tomorrow" in the new timezone
+      //     const todayInNewZoneStr = formatInTimeZone(now, newTz, "yyyy-MM-dd");
+
+      //     // Check if we can still make it "Today" (is Now < 9am Today in New Zone?)
+      //     const potentialStartToday = fromZonedTime(
+      //       `${todayInNewZoneStr}T${timeRange.from}`,
+      //       newTz,
+      //     );
+
+      //     let newStartDateStr = todayInNewZoneStr;
+
+      //     if (potentialStartToday < now) {
+      //       // 9am Today has passed. Move to Tomorrow.
+      //       const tomorrow = addDays(parseISO(todayInNewZoneStr), 1);
+      //       newStartDateStr = format(tomorrow, "yyyy-MM-dd");
+      //     }
+
+      //     // 4. Calculate existing duration to preserve it
+      //     const oldStart = parseISO(dateRange.from);
+      //     const oldEnd = parseISO(dateRange.to);
+      //     const daysLength = differenceInCalendarDays(oldEnd, oldStart);
+
+      //     // 5. Construct new range
+      //     const newStart = parseISO(newStartDateStr);
+      //     const newEnd = addDays(newStart, daysLength);
+
+      //     return {
+      //       ...state,
+      //       timezone: newTz,
+      //       dateRange: {
+      //         from: format(newStart, "yyyy-MM-dd"),
+      //         to: format(newEnd, "yyyy-MM-dd"),
+      //       },
+      //     };
+      //   }
+      // }
+
+      // Default behavior: just update the string
       return {
         ...state,
-        timezone: action.payload,
+        timezone: newTz,
       };
     }
 
     case "RESET": {
       if (state.type === "specific") {
-        return {
-          type: "specific",
-          duration: 30,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          dateRange: {
-            from: new Date().toISOString(),
-            to: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
-          },
-          timeRange: { from: 9, to: 17 },
-        };
+        return DEFAULT_RANGE_SPECIFIC;
       } else {
-        return {
-          type: "weekday",
-          duration: 30,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
-          timeRange: { from: 9, to: 17 },
-        };
+        return DEFAULT_RANGE_WEEKDAY;
       }
     }
 

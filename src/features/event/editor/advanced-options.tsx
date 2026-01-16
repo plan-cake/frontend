@@ -26,7 +26,7 @@ export default function AdvancedOptions(props: AdvancedOptionsProps) {
       <Collapsible.Trigger asChild>
         <div
           className={cn(
-            "group flex w-fit cursor-pointer items-center gap-2 rounded-full",
+            "group flex w-fit min-w-[200px] cursor-pointer items-center gap-2 rounded-full",
           )}
         >
           <ChevronRightIcon

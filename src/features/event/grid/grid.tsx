@@ -21,6 +21,7 @@ import useCheckMobile from "@/lib/hooks/use-check-mobile";
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";
   eventRange: EventRange;
+  timeslots: Date[];
   timezone: string;
 
   disableSelect?: boolean;
@@ -38,6 +39,7 @@ interface ScheduleGridProps {
 
 export default function ScheduleGrid({
   eventRange,
+  timeslots,
   timezone,
   mode = "preview",
   availabilities = {},
@@ -51,6 +53,7 @@ export default function ScheduleGrid({
 
   const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
     eventRange,
+    timeslots,
     timezone,
   );
 

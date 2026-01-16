@@ -1,13 +1,17 @@
 import { format } from "date-fns";
 
+import { cn } from "@/lib/utils/classname";
+
 type SpecificDateRangeDisplayProps = {
   startDate: Date;
   endDate: Date;
+  open?: boolean;
 };
 
 export default function SpecificDateRangeDisplay({
   startDate,
   endDate,
+  open = false,
 }: SpecificDateRangeDisplayProps) {
   const displayFrom = startDate ? format(startDate, "EEE MMMM d, yyyy") : "";
   const displayTo = endDate ? format(endDate, "EEE MMMM d, yyyy") : "";
@@ -20,7 +24,10 @@ export default function SpecificDateRangeDisplay({
       {/* Start Date */}
       <div className="flex w-fit items-center space-x-4">
         <p className="text-gray-400 md:hidden">FROM</p>
-        <span className={displayStyle} aria-label="Start date">
+        <span
+          className={cn(displayStyle, open && "ring-accent ring-1")}
+          aria-label="Start date"
+        >
           {displayFrom}
         </span>
       </div>
@@ -30,7 +37,10 @@ export default function SpecificDateRangeDisplay({
       {/* End Date */}
       <div className="flex w-fit items-center space-x-4">
         <p className="text-gray-400 md:hidden">UNTIL</p>
-        <span className={displayStyle} aria-label="End date">
+        <span
+          className={cn(displayStyle, open && "ring-accent ring-1")}
+          aria-label="End date"
+        >
           {displayTo}
         </span>
       </div>

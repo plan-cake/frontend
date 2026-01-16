@@ -1,15 +1,4 @@
-import { eachDayOfInterval, parseISO } from "date-fns";
-
 import { AvailabilitySet } from "@/core/availability/types";
-import {
-  EventRange,
-  SpecificDateRange,
-  WeekdayRange,
-} from "@/core/event/types";
-import {
-  getAbsoluteDateRangeInUTC,
-  getSelectedWeekdaysInTimezone,
-} from "@/features/event/grid/lib/expand-event-range";
 
 // Creates an empty UserAvailability object
 export const createEmptyUserAvailability = (): AvailabilitySet => {
@@ -43,71 +32,6 @@ export function isSlotSelected(
   timeSlot: Date,
 ): boolean {
   return availability.has(timeSlot.toISOString());
-}
-
-// converts set to grid for api
-export function convertAvailabilityToGrid(
-  availability: AvailabilitySet,
-  eventRange: EventRange,
-): boolean[][] {
-  if (eventRange.type === "specific") {
-    return convertAvailabilityToGridForSpecificRange(availability, eventRange);
-  } else {
-    return convertAvailabilityToGridForWeekdayRange(availability, eventRange);
-  }
-}
-
-function convertAvailabilityToGridForSpecificRange(
-  availability: AvailabilitySet,
-  eventRange: SpecificDateRange,
-): boolean[][] {
-  const { eventStartUTC, eventEndUTC } = getAbsoluteDateRangeInUTC(eventRange);
-  const startTime = eventStartUTC.getHours();
-  const endTime =
-    eventEndUTC.getMinutes() === 59
-      ? eventEndUTC.getHours() + 1
-      : eventEndUTC.getHours();
-
-  const days = eachDayOfInterval({
-    start: parseISO(eventStartUTC.toISOString()),
-    end: parseISO(eventEndUTC.toISOString()),
-  });
-
-  const grid: boolean[][] = days.map((day) => {
-    const daySlots: boolean[] = [];
-
-    for (let hour = startTime; hour < endTime; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const slot = new Date(day);
-        slot.setHours(hour, minute);
-        daySlots.push(isSlotSelected(availability, slot));
-      }
-    }
-
-    return daySlots;
-  });
-  return grid;
-}
-
-function convertAvailabilityToGridForWeekdayRange(
-  availability: AvailabilitySet,
-  eventRange: WeekdayRange,
-): boolean[][] {
-  const selectedDays = getSelectedWeekdaysInTimezone(eventRange);
-
-  const grid: boolean[][] = selectedDays.map((day) => {
-    const daySlots: boolean[] = [];
-    const { slotTimeUTC, dayEndUTC } = day;
-
-    while (slotTimeUTC < dayEndUTC) {
-      daySlots.push(isSlotSelected(availability, slotTimeUTC));
-      slotTimeUTC.setUTCMinutes(slotTimeUTC.getUTCMinutes() + 15);
-    }
-
-    return daySlots;
-  });
-
-  return grid;
 }
 
 function sortDateRange(start: Date, end: Date): [Date, Date] {
