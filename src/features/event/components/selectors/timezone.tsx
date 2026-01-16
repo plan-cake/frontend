@@ -34,6 +34,7 @@ export default function TimeZoneSelector({
       dialogTitle="Select Timezone"
       dialogDescription="Select a timezone from the list"
       className={className}
+      textStart
     />
   );
 }

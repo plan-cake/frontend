@@ -92,7 +92,7 @@ function DashboardTabButton({
         "text-nowrap rounded-full px-4 py-2",
         currentTab === value
           ? "bg-accent text-white"
-          : "hover:bg-accent/25 cursor-pointer transition",
+          : "hover:bg-accent/25 cursor-pointer",
         !isMobile && "w-full text-left",
       )}
       onClick={() => setTab(value)}

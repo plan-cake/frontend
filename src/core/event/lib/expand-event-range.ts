@@ -4,6 +4,7 @@ import {
   eachDayOfInterval,
   isBefore,
   parseISO,
+  format,
 } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
@@ -12,7 +13,7 @@ import {
   SpecificDateRange,
   WeekdayRange,
 } from "@/core/event/types";
-import { isDurationExceedingMax } from "@/features/event/max-event-duration";
+import { checkDateRange } from "@/features/event/editor/validate-data";
 
 /* EXPAND EVENT RANGE UTILITIES */
 
@@ -59,8 +60,8 @@ function getDailyBoundariesInUTC(
 }
 
 /**
- * expands a high-level EventRange into a concrete list of days and time slots
- * for the user's  local timezone
+ * Expands a high-level EventRange into a concrete list of UTC time slots,
+ * generated based on the event's timezone constraints.
  */
 export function expandEventRange(range: EventRange): Date[] {
   if (range.type === "specific") {
@@ -90,7 +91,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
     range.timeRange,
   );
 
-  if (isDurationExceedingMax(eventStartUTC, eventEndUTC)) {
+  if (checkDateRange(eventStartUTC, eventEndUTC)) {
     return [];
   }
 
@@ -102,7 +103,7 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   });
 
   for (const day of days) {
-    const dayStr = day.toISOString().split("T")[0];
+    const dayStr = format(day, "yyyy-MM-dd");
 
     const { startUTC, endUTC } = getDailyBoundariesInUTC(
       dayStr,
@@ -142,7 +143,7 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
     );
 
     if (dayName && range.weekdays[dayName as keyof typeof range.weekdays]) {
-      const dayStr = currentDay.toISOString().split("T")[0];
+      const dayStr = format(currentDay, "yyyy-MM-dd");
 
       const { startUTC, endUTC } = getDailyBoundariesInUTC(
         dayStr,

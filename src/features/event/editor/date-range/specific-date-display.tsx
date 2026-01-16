@@ -1,5 +1,6 @@
-import { cn } from "@poursha98/react-ios-time-picker";
 import { format } from "date-fns";
+
+import { cn } from "@/lib/utils/classname";
 
 type SpecificDateRangeDisplayProps = {
   startDate: Date;

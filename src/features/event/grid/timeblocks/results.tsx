@@ -43,7 +43,7 @@ export default function ResultsTimeBlock({
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {
-        const timeslotIso = timeslot.toISOString().split(".")[0];
+        const timeslotIso = timeslot.toISOString();
 
         const coords = getGridCoordinates(
           timeslot,

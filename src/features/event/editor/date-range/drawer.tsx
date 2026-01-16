@@ -67,6 +67,10 @@ export default function DateRangeDrawer({
                   </span>
                 )}
               </Dialog.Title>
+
+              <Dialog.Description className="sr-only">
+                Select a date range using the calendar below
+              </Dialog.Description>
             </div>
 
             <Calendar

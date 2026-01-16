@@ -94,7 +94,7 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
         />
       </FormSelectorField>
 
-      <FormSelectorField label="Duration" htmlFor="duration-select" isVertical>
+      <FormSelectorField label="Intended Duration" htmlFor="duration-select" isVertical>
         <DurationSelector
           id="duration-select"
           value={eventRange.duration}

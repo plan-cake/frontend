@@ -74,7 +74,7 @@ export default function ClientPage({
       <div className="md:flex md:justify-between">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
           {isCreator && (
@@ -125,7 +125,7 @@ export default function ClientPage({
           />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timezone} />
           </div>
 
           <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">

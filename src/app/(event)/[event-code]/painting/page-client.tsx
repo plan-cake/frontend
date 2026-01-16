@@ -165,7 +165,7 @@ export default function ClientPage({
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <div className="flex items-center space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
+          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
         </div>
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
@@ -205,7 +205,7 @@ export default function ClientPage({
 
           {/* Desktop-only Event Info */}
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timeZone} />
           </div>
 
           <div className="bg-panel rounded-3xl p-6 text-sm">
