@@ -70,16 +70,17 @@ export default function ClientPage({
   const { handleError } = useFormErrors();
 
   /* SIDEBAR SPACING HANDLING */
+  const DEFAULT_SPACER_HEIGHT = 200;
   const sidebarRef = useRef<HTMLDivElement>(null);
-  const [spacerHeight, setSpacerHeight] = useState(0);
+  const [spacerHeight, setSpacerHeight] = useState(DEFAULT_SPACER_HEIGHT);
 
   useEffect(() => {
     if (!sidebarRef.current) return;
 
     const observer = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setSpacerHeight(entry.contentRect.height);
-      }
+      if (entries.length === 0) return;
+      const entry = entries[0];
+      setSpacerHeight(entry.contentRect.height);
     });
 
     observer.observe(sidebarRef.current);
