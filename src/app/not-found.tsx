@@ -1,3 +1,15 @@
+import { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Not Found • Plancake",
+    openGraph: {
+      title: "Not Found",
+      description: "The page you are looking for could not be found.",
+    },
+  };
+}
+
 export default function NotFound() {
   return (
     <div className="flex h-screen flex-col items-center justify-center rounded-lg p-8 text-center">
