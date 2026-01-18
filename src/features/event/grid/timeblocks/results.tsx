@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import {
   getGridCoordinates,
@@ -35,8 +37,27 @@ export default function ResultsTimeBlock({
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
+  const timeBlockRef = useRef<HTMLDivElement>(null);
+
+  // on click outside to clear hovered slot
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        timeBlockRef.current &&
+        !timeBlockRef.current.contains(event.target as Node)
+      ) {
+        onHoverSlot?.(null);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [onHoverSlot]);
+
   return (
     <BaseTimeBlock
+      ref={timeBlockRef}
       timeColWidth={timeColWidth}
       numQuarterHours={numQuarterHours}
       startHour={startHour}
@@ -87,9 +108,6 @@ export default function ResultsTimeBlock({
             gridRow={gridRow}
             onPointerEnter={() => {
               onHoverSlot?.(timeslotIso);
-            }}
-            onPointerLeave={() => {
-              onHoverSlot?.(null);
             }}
             dynamicStyle={dynamicStyle}
           />

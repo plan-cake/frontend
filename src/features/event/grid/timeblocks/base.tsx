@@ -3,6 +3,7 @@
 import { useMemo } from "react";
 
 interface TimeBlockProps {
+  ref?: React.Ref<HTMLDivElement>;
   timeColWidth: number;
   numQuarterHours: number;
   startHour: number;
@@ -11,6 +12,7 @@ interface TimeBlockProps {
 }
 
 export default function BaseTimeBlock({
+  ref = undefined,
   timeColWidth,
   numQuarterHours,
   startHour,
@@ -28,7 +30,7 @@ export default function BaseTimeBlock({
   }, [startHour, numQuarterHours]);
 
   return (
-    <div className="flex grow flex-row">
+    <div className="flex grow flex-row" ref={ref}>
       {/* time labels */}
       <div
         className="pointer-events-none"
