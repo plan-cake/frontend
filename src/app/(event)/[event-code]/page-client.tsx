@@ -92,7 +92,7 @@ export default function ClientPage({
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
       <div className="md:flex md:justify-between">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
