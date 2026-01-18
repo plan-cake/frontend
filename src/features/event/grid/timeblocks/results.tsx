@@ -49,9 +49,18 @@ export default function ResultsTimeBlock({
         onHoverSlot?.(null);
       }
     };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onHoverSlot?.(null);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [onHoverSlot]);
 
