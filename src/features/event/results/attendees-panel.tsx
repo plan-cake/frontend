@@ -102,7 +102,11 @@ export default function AttendeesPanel({
         )}
       </div>
 
-      <ul className="flex flex-wrap gap-2">
+      <ul
+        className={cn(
+          "flex max-h-20 flex-wrap gap-2 overflow-auto md:max-h-none md:overflow-visible",
+        )}
+      >
         {participants.length === 0 && (
           <li className="text-sm italic opacity-50">No attendees yet</li>
         )}
