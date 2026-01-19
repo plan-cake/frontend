@@ -1,8 +1,5 @@
-interface TimeBlockProps {
-  numQuarterHours: number;
-  visibleDaysCount: number;
-  children: React.ReactNode;
-}
+import { TimeBlockProps } from "@/features/event/grid/timeblocks/props";
+import { cn } from "@/lib/utils/classname";
 
 export default function BaseTimeBlock({
   numQuarterHours,
@@ -10,14 +7,19 @@ export default function BaseTimeBlock({
   children,
 }: TimeBlockProps) {
   return (
-    <div
-      className="grid w-full gap-x-[1px] border border-gray-400 bg-gray-400"
-      style={{
-        gridTemplateColumns: `repeat(${visibleDaysCount}, 1fr)`,
-        gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
-      }}
-    >
-      {children}
+    <div className="relative isolate">
+      <div
+        className={cn(
+          "grid w-full gap-x-[1px] bg-gray-400",
+          "border border-gray-400",
+        )}
+        style={{
+          gridTemplateColumns: `repeat(${visibleDaysCount}, 1fr)`,
+          gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
+        }}
+      >
+        {children}
+      </div>
     </div>
   );
 }

@@ -4,16 +4,7 @@ import {
 } from "@/features/event/grid/lib/timeslot-utils";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
-
-interface PreviewTimeBlockProps {
-  numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
-  numVisibleDays: number;
-  visibleDayKeys: string[];
-
-  userTimezone: string;
-}
+import { PreviewTimeBlockProps } from "@/features/event/grid/timeblocks/props";
 
 export default function PreviewTimeBlock({
   numQuarterHours,

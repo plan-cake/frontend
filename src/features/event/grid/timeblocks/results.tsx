@@ -1,25 +1,10 @@
-import { ResultsAvailabilityMap } from "@/core/availability/types";
 import {
   getGridCoordinates,
   getBaseCellClasses,
 } from "@/features/event/grid/lib/timeslot-utils";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
-
-interface ResultsTimeBlockProps {
-  numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
-  numVisibleDays: number;
-  visibleDayKeys: string[];
-  hoveredSlot: string | null | undefined;
-
-  availabilities: ResultsAvailabilityMap;
-  numParticipants: number;
-
-  userTimezone: string;
-  onHoverSlot?: (iso: string | null) => void;
-}
+import { ResultsTimeBlockProps } from "@/features/event/grid/timeblocks/props";
 
 export default function ResultsTimeBlock({
   numQuarterHours,

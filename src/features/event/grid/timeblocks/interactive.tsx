@@ -1,4 +1,3 @@
-import { AvailabilitySet } from "@/core/availability/types";
 import {
   getGridCoordinates,
   getBaseCellClasses,
@@ -6,18 +5,7 @@ import {
 import useScheduleDrag from "@/features/event/grid/lib/use-schedule-drag";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
-
-interface InteractiveTimeBlockProps {
-  numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
-  numVisibleDays: number;
-  visibleDayKeys: string[];
-
-  userTimezone: string;
-  availability: AvailabilitySet;
-  onToggle: (slotIso: string, togglingOn: boolean) => void;
-}
+import { InteractiveTimeBlockProps } from "@/features/event/grid/timeblocks/props";
 
 export default function InteractiveTimeBlock({
   numQuarterHours,
