@@ -18,7 +18,7 @@ export async function generateMetadata({
 
   if (!initialEventData) {
     return {
-      title: "Event Not Found",
+      title: "Event Not Found • Plancake",
     };
   }
 
