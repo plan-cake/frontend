@@ -8,7 +8,6 @@ import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 
 interface InteractiveTimeBlockProps {
-  timeColWidth: number;
   numQuarterHours: number;
   startHour: number;
   timeslots: Date[];
@@ -21,7 +20,6 @@ interface InteractiveTimeBlockProps {
 }
 
 export default function InteractiveTimeBlock({
-  timeColWidth,
   numQuarterHours,
   startHour,
   timeslots,
@@ -35,9 +33,7 @@ export default function InteractiveTimeBlock({
 
   return (
     <BaseTimeBlock
-      timeColWidth={timeColWidth}
       numQuarterHours={numQuarterHours}
-      startHour={startHour}
       visibleDaysCount={numVisibleDays}
     >
       {timeslots.map((timeslot, timeslotIdx) => {

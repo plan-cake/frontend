@@ -4,6 +4,7 @@ import { useState } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { toZonedTime } from "date-fns-tz";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   AvailabilitySet,
@@ -13,6 +14,7 @@ import { createEmptyUserAvailability } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
 import useGenerateTimeSlots from "@/features/event/grid/lib/use-generate-timeslots";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
+import TimeLabels from "@/features/event/grid/time-column";
 import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
 import PreviewTimeBlock from "@/features/event/grid/timeblocks/preview";
 import ResultsTimeBlock from "@/features/event/grid/timeblocks/results";
@@ -37,6 +39,23 @@ interface ScheduleGridProps {
   onToggleSlot?: (slotIso: string, togglingOn: boolean) => void;
 }
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+};
+
 export default function ScheduleGrid({
   eventRange,
   timeslots,
@@ -58,8 +77,15 @@ export default function ScheduleGrid({
   );
 
   const maxDaysVisible = isMobile ? 4 : 7;
-  const [currentPage, setCurrentPage] = useState(0);
+  const [[currentPage, direction], setCurrentPage] = useState([0, 0]);
   const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
+
+  const paginate = (newDirection: number) => {
+    const nextPage = currentPage + newDirection;
+    if (nextPage >= 0 && nextPage < totalPages) {
+      setCurrentPage([nextPage, newDirection]);
+    }
+  };
 
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
@@ -73,7 +99,7 @@ export default function ScheduleGrid({
 
   return (
     <div
-      className="relative mb-8 grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
+      className="relative mb-8 grid w-full grid-cols-[1fr_30px] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
       <ScheduleHeader
@@ -81,70 +107,85 @@ export default function ScheduleGrid({
         visibleDays={visibleDays}
         currentPage={currentPage}
         totalPages={totalPages}
-        onPrevPage={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-        onNextPage={() =>
-          setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
-        }
+        onPrevPage={() => paginate(-1)}
+        onNextPage={() => paginate(1)}
+        direction={direction}
       />
 
-      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
-        {timeBlocks.map((block, i) => {
-          // filter visibleTimeSlots to those within this block's hours
-          const blockTimeSlots = visibleTimeSlots.filter((slot) => {
-            const localSlot = toZonedTime(slot, timezone);
-            const hour = localSlot.getHours();
-            return hour >= block.startHour && hour <= block.endHour;
-          });
+      <div className="col-span-1 flex h-full overflow-y-auto overflow-x-hidden pt-2">
+        <div className="flex flex-col gap-4">
+          {timeBlocks.map((block, i) => {
+            const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
+            return (
+              <TimeLabels
+                key={`labels-${i}`}
+                timeColWidth={50}
+                numQuarterHours={numQuarterHours}
+                startHour={block.startHour}
+              />
+            );
+          })}
+        </div>
 
-          const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
+        <div className="relative flex-grow">
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.div
+              key={currentPage}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              className="flex flex-col gap-4"
+            >
+              {timeBlocks.map((block, i) => {
+                // filter visibleTimeSlots to those within this block's hours
+                const blockTimeSlots = visibleTimeSlots.filter((slot) => {
+                  const localSlot = toZonedTime(slot, timezone);
+                  const hour = localSlot.getHours();
+                  return hour >= block.startHour && hour <= block.endHour;
+                });
 
-          if (mode === "preview") {
-            return (
-              <PreviewTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-              />
-            );
-          } else if (mode === "paint") {
-            return (
-              <InteractiveTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-                availability={userAvailability}
-                onToggle={onToggleSlot}
-              />
-            );
-          } else if (mode === "view") {
-            return (
-              <ResultsTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-                hoveredSlot={hoveredSlot}
-                availabilities={availabilities}
-                numParticipants={numParticipants}
-                onHoverSlot={setHoveredSlot}
-              />
-            );
-          }
-        })}
+                const numQuarterHours =
+                  (block.endHour - block.startHour + 1) * 4;
+
+                const commonProps = {
+                  numQuarterHours,
+                  startHour: block.startHour,
+                  timeslots: blockTimeSlots,
+                  numVisibleDays: visibleDays.length,
+                  visibleDayKeys: visibleDays.map((d) => d.dayKey),
+                  userTimezone: timezone,
+                };
+
+                if (mode === "preview") {
+                  return <PreviewTimeBlock key={i} {...commonProps} />;
+                } else if (mode === "paint") {
+                  return (
+                    <InteractiveTimeBlock
+                      key={i}
+                      {...commonProps}
+                      availability={userAvailability}
+                      onToggle={onToggleSlot}
+                    />
+                  );
+                } else if (mode === "view") {
+                  return (
+                    <ResultsTimeBlock
+                      key={i}
+                      {...commonProps}
+                      hoveredSlot={hoveredSlot}
+                      availabilities={availabilities}
+                      numParticipants={numParticipants}
+                      onHoverSlot={setHoveredSlot}
+                    />
+                  );
+                }
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

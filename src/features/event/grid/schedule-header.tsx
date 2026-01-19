@@ -1,4 +1,5 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils/classname";
 
@@ -14,7 +15,23 @@ interface ScheduleHeaderProps {
   totalPages: number;
   onPrevPage: () => void;
   onNextPage: () => void;
+  direction?: number;
 }
+
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    x: direction < 0 ? "100%" : "-100%",
+    opacity: 0,
+  }),
+};
 
 export default function ScheduleHeader({
   preview = false,
@@ -23,49 +40,73 @@ export default function ScheduleHeader({
   totalPages,
   onPrevPage,
   onNextPage,
+  direction = 0,
 }: ScheduleHeaderProps) {
   return (
     <div
       className={cn(
         preview ? "bg-panel top-0" : "top-25 bg-background",
-        "sticky z-10 col-span-2 grid h-[50px] w-full items-center",
+        "sticky z-10 col-span-2 grid h-[50px] w-full items-center justify-center",
       )}
       style={{
-        gridTemplateColumns: `auto repeat(${visibleDays.length}, 1fr) auto`,
+        gridTemplateColumns: "50px 1fr 30px",
       }}
     >
       {currentPage > 0 ? (
         <button
           onClick={onPrevPage}
-          className="flex h-[50px] w-[50px] items-center justify-center text-xl"
+          className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
       ) : (
-        <div style={{ width: "50px" }} />
+        <div style={{ width: "30px" }} />
       )}
 
-      {visibleDays.map((day, i) => {
-        const [weekday, month, date] = day.dayLabel.split(" ");
-        return (
-          <div
-            key={i}
-            className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
+      {/* This container takes up the '1fr' space */}
+      <div className="relative grid h-full overflow-hidden">
+        <AnimatePresence initial={false} custom={direction} mode="popLayout">
+          <motion.div
+            key={currentPage}
+            custom={direction}
+            variants={variants}
+            initial="enter"
+            animate="center"
+            exit="exit"
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="absolute inset-0 grid h-full w-full items-center"
+            style={{
+              // The inner grid distributes the days evenly within the container
+              gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
+            }}
           >
-            <div>{weekday}</div>
-            <div>
-              {month} {date}
-            </div>
-          </div>
-        );
-      })}
+            {visibleDays.map((day, i) => {
+              const [weekday, month, date] = day.dayLabel.split(" ");
+              return (
+                <div
+                  key={i}
+                  className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
+                >
+                  <div>{weekday}</div>
+                  <div>
+                    {month} {date}
+                  </div>
+                </div>
+              );
+            })}
+          </motion.div>
+        </AnimatePresence>
+      </div>
 
       {currentPage < totalPages - 1 ? (
-        <button onClick={onNextPage} className="h-[50px] w-[20px] text-xl">
+        <button
+          onClick={onNextPage}
+          className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
+        >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
       ) : (
-        <div style={{ width: "20px" }} />
+        <div style={{ width: "30px" }} />
       )}
     </div>
   );
