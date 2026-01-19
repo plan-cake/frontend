@@ -46,7 +46,7 @@ interface ScheduleGridProps {
 
 const variants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? "100%" : "-100%",
+    x: direction > 0 ? "50%" : "-50%",
     opacity: 0,
   }),
   center: {
@@ -56,7 +56,7 @@ const variants = {
   },
   exit: (direction: number) => ({
     zIndex: 0,
-    x: direction < 0 ? "100%" : "-100%",
+    x: direction < 0 ? "50%" : "-50%",
     opacity: 0,
   }),
 };
@@ -135,7 +135,7 @@ export default function ScheduleGrid({
                 timeColWidth={50}
                 numQuarterHours={numQuarterHours}
                 startHour={block.startHour}
-                isPreview
+                isPreview={mode === "preview"}
               />
             );
           })}
@@ -150,7 +150,7 @@ export default function ScheduleGrid({
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              transition={{ type: "tween", ease: ["easeIn", "easeOut"] }}
               className="flex flex-col gap-4"
             >
               {timeBlocks.map((block, i) => {

@@ -20,7 +20,7 @@ interface ScheduleHeaderProps {
 
 const variants = {
   enter: (direction: number) => ({
-    x: direction > 0 ? "100%" : "-100%",
+    x: direction > 0 ? "50%" : "-50%",
     opacity: 0,
   }),
   center: {
@@ -28,7 +28,7 @@ const variants = {
     opacity: 1,
   },
   exit: (direction: number) => ({
-    x: direction < 0 ? "100%" : "-100%",
+    x: direction < 0 ? "50%" : "-50%",
     opacity: 0,
   }),
 };
@@ -73,7 +73,7 @@ export default function ScheduleHeader({
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            transition={{ type: "tween", ease: ["easeIn", "easeOut"] }}
             className="absolute inset-0 grid h-full w-full items-center"
             style={{
               // The inner grid distributes the days evenly within the container
