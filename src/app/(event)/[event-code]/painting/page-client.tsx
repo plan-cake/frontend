@@ -162,10 +162,8 @@ export default function ClientPage({
 
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
-        <div className="flex items-center space-x-2">
-          <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
-        </div>
+        <h1 className="text-2xl">{eventName}</h1>
+        <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
           {submitButton}

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useOptimistic } from "react";
+import { useState, useOptimistic, useRef, useEffect } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
@@ -14,6 +14,7 @@ import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
+import { cn } from "@/lib/utils/classname";
 
 export default function ClientPage({
   eventCode,
@@ -68,11 +69,30 @@ export default function ClientPage({
   /* ERROR HANDLING */
   const { handleError } = useFormErrors();
 
+  /* SIDEBAR SPACING HANDLING */
+  const DEFAULT_SPACER_HEIGHT = 200;
+  const sidebarRef = useRef<HTMLDivElement>(null);
+  const [spacerHeight, setSpacerHeight] = useState(DEFAULT_SPACER_HEIGHT);
+
+  useEffect(() => {
+    if (!sidebarRef.current) return;
+
+    const observer = new ResizeObserver((entries) => {
+      if (entries.length === 0) return;
+      const entry = entries[0];
+      setSpacerHeight(entry.contentRect.height);
+    });
+
+    observer.observe(sidebarRef.current);
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
       <div className="md:flex md:justify-between">
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center justify-between space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
@@ -108,10 +128,19 @@ export default function ClientPage({
           timeslots={timeslots}
         />
 
-        <div className="h-25" />
+        <div
+          style={{ height: `${spacerHeight}px` }}
+          className="w-full md:hidden"
+        />
 
         {/* Sidebar for attendees */}
-        <div className="md:top-25 fixed bottom-1 left-0 w-full shrink-0 px-8 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0">
+        <div
+          ref={sidebarRef}
+          className={cn(
+            "fixed bottom-1 left-0 z-10 w-full shrink-0 px-6",
+            "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
+          )}
+        >
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
             participants={optimisticParticipants}

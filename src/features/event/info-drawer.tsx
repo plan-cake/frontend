@@ -31,13 +31,20 @@ export default function EventInfoDrawer({
     return true;
   };
 
+  const handleOpen = () => {
+    setOpen(true);
+    return true;
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger asChild>
-        <button className="cursor-pointer rounded-full md:hidden">
-          <InfoCircledIcon width={20} height={20} />
-        </button>
-      </Dialog.Trigger>
+      <div className="md:hidden">
+        <ActionButton
+          buttonStyle="frosted glass"
+          icon={<InfoCircledIcon />}
+          onClick={handleOpen}
+        />
+      </div>
 
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
