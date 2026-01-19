@@ -1,4 +1,4 @@
-import { Banner } from "@/components/banner/banner";
+import { Banner } from "@/features/system-feedback/banner/base";
 
 export default function RateLimitBanner({
   children,

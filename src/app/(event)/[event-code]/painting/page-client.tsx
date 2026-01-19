@@ -5,7 +5,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
@@ -17,7 +16,7 @@ import { validateAvailabilityData } from "@/features/event/availability/validate
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import ScheduleGrid from "@/features/event/grid/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
-import { useToast } from "@/features/toast/context";
+import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 

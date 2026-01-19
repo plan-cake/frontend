@@ -4,12 +4,12 @@ import { useState } from "react";
 
 import Link from "next/link";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
+import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";

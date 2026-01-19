@@ -5,11 +5,11 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
+import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { LoginContext } from "@/lib/providers";
