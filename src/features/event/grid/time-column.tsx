@@ -1,13 +1,17 @@
 import { useMemo } from "react";
 
+import { cn } from "@/lib/utils/classname";
+
 export default function TimeColumn({
   timeColWidth,
   numQuarterHours,
   startHour,
+  isPreview = false,
 }: {
   timeColWidth: number;
   numQuarterHours: number;
   startHour: number;
+  isPreview?: boolean;
 }) {
   // generate hour labels for the time column
   const hoursLabel = useMemo(() => {
@@ -32,9 +36,16 @@ export default function TimeColumn({
         i % 4 === 0 ? (
           <div
             key={`label-${i}`}
-            className="relative flex items-start justify-end pr-2 text-right text-xs"
+            className="relative flex items-start justify-end pr-1 text-right text-xs"
           >
-            <span className="absolute -top-2">{hoursLabel[i]}</span>
+            <span
+              className={cn(
+                "bg-background absolute -top-2 rounded-full px-1 text-xs",
+                isPreview && "bg-panel",
+              )}
+            >
+              {hoursLabel[i]}
+            </span>
           </div>
         ) : (
           <div key={`empty-${i}`} />

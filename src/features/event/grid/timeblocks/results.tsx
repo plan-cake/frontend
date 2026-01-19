@@ -12,6 +12,8 @@ export default function ResultsTimeBlock({
   numParticipants,
   hoveredSlot,
   onHoverSlot,
+  hasNext = false,
+  hasPrev = false,
 }: ResultsTimeBlockProps) {
   const timeBlockRef = useRef<HTMLDivElement>(null);
 
@@ -45,6 +47,8 @@ export default function ResultsTimeBlock({
       ref={timeBlockRef}
       numQuarterHours={numQuarterHours}
       visibleDaysCount={numVisibleDays}
+      hasNext={hasNext}
+      hasPrev={hasPrev}
     >
       {timeslots.map(({ iso, coords, cellClasses }) => {
         if (!coords) return null;

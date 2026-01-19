@@ -95,6 +95,9 @@ export default function ScheduleGrid({
   const startIndex = currentPage * maxDaysVisible;
   const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
 
+  const hasPrevPage = currentPage > 0;
+  const hasNextPage = currentPage < totalPages - 1;
+
   const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
   const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
 
@@ -104,7 +107,7 @@ export default function ScheduleGrid({
 
   return (
     <div
-      className="relative mb-8 grid w-full grid-cols-[1fr_30px] grid-rows-[auto_1fr]"
+      className="relative mb-8 grid w-full grid-cols-[1fr] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
       <ScheduleHeader
@@ -119,11 +122,11 @@ export default function ScheduleGrid({
 
       <div
         className={cn(
-          "col-span-1 flex flex-grow flex-col gap-4 pt-2",
-          mode === "preview" && "overflow-y-auto",
+          "relative flex-grow overflow-visible pt-2",
+          mode === "preview" && "overflow-y-auto overflow-x-hidden",
         )}
       >
-        <div className="flex flex-col gap-4">
+        <div className="z-5 pointer-events-none absolute left-0 top-2 flex w-full flex-col gap-4">
           {timeBlocks.map((block, i) => {
             const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
             return (
@@ -132,6 +135,7 @@ export default function ScheduleGrid({
                 timeColWidth={50}
                 numQuarterHours={numQuarterHours}
                 startHour={block.startHour}
+                isPreview
               />
             );
           })}
@@ -184,6 +188,8 @@ export default function ScheduleGrid({
                   numQuarterHours,
                   numVisibleDays: visibleDays.length,
                   timeslots: blockTimeSlots,
+                  hasPrev: hasPrevPage,
+                  hasNext: hasNextPage,
                 };
 
                 if (mode === "preview") {

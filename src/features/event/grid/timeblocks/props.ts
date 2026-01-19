@@ -4,7 +4,7 @@ import {
 } from "@/core/availability/types";
 
 export type TimeBlockProps = {
-  ref: React.Ref<HTMLDivElement>;
+  ref?: React.Ref<HTMLDivElement>;
   numQuarterHours: number;
   visibleDaysCount: number;
   children: React.ReactNode;
