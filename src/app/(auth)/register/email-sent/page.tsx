@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import MessagePage from "@/components/layout/message-page";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 

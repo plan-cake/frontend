@@ -4,7 +4,7 @@ import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";

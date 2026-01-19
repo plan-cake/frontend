@@ -5,7 +5,6 @@ import { useState, memo } from "react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
@@ -22,6 +21,7 @@ import { validateEventData } from "@/features/event/editor/validate-data";
 import ScheduleGrid from "@/features/event/grid/grid";
 import GridPreviewDialog from "@/features/event/grid/preview-dialog";
 import FormSelectorField from "@/features/selector/components/selector-field";
+import { RateLimitBanner } from "@/features/system-feedback";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
