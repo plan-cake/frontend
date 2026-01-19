@@ -105,7 +105,7 @@ export default function AttendeesPanel({
       <ul
         className={cn(
           "max-h-31 flex flex-wrap gap-2 overflow-y-auto overflow-x-visible md:max-h-none md:overflow-visible",
-          "mr-6 pb-6 pl-6 pt-1",
+          "mr-6 pb-6 pl-6 pr-1 pt-1",
         )}
       >
         {participants.length === 0 && (
