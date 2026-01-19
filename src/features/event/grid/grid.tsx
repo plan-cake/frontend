@@ -17,6 +17,7 @@ import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
 import PreviewTimeBlock from "@/features/event/grid/timeblocks/preview";
 import ResultsTimeBlock from "@/features/event/grid/timeblocks/results";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
+import { cn } from "@/lib/utils/classname";
 
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";
@@ -87,7 +88,12 @@ export default function ScheduleGrid({
         }
       />
 
-      <div className="flex flex-grow flex-col gap-4 overflow-y-auto pt-2">
+      <div
+        className={cn(
+          "flex flex-grow flex-col gap-4 pt-2",
+          mode === "preview" && "overflow-y-auto",
+        )}
+      >
         {timeBlocks.map((block, i) => {
           // filter visibleTimeSlots to those within this block's hours
           const blockTimeSlots = visibleTimeSlots.filter((slot) => {
