@@ -5,7 +5,7 @@ import { fetchDashboard } from "@/features/dashboard/fetch-data";
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
 import { processDashboardData } from "@/lib/utils/api/process-dashboard-data";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   return {
     title: "Dashboard • Plancake",
     openGraph: {

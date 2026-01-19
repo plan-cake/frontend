@@ -3,7 +3,7 @@ import { Metadata } from "next";
 import ClientPage from "@/app/version-history/page-client";
 import { getVersionHistoryData } from "@/features/version-history/data";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   return {
     title: "Version History • Plancake",
     openGraph: {
@@ -13,6 +13,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Page() {
+export default function Page() {
   return <ClientPage versionHistoryData={getVersionHistoryData()} />;
 }

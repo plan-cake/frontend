@@ -2,7 +2,7 @@ import { Metadata } from "next";
 
 import EventEditor from "@/features/event/editor/editor";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   return {
     title: "New Event • Plancake",
     openGraph: {
