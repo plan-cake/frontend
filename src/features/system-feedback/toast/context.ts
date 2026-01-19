@@ -1,6 +1,6 @@
 import { createContext, useContext } from "react";
 
-import { ToastType } from "@/features/toast/type";
+import { ToastType } from "@/features/system-feedback/type";
 
 export const ToastContext = createContext<{
   addToast: (type: ToastType, message: string) => void;

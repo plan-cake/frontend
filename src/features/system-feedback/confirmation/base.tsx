@@ -1,60 +1,14 @@
 import React, { useState } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
-import {
-  ExclamationTriangleIcon,
-  CheckIcon,
-  InfoCircledIcon,
-} from "@radix-ui/react-icons";
 
 import ActionButton from "@/features/button/components/action";
+import { DIALOG_CONFIG } from "@/features/system-feedback/confirmation/config";
+import { ConfirmationDialogType } from "@/features/system-feedback/type";
 import { cn } from "@/lib/utils/classname";
 
-type ConfirmationDialogTypes = "warning" | "delete" | "success" | "info";
-
-function getButtonStyle(iconType: ConfirmationDialogTypes) {
-  switch (iconType) {
-    case "delete":
-      return "danger";
-    default:
-      return "primary";
-  }
-}
-
-function getDialogIcon(iconType: ConfirmationDialogTypes) {
-  const iconClass = "h-10 w-10";
-  const iconWrapperClass = "rounded-full p-4";
-
-  switch (iconType) {
-    case "warning":
-      return (
-        <div className={cn("bg-lion aspect-square rounded-full text-center")}>
-          <div className="text-[48px]">!</div>
-        </div>
-      );
-    case "delete":
-      return (
-        <div className={cn(iconWrapperClass, "bg-error/40")}>
-          <ExclamationTriangleIcon className={iconClass} />
-        </div>
-      );
-    case "success":
-      return (
-        <div className={cn(iconWrapperClass, "bg-foreground/40")}>
-          <CheckIcon className={iconClass} />
-        </div>
-      );
-    default:
-      return (
-        <div className={cn(iconWrapperClass, "bg-blue/40")}>
-          <InfoCircledIcon className={iconClass} />
-        </div>
-      );
-  }
-}
-
 type ConfirmationDialogProps = {
-  type: ConfirmationDialogTypes;
+  type: ConfirmationDialogType;
   title: string;
   description: React.ReactNode;
   onConfirm: () => boolean | Promise<boolean>;
@@ -87,6 +41,29 @@ export default function ConfirmationDialog({
     return success;
   };
 
+  const config = DIALOG_CONFIG[type] || DIALOG_CONFIG.info;
+  const Icon = config.icon;
+
+  const renderIcon = () => {
+    if (config.isTextIcon) {
+      return (
+        <div
+          className={cn(
+            "aspect-square rounded-full text-center",
+            config.bgClass,
+          )}
+        >
+          <div className="text-[48px]">!</div>
+        </div>
+      );
+    }
+    return (
+      <div className={cn("rounded-full p-4", config.bgClass)}>
+        {Icon && <Icon className="h-10 w-10" />}
+      </div>
+    );
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
@@ -112,7 +89,7 @@ export default function ConfirmationDialog({
           )}
         >
           <Dialog.Title className="flex flex-col items-center gap-4">
-            {showIcon && getDialogIcon(type)}
+            {showIcon && renderIcon()}
             <p className="text-lg font-bold">{title}</p>
           </Dialog.Title>
           <Dialog.Description className="mt-2 text-center">
@@ -126,7 +103,7 @@ export default function ConfirmationDialog({
               onClick={handleClose}
             />
             <ActionButton
-              buttonStyle={getButtonStyle(type)}
+              buttonStyle={config.btnStyle}
               label="Confirm"
               onClick={handleConfirm}
             />

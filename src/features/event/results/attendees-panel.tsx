@@ -2,10 +2,10 @@ import { useEffect, useMemo, useState, startTransition } from "react";
 
 import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
 
-import ConfirmationDialog from "@/components/confirmation-dialog";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
 import { removePerson } from "@/features/event/results/remove-person";
+import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
 
 export default function AttendeesPanel({

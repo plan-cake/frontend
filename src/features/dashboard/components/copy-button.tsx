@@ -2,7 +2,7 @@ import { MouseEvent } from "react";
 
 import { CopyIcon } from "@radix-ui/react-icons";
 
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { cn } from "@/lib/utils/classname";
 
