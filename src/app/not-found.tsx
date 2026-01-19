@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 
-export async function generateMetadata(): Promise<Metadata> {
+export function generateMetadata(): Metadata {
   return {
     title: "Not Found • Plancake",
     openGraph: {
