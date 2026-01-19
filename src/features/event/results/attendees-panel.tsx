@@ -60,8 +60,8 @@ export default function AttendeesPanel({
   };
 
   return (
-    <div className="bg-panel space-y-2 rounded-3xl p-6 shadow-md md:shadow-none">
-      <div className="flex justify-between">
+    <div className="bg-panel space-y-1 rounded-3xl shadow-md md:shadow-none">
+      <div className="flex justify-between px-6 pt-6">
         <div className="flex flex-col">
           <h2 className="text-md font-semibold">Attendees</h2>
           {participants.length > 0 && (
@@ -104,7 +104,8 @@ export default function AttendeesPanel({
 
       <ul
         className={cn(
-          "flex max-h-20 flex-wrap gap-2 overflow-auto md:max-h-none md:overflow-visible",
+          "max-h-31 flex flex-wrap gap-2 overflow-y-auto overflow-x-visible md:max-h-none md:overflow-visible",
+          "mr-6 pb-6 pl-6 pt-1",
         )}
       >
         {participants.length === 0 && (

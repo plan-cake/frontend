@@ -137,7 +137,7 @@ export default function ClientPage({
         <div
           ref={sidebarRef}
           className={cn(
-            "fixed bottom-1 left-0 z-10 w-full shrink-0 px-8",
+            "fixed bottom-1 left-0 z-10 w-full shrink-0 px-6",
             "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
           )}
         >
