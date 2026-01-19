@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
 import { ResultsTimeBlockProps } from "@/features/event/grid/timeblocks/props";
@@ -11,8 +13,36 @@ export default function ResultsTimeBlock({
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
+  const timeBlockRef = useRef<HTMLDivElement>(null);
+
+  // on click outside to clear hovered slot
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        timeBlockRef.current &&
+        !timeBlockRef.current.contains(event.target as Node)
+      ) {
+        onHoverSlot?.(null);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onHoverSlot?.(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onHoverSlot]);
+
   return (
     <BaseTimeBlock
+      ref={timeBlockRef}
       numQuarterHours={numQuarterHours}
       visibleDaysCount={numVisibleDays}
     >

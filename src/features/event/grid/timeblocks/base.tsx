@@ -1,18 +1,15 @@
 import { TimeBlockProps } from "@/features/event/grid/timeblocks/props";
-import { cn } from "@/lib/utils/classname";
 
 export default function BaseTimeBlock({
+  ref,
   numQuarterHours,
   visibleDaysCount,
   children,
 }: TimeBlockProps) {
   return (
-    <div className="relative isolate">
+    <div className="relative isolate" ref={ref}>
       <div
-        className={cn(
-          "grid w-full gap-x-[1px] bg-gray-400",
-          "border border-gray-400",
-        )}
+        className="bg-foreground border-foreground/75 grid w-full gap-x-[1px] border"
         style={{
           gridTemplateColumns: `repeat(${visibleDaysCount}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,

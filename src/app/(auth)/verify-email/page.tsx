@@ -6,7 +6,7 @@ import { notFound, useSearchParams } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
 import LinkButton from "@/features/button/components/link";
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 
 export default function Page() {

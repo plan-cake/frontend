@@ -35,9 +35,9 @@ export function getBaseCellClasses(
     cellClasses.push("border-b");
 
     if (gridRow % 4 === 0) {
-      cellClasses.push("border-solid border-gray-400");
+      cellClasses.push("border-solid border-foreground/75");
     } else {
-      cellClasses.push("border-dashed border-gray-400");
+      cellClasses.push("border-dashed border-foreground/75");
     }
   }
   return cellClasses;
