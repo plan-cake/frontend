@@ -11,13 +11,16 @@ export type TimeBlockProps = {
   hasNext?: boolean;
 };
 
+type TimeSlot = {
+  iso: string;
+  coords: { row: number; column: number } | null;
+  cellClasses: string[];
+};
+
 type CommonBlockProps = {
   numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
   numVisibleDays: number;
-  visibleDayKeys: string[];
-  userTimezone: string;
+  timeslots: TimeSlot[];
   hasPrev?: boolean;
   hasNext?: boolean;
 };

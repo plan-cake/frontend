@@ -9,14 +9,10 @@ export function getGridCoordinates(
   visibleDayKeys: string[],
   userTimezone: string,
   startHour: number,
-): { row: number; column: number } | null {
+): { row: number; column: number } {
   const localSlot = toZonedTime(slot, userTimezone);
   const dayKey = localSlot.toLocaleDateString("en-CA");
   const dayIndex = visibleDayKeys.indexOf(dayKey);
-
-  if (dayIndex === -1) {
-    return null;
-  }
 
   const hours = localSlot.getHours();
   const minutes = localSlot.getMinutes();

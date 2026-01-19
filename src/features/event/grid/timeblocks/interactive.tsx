@@ -1,7 +1,3 @@
-import {
-  getGridCoordinates,
-  getBaseCellClasses,
-} from "@/features/event/grid/lib/timeslot-utils";
 import useScheduleDrag from "@/features/event/grid/lib/use-schedule-drag";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
@@ -9,11 +5,8 @@ import { InteractiveTimeBlockProps } from "@/features/event/grid/timeblocks/prop
 
 export default function InteractiveTimeBlock({
   numQuarterHours,
-  startHour,
   timeslots,
   numVisibleDays,
-  visibleDayKeys,
-  userTimezone,
   availability,
   onToggle,
 }: InteractiveTimeBlockProps) {
@@ -24,32 +17,18 @@ export default function InteractiveTimeBlock({
       numQuarterHours={numQuarterHours}
       visibleDaysCount={numVisibleDays}
     >
-      {timeslots.map((timeslot, timeslotIdx) => {
-        const slotIso = timeslot.toISOString();
-
-        const coords = getGridCoordinates(
-          timeslot,
-          visibleDayKeys,
-          userTimezone,
-          startHour,
-        );
+      {timeslots.map(({ iso, coords, cellClasses }) => {
         if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
-        // borders
-        const cellClasses: string[] = getBaseCellClasses(
-          gridRow,
-          numQuarterHours,
-        );
-
-        const isSelected = availability.has(slotIso);
+        const isSelected = availability.has(iso);
         const isToggling =
-          dragHandlers.draggedSlots.has(slotIso) &&
+          dragHandlers.draggedSlots.has(iso) &&
           dragHandlers.togglingOn === !isSelected;
         // don't highlight if we're toggling, in case the user is hovering a slot that
         // won't be toggled
         const isHovered =
-          dragHandlers.hoveredSlot === slotIso &&
+          dragHandlers.hoveredSlot === iso &&
           dragHandlers.draggedSlots.size === 0;
 
         if (isSelected && (isHovered || isToggling)) {
@@ -62,20 +41,22 @@ export default function InteractiveTimeBlock({
           );
         } else if (isSelected) {
           cellClasses.push("bg-accent");
+        } else {
+          cellClasses.push("bg-background");
         }
 
         return (
           <TimeSlot
-            key={`slot-${timeslotIdx}`}
-            slotIso={slotIso}
+            key={iso}
+            slotIso={iso}
             cellClasses={cellClasses.join(" ")}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerDown={() =>
-              dragHandlers.onPointerDown(slotIso, false, isSelected)
+              dragHandlers.onPointerDown(iso, false, isSelected)
             }
             onPointerEnter={() => {
-              dragHandlers.onPointerEnter(slotIso, false);
+              dragHandlers.onPointerEnter(iso, false);
             }}
             onPointerLeave={() => {
               dragHandlers.onPointerLeave();

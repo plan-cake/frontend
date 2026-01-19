@@ -12,6 +12,10 @@ import {
 } from "@/core/availability/types";
 import { createEmptyUserAvailability } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
+import {
+  getBaseCellClasses,
+  getGridCoordinates,
+} from "@/features/event/grid/lib/timeslot-utils";
 import useGenerateTimeSlots from "@/features/event/grid/lib/use-generate-timeslots";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
 import TimeLabels from "@/features/event/grid/time-column";
@@ -141,22 +145,39 @@ export default function ScheduleGrid({
             >
               {timeBlocks.map((block, i) => {
                 // filter visibleTimeSlots to those within this block's hours
-                const blockTimeSlots = visibleTimeSlots.filter((slot) => {
-                  const localSlot = toZonedTime(slot, timezone);
-                  const hour = localSlot.getHours();
-                  return hour >= block.startHour && hour <= block.endHour;
-                });
-
+                const visibleDayKeys = visibleDays.map((d) => d.dayKey);
                 const numQuarterHours =
                   (block.endHour - block.startHour + 1) * 4;
+                const blockTimeSlots = visibleTimeSlots
+                  .filter((slot) => {
+                    const localSlot = toZonedTime(slot, timezone);
+                    const hour = localSlot.getHours();
+                    return hour >= block.startHour && hour <= block.endHour;
+                  })
+                  .map((slot) => {
+                    const coords = getGridCoordinates(
+                      slot,
+                      visibleDayKeys,
+                      timezone,
+                      block.startHour,
+                    );
+
+                    const cellClasses = getBaseCellClasses(
+                      coords.row,
+                      numQuarterHours,
+                    );
+
+                    return {
+                      iso: slot.toISOString(),
+                      coords,
+                      cellClasses,
+                    };
+                  });
 
                 const commonProps = {
                   numQuarterHours,
-                  startHour: block.startHour,
-                  timeslots: blockTimeSlots,
                   numVisibleDays: visibleDays.length,
-                  visibleDayKeys: visibleDays.map((d) => d.dayKey),
-                  userTimezone: timezone,
+                  timeslots: blockTimeSlots,
                 };
 
                 if (mode === "preview") {
