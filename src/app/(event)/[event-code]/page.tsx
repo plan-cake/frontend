@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import ClientPage from "@/app/(event)/[event-code]/page-client";
 import { fetchAvailabilityData } from "@/features/event/availability/fetch-data";
 import { EventCodePageProps } from "@/features/event/code-page-props";
-import { fetchEventDetails } from "@/features/event/editor/fetch-data";
+import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
 import { processAvailabilityData } from "@/lib/utils/api/process-availability-data";
 import { processEventData } from "@/lib/utils/api/process-event-data";
@@ -15,7 +15,7 @@ export async function generateMetadata({
   const { "event-code": eventCode } = await params;
   const authCookies = await getAuthCookieString();
 
-  const initialEventData = await fetchEventDetails(eventCode, authCookies);
+  const initialEventData = await getCachedEventDetails(eventCode, authCookies);
 
   if (!initialEventData) {
     return {
@@ -43,7 +43,7 @@ export default async function Page({ params }: EventCodePageProps) {
   }
 
   const [initialEventData, initialAvailabilityData] = await Promise.all([
-    fetchEventDetails(eventCode, authCookies),
+    getCachedEventDetails(eventCode, authCookies),
     fetchAvailabilityData(eventCode, authCookies),
   ]);
 

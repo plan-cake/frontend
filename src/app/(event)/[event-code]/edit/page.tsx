@@ -1,9 +1,9 @@
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-import notFound from "@/app/not-found";
 import { EventCodePageProps } from "@/features/event/code-page-props";
 import EventEditor from "@/features/event/editor/editor";
-import { fetchEventDetails } from "@/features/event/editor/fetch-data";
+import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { processEventData } from "@/lib/utils/api/process-event-data";
 
 export async function generateMetadata({
@@ -11,7 +11,7 @@ export async function generateMetadata({
 }: EventCodePageProps): Promise<Metadata> {
   const { "event-code": eventCode } = await params;
 
-  const initialEventData = await fetchEventDetails(eventCode);
+  const initialEventData = await getCachedEventDetails(eventCode);
 
   if (!initialEventData) {
     return {
@@ -37,7 +37,7 @@ export default async function Page({ params }: EventCodePageProps) {
     notFound();
   }
 
-  const eventData = await fetchEventDetails(eventCode);
+  const eventData = await getCachedEventDetails(eventCode);
   const { eventName, eventRange, timeslots } = processEventData(eventData);
 
   return (
