@@ -20,7 +20,7 @@ export function Banner({ title, type, className, children }: BannerProps) {
         className,
       )}
     >
-      <Icon className="h-5 w-5" />
+      <Icon className="h-5 w-5 shrink-0" />
       <div>
         <h2 className="text-lg font-bold">{title}</h2>
         {children}
