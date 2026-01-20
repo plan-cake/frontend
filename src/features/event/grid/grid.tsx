@@ -123,7 +123,7 @@ export default function ScheduleGrid({
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ type: "tween", ease: ["easeIn", "easeOut"] }}
+              transition={{ type: "tween", ease: "easeInOut" }}
               className="flex flex-col gap-4"
             >
               {timeBlocks.map((block, i) => {

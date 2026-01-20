@@ -52,6 +52,7 @@ export default function ScheduleHeader({
       {currentPage > 0 ? (
         <button
           onClick={onPrevPage}
+          aria-label="Previous Page"
           className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
         >
           <ChevronLeftIcon className="h-5 w-5" />
@@ -70,7 +71,7 @@ export default function ScheduleHeader({
             initial="enter"
             animate="center"
             exit="exit"
-            transition={{ type: "tween", ease: ["easeIn", "easeOut"] }}
+            transition={{ type: "tween", ease: "easeInOut" }}
             className="absolute inset-0 grid h-full w-full items-center"
             style={{
               gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
@@ -87,7 +88,7 @@ export default function ScheduleHeader({
                   <div>{weekday}</div>
                   {!isWeekdayEvent && (
                     <div>
-                      {month} {parseInt(day, 10)}
+                      {month} {day.replace(/^0+/, "")}
                     </div>
                   )}
                 </div>
@@ -100,6 +101,7 @@ export default function ScheduleHeader({
       {currentPage < totalPages - 1 ? (
         <button
           onClick={onNextPage}
+          aria-label="Next Page"
           className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
         >
           <ChevronRightIcon className="h-5 w-5" />

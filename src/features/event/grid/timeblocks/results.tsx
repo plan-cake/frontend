@@ -54,7 +54,7 @@ export default function ResultsTimeBlock({
         const { row: gridRow, column: gridColumn } = coords;
 
         // borders
-        const cellClasses = [...baseClasses, "cursor-pointer"];
+        const cellClasses = [...baseClasses, "cursor-default"];
 
         const matchCount =
           availabilities[iso]?.length > 0 ? availabilities[iso].length : 0;
