@@ -21,7 +21,7 @@ export default function InteractiveTimeBlock({
       hasNext={hasNext}
       hasPrev={hasPrev}
     >
-      {timeslots.map(({ iso, coords, cellClasses }) => {
+      {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
         if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
@@ -29,12 +29,14 @@ export default function InteractiveTimeBlock({
         const isToggling =
           dragHandlers.draggedSlots.has(iso) &&
           dragHandlers.togglingOn === !isSelected;
+
         // don't highlight if we're toggling, in case the user is hovering a slot that
         // won't be toggled
         const isHovered =
           dragHandlers.hoveredSlot === iso &&
           dragHandlers.draggedSlots.size === 0;
 
+        const cellClasses = [...baseClasses];
         if (isSelected && (isHovered || isToggling)) {
           cellClasses.push(
             "bg-[color-mix(in_srgb,var(--color-accent),var(--color-white)_30%)]",

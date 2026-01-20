@@ -50,12 +50,12 @@ export default function ResultsTimeBlock({
       hasNext={hasNext}
       hasPrev={hasPrev}
     >
-      {timeslots.map(({ iso, coords, cellClasses }) => {
+      {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
         if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
         // borders
-        cellClasses.push("cursor-default");
+        const cellClasses = [...baseClasses, "cursor-pointer"];
 
         const matchCount =
           availabilities[iso]?.length > 0 ? availabilities[iso].length : 0;
