@@ -192,7 +192,6 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       >
         <MemoizedScheduleGrid
           mode="preview"
-          eventRange={eventRange}
           disableSelect={true}
           timezone={eventRange.timezone}
           timeslots={timeslots}

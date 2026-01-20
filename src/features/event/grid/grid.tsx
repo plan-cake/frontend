@@ -6,7 +6,6 @@ import {
   ResultsAvailabilityMap,
 } from "@/core/availability/types";
 import { createEmptyUserAvailability } from "@/core/availability/utils";
-import { EventRange } from "@/core/event/types";
 import useGridinfo from "@/features/event/grid/lib/use-grid";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
 import TimeLabels from "@/features/event/grid/time-column";
@@ -18,7 +17,6 @@ import { cn } from "@/lib/utils/classname";
 
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";
-  eventRange: EventRange;
   timeslots: Date[];
   timezone: string;
 

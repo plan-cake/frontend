@@ -119,7 +119,6 @@ export default function ClientPage({
       <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           mode="view"
-          eventRange={eventRange}
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}

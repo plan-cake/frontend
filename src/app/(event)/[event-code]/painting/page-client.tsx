@@ -220,7 +220,6 @@ export default function ClientPage({
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
-          eventRange={eventRange}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
