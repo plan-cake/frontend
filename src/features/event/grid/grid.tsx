@@ -98,7 +98,7 @@ export default function ScheduleGrid({
 
       <div
         className={cn(
-          "relative flex-grow overflow-x-hidden pb-1 pt-2",
+          "relative flex-grow select-none overflow-x-hidden pb-1 pt-2",
           mode === "preview" && "overflow-y-auto",
         )}
       >
