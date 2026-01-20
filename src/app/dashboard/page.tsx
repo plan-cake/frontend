@@ -9,8 +9,8 @@ export function generateMetadata(): Metadata {
   return {
     title: "Dashboard • Plancake",
     openGraph: {
-      title: "Dashboard",
-      description: "View all your events on Plancake",
+      title: "Dashboard • Plancake",
+      description: "View all your events on Plancake!",
     },
   };
 }

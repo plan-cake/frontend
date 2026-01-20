@@ -6,8 +6,8 @@ export function generateMetadata(): Metadata {
   return {
     title: "New Event • Plancake",
     openGraph: {
-      title: "New Event",
-      description: "Create a new event on Plancake",
+      title: "New Event • Plancake",
+      description: "Create a new event on Plancake!",
     },
   };
 }

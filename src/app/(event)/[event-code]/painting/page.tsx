@@ -26,8 +26,9 @@ export async function generateMetadata({
   return {
     title: `${eventName} • Plancake`,
     openGraph: {
-      title: eventName,
-      description: `Add your availability for ${eventName}`,
+      title: `${eventName} • Plancake`,
+      description:
+        "Add your availability for this event and let others know when you're free!",
     },
   };
 }

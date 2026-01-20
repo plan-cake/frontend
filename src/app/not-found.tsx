@@ -4,7 +4,7 @@ export function generateMetadata(): Metadata {
   return {
     title: "Not Found • Plancake",
     openGraph: {
-      title: "Not Found",
+      title: "Not Found • Plancake",
       description: "The page you are looking for could not be found.",
     },
   };
