@@ -8,7 +8,7 @@ import {
 import { createEmptyUserAvailability } from "@/core/availability/utils";
 import useGridinfo from "@/features/event/grid/lib/use-grid";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
-import TimeLabels from "@/features/event/grid/time-column";
+import TimeColumn from "@/features/event/grid/time-column";
 import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
 import PreviewTimeBlock from "@/features/event/grid/timeblocks/preview";
 import ResultsTimeBlock from "@/features/event/grid/timeblocks/results";
@@ -104,7 +104,7 @@ export default function ScheduleGrid({
       >
         <div className="z-5 pointer-events-none absolute left-0 top-2 flex w-full flex-col gap-4">
           {timeBlocks.map((block, i) => (
-            <TimeLabels
+            <TimeColumn
               key={`labels-${i}`}
               timeColWidth={50}
               numQuarterHours={block.numQuarterHours}

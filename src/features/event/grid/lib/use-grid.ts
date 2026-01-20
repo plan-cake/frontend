@@ -24,7 +24,7 @@ import { formatInTimeZone, toZonedTime } from "date-fns-tz";
  *    - totalPages: Total number of pages based on daysPerPage
  *    - currentPage: Current active page index
  */
-export default function useGridinfo(
+export default function useGridInfo(
   timeslots: Date[],
   timezone: string,
   daysPerPage: number,

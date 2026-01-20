@@ -22,7 +22,6 @@ export default function InteractiveTimeBlock({
       hasPrev={hasPrev}
     >
       {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
-        if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
         const isSelected = availability.has(iso);
