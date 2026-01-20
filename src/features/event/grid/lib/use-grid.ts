@@ -79,8 +79,7 @@ function processTimeslots(timeslots: Date[], timezone: string) {
   for (const slot of timeslots) {
     const dayKey = formatInTimeZone(slot, timezone, "yyyy-MM-dd");
     const dayDisplay = formatInTimeZone(slot, timezone, "EEE MMM dd");
-    const hour = parseInt(formatInTimeZone(slot, timezone, "HH"), 10);
-    const minute = parseInt(formatInTimeZone(slot, timezone, "mm"), 10);
+    const [hour, minute] = formatInTimeZone(slot, timezone, "HH:mm").split(":");
 
     if (!seen.has(dayKey)) {
       seen.add(dayKey);
@@ -90,8 +89,8 @@ function processTimeslots(timeslots: Date[], timezone: string) {
 
     slotsByDay.get(dayKey)?.push({
       iso: slot.toISOString(),
-      hour,
-      minute,
+      hour: parseInt(hour, 10),
+      minute: parseInt(minute, 10),
     });
   }
 
