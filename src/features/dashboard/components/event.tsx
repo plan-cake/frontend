@@ -76,7 +76,10 @@ export default function DashboardEvent({
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(start.time, end.time)}
         </div>
-        <ParticipantRow participants={dateTimeProps.participants} />
+        <ParticipantRow
+          participants={dateTimeProps.participants}
+          maxDisplay={7}
+        />
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />
           {myEvent && (
