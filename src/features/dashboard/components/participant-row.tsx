@@ -34,7 +34,9 @@ export default function ParticipantRow({
           );
         })
       ) : (
-        <div className="text-sm italic opacity-50">No attendees yet</div>
+        <div className="flex h-6 items-center text-sm italic opacity-50">
+          No attendees yet
+        </div>
       )}
     </div>
   );
