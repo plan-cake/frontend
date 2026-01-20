@@ -1,3 +1,5 @@
+import { cache } from "react";
+
 import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type EventDetailsResponse = {
@@ -13,7 +15,13 @@ export type EventDetailsResponse = {
   end_time: string;
 };
 
-export async function fetchEventDetails(
+export const getCachedEventDetails = cache(
+  async (eventCode: string, cookieHeader?: string) => {
+    return await fetchEventDetails(eventCode, cookieHeader);
+  },
+);
+
+async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
 ): Promise<EventDetailsResponse> {
