@@ -14,7 +14,7 @@ export type TimeBlockProps = {
 
 type TimeSlot = {
   iso: string;
-  coords: { row: number; column: number } | null;
+  coords: { row: number; column: number };
   cellClasses: string[];
 };
 

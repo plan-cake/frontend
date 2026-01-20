@@ -1,9 +1,4 @@
-"use client";
-
-import { useState } from "react";
-
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { toZonedTime } from "date-fns-tz";
 import { AnimatePresence, motion } from "framer-motion";
 
 import {
@@ -12,11 +7,7 @@ import {
 } from "@/core/availability/types";
 import { createEmptyUserAvailability } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
-import {
-  getBaseCellClasses,
-  getGridCoordinates,
-} from "@/features/event/grid/lib/timeslot-utils";
-import useGenerateTimeSlots from "@/features/event/grid/lib/use-generate-timeslots";
+import useGridinfo from "@/features/event/grid/lib/use-grid";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
 import TimeLabels from "@/features/event/grid/time-column";
 import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
@@ -62,7 +53,6 @@ const variants = {
 };
 
 export default function ScheduleGrid({
-  eventRange,
   timeslots,
   timezone,
   mode = "preview",
@@ -75,34 +65,19 @@ export default function ScheduleGrid({
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
-    eventRange,
-    timeslots,
-    timezone,
-  );
-
-  const maxDaysVisible = isMobile ? 4 : 7;
-  const [[currentPage, direction], setCurrentPage] = useState([0, 0]);
-  const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
-
-  const paginate = (newDirection: number) => {
-    const nextPage = currentPage + newDirection;
-    if (nextPage >= 0 && nextPage < totalPages) {
-      setCurrentPage([nextPage, newDirection]);
-    }
-  };
-
-  const startIndex = currentPage * maxDaysVisible;
-  const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
+  const {
+    timeBlocks,
+    visibleDays,
+    currentPage,
+    totalPages,
+    direction,
+    paginate,
+    error,
+  } = useGridinfo(timeslots, timezone, isMobile ? 4 : 7);
 
   const hasPrevPage = currentPage > 0;
   const hasNextPage = currentPage < totalPages - 1;
 
-  const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
-  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
-
-  if (numDays <= 0 || numDays > 30)
-    return <GridError message="Invalid or missing date range" />;
   if (error) return <GridError message={error} />;
 
   return (
@@ -127,18 +102,15 @@ export default function ScheduleGrid({
         )}
       >
         <div className="z-5 pointer-events-none absolute left-0 top-2 flex w-full flex-col gap-4">
-          {timeBlocks.map((block, i) => {
-            const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
-            return (
-              <TimeLabels
-                key={`labels-${i}`}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                isPreview={mode === "preview"}
-              />
-            );
-          })}
+          {timeBlocks.map((block, i) => (
+            <TimeLabels
+              key={`labels-${i}`}
+              timeColWidth={50}
+              numQuarterHours={block.numQuarterHours}
+              startHour={block.startHour}
+              isPreview={mode === "preview"}
+            />
+          ))}
         </div>
 
         <div className="relative flex-grow">
@@ -154,40 +126,10 @@ export default function ScheduleGrid({
               className="flex flex-col gap-4"
             >
               {timeBlocks.map((block, i) => {
-                // filter visibleTimeSlots to those within this block's hours
-                const visibleDayKeys = visibleDays.map((d) => d.dayKey);
-                const numQuarterHours =
-                  (block.endHour - block.startHour + 1) * 4;
-                const blockTimeSlots = visibleTimeSlots
-                  .filter((slot) => {
-                    const localSlot = toZonedTime(slot, timezone);
-                    const hour = localSlot.getHours();
-                    return hour >= block.startHour && hour <= block.endHour;
-                  })
-                  .map((slot) => {
-                    const coords = getGridCoordinates(
-                      slot,
-                      visibleDayKeys,
-                      timezone,
-                      block.startHour,
-                    );
-
-                    const cellClasses = getBaseCellClasses(
-                      coords.row,
-                      numQuarterHours,
-                    );
-
-                    return {
-                      iso: slot.toISOString(),
-                      coords,
-                      cellClasses,
-                    };
-                  });
-
                 const commonProps = {
-                  numQuarterHours,
+                  numQuarterHours: block.numQuarterHours,
                   numVisibleDays: visibleDays.length,
-                  timeslots: blockTimeSlots,
+                  timeslots: block.timeslots,
                   hasPrev: hasPrevPage,
                   hasNext: hasNextPage,
                 };

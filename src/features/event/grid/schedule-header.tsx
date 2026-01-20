@@ -3,14 +3,9 @@ import { AnimatePresence, motion } from "framer-motion";
 
 import { cn } from "@/lib/utils/classname";
 
-interface Day {
-  dayKey: string;
-  dayLabel: string;
-}
-
 interface ScheduleHeaderProps {
   preview?: boolean;
-  visibleDays: Day[];
+  visibleDays: Date[];
   currentPage: number;
   totalPages: number;
   onPrevPage: () => void;
@@ -80,17 +75,20 @@ export default function ScheduleHeader({
               gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
             }}
           >
-            {visibleDays.map((day, i) => {
-              const [weekday, month, date] = day.dayLabel.split(" ");
+            {visibleDays.map((date, i) => {
+              const weekday = date.toLocaleDateString("en-US", {
+                weekday: "short",
+              });
+              const dayNum = date.toLocaleDateString("en-US", {
+                day: "numeric",
+              });
               return (
                 <div
                   key={i}
                   className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
                 >
                   <div>{weekday}</div>
-                  <div>
-                    {month} {date}
-                  </div>
+                  <div>{dayNum}</div>
                 </div>
               );
             })}
