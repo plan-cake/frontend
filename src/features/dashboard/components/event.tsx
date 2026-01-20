@@ -18,11 +18,11 @@ export type DashboardEventProps = {
   code: string;
   title: string;
   type: "specific" | "weekday";
+  participants: string[];
   startTime: string;
   endTime: string;
   startDate: string;
   endDate: string;
-  participants: string[];
 };
 
 export default function DashboardEvent({
@@ -30,6 +30,7 @@ export default function DashboardEvent({
   code,
   title,
   type,
+  participants,
   ...dateTimeProps
 }: DashboardEventProps) {
   const router = useRouter();
@@ -77,10 +78,7 @@ export default function DashboardEvent({
           {formatTimeRange(start.time, end.time)}
         </div>
         <div className="mt-1.5">
-          <ParticipantRow
-            participants={dateTimeProps.participants}
-            maxDisplay={7}
-          />
+          <ParticipantRow participants={participants} maxDisplay={7} />
         </div>
         <div className="mt-2.5 flex items-center gap-2">
           <DashboardCopyButton code={code} />
