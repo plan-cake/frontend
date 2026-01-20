@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 
 import { useRouter, useSearchParams, notFound } from "next/navigation";
 
-import TextInputField from "@/components/text-input-field";
 import AuthPageLayout from "@/components/layout/auth-page";
+import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import PasswordValidation from "@/features/auth/components/password-validation";
 import ActionButton from "@/features/button/components/action";

@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import Checkbox from "@/components/checkbox";
+import AuthPageLayout from "@/components/layout/auth-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
-import AuthPageLayout from "@/components/layout/auth-page";
 import ActionButton from "@/features/button/components/action";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";

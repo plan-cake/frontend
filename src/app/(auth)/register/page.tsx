@@ -5,9 +5,9 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import AuthPageLayout from "@/components/layout/auth-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
-import AuthPageLayout from "@/components/layout/auth-page";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import PasswordValidation from "@/features/auth/components/password-validation";
 import ActionButton from "@/features/button/components/action";
