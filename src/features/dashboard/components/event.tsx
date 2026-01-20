@@ -82,7 +82,7 @@ export default function DashboardEvent({
             maxDisplay={7}
           />
         </div>
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-2.5 flex items-center gap-2">
           <DashboardCopyButton code={code} />
           {myEvent && (
             <button className="cursor-pointer" onClick={navigateToEdit}>
