@@ -9,7 +9,7 @@ export function generateMetadata(): Metadata {
     openGraph: {
       title: "Version History • Plancake",
       description:
-        'Here you will find some real tear-jerkers, along with intense drama and plenty of laugh-out-loud moments. This page is widely regarded as absolute cinema. Others might just call it a "version history", but they don\'t understand the passion and determination we have here at Plancake Industries. Witness the fabled history of the legendary event planning platform here, with a detailed recounting of the journey we embarked on to bring Plancake to the world.',
+        'Some might just call this page a "version history", but they don\'t understand the passion and determination we have here at Plancake Industries. Witness the fabled history of the legendary event planning platform, with a detailed recounting of the journey we embarked on to bring Plancake to the world.',
     },
   };
 }
