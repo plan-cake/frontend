@@ -10,7 +10,7 @@ export default function ParticipantRow({
   maxDisplay,
 }: ParticipantRowProps) {
   return (
-    <div className="mt-1.5 flex text-sm">
+    <div className="flex text-sm">
       {participants.length > 0 ? (
         participants.map((participant, index) => {
           if (index >= maxDisplay) {
