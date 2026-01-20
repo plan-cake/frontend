@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
+import ParticipantRow from "@/features/dashboard/components/participant-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
 import {
   formatTimeRange,
@@ -75,20 +76,7 @@ export default function DashboardEvent({
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(start.time, end.time)}
         </div>
-        <div className="mt-1.5 flex gap-1 text-sm">
-          {dateTimeProps.participants.length > 0 ? (
-            dateTimeProps.participants.map((participant) => (
-              <div
-                className="bg-foreground text-background flex h-6 w-6 items-center justify-center rounded-full font-bold"
-                key={participant}
-              >
-                {participant.charAt(0).toUpperCase()}
-              </div>
-            ))
-          ) : (
-            <div className="text-sm italic opacity-50">No attendees yet</div>
-          )}
-        </div>
+        <ParticipantRow participants={dateTimeProps.participants} />
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />
           {myEvent && (
