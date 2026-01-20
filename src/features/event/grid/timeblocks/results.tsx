@@ -51,7 +51,6 @@ export default function ResultsTimeBlock({
       hasPrev={hasPrev}
     >
       {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
-        if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
         // borders

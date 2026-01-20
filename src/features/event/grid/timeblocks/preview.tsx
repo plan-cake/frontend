@@ -17,7 +17,6 @@ export default function PreviewTimeBlock({
       hasPrev={hasPrev}
     >
       {timeslots.map(({ iso, coords, cellClasses }) => {
-        if (!coords) return null;
         const { row: gridRow, column: gridColumn } = coords;
 
         return (
