@@ -5,10 +5,10 @@ import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
+import AuthPageLayout from "@/components/layout/auth-page";
 import ActionButton from "@/features/button/components/action";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
@@ -36,10 +36,6 @@ export default function Page() {
     handleError("password", "");
     handleError("api", "");
     setPassword(value);
-  };
-
-  const stopRefresh = (e: React.FormEvent) => {
-    e.preventDefault();
   };
 
   const handleSubmit = async () => {
@@ -89,71 +85,59 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
-        {/* Title */}
-        <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
-          login
-        </h1>
+    <AuthPageLayout title="login" rateLimitError={errors.rate_limit}>
+      {/* Email */}
+      <TextInputField
+        id={"email"}
+        type="email"
+        label="Email*"
+        value={email}
+        onChange={handleEmailChange}
+        outlined
+        error={errors.email || errors.api}
+      />
 
-        {/* Rate Limit Error */}
-        {errors.rate_limit && (
-          <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
-        )}
+      {/* Password */}
+      <TextInputField
+        id={"password"}
+        type="password"
+        label="Password*"
+        value={password}
+        onChange={handlePasswordChange}
+        outlined
+        error={errors.password || errors.api}
+      />
 
-        {/* Email */}
-        <TextInputField
-          id={"email"}
-          type="email"
-          label="Email*"
-          value={email}
-          onChange={handleEmailChange}
-          outlined
-          error={errors.email || errors.api}
-        />
-
-        {/* Password */}
-        <TextInputField
-          id={"password"}
-          type="password"
-          label="Password*"
-          value={password}
-          onChange={handlePasswordChange}
-          outlined
-          error={errors.password || errors.api}
-        />
-
-        <div className="flex w-full items-start justify-between">
-          <div className="m-0 flex flex-col gap-2">
-            {/* Remember Me Checkbox */}
-            <Checkbox
-              label="Remember me"
-              checked={rememberMe}
-              onChange={() => setRememberMe(!rememberMe)}
-            />
-            {/* Forgot Password */}
-            <Link href="/forgot-password" className="text-xs">
-              <LinkText>Forgot password?</LinkText>
-            </Link>
-          </div>
-
-          {/* Login Button */}
-          <ActionButton
-            buttonStyle="primary"
-            label="Login"
-            onClick={handleSubmit}
-            loadOnSuccess
+      <div className="flex w-full items-start justify-between">
+        <div className="m-0 flex flex-col gap-2">
+          {/* Remember Me Checkbox */}
+          <Checkbox
+            label="Remember me"
+            checked={rememberMe}
+            onChange={() => setRememberMe(!rememberMe)}
           />
-        </div>
-
-        {/* Register Link */}
-        <div className="mt-2 w-full text-right text-xs">
-          No account?{" "}
-          <Link href="/register">
-            <LinkText>Register!</LinkText>
+          {/* Forgot Password */}
+          <Link href="/forgot-password" className="text-xs">
+            <LinkText>Forgot password?</LinkText>
           </Link>
         </div>
-      </form>
-    </div>
+
+        {/* Login Button */}
+        <ActionButton
+          buttonStyle="primary"
+          label="Login"
+          onClick={handleSubmit}
+          loadOnSuccess
+        />
+      </div>
+
+      {/* Register Link */}
+      <div className="mt-2 w-full text-right text-xs">
+        No account?{" "}
+        <Link href="/register">
+          <LinkText>Register!</LinkText>
+        </Link>
+      </div>
+    </AuthPageLayout>
   );
 }
