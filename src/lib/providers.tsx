@@ -4,7 +4,7 @@ import { createContext, useState } from "react";
 
 import { ThemeProvider } from "next-themes";
 
-import ToastProvider from "@/features/toast/provider";
+import { ToastProvider } from "@/features/system-feedback";
 
 export const LoginContext = createContext<{
   loggedIn: boolean | null;

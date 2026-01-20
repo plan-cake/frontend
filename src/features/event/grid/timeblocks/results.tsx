@@ -1,3 +1,5 @@
+import { useEffect, useRef } from "react";
+
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import {
   getGridCoordinates,
@@ -35,8 +37,36 @@ export default function ResultsTimeBlock({
   hoveredSlot,
   onHoverSlot,
 }: ResultsTimeBlockProps) {
+  const timeBlockRef = useRef<HTMLDivElement>(null);
+
+  // on click outside to clear hovered slot
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        timeBlockRef.current &&
+        !timeBlockRef.current.contains(event.target as Node)
+      ) {
+        onHoverSlot?.(null);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onHoverSlot?.(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onHoverSlot]);
+
   return (
     <BaseTimeBlock
+      ref={timeBlockRef}
       timeColWidth={timeColWidth}
       numQuarterHours={numQuarterHours}
       startHour={startHour}

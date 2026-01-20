@@ -10,6 +10,7 @@ import AuthPageLayout from "@/components/layout/auth-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
+import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { LoginContext } from "@/lib/providers";
