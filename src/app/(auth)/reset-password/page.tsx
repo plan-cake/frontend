@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 
 import { useRouter, useSearchParams, notFound } from "next/navigation";
 
+import AuthPageLayout from "@/components/layout/auth-page";
 import TextInputField from "@/components/text-input-field";
 import PasswordCriteria from "@/features/auth/components/password-criteria";
 import PasswordValidation from "@/features/auth/components/password-validation";
@@ -40,13 +41,9 @@ export default function Page() {
   };
 
   useEffect(() => {
-      const { criteria } = PasswordValidation(newPassword);
-      setPasswordCriteria(criteria);
-    }, [newPassword]);
-
-  const stopRefresh = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
+    const { criteria } = PasswordValidation(newPassword);
+    setPasswordCriteria(criteria);
+  }, [newPassword]);
 
   const handleSubmit = async () => {
     clearAllErrors();
@@ -97,60 +94,53 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
-        {/* Title */}
-        <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
-          reset password
-        </h1>
+    <AuthPageLayout title="reset password">
+      {/* New Password */}
+      <TextInputField
+        id={"password"}
+        type="password"
+        label="New Password*"
+        value={newPassword}
+        onChange={(value) => {
+          setNewPassword(value);
+        }}
+        onFocus={() => setShowPasswordCriteria(true)}
+        onBlur={() => {
+          if (!newPassword || passwordIsStrong()) {
+            setShowPasswordCriteria(false);
+          }
+        }}
+        outlined
+        error={errors.password || errors.api}
+      />
 
-        {/* New Password */}
-        <TextInputField
-          id={"password"}
-          type="password"
-          label="New Password*"
-          value={newPassword}
-          onChange={(value) => {
-            setNewPassword(value);
-          }}
-          onFocus={() => setShowPasswordCriteria(true)}
-          onBlur={() => {
-            if (!newPassword || passwordIsStrong()) {
-              setShowPasswordCriteria(false);
-            }
-          }}
-          outlined
-          error={errors.password || errors.api}
-        />
-
-        {/* Password Errors */}
-        {showPasswordCriteria && (
-          <div className="-mt-2 mb-2 w-full px-4">
-            <PasswordCriteria criteria={passwordCriteria} />
-          </div>
-        )}
-
-        {/* Retype Password */}
-        <TextInputField
-          id={"confirmPassword"}
-          type="password"
-          label="Retype Password*"
-          value={confirmPassword}
-          onChange={handleConfirmPasswordChange}
-          outlined
-          error={errors.confirmPassword || errors.api}
-        />
-
-        {/* Change Password Button */}
-        <div className="flex w-full justify-end">
-          <ActionButton
-            buttonStyle="primary"
-            label="Change Password"
-            onClick={handleSubmit}
-            loadOnSuccess
-          />
+      {/* Password Errors */}
+      {showPasswordCriteria && (
+        <div className="-mt-2 mb-2 w-full px-4">
+          <PasswordCriteria criteria={passwordCriteria} />
         </div>
-      </form>
-    </div>
+      )}
+
+      {/* Retype Password */}
+      <TextInputField
+        id={"confirmPassword"}
+        type="password"
+        label="Retype Password*"
+        value={confirmPassword}
+        onChange={handleConfirmPasswordChange}
+        outlined
+        error={errors.confirmPassword || errors.api}
+      />
+
+      {/* Change Password Button */}
+      <div className="flex w-full justify-end">
+        <ActionButton
+          buttonStyle="primary"
+          label="Change Password"
+          onClick={handleSubmit}
+          loadOnSuccess
+        />
+      </div>
+    </AuthPageLayout>
   );
 }
