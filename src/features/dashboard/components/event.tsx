@@ -21,6 +21,7 @@ export type DashboardEventProps = {
   endTime: string;
   startDate: string;
   endDate: string;
+  participants: string[];
 };
 
 export default function DashboardEvent({
@@ -73,6 +74,20 @@ export default function DashboardEvent({
         <div className="flex items-center gap-2">
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(start.time, end.time)}
+        </div>
+        <div className="mt-1.5 flex gap-1 text-sm">
+          {dateTimeProps.participants.length > 0 ? (
+            dateTimeProps.participants.map((participant) => (
+              <div
+                className="bg-foreground text-background flex h-6 w-6 items-center justify-center rounded-full font-bold"
+                key={participant}
+              >
+                {participant.charAt(0).toUpperCase()}
+              </div>
+            ))
+          ) : (
+            <div className="text-sm italic opacity-50">No attendees yet</div>
+          )}
         </div>
         <div className="mt-2 flex items-center gap-2">
           <DashboardCopyButton code={code} />
