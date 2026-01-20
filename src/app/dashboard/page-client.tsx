@@ -69,7 +69,7 @@ export default function ClientPage({
         </div>
         <div className="bg-panel w-full rounded-3xl p-4">
           <EventGrid
-            events={tab === "created" ? created_events : participated_events}
+            {...(tab === "created" ? created_events : participated_events)}
           />
         </div>
       </div>
@@ -92,6 +92,7 @@ function DashboardTabButton({
 }) {
   return (
     <button
+      type="button"
       className={cn(
         "text-nowrap rounded-full px-4 py-2",
         currentTab === value
