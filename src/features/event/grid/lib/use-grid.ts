@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 
-import { toZonedTime } from "date-fns-tz";
+import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
 /**
  * This hook manages the state and logic for displaying the grid view. It
@@ -68,21 +68,31 @@ export default function useGridinfo(
 function processTimeslots(timeslots: Date[], timezone: string) {
   if (!timeslots || timeslots.length === 0) return null;
 
-  const slotsByDay = new Map<string, Date[]>();
-  const days: Date[] = [];
+  const slotsByDay = new Map<
+    string,
+    { iso: string; hour: number; minute: number }[]
+  >();
+  const days: { dayKey: string; dayDisplay: string }[] = [];
   const seen = new Set<string>();
 
   /* GROUP SLOTS BY DAY */
   for (const slot of timeslots) {
-    const zoned = toZonedTime(slot, timezone);
-    const dayKey = zoned.toLocaleDateString("en-CA");
+    const dayKey = formatInTimeZone(slot, timezone, "yyyy-MM-dd");
+    const dayDisplay = formatInTimeZone(slot, timezone, "EEE MMM dd");
+    const hour = parseInt(formatInTimeZone(slot, timezone, "HH"), 10);
+    const minute = parseInt(formatInTimeZone(slot, timezone, "mm"), 10);
 
     if (!seen.has(dayKey)) {
       seen.add(dayKey);
-      days.push(zoned);
+      days.push({ dayKey, dayDisplay });
       slotsByDay.set(dayKey, []);
     }
-    slotsByDay.get(dayKey)?.push(zoned);
+
+    slotsByDay.get(dayKey)?.push({
+      iso: slot.toISOString(),
+      hour,
+      minute,
+    });
   }
 
   /* RAW TIMEBLOCKS */
@@ -161,28 +171,27 @@ function organizeGridView(
  */
 function processTimeblock(
   block: { startHour: number; endHour: number },
-  visibleDays: Date[],
-  slotsByDay: Map<string, Date[]>,
+  visibleDays: { dayKey: string; dayDisplay: string }[],
+  slotsByDay: Map<string, { iso: string; hour: number; minute: number }[]>,
 ) {
   const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
-
   const blockSlots = visibleDays.flatMap((day, dayIndex) => {
-    const dayKey = day.toLocaleDateString("en-CA");
+    const dayKey = day.dayKey;
     const daySlots = slotsByDay.get(dayKey) || [];
 
     return daySlots
       .filter((slot) => {
-        const h = slot.getHours();
+        const h = slot.hour;
         return h >= block.startHour && h <= block.endHour;
       })
       .map((slot) => {
-        const h = slot.getHours();
-        const m = slot.getMinutes();
+        const h = slot.hour;
+        const m = slot.minute;
         const row = (h - block.startHour) * 4 + Math.floor(m / 15) + 1;
 
         return {
-          iso: slot.toISOString(),
-          coords: { row, column: dayIndex + 1 }, // Column is 1-based
+          iso: slot.iso,
+          coords: { row, column: dayIndex + 1 },
           cellClasses: getBaseCellClasses(row, numQuarterHours),
         };
       });

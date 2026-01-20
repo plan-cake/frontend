@@ -19,6 +19,7 @@ interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";
   timeslots: Date[];
   timezone: string;
+  isWeekdayEvent?: boolean;
 
   disableSelect?: boolean;
 
@@ -54,6 +55,7 @@ export default function ScheduleGrid({
   timeslots,
   timezone,
   mode = "preview",
+  isWeekdayEvent = false,
   availabilities = {},
   numParticipants = 0,
   hoveredSlot,
@@ -88,6 +90,7 @@ export default function ScheduleGrid({
         visibleDays={visibleDays}
         currentPage={currentPage}
         totalPages={totalPages}
+        isWeekdayEvent={isWeekdayEvent}
         onPrevPage={() => paginate(-1)}
         onNextPage={() => paginate(1)}
         direction={direction}

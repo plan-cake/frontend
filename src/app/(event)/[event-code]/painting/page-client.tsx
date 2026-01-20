@@ -220,6 +220,7 @@ export default function ClientPage({
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
+          isWeekdayEvent={eventRange.type === "weekday"}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
