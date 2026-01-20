@@ -106,7 +106,6 @@ export default function ScheduleGrid({
           {timeBlocks.map((block, i) => (
             <TimeColumn
               key={`labels-${i}`}
-              timeColWidth={50}
               numQuarterHours={block.numQuarterHours}
               startHour={block.startHour}
               isPreview={mode === "preview"}

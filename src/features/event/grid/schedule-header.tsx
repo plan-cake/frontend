@@ -1,6 +1,10 @@
 import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
 import { AnimatePresence, motion } from "framer-motion";
 
+import {
+  TIME_LABEL_WIDTH,
+  SIDE_WIDTH,
+} from "@/features/event/grid/lib/constants";
 import { cn } from "@/lib/utils/classname";
 
 interface ScheduleHeaderProps {
@@ -46,19 +50,22 @@ export default function ScheduleHeader({
         "sticky z-10 col-span-2 grid h-[50px] w-full items-center justify-center",
       )}
       style={{
-        gridTemplateColumns: "50px 1fr 30px",
+        gridTemplateColumns: `${TIME_LABEL_WIDTH}px 1fr ${SIDE_WIDTH}px`,
       }}
     >
       {currentPage > 0 ? (
         <button
           onClick={onPrevPage}
           aria-label="Previous Page"
-          className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
+          className={cn(
+            `flex items-center justify-center h-[${SIDE_WIDTH}px] w-[${SIDE_WIDTH}px]`,
+            "hover:bg-panel rounded-full text-xl transition-colors",
+          )}
         >
           <ChevronLeftIcon className="h-5 w-5" />
         </button>
       ) : (
-        <div style={{ width: "30px" }} />
+        <div style={{ width: `${SIDE_WIDTH}px` }} />
       )}
 
       {/* This container takes up the '1fr' space */}
@@ -102,12 +109,15 @@ export default function ScheduleHeader({
         <button
           onClick={onNextPage}
           aria-label="Next Page"
-          className="hover:bg-panel flex h-[30px] w-[30px] items-center justify-center rounded-full text-xl transition-colors"
+          className={cn(
+            `flex items-center justify-center h-[${SIDE_WIDTH}px] w-[${SIDE_WIDTH}px]`,
+            "hover:bg-panel rounded-full text-xl transition-colors",
+          )}
         >
           <ChevronRightIcon className="h-5 w-5" />
         </button>
       ) : (
-        <div style={{ width: "30px" }} />
+        <div style={{ width: `${SIDE_WIDTH}px` }} />
       )}
     </div>
   );

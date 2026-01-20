@@ -1,14 +1,13 @@
 import { useMemo } from "react";
 
+import { TIME_LABEL_WIDTH } from "@/features/event/grid/lib/constants";
 import { cn } from "@/lib/utils/classname";
 
 export default function TimeColumn({
-  timeColWidth,
   numQuarterHours,
   startHour,
   isPreview = false,
 }: {
-  timeColWidth: number;
   numQuarterHours: number;
   startHour: number;
   isPreview?: boolean;
@@ -27,7 +26,7 @@ export default function TimeColumn({
     <div
       className="pointer-events-none"
       style={{
-        width: `${timeColWidth}px`,
+        width: `${TIME_LABEL_WIDTH}px`,
         display: "grid",
         gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
       }}

@@ -1,7 +1,9 @@
+import {
+  TIME_LABEL_WIDTH,
+  SIDE_WIDTH,
+} from "@/features/event/grid/lib/constants";
 import { TimeBlockProps } from "@/features/event/grid/timeblocks/props";
 import { cn } from "@/lib/utils/classname";
-
-const SIDE_WIDTH = 30;
 
 export default function BaseTimeBlock({
   ref,
@@ -16,7 +18,7 @@ export default function BaseTimeBlock({
       ref={ref}
       className="relative isolate grid"
       style={{
-        gridTemplateColumns: `50px 1fr ${SIDE_WIDTH}px`,
+        gridTemplateColumns: `${TIME_LABEL_WIDTH}px 1fr ${SIDE_WIDTH}px`,
       }}
     >
       <div
@@ -26,7 +28,7 @@ export default function BaseTimeBlock({
             "divide-foreground/75 border-foreground/75 divide-y divide-dashed border border-l-0",
         )}
         style={{
-          gridTemplateColumns: `50px`,
+          gridTemplateColumns: `${TIME_LABEL_WIDTH}px`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
           maskImage: "linear-gradient(to left, black, transparent)",
           WebkitMaskImage: "linear-gradient(to left, black, transparent)",
@@ -69,7 +71,7 @@ export default function BaseTimeBlock({
       >
         {Array.from({ length: numQuarterHours }).map((_, idx) => (
           <div
-            key={`border-left-${idx}`}
+            key={`border-right-${idx}`}
             style={{ gridRow: idx + 1, gridColumn: 1 }}
           />
         ))}
