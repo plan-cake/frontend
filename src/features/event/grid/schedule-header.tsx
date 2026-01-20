@@ -5,9 +5,10 @@ import { cn } from "@/lib/utils/classname";
 
 interface ScheduleHeaderProps {
   preview?: boolean;
-  visibleDays: Date[];
+  visibleDays: { dayKey: string; dayDisplay: string }[];
   currentPage: number;
   totalPages: number;
+  isWeekdayEvent?: boolean;
   onPrevPage: () => void;
   onNextPage: () => void;
   direction?: number;
@@ -33,6 +34,7 @@ export default function ScheduleHeader({
   visibleDays,
   currentPage,
   totalPages,
+  isWeekdayEvent = false,
   onPrevPage,
   onNextPage,
   direction = 0,
@@ -71,24 +73,23 @@ export default function ScheduleHeader({
             transition={{ type: "tween", ease: ["easeIn", "easeOut"] }}
             className="absolute inset-0 grid h-full w-full items-center"
             style={{
-              // The inner grid distributes the days evenly within the container
               gridTemplateColumns: `repeat(${visibleDays.length}, 1fr)`,
             }}
           >
-            {visibleDays.map((date, i) => {
-              const weekday = date.toLocaleDateString("en-US", {
-                weekday: "short",
-              });
-              const dayNum = date.toLocaleDateString("en-US", {
-                day: "numeric",
-              });
+            {visibleDays.map(({ dayDisplay }, i) => {
+              const [weekday, month, day] = dayDisplay.split(" ");
+
               return (
                 <div
                   key={i}
                   className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
                 >
                   <div>{weekday}</div>
-                  <div>{dayNum}</div>
+                  {!isWeekdayEvent && (
+                    <div>
+                      {month} {parseInt(day, 10)}
+                    </div>
+                  )}
                 </div>
               );
             })}
