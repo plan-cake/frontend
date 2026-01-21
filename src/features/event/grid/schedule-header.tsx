@@ -58,7 +58,7 @@ export default function ScheduleHeader({
           onClick={onPrevPage}
           aria-label="Previous Page"
           className={cn(
-            "ml-3 flex h-9 w-9 items-center justify-center",
+            "ml-3 flex h-9 w-9 cursor-pointer items-center justify-center",
             "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 rounded-full text-xl",
           )}
         >
@@ -110,7 +110,7 @@ export default function ScheduleHeader({
           onClick={onNextPage}
           aria-label="Next Page"
           className={cn(
-            "flex h-9 w-9 items-center justify-center",
+            "flex h-9 w-9 cursor-pointer items-center justify-center",
             "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 rounded-full text-xl",
           )}
         >

@@ -73,7 +73,7 @@ export default function AttendeesPanel({
           <button
             className={cn(
               "text-red bg-red/15 h-9 w-9 rounded-full p-2 text-sm font-semibold",
-              "hover:bg-red/25 active:bg-red/40",
+              "hover:bg-red/25 active:bg-red/40 cursor-pointer",
             )}
             onClick={() => setIsRemoving(!isRemoving)}
           >
@@ -93,7 +93,7 @@ export default function AttendeesPanel({
             onConfirm={() => handleRemovePerson(currentUser)}
           >
             <button
-              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 rounded-full p-2 text-sm font-semibold"
+              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
               aria-label="Remove self"
             >
               <TrashIcon className="h-5 w-5" />
