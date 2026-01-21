@@ -6,7 +6,7 @@ import { DateRange } from "react-day-picker";
 import { DEFAULT_RANGE_SPECIFIC } from "@/core/event/lib/default-range";
 import { expandEventRange } from "@/core/event/lib/expand-event-range";
 import { EventInfoReducer } from "@/core/event/reducers/info-reducer";
-import { EventInformation, EventRange, WeekdayMap } from "@/core/event/types";
+import { EventInformation, EventRange, Weekday } from "@/core/event/types";
 import {
   checkDateRange,
   checkTimeRange,
@@ -122,7 +122,8 @@ export function useEventInfo(initialData?: EventInformation) {
     [handleError],
   );
 
-  const setWeekdayRange = useCallback((weekdays: WeekdayMap) => {
+  const setWeekdayRange = useCallback((weekdays: Weekday[]) => {
+    console.log("weekdays", weekdays);
     dispatch({ type: "SET_WEEKDAYS", payload: { weekdays } });
   }, []);
 

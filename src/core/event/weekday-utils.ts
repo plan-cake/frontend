@@ -21,18 +21,32 @@ export function generateWeekdayMap(
   return weekdays;
 }
 
-export function findRangeFromWeekdayMap(selectedDays: WeekdayMap): {
+// export function findRangeFromWeekdayMap(selectedDays: WeekdayMap): {
+//   startDay: Weekday | null;
+//   endDay: Weekday | null;
+// } {
+//   const selected = days.filter((day) => selectedDays[day] === 1);
+
+//   if (selected.length === 0) {
+//     return { startDay: null, endDay: null };
+//   }
+
+//   return {
+//     startDay: selected[0],
+//     endDay: selected[selected.length - 1],
+//   };
+// }
+
+export function findRangeFromWeekdayArray(selectedDays: Weekday[]): {
   startDay: Weekday | null;
   endDay: Weekday | null;
 } {
-  const selected = days.filter((day) => selectedDays[day] === 1);
-
-  if (selected.length === 0) {
+  if (selectedDays.length === 0) {
     return { startDay: null, endDay: null };
   }
 
   return {
-    startDay: selected[0],
-    endDay: selected[selected.length - 1],
+    startDay: selectedDays[0],
+    endDay: selectedDays[selectedDays.length - 1],
   };
 }

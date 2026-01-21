@@ -12,10 +12,10 @@ import {
 import { fromZonedTime } from "date-fns-tz";
 
 import {
+  ALL_WEEKDAYS,
   EventRange,
   SpecificDateRange,
   WeekdayRange,
-  days as weekdays,
 } from "@/core/event/types";
 import { checkDateRange } from "@/features/event/editor/validate-data";
 
@@ -137,9 +137,9 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
 
   for (const currentDay of days) {
     const currentDayIndex = getDay(currentDay);
-    const dayName = weekdays[currentDayIndex];
+    const dayName = ALL_WEEKDAYS[currentDayIndex];
 
-    if (dayName && range.weekdays[dayName]) {
+    if (range.weekdays.includes(dayName)) {
       const dayStr = format(currentDay, "yyyy-MM-dd");
 
       const { startUTC, endUTC } = getDailyBoundariesInUTC(

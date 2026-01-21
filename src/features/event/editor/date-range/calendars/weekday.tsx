@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 
-import { days, WeekdayMap, Weekday } from "@/core/event/types";
+import { days, Weekday } from "@/core/event/types";
 import { cn } from "@/lib/utils/classname";
 
 type WeekdayCalendarProps = {
-  selectedDays: WeekdayMap;
-  onChange: (map: WeekdayMap) => void;
+  selectedDays: Weekday[];
+  onChange: (map: Weekday[]) => void;
 };
 
 export default function WeekdayCalendar({
@@ -17,7 +17,7 @@ export default function WeekdayCalendar({
   const [startDay, setStartDay] = useState<Weekday | null>(null);
 
   useEffect(() => {
-    const hasSelection = Object.values(selectedDays).some((val) => val === 1);
+    const hasSelection = selectedDays.length > 0;
     if (hasSelection) {
       return;
     }
@@ -26,8 +26,10 @@ export default function WeekdayCalendar({
     const dayOfWeek = today.getDay();
     const todayKey = days[dayOfWeek];
 
-    const newSelection: WeekdayMap = { ...selectedDays };
-    newSelection[todayKey] = 1;
+    const newSelection: Weekday[] = [...selectedDays];
+    if (!newSelection.includes(todayKey)) {
+      newSelection.push(todayKey);
+    }
 
     onChange(newSelection);
   }, [selectedDays, onChange]);
@@ -36,14 +38,24 @@ export default function WeekdayCalendar({
     if (!startDay) {
       setStartDay(day);
 
-      const newSelection: WeekdayMap = { ...selectedDays };
-      days.forEach((d) => (newSelection[d] = 0));
-      newSelection[day] = 1;
+      const newSelection: Weekday[] = [...selectedDays];
+      days.forEach((d) => {
+        const index = newSelection.indexOf(d);
+        if (index !== -1) {
+          newSelection.splice(index, 1);
+        }
+      });
+      newSelection.push(day);
       onChange(newSelection);
     } else {
       // End of selection (Complete Range)
-      const newSelection: WeekdayMap = { ...selectedDays };
-      days.forEach((d) => (newSelection[d] = 0));
+      const newSelection: Weekday[] = [...selectedDays];
+      days.forEach((d) => {
+        const index = newSelection.indexOf(d);
+        if (index !== -1) {
+          newSelection.splice(index, 1);
+        }
+      });
 
       const startIndex = days.indexOf(startDay);
       const endIndex = days.indexOf(day);
@@ -54,7 +66,7 @@ export default function WeekdayCalendar({
       ];
 
       for (let i = min; i <= max; i++) {
-        newSelection[days[i]] = 1;
+        newSelection.push(days[i]);
       }
 
       setStartDay(null);
@@ -63,7 +75,7 @@ export default function WeekdayCalendar({
   };
 
   const activeIndices = days
-    .map((day, i) => (selectedDays[day] === 1 ? i : -1))
+    .map((day, i) => (selectedDays.includes(day) ? i : -1))
     .filter((i) => i !== -1);
 
   const rangeStart = activeIndices.length ? Math.min(...activeIndices) : -1;

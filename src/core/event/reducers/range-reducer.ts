@@ -5,7 +5,7 @@ import {
   DEFAULT_RANGE_SPECIFIC,
   DEFAULT_RANGE_WEEKDAY,
 } from "@/core/event/lib/default-range";
-import { EventRange, WeekdayMap } from "@/core/event/types";
+import { EventRange, Weekday } from "@/core/event/types";
 
 export type EventRangeAction =
   | { type: "SET_RANGE_INFO"; payload: EventRange }
@@ -15,7 +15,7 @@ export type EventRangeAction =
   | { type: "SET_END_TIME"; payload: string }
   | {
       type: "SET_WEEKDAYS";
-      payload: { weekdays: Partial<Record<keyof WeekdayMap, 0 | 1>> };
+      payload: { weekdays: Weekday[] };
     }
   | { type: "SET_DURATION"; payload: number }
   | { type: "SET_TIMEZONE"; payload: string }
@@ -96,6 +96,8 @@ export function EventRangeReducer(
       if (state.type !== "weekday") {
         return state;
       }
+
+      console.log("action.payload.weekdays", action.payload.weekdays);
 
       return {
         ...state,
