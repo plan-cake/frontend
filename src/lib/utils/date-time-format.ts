@@ -56,7 +56,7 @@ export function getTimezoneDetails({
 // Expects a timeslot Date object, timezone string, and event type
 // Returns an ISO string representation of the timeslot. If this is
 // specific date event, it returns the standard ISO string. If it's a
-// weekday event, then it the ISO string will be formatted in the
+// weekday event, then the ISO string will be formatted in the
 // event's timezone.
 export function timeslotToISOString(
   timeslot: Date,
