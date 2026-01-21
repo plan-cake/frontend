@@ -46,7 +46,7 @@ export default function ScheduleHeader({
   return (
     <div
       className={cn(
-        preview ? "bg-panel top-0" : "top-25 bg-background",
+        preview ? "bg-panel top-0 pr-4" : "top-25 bg-background",
         "sticky z-10 col-span-2 grid h-[50px] w-full items-center justify-center",
       )}
       style={{
@@ -92,7 +92,7 @@ export default function ScheduleHeader({
                   key={i}
                   className="flex flex-col items-center justify-center text-sm font-medium leading-tight"
                 >
-                  <div>{weekday}</div>
+                  <div>{isWeekdayEvent ? weekday.toUpperCase() : weekday}</div>
                   {!isWeekdayEvent && (
                     <div>
                       {month} {day.replace(/^0+/, "")}
