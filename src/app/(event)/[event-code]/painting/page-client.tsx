@@ -14,7 +14,7 @@ import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { validateAvailabilityData } from "@/features/event/availability/validate-data";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
-import ScheduleGrid from "@/features/event/grid/grid";
+import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
@@ -220,7 +220,7 @@ export default function ClientPage({
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
-          eventRange={eventRange}
+          isWeekdayEvent={eventRange.type === "weekday"}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
