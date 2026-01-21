@@ -72,6 +72,7 @@ function ParticipantIcon({
             dominantBaseline="central"
             textAnchor="middle"
             fontSize="60"
+            fontWeight="bold"
           >
             {iconText}
           </text>
