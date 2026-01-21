@@ -1,8 +1,34 @@
-import notFound from "@/app/not-found";
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+
 import { EventCodePageProps } from "@/features/event/code-page-props";
 import EventEditor from "@/features/event/editor/editor";
-import { fetchEventDetails } from "@/features/event/editor/fetch-data";
+import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { processEventData } from "@/lib/utils/api/process-event-data";
+
+export async function generateMetadata({
+  params,
+}: EventCodePageProps): Promise<Metadata> {
+  const { "event-code": eventCode } = await params;
+
+  const initialEventData = await getCachedEventDetails(eventCode);
+
+  if (!initialEventData) {
+    return {
+      title: "Event Not Found • Plancake",
+    };
+  }
+
+  const { eventName } = processEventData(initialEventData);
+
+  return {
+    title: `Editing ${eventName} • Plancake`,
+    openGraph: {
+      title: `Editing ${eventName} • Plancake`,
+      description: "Edit dates, times, and details of your Plancake event.",
+    },
+  };
+}
 
 export default async function Page({ params }: EventCodePageProps) {
   const { "event-code": eventCode } = await params;
@@ -11,7 +37,7 @@ export default async function Page({ params }: EventCodePageProps) {
     notFound();
   }
 
-  const eventData = await fetchEventDetails(eventCode);
+  const eventData = await getCachedEventDetails(eventCode);
   const { eventName, eventRange, timeslots } = processEventData(eventData);
 
   return (
