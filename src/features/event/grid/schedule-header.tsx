@@ -58,8 +58,8 @@ export default function ScheduleHeader({
           onClick={onPrevPage}
           aria-label="Previous Page"
           className={cn(
-            `flex items-center justify-center h-[${SIDE_WIDTH}px] w-[${SIDE_WIDTH}px]`,
-            "hover:bg-panel rounded-full text-xl transition-colors",
+            "ml-3 flex h-9 w-9 items-center justify-center",
+            "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 rounded-full text-xl",
           )}
         >
           <ChevronLeftIcon className="h-5 w-5" />
@@ -110,8 +110,8 @@ export default function ScheduleHeader({
           onClick={onNextPage}
           aria-label="Next Page"
           className={cn(
-            `flex items-center justify-center h-[${SIDE_WIDTH}px] w-[${SIDE_WIDTH}px]`,
-            "hover:bg-panel rounded-full text-xl transition-colors",
+            "flex h-9 w-9 items-center justify-center",
+            "bg-accent/15 hover:bg-accent/25 active:bg-accent/40 rounded-full text-xl",
           )}
         >
           <ChevronRightIcon className="h-5 w-5" />
