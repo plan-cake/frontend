@@ -5,10 +5,14 @@ import {
   isBefore,
   parseISO,
   format,
+  startOfWeek,
+  endOfWeek,
+  getDay,
 } from "date-fns";
 import { fromZonedTime } from "date-fns-tz";
 
 import {
+  ALL_WEEKDAYS,
   EventRange,
   SpecificDateRange,
   WeekdayRange,
@@ -77,29 +81,18 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   }
 
   // Validate Duration
-  const startDateStr = range.dateRange.from.split("T")[0];
-  const endDateStr = range.dateRange.to.split("T")[0];
+  const startDate = parseISO(range.dateRange.from.split("T")[0]);
+  const endDate = parseISO(range.dateRange.to.split("T")[0]);
 
-  const { startUTC: eventStartUTC } = getDailyBoundariesInUTC(
-    startDateStr,
-    range.timezone,
-    range.timeRange,
-  );
-  const { endUTC: eventEndUTC } = getDailyBoundariesInUTC(
-    endDateStr,
-    range.timezone,
-    range.timeRange,
-  );
-
-  if (checkDateRange(eventStartUTC, eventEndUTC)) {
+  if (checkDateRange(startDate, endDate)) {
     return [];
   }
 
   // Generate Slots
   const slots: Date[] = [];
   const days = eachDayOfInterval({
-    start: parseISO(startDateStr),
-    end: parseISO(endDateStr),
+    start: startDate,
+    end: endDate,
   });
 
   for (const day of days) {
@@ -121,28 +114,21 @@ function generateSlotsForWeekdayRange(range: WeekdayRange): Date[] {
   if (range.type !== "weekday") return [];
 
   const slots: Date[] = [];
-  const dayIndexMap: Record<string, number> = {
-    Sun: 0,
-    Mon: 1,
-    Tue: 2,
-    Wed: 3,
-    Thu: 4,
-    Fri: 5,
-    Sat: 6,
-  };
+  const referenceDate = new Date();
 
-  // generic reference week starting on a Sunday
-  const referenceStart = new Date("2012-01-01T00:00:00");
+  const startOfCurrentWeek = startOfWeek(referenceDate, { weekStartsOn: 0 });
+  const endOfCurrentWeek = endOfWeek(referenceDate, { weekStartsOn: 0 });
 
-  for (let i = 0; i < 7; i++) {
-    // current day in the reference week
-    const currentDay = addDays(referenceStart, i);
-    const currentDayIndex = currentDay.getDay();
-    const dayName = Object.keys(dayIndexMap).find(
-      (key) => dayIndexMap[key] === currentDayIndex,
-    );
+  const days = eachDayOfInterval({
+    start: startOfCurrentWeek,
+    end: endOfCurrentWeek,
+  });
 
-    if (dayName && range.weekdays[dayName as keyof typeof range.weekdays]) {
+  for (const currentDay of days) {
+    const currentDayIndex = getDay(currentDay);
+    const dayName = ALL_WEEKDAYS[currentDayIndex];
+
+    if (range.weekdays.includes(dayName)) {
       const dayStr = format(currentDay, "yyyy-MM-dd");
 
       const { startUTC, endUTC } = getDailyBoundariesInUTC(

@@ -1,6 +1,6 @@
 import { useState, useMemo, useCallback } from "react";
 
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback/toast/context";
 import { MESSAGES } from "@/lib/messages";
 
 export function useFormErrors() {

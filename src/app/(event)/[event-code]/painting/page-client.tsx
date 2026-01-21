@@ -2,10 +2,10 @@
 
 import { useState } from "react";
 
+import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
@@ -15,11 +15,12 @@ import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { validateAvailabilityData } from "@/features/event/availability/validate-data";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
-import ScheduleGrid from "@/features/event/grid/grid";
+import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
-import { useToast } from "@/features/toast/context";
+import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
   eventCode,
@@ -37,8 +38,10 @@ export default function ClientPage({
   const router = useRouter();
 
   // AVAILABILITY STATE
-  const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability(initialData);
+  const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
+    initialData,
+    eventRange.type,
+  );
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
@@ -94,10 +97,15 @@ export default function ClientPage({
         return false;
       }
 
+      const payload_availability = Array.from(userAvailability).map((iso) => {
+        const date = parseISO(iso);
+        return timeslotToISOString(date, timeZone, eventRange.type);
+      });
+
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: Array.from(userAvailability),
+        availability: payload_availability,
         time_zone: timeZone,
       };
 
@@ -163,10 +171,8 @@ export default function ClientPage({
 
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
-        <div className="flex items-center space-x-2">
-          <h1 className="text-2xl">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
-        </div>
+        <h1 className="text-2xl">{eventName}</h1>
+        <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
           {submitButton}
@@ -223,7 +229,7 @@ export default function ClientPage({
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
-          eventRange={eventRange}
+          isWeekdayEvent={eventRange.type === "weekday"}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}

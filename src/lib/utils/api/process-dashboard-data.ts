@@ -19,7 +19,9 @@ function processSingleEvent(
     startDate: eventData.start_date!,
     endDate: eventData.end_date!,
     participants: eventData.participants,
+    timezone: eventData.time_zone,
   };
+
   return data;
 }
 

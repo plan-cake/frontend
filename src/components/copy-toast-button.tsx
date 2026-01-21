@@ -3,7 +3,7 @@
 import { CopyIcon } from "@radix-ui/react-icons";
 
 import ActionButton from "@/features/button/components/action";
-import { useToast } from "@/features/toast/context";
+import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 
 export default function CopyToastButton({ code }: { code: string }) {
