@@ -52,7 +52,7 @@ function ParticipantIcon({
   return (
     <div
       className={cn(
-        "bg-foreground text-background flex h-6 items-center justify-center rounded-full font-bold",
+        "bg-lion text-violet flex h-6 items-center justify-center rounded-full font-bold",
         !isFirst && "outline-background -ml-1 outline-2",
         // The "leading-[13px]" is to vertically center the text
         // By setting the line height to 1 pixel less than the font size, it should cut
