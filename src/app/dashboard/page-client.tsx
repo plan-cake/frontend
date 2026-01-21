@@ -4,11 +4,11 @@ import { useContext, useState } from "react";
 
 import Link from "next/link";
 
-import { Banner } from "@/components/banner/banner";
 import HeaderSpacer from "@/components/header-spacer";
 import EventGrid, {
   EventGridProps,
 } from "@/features/dashboard/components/event-grid";
+import { Banner } from "@/features/system-feedback";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { LoginContext } from "@/lib/providers";
 import { cn } from "@/lib/utils/classname";
