@@ -13,10 +13,7 @@ export type EventRangeAction =
   | { type: "SET_DATE_RANGE"; payload: { from: string; to: string } }
   | { type: "SET_START_TIME"; payload: string }
   | { type: "SET_END_TIME"; payload: string }
-  | {
-      type: "SET_WEEKDAYS";
-      payload: { weekdays: Weekday[] };
-    }
+  | { type: "SET_WEEKDAYS"; payload: Weekday[] }
   | { type: "SET_DURATION"; payload: number }
   | { type: "SET_TIMEZONE"; payload: string }
   | { type: "RESET" };
@@ -97,14 +94,9 @@ export function EventRangeReducer(
         return state;
       }
 
-      console.log("action.payload.weekdays", action.payload.weekdays);
-
       return {
         ...state,
-        weekdays: {
-          ...state.weekdays,
-          ...action.payload.weekdays,
-        },
+        weekdays: action.payload,
       };
     }
 

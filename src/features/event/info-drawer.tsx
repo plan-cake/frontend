@@ -7,7 +7,7 @@ import { InfoCircledIcon, Cross1Icon } from "@radix-ui/react-icons";
 import { addDays } from "date-fns";
 import { format } from "date-fns-tz/format";
 
-import { EventRange, days } from "@/core/event/types";
+import { EventRange, ALL_WEEKDAYS } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
 import {
@@ -95,9 +95,9 @@ export function EventInfo({
     startDate = eventRange.dateRange.from;
     endDate = eventRange.dateRange.to;
   } else {
-    const activeDays = days
-      .map((day, i) => (eventRange.weekdays[day] === 1 ? i : -1))
-      .filter((i) => i !== -1);
+    const activeDays = eventRange.weekdays.map((day) =>
+      ALL_WEEKDAYS.indexOf(day),
+    );
 
     if (activeDays.length > 0) {
       const referenceStart = new Date("2012-01-01T00:00:00");

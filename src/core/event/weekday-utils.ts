@@ -1,41 +1,21 @@
-import { WeekdayMap, Weekday, days } from "@/core/event/types";
+import { Weekday, ALL_WEEKDAYS } from "@/core/event/types";
 
-export function generateWeekdayMap(
+export function createWeekdayArray(
   startDay: number,
   endDay: number,
-): WeekdayMap {
-  const weekdays: WeekdayMap = {
-    Sun: 0,
-    Mon: 0,
-    Tue: 0,
-    Wed: 0,
-    Thu: 0,
-    Fri: 0,
-    Sat: 0,
-  };
-
-  for (let i = startDay; i <= endDay; i++) {
-    const dayKey: Weekday = days[i];
-    weekdays[dayKey] = 1;
+): Weekday[] {
+  if (startDay === -1 || endDay === -1) {
+    return [];
   }
-  return weekdays;
+
+  if (startDay <= endDay) {
+    return ALL_WEEKDAYS.slice(startDay, endDay + 1);
+  }
+  return [
+    ...ALL_WEEKDAYS.slice(startDay),
+    ...ALL_WEEKDAYS.slice(0, endDay + 1),
+  ];
 }
-
-// export function findRangeFromWeekdayMap(selectedDays: WeekdayMap): {
-//   startDay: Weekday | null;
-//   endDay: Weekday | null;
-// } {
-//   const selected = days.filter((day) => selectedDays[day] === 1);
-
-//   if (selected.length === 0) {
-//     return { startDay: null, endDay: null };
-//   }
-
-//   return {
-//     startDay: selected[0],
-//     endDay: selected[selected.length - 1],
-//   };
-// }
 
 export function findRangeFromWeekdayArray(selectedDays: Weekday[]): {
   startDay: Weekday | null;

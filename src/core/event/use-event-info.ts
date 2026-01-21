@@ -123,8 +123,7 @@ export function useEventInfo(initialData?: EventInformation) {
   );
 
   const setWeekdayRange = useCallback((weekdays: Weekday[]) => {
-    console.log("weekdays", weekdays);
-    dispatch({ type: "SET_WEEKDAYS", payload: { weekdays } });
+    dispatch({ type: "SET_WEEKDAYS", payload: weekdays });
   }, []);
 
   const resetEventInfo = useCallback(() => {

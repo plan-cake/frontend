@@ -1,5 +1,5 @@
 import { EventRange } from "@/core/event/types";
-import { generateWeekdayMap } from "@/core/event/weekday-utils";
+import { createWeekdayArray } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
 import {
   getTimezoneDetails,
@@ -45,7 +45,7 @@ export function processEventData(eventData: EventDetailsResponse): {
       },
     };
   } else {
-    const weekdays = generateWeekdayMap(start.weekday, end.weekday);
+    const weekdays = createWeekdayArray(start.weekday, end.weekday);
     eventRange = {
       type: "weekday",
       duration: eventData.duration || 0,
