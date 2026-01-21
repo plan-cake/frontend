@@ -12,21 +12,30 @@ export function processEventData(eventData: EventDetailsResponse): {
   timeslots: Date[];
   isCreator: boolean;
 } {
+  const isWeekEvent = eventData.event_type !== "Date";
+
   const eventName: string = eventData.title;
   const timeslots: Date[] = eventData.timeslots.map((ts) => {
-    return parseIsoDateTime(ts);
+    return parseIsoDateTime(
+      ts,
+      eventData.time_zone,
+      isWeekEvent ? "weekday" : "specific",
+    );
   });
+
   let eventRange: EventRange;
 
   const start = getTimezoneDetails({
     time: eventData.start_time,
     date: eventData.start_date!,
+    fromTZ: isWeekEvent ? eventData.time_zone : undefined,
     toTZ: eventData.time_zone,
   });
 
   const end = getTimezoneDetails({
     time: eventData.end_time,
     date: eventData.end_date!,
+    fromTZ: isWeekEvent ? eventData.time_zone : undefined,
     toTZ: eventData.time_zone,
   });
 

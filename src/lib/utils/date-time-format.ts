@@ -53,23 +53,55 @@ export function getTimezoneDetails({
   }
 }
 
+// Expects a timeslot Date object, timezone string, and event type
+// Returns an ISO string representation of the timeslot. If this is
+// specific date event, it returns the standard ISO string. If it's a
+// weekday event, then it the ISO string will be formatted in the
+// event's timezone.
+export function timeslotToISOString(
+  timeslot: Date,
+  timezone: string,
+  eventType: string,
+): string {
+  if (eventType === "specific") {
+    return timeslot.toISOString();
+  } else {
+    return formatInTimeZone(timeslot, timezone, "yyyy-MM-dd'T'HH:mm:ss");
+  }
+}
+
 /*
  * DATETIME CONVERSION UTILS
  * from python datetime string (ISO 8601) to Date object.
  *
  * Both function expect a datetime string without timezone information
- * (e.g., "2024-01-15T10:30:00") and appends "Z" to interpret
- * it as UTC, returning as a string or Date object respectively.
+ * (e.g., "2024-01-15T10:30:00"), the event's timezone, and event type.
+ * If the event type is "specific", it appends "Z" to interpret it as UTC
+ * and returns the corresponding Date object or string. If the event type
+ * is "weekday", it interprets the datetime string in the event's timezone.
  */
 
 // return Date object
-export function parseIsoDateTime(slotIso: string): Date {
-  return parseISO(slotIso + "Z");
+export function parseIsoDateTime(
+  slotIso: string,
+  timezone: string,
+  eventType: string,
+): Date {
+  if (eventType === "specific") {
+    return parseISO(slotIso + "Z");
+  } else {
+    const localIso = slotIso;
+    return fromZonedTime(localIso, timezone);
+  }
 }
 
 // return ISO string
-export function formatDateTime(timeslot: string): string {
-  return parseIsoDateTime(timeslot).toISOString();
+export function formatDateTime(
+  timeslot: string,
+  timezone: string,
+  eventType: string,
+): string {
+  return parseIsoDateTime(timeslot, timezone, eventType).toISOString();
 }
 
 /* DATE UTILS */

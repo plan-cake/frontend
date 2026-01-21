@@ -51,7 +51,11 @@ export default async function Page({ params }: EventCodePageProps) {
   const { eventName, eventRange, timeslots, isCreator } =
     processEventData(initialEventData);
 
-  const availabilityData = processAvailabilityData(initialAvailabilityData);
+  const availabilityData = processAvailabilityData(
+    initialAvailabilityData,
+    eventRange.type,
+    eventRange.timezone,
+  );
 
   return (
     <ClientPage
