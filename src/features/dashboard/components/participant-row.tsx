@@ -20,6 +20,7 @@ export default function ParticipantRow({
                   key="more-participants"
                   iconText={`+${participants.length - maxDisplay}`}
                   isFirst={false}
+                  label={`and ${participants.length - maxDisplay} more participant${participants.length - maxDisplay === 1 ? "" : "s"}`}
                 />
               );
             }
@@ -30,6 +31,7 @@ export default function ParticipantRow({
               key={participant}
               iconText={participant.charAt(0).toUpperCase()}
               isFirst={index === 0}
+              label={participant}
             />
           );
         })
@@ -45,9 +47,11 @@ export default function ParticipantRow({
 function ParticipantIcon({
   iconText,
   isFirst,
+  label,
 }: {
   iconText: string;
   isFirst: boolean;
+  label: string;
 }) {
   return (
     <div
@@ -59,6 +63,8 @@ function ParticipantIcon({
         // off the descender space and properly center the numbers
         iconText.length > 1 ? "min-w-6 px-1 leading-[13px]" : "w-6",
       )}
+      aria-label={label}
+      role="img" // For screen readers to read the label instead of the text
     >
       {iconText.length === 1 ? (
         <svg
