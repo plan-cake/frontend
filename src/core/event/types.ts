@@ -16,7 +16,7 @@ export type WeekdayMap = {
   [day in Weekday]: 0 | 1;
 };
 
-export const days: Array<Weekday> = [
+export const days: Weekday[] = [
   "Sun",
   "Mon",
   "Tue",
