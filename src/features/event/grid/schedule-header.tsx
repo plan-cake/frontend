@@ -69,7 +69,7 @@ export default function ScheduleHeader({
       )}
 
       {/* This container takes up the '1fr' space */}
-      <div className="relative grid h-full overflow-hidden">
+      <div className="relative grid h-full select-none overflow-hidden">
         <AnimatePresence initial={false} custom={direction} mode="popLayout">
           <motion.div
             key={currentPage}
