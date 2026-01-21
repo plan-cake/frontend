@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -19,6 +20,7 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
   eventCode,
@@ -36,8 +38,10 @@ export default function ClientPage({
   const router = useRouter();
 
   // AVAILABILITY STATE
-  const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability(initialData);
+  const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
+    initialData,
+    eventRange.type,
+  );
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
@@ -93,10 +97,15 @@ export default function ClientPage({
         return false;
       }
 
+      const payload_availability = Array.from(userAvailability).map((iso) => {
+        const date = parseISO(iso);
+        return timeslotToISOString(date, timeZone, eventRange.type);
+      });
+
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: Array.from(userAvailability),
+        availability: payload_availability,
         time_zone: timeZone,
       };
 

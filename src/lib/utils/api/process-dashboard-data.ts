@@ -18,7 +18,9 @@ function processSingleEvent(
     endTime: eventData.end_time,
     startDate: eventData.start_date!,
     endDate: eventData.end_date!,
+    timezone: eventData.time_zone,
   };
+
   return data;
 }
 

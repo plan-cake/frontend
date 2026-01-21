@@ -1,5 +1,5 @@
 import { EventInformation, WeekdayRange } from "@/core/event/types";
-import { findRangeFromWeekdayMap } from "@/core/event/weekday-utils";
+import { findRangeFromWeekdayArray } from "@/core/event/weekday-utils";
 import { EventEditorType } from "@/features/event/editor/types";
 import { MESSAGES } from "@/lib/messages";
 
@@ -37,7 +37,7 @@ export async function validateEventData(
   }
 
   if (eventRange.type === "weekday") {
-    const weekdayRange = findRangeFromWeekdayMap(
+    const weekdayRange = findRangeFromWeekdayArray(
       (data.eventRange as WeekdayRange).weekdays,
     );
     if (weekdayRange.startDay === null || weekdayRange.endDay === null) {
