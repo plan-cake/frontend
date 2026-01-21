@@ -21,6 +21,7 @@ export type DashboardEventProps = {
   endTime: string;
   startDate: string;
   endDate: string;
+  timezone: string;
 };
 
 export default function DashboardEvent({
@@ -28,6 +29,7 @@ export default function DashboardEvent({
   code,
   title,
   type,
+  timezone,
   ...dateTimeProps
 }: DashboardEventProps) {
   const router = useRouter();
@@ -43,16 +45,18 @@ export default function DashboardEvent({
       getTimezoneDetails({
         time: dateTimeProps.startTime,
         date: dateTimeProps.startDate,
+        fromTZ: type === "weekday" ? timezone : undefined,
       }),
-    [dateTimeProps.startTime, dateTimeProps.startDate],
+    [dateTimeProps.startTime, dateTimeProps.startDate, timezone, type],
   );
   const end = useMemo(
     () =>
       getTimezoneDetails({
         time: dateTimeProps.endTime,
         date: dateTimeProps.endDate,
+        fromTZ: type === "weekday" ? timezone : undefined,
       }),
-    [dateTimeProps.endTime, dateTimeProps.endDate],
+    [dateTimeProps.endTime, dateTimeProps.endDate, timezone, type],
   );
 
   return (

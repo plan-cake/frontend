@@ -1,65 +1,80 @@
-"use client";
-
-import { useMemo } from "react";
-
-interface TimeBlockProps {
-  timeColWidth: number;
-  numQuarterHours: number;
-  startHour: number;
-  visibleDaysCount: number;
-  children: React.ReactNode;
-}
+import {
+  TIME_LABEL_WIDTH,
+  SIDE_WIDTH,
+} from "@/features/event/grid/lib/constants";
+import { TimeBlockProps } from "@/features/event/grid/timeblocks/props";
+import { cn } from "@/lib/utils/classname";
 
 export default function BaseTimeBlock({
-  timeColWidth,
+  ref,
   numQuarterHours,
-  startHour,
   visibleDaysCount,
   children,
+  hasNext = false,
+  hasPrev = false,
 }: TimeBlockProps) {
-  // generate hour labels for the time column
-  const hoursLabel = useMemo(() => {
-    return Array.from({ length: numQuarterHours }, (_, i) => {
-      const hour24 = startHour + Math.floor(i / 4);
-      const hour12 = hour24 % 12 || 12;
-      const period = hour24 < 12 ? "AM" : "PM";
-      return `${hour12} ${period}`;
-    });
-  }, [startHour, numQuarterHours]);
-
   return (
-    <div className="flex grow flex-row">
-      {/* time labels */}
+    <div
+      ref={ref}
+      className="relative isolate grid"
+      style={{
+        gridTemplateColumns: `${TIME_LABEL_WIDTH}px 1fr ${SIDE_WIDTH}px`,
+      }}
+    >
       <div
-        className="pointer-events-none"
+        className={cn(
+          "pointer-events-none relative grid",
+          hasPrev &&
+            "divide-foreground/75 border-foreground/75 divide-y divide-dashed border border-l-0",
+        )}
         style={{
-          width: `${timeColWidth}px`,
-          display: "grid",
+          gridTemplateColumns: `${TIME_LABEL_WIDTH}px`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
+          maskImage: "linear-gradient(to left, black, transparent)",
+          WebkitMaskImage: "linear-gradient(to left, black, transparent)",
         }}
       >
-        {Array.from({ length: numQuarterHours }).map((_, i) =>
-          i % 4 === 0 ? (
-            <div
-              key={`label-${i}`}
-              className="relative flex items-start justify-end pr-2 text-right text-xs"
-            >
-              <span className="absolute -top-2">{hoursLabel[i]}</span>
-            </div>
-          ) : (
-            <div key={`empty-${i}`} />
-          ),
-        )}
+        {Array.from({ length: numQuarterHours }).map((_, idx) => (
+          <div
+            key={`border-left-${idx}`}
+            style={{ gridRow: idx + 1, gridColumn: 1 }}
+          />
+        ))}
       </div>
 
       <div
-        className="grid w-full gap-x-[1px] border border-gray-400 bg-gray-400"
+        className={cn(
+          "bg-foreground border-foreground/75 grid w-full gap-x-[1px] border",
+          hasPrev && "border-l-0",
+          hasNext && "border-r-0",
+        )}
         style={{
           gridTemplateColumns: `repeat(${visibleDaysCount}, 1fr)`,
           gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
         }}
       >
         {children}
+      </div>
+
+      <div
+        className={cn(
+          "pointer-events-none relative grid",
+          hasNext &&
+            "divide-foreground/75 border-foreground/75 divide-y divide-dashed border border-r-0",
+        )}
+        style={{
+          gridTemplateColumns: `${SIDE_WIDTH}px`,
+          gridTemplateRows: `repeat(${numQuarterHours}, minmax(20px, 1fr))`,
+          maskImage: "linear-gradient(to right, black, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, black, transparent)",
+        }}
+      >
+        {Array.from({ length: numQuarterHours }).map((_, idx) => (
+          <div
+            key={`border-right-${idx}`}
+            style={{ gridRow: idx + 1, gridColumn: 1 }}
+          />
+        ))}
       </div>
     </div>
   );

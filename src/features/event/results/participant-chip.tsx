@@ -1,6 +1,6 @@
 import { TrashIcon } from "@radix-ui/react-icons";
 
-import ConfirmationDialog from "@/components/confirmation-dialog";
+import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
 
 export default function ParticipantChip({

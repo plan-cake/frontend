@@ -3,6 +3,15 @@ import * as Toast from "@radix-ui/react-toast";
 
 import { cn } from "@/lib/utils/classname";
 
+type BaseToastProps = {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title: string;
+  message: string;
+  icon: React.ReactNode;
+  toastStyle: string;
+};
+
 export default function BaseToast({
   open,
   onOpenChange,
@@ -10,14 +19,7 @@ export default function BaseToast({
   message,
   icon,
   toastStyle,
-}: {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  title: string;
-  message: string;
-  icon: React.ReactNode;
-  toastStyle: string;
-}) {
+}: BaseToastProps) {
   return (
     <Toast.Root
       className={cn(

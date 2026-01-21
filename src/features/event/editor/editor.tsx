@@ -5,7 +5,6 @@ import { useState, memo } from "react";
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-import RateLimitBanner from "@/components/banner/rate-limit";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import SegmentedControl from "@/components/segmented-control";
@@ -19,9 +18,9 @@ import AdvancedOptions from "@/features/event/editor/advanced-options";
 import DateRangeSelection from "@/features/event/editor/date-range/selector";
 import { EventEditorType } from "@/features/event/editor/types";
 import { validateEventData } from "@/features/event/editor/validate-data";
-import ScheduleGrid from "@/features/event/grid/grid";
-import GridPreviewDialog from "@/features/event/grid/preview-dialog";
+import { ScheduleGrid, GridPreviewDialog } from "@/features/event/grid";
 import FormSelectorField from "@/features/selector/components/selector-field";
+import { RateLimitBanner } from "@/features/system-feedback";
 import submitEvent from "@/lib/utils/api/submit-event";
 import { cn } from "@/lib/utils/classname";
 
@@ -186,13 +185,13 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
 
       <div
         className={cn(
-          "bg-panel rounded-3xl p-4 md:hidden",
+          "bg-panel rounded-3xl p-4 pr-6 pt-6 md:hidden",
           mobileTab === "details" ? "hidden" : "block",
         )}
       >
         <MemoizedScheduleGrid
           mode="preview"
-          eventRange={eventRange}
+          isWeekdayEvent={eventRange.type === "weekday"}
           disableSelect={true}
           timezone={eventRange.timezone}
           timeslots={timeslots}

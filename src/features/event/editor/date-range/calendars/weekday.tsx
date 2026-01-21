@@ -1,92 +1,71 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-import { days, WeekdayMap, Weekday } from "@/core/event/types";
+import { ALL_WEEKDAYS, Weekday } from "@/core/event/types";
 import { cn } from "@/lib/utils/classname";
 
 type WeekdayCalendarProps = {
-  selectedDays: WeekdayMap;
-  onChange: (map: WeekdayMap) => void;
+  selectedDays: Weekday[];
+  onChange: (days: Weekday[]) => void;
 };
 
 export default function WeekdayCalendar({
   selectedDays,
   onChange,
 }: WeekdayCalendarProps) {
-  const [startDay, setStartDay] = useState<Weekday | null>(null);
+  const [anchorIndex, setAnchorIndex] = useState<number | null>(null);
 
-  useEffect(() => {
-    const hasSelection = Object.values(selectedDays).some((val) => val === 1);
-    if (hasSelection) {
-      return;
-    }
-
-    const today = new Date();
-    const dayOfWeek = today.getDay();
-    const todayKey = days[dayOfWeek];
-
-    const newSelection: WeekdayMap = { ...selectedDays };
-    newSelection[todayKey] = 1;
-
-    onChange(newSelection);
-  }, [selectedDays, onChange]);
-
-  const handleRangeSelect = (day: Weekday) => {
-    if (!startDay) {
-      setStartDay(day);
-
-      const newSelection: WeekdayMap = { ...selectedDays };
-      days.forEach((d) => (newSelection[d] = 0));
-      newSelection[day] = 1;
-      onChange(newSelection);
+  const handleDayClick = (index: number) => {
+    if (anchorIndex === null) {
+      setAnchorIndex(index);
+      onChange([ALL_WEEKDAYS[index]]);
     } else {
-      // End of selection (Complete Range)
-      const newSelection: WeekdayMap = { ...selectedDays };
-      days.forEach((d) => (newSelection[d] = 0));
+      const min = Math.min(anchorIndex, index);
+      const max = Math.max(anchorIndex, index);
 
-      const startIndex = days.indexOf(startDay);
-      const endIndex = days.indexOf(day);
+      const newRange = ALL_WEEKDAYS.slice(min, max + 1);
 
-      const [min, max] = [
-        Math.min(startIndex, endIndex),
-        Math.max(startIndex, endIndex),
-      ];
-
-      for (let i = min; i <= max; i++) {
-        newSelection[days[i]] = 1;
-      }
-
-      setStartDay(null);
-      onChange(newSelection);
+      onChange(newRange);
+      setAnchorIndex(null);
     }
   };
 
-  const activeIndices = days
-    .map((day, i) => (selectedDays[day] === 1 ? i : -1))
+  const selectedIndices = selectedDays
+    .map((d) => ALL_WEEKDAYS.indexOf(d))
     .filter((i) => i !== -1);
 
-  const rangeStart = activeIndices.length ? Math.min(...activeIndices) : -1;
-  const rangeEnd = activeIndices.length ? Math.max(...activeIndices) : -1;
+  const start = selectedIndices.length > 0 ? Math.min(...selectedIndices) : -1;
+  const end = selectedIndices.length > 0 ? Math.max(...selectedIndices) : -1;
 
   return (
     <div className="flex w-full select-none flex-row flex-wrap">
-      {days.map((day, index) => {
-        const isActive = index >= rangeStart && index <= rangeEnd;
-        const isStart = index === rangeStart;
-        const isEnd = index === rangeEnd;
+      {ALL_WEEKDAYS.map((day, index) => {
+        const isActive = index >= start && index <= end;
+        const isRangeStart = index === start;
+        const isRangeEnd = index === end;
 
         return (
           <button
             key={day}
-            onClick={() => handleRangeSelect(day)}
+            onClick={() => handleDayClick(index)}
             className={cn(
               "flex h-8 w-10 items-center justify-center px-6",
               "hover:bg-accent/25 active:bg-accent/40",
-              !isActive && "rounded-full",
+
+              // Inactive State
+              !isActive && "text-muted-foreground rounded-full",
+
+              // Active State
               isActive && "bg-accent/15 text-accent",
-              isStart && "rounded-l-full",
-              isEnd && "rounded-r-full",
+
+              // Contiguous Rounding Logic
+              isActive && isRangeStart && "rounded-l-full",
+              isActive && isRangeEnd && "rounded-r-full",
+              isActive && !isRangeStart && !isRangeEnd && "rounded-none",
+
+              // Single Day Case (Start == End)
+              isActive && isRangeStart && isRangeEnd && "rounded-full",
             )}
           >
             {day}

@@ -1,5 +1,5 @@
 import { EventRange } from "@/core/event/types";
-import { generateWeekdayMap } from "@/core/event/weekday-utils";
+import { createWeekdayArray } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
 import {
   getTimezoneDetails,
@@ -12,21 +12,30 @@ export function processEventData(eventData: EventDetailsResponse): {
   timeslots: Date[];
   isCreator: boolean;
 } {
+  const isWeekEvent = eventData.event_type !== "Date";
+
   const eventName: string = eventData.title;
   const timeslots: Date[] = eventData.timeslots.map((ts) => {
-    return parseIsoDateTime(ts);
+    return parseIsoDateTime(
+      ts,
+      eventData.time_zone,
+      isWeekEvent ? "weekday" : "specific",
+    );
   });
+
   let eventRange: EventRange;
 
   const start = getTimezoneDetails({
     time: eventData.start_time,
     date: eventData.start_date!,
+    fromTZ: isWeekEvent ? eventData.time_zone : undefined,
     toTZ: eventData.time_zone,
   });
 
   const end = getTimezoneDetails({
     time: eventData.end_time,
     date: eventData.end_date!,
+    fromTZ: isWeekEvent ? eventData.time_zone : undefined,
     toTZ: eventData.time_zone,
   });
 
@@ -45,7 +54,7 @@ export function processEventData(eventData: EventDetailsResponse): {
       },
     };
   } else {
-    const weekdays = generateWeekdayMap(start.weekday, end.weekday);
+    const weekdays = createWeekdayArray(start.weekday, end.weekday);
     eventRange = {
       type: "weekday",
       duration: eventData.duration || 0,
