@@ -2,6 +2,8 @@ import { useMemo, useState } from "react";
 
 import { formatInTimeZone, toZonedTime } from "date-fns-tz";
 
+import { MESSAGES } from "@/lib/messages";
+
 /**
  * This hook manages the state and logic for displaying the grid view. It
  * processes the provided timeslots into structured timeblocks, handles
@@ -131,7 +133,7 @@ function organizeGridView(
       timeBlocks: [],
       visibleDays: [],
       totalPages: 1,
-      error: "No slots available",
+      error: MESSAGES.ERROR_EVENT_RANGE_INVALID,
     };
   }
 
