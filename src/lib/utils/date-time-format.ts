@@ -142,8 +142,6 @@ export function formatDate(date: string, fmt: string): string {
 export function formatTimeRange(startTime: string, endTime: string): string {
   if (!startTime || !endTime) return "";
 
-  console.log({ startTime, endTime });
-
   if (startTime === "00:00" && endTime === "00:00") {
     return "All day";
   }
