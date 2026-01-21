@@ -8,13 +8,7 @@ export function createWeekdayArray(
     return [];
   }
 
-  if (startDay <= endDay) {
-    return ALL_WEEKDAYS.slice(startDay, endDay + 1);
-  }
-  return [
-    ...ALL_WEEKDAYS.slice(startDay),
-    ...ALL_WEEKDAYS.slice(0, endDay + 1),
-  ];
+  return ALL_WEEKDAYS.slice(startDay, endDay + 1);
 }
 
 export function findRangeFromWeekdayArray(selectedDays: Weekday[]): {
