@@ -1,18 +1,14 @@
-"use client";
-
-import { useState } from "react";
-
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import { toZonedTime } from "date-fns-tz";
+import { AnimatePresence, motion } from "framer-motion";
 
 import {
   AvailabilitySet,
   ResultsAvailabilityMap,
 } from "@/core/availability/types";
 import { createEmptyUserAvailability } from "@/core/availability/utils";
-import { EventRange } from "@/core/event/types";
-import useGenerateTimeSlots from "@/features/event/grid/lib/use-generate-timeslots";
+import useGridinfo from "@/features/event/grid/lib/use-grid";
 import ScheduleHeader from "@/features/event/grid/schedule-header";
+import TimeColumn from "@/features/event/grid/time-column";
 import InteractiveTimeBlock from "@/features/event/grid/timeblocks/interactive";
 import PreviewTimeBlock from "@/features/event/grid/timeblocks/preview";
 import ResultsTimeBlock from "@/features/event/grid/timeblocks/results";
@@ -21,9 +17,9 @@ import { cn } from "@/lib/utils/classname";
 
 interface ScheduleGridProps {
   mode: "paint" | "view" | "preview";
-  eventRange: EventRange;
   timeslots: Date[];
   timezone: string;
+  isWeekdayEvent?: boolean;
 
   disableSelect?: boolean;
 
@@ -38,11 +34,28 @@ interface ScheduleGridProps {
   onToggleSlot?: (slotIso: string, togglingOn: boolean) => void;
 }
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? "50%" : "-50%",
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? "50%" : "-50%",
+    opacity: 0,
+  }),
+};
+
 export default function ScheduleGrid({
-  eventRange,
   timeslots,
   timezone,
   mode = "preview",
+  isWeekdayEvent = false,
   availabilities = {},
   numParticipants = 0,
   hoveredSlot,
@@ -52,29 +65,24 @@ export default function ScheduleGrid({
 }: ScheduleGridProps) {
   const isMobile = useCheckMobile();
 
-  const { timeBlocks, dayGroupedSlots, numDays, error } = useGenerateTimeSlots(
-    eventRange,
-    timeslots,
-    timezone,
-  );
+  const {
+    timeBlocks,
+    visibleDays,
+    currentPage,
+    totalPages,
+    direction,
+    paginate,
+    error,
+  } = useGridinfo(timeslots, timezone, isMobile ? 4 : 7);
 
-  const maxDaysVisible = isMobile ? 4 : 7;
-  const [currentPage, setCurrentPage] = useState(0);
-  const totalPages = Math.max(1, Math.ceil(numDays / maxDaysVisible));
+  const hasPrevPage = currentPage > 0;
+  const hasNextPage = currentPage < totalPages - 1;
 
-  const startIndex = currentPage * maxDaysVisible;
-  const endIndex = Math.min(startIndex + maxDaysVisible, numDays);
-
-  const visibleDays = dayGroupedSlots.slice(startIndex, endIndex);
-  const visibleTimeSlots = visibleDays.flatMap((day) => day.timeslots);
-
-  if (numDays <= 0 || numDays > 30)
-    return <GridError message="Invalid or missing date range" />;
   if (error) return <GridError message={error} />;
 
   return (
     <div
-      className="relative mb-8 grid w-full grid-cols-[1fr_20px] grid-rows-[auto_1fr]"
+      className="relative mb-8 grid w-full grid-cols-[1fr] grid-rows-[auto_1fr]"
       style={{ maxHeight: "90%" }}
     >
       <ScheduleHeader
@@ -82,75 +90,77 @@ export default function ScheduleGrid({
         visibleDays={visibleDays}
         currentPage={currentPage}
         totalPages={totalPages}
-        onPrevPage={() => setCurrentPage((p) => Math.max(p - 1, 0))}
-        onNextPage={() =>
-          setCurrentPage((p) => Math.min(p + 1, totalPages - 1))
-        }
+        isWeekdayEvent={isWeekdayEvent}
+        onPrevPage={() => paginate(-1)}
+        onNextPage={() => paginate(1)}
+        direction={direction}
       />
 
       <div
         className={cn(
-          "flex flex-grow flex-col gap-4 pt-2",
+          "relative flex-grow select-none overflow-x-hidden pb-1 pt-2",
           mode === "preview" && "overflow-y-auto",
         )}
       >
-        {timeBlocks.map((block, i) => {
-          // filter visibleTimeSlots to those within this block's hours
-          const blockTimeSlots = visibleTimeSlots.filter((slot) => {
-            const localSlot = toZonedTime(slot, timezone);
-            const hour = localSlot.getHours();
-            return hour >= block.startHour && hour <= block.endHour;
-          });
+        <div className="z-5 pointer-events-none absolute left-0 top-2 flex w-full flex-col gap-4">
+          {timeBlocks.map((block, i) => (
+            <TimeColumn
+              key={`labels-${i}`}
+              numQuarterHours={block.numQuarterHours}
+              startHour={block.startHour}
+              isPreview={mode === "preview"}
+            />
+          ))}
+        </div>
 
-          const numQuarterHours = (block.endHour - block.startHour + 1) * 4;
+        <div className="relative flex-grow">
+          <AnimatePresence initial={false} custom={direction} mode="popLayout">
+            <motion.div
+              key={currentPage}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ type: "tween", ease: "easeInOut" }}
+              className="flex flex-col gap-4"
+            >
+              {timeBlocks.map((block, i) => {
+                const commonProps = {
+                  numQuarterHours: block.numQuarterHours,
+                  numVisibleDays: visibleDays.length,
+                  timeslots: block.timeslots,
+                  hasPrev: hasPrevPage,
+                  hasNext: hasNextPage,
+                };
 
-          if (mode === "preview") {
-            return (
-              <PreviewTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-              />
-            );
-          } else if (mode === "paint") {
-            return (
-              <InteractiveTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-                availability={userAvailability}
-                onToggle={onToggleSlot}
-              />
-            );
-          } else if (mode === "view") {
-            return (
-              <ResultsTimeBlock
-                key={i}
-                timeColWidth={50}
-                numQuarterHours={numQuarterHours}
-                startHour={block.startHour}
-                timeslots={blockTimeSlots}
-                numVisibleDays={visibleDays.length}
-                visibleDayKeys={visibleDays.map((d) => d.dayKey)}
-                userTimezone={timezone}
-                hoveredSlot={hoveredSlot}
-                availabilities={availabilities}
-                numParticipants={numParticipants}
-                onHoverSlot={setHoveredSlot}
-              />
-            );
-          }
-        })}
+                if (mode === "preview") {
+                  return <PreviewTimeBlock key={i} {...commonProps} />;
+                } else if (mode === "paint") {
+                  return (
+                    <InteractiveTimeBlock
+                      key={i}
+                      {...commonProps}
+                      availability={userAvailability}
+                      onToggle={onToggleSlot}
+                    />
+                  );
+                } else if (mode === "view") {
+                  return (
+                    <ResultsTimeBlock
+                      key={i}
+                      {...commonProps}
+                      hoveredSlot={hoveredSlot}
+                      availabilities={availabilities}
+                      numParticipants={numParticipants}
+                      onHoverSlot={setHoveredSlot}
+                    />
+                  );
+                }
+              })}
+            </motion.div>
+          </AnimatePresence>
+        </div>
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
-import ScheduleGrid from "@/features/event/grid/grid";
+import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
@@ -119,7 +119,7 @@ export default function ClientPage({
       <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           mode="view"
-          eventRange={eventRange}
+          isWeekdayEvent={eventRange.type === "weekday"}
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}

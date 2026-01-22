@@ -38,20 +38,24 @@ function TimeSlot({
     <div
       data-slot-iso={slotIso}
       draggable={false}
+      onContextMenu={(e) => e.preventDefault()}
       className={cn(
         "bg-background relative",
         disableSelect
           ? "bg-panel pointer-events-none cursor-not-allowed"
           : "cursor-cell",
         cellClasses,
+        "select-none",
         isHovered &&
           "z-5 scale-y-130 scale-x-110 rounded-full border-none shadow-xl ring-1 md:scale-x-105",
       )}
       style={{
         gridColumn,
         gridRow,
-        touchAction: "none",
+        touchAction: "manipulation",
         userSelect: "none",
+        WebkitUserSelect: "none",
+        WebkitTouchCallout: "none",
         ...style,
       }}
       {...eventHandlers}

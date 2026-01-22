@@ -89,7 +89,7 @@ export default function GridPreviewDialog({
           <motion.div className="flex h-[85%] grow flex-col space-y-4">
             <ScheduleGrid
               mode="preview"
-              eventRange={eventRange}
+              isWeekdayEvent={eventRange.type === "weekday"}
               disableSelect
               timezone={timezone}
               timeslots={timeslots}
@@ -120,8 +120,8 @@ export default function GridPreviewDialog({
           <motion.div className="h-full grow space-y-4">
             <ScheduleGrid
               mode="preview"
-              eventRange={eventRange}
               disableSelect={true}
+              isWeekdayEvent={eventRange.type === "weekday"}
               timezone={eventRange.timezone}
               timeslots={timeslots}
             />
