@@ -152,7 +152,7 @@ export default function ClientPage({
             "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
           )}
         >
-          <section className="hidden md:block">{banners}</section>
+          <div className="hidden md:block">{banners}</div>
 
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
