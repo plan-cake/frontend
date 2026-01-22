@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
+import ParticipantRow from "@/features/dashboard/components/participant-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
 import {
   formatTimeRange,
@@ -17,6 +18,7 @@ export type DashboardEventProps = {
   code: string;
   title: string;
   type: "specific" | "weekday";
+  participants: string[];
   startTime: string;
   endTime: string;
   startDate: string;
@@ -29,6 +31,7 @@ export default function DashboardEvent({
   code,
   title,
   type,
+  participants,
   timezone,
   ...dateTimeProps
 }: DashboardEventProps) {
@@ -78,7 +81,10 @@ export default function DashboardEvent({
           <ClockIcon className="h-5 w-5" />
           {formatTimeRange(start.time, end.time)}
         </div>
-        <div className="mt-2 flex items-center gap-2">
+        <div className="mt-1.5">
+          <ParticipantRow participants={participants} maxDisplay={7} />
+        </div>
+        <div className="mt-2.5 flex items-center gap-2">
           <DashboardCopyButton code={code} />
           {myEvent && (
             <button className="cursor-pointer" onClick={navigateToEdit}>
