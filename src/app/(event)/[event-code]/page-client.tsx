@@ -13,8 +13,7 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
-import { hasMutualAvailability } from "@/features/event/results/utils";
-import { Banner } from "@/features/system-feedback";
+import { getResultBanners } from "@/features/event/results/banners";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
@@ -91,21 +90,12 @@ export default function ClientPage({
   }, []);
 
   /* BANNERS */
-  const banners =
-    optimisticParticipants.length === 0 ? (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">No one filled out a time yet!</p>
-        <p>Add your availability by clicking the button above.</p>
-      </Banner>
-    ) : !hasMutualAvailability(
-        optimisticAvailabilities,
-        optimisticParticipants,
-      ) ? (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">Oh dear,</p>
-        <p>No one is available at the same time.</p>
-      </Banner>
-    ) : null;
+  const banners = getResultBanners(
+    optimisticAvailabilities,
+    optimisticParticipants,
+    timeslots,
+    eventRange.type === "weekday",
+  );
 
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
