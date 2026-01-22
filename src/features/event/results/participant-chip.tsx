@@ -35,10 +35,10 @@ export default function ParticipantChip({
       <li
         style={{ animationDelay: `${delay}s` }}
         className={cn(
-          "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200",
+          "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm font-bold transition-all duration-200",
           // Availability Logic
           !isAvailable && "bg-gray-200/25 line-through opacity-50",
-          isAvailable && "bg-accent/25 text-accent-text opacity-100",
+          isAvailable && "bg-lion text-violet opacity-100",
           // Wiggle/Remove Logic
           isRemoving &&
             "animate-wiggle hover:bg-red group scale-105 hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
