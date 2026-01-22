@@ -1,15 +1,18 @@
 import React from "react";
 
+import { AuthFieldArray } from "@/features/auth/auth-array";
 import { RateLimitBanner } from "@/features/system-feedback";
 
 interface AuthPageLayoutProps {
   title: string;
+  fields: AuthFieldArray;
   children: React.ReactNode;
   rateLimitError?: string;
 }
 
 export default function AuthPageLayout({
   title,
+  fields,
   children,
   rateLimitError,
 }: AuthPageLayoutProps) {
@@ -28,7 +31,12 @@ export default function AuthPageLayout({
         {/* Rate Limit Error */}
         {rateLimitError && <RateLimitBanner>{rateLimitError}</RateLimitBanner>}
 
-        {/* Page-specific content */}
+        {/* Render fields */}
+        {fields.map((field, index) => (
+          <React.Fragment key={index}>{field}</React.Fragment>
+        ))}
+
+        {/* Page-specific content (buttons, links, checkboxes, etc.) */}
         {children}
       </form>
     </div>

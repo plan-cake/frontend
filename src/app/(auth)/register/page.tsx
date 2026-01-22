@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 import AuthPageLayout from "@/components/layout/auth-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
-import PasswordCriteria from "@/features/auth/components/password-criteria";
 import PasswordValidation from "@/features/auth/components/password-validation";
 import ActionButton from "@/features/button/components/action";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
@@ -102,55 +101,54 @@ export default function Page() {
   };
 
   return (
-    <AuthPageLayout title="register" rateLimitError={errors.rate_limit}>
-      {/* Email */}
-      <TextInputField
-        id={"email"}
-        type="email"
-        label="Email*"
-        value={email}
-        onChange={handleEmailChange}
-        outlined
-        error={errors.email || errors.api}
-      />
+    <AuthPageLayout
+      title="register"
+      rateLimitError={errors.rate_limit}
+      fields={[
+        // Email
+        <TextInputField
+          id="email"
+          type="email"
+          label="Email*"
+          value={email}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
+        />,
 
-      {/* Password */}
-      <TextInputField
-        id={"password"}
-        type="password"
-        label="Password*"
-        value={password}
-        onChange={(value) => {
-          setPassword(value);
-        }}
-        onFocus={() => setShowPasswordCriteria(true)}
-        onBlur={() => {
-          if (!password || passwordIsStrong()) {
-            setShowPasswordCriteria(false);
-          }
-        }}
-        outlined
-        error={errors.password || errors.api}
-      />
+        // Password
+        <TextInputField
+          id="password"
+          type="password"
+          label="Password*"
+          value={password}
+          onChange={(value) => {
+            setPassword(value);
+          }}
+          onFocus={() => setShowPasswordCriteria(true)}
+          onBlur={() => {
+            if (!password || passwordIsStrong()) {
+              setShowPasswordCriteria(false);
+            }
+          }}
+          outlined
+          error={errors.password || errors.api}
+          showPasswordCriteria={showPasswordCriteria}
+          passwordCriteria={passwordCriteria}
+        />,
 
-      {/* Password Errors */}
-      {showPasswordCriteria && (
-        <div className="-mt-2 mb-2 w-full px-4">
-          <PasswordCriteria criteria={passwordCriteria} />
-        </div>
-      )}
-
-      {/* Retype Password */}
-      <TextInputField
-        id={"confirmPassword"}
-        type="password"
-        label="Retype Password*"
-        value={confirmPassword}
-        onChange={handleConfirmPasswordChange}
-        outlined
-        error={errors.confirmPassword || errors.api}
-      />
-
+        // Retype Password
+        <TextInputField
+          id="confirmPassword"
+          type="password"
+          label="Retype Password*"
+          value={confirmPassword}
+          onChange={handleConfirmPasswordChange}
+          outlined
+          error={errors.confirmPassword || errors.api}
+        />,
+      ]}
+    >
       {/* Register Button */}
       <div className="flex w-full justify-end">
         <ActionButton

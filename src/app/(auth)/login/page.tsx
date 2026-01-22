@@ -85,29 +85,33 @@ export default function Page() {
   };
 
   return (
-    <AuthPageLayout title="login" rateLimitError={errors.rate_limit}>
-      {/* Email */}
-      <TextInputField
-        id={"email"}
-        type="email"
-        label="Email*"
-        value={email}
-        onChange={handleEmailChange}
-        outlined
-        error={errors.email || errors.api}
-      />
+    <AuthPageLayout
+      title="login"
+      rateLimitError={errors.rate_limit}
+      fields={[
+        // Email
+        <TextInputField
+          id="email"
+          type="email"
+          label="Email*"
+          value={email}
+          onChange={handleEmailChange}
+          outlined
+          error={errors.email || errors.api}
+        />,
 
-      {/* Password */}
-      <TextInputField
-        id={"password"}
-        type="password"
-        label="Password*"
-        value={password}
-        onChange={handlePasswordChange}
-        outlined
-        error={errors.password || errors.api}
-      />
-
+        // Password
+        <TextInputField
+          id="password"
+          type="password"
+          label="Password*"
+          value={password}
+          onChange={handlePasswordChange}
+          outlined
+          error={errors.password || errors.api}
+        />,
+      ]}
+    >
       <div className="flex w-full items-start justify-between">
         <div className="m-0 flex flex-col gap-2">
           {/* Remember Me Checkbox */}
