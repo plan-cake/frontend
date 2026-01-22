@@ -13,6 +13,8 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
+import { hasMutualAvailability } from "@/features/event/results/utils";
+import { Banner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
@@ -88,6 +90,23 @@ export default function ClientPage({
     return () => observer.disconnect();
   }, []);
 
+  /* BANNERS */
+  const banners =
+    optimisticParticipants.length === 0 ? (
+      <Banner type="info" noTitle showPing>
+        <p className="font-semibold">No one filled out a time yet!</p>
+        <p>Add your availability by clicking the button above.</p>
+      </Banner>
+    ) : !hasMutualAvailability(
+        optimisticAvailabilities,
+        optimisticParticipants,
+      ) ? (
+      <Banner type="info" noTitle showPing>
+        <p className="font-semibold">Oh dear,</p>
+        <p>No one is available at the same time.</p>
+      </Banner>
+    ) : null;
+
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
@@ -116,6 +135,8 @@ export default function ClientPage({
         </div>
       </div>
 
+      <div className="md:hidden">{banners}</div>
+
       <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           mode="view"
@@ -141,6 +162,8 @@ export default function ClientPage({
             "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
           )}
         >
+          <section className="hidden md:block">{banners}</section>
+
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
             participants={optimisticParticipants}
