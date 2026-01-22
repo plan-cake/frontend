@@ -39,9 +39,9 @@ export function Banner({
     >
       <div className="relative flex">
         {showPing && (
-          <span className="bg-accent/50 absolute inline-flex h-full w-full animate-ping rounded-full"></span>
+          <span className="bg-accent/50 absolute z-0 inline-flex h-full w-full animate-ping rounded-full"></span>
         )}
-        <Icon className="h-5 w-5 shrink-0" />
+        <Icon className="relative z-10 h-5 w-5 shrink-0" />
       </div>
       <div>
         {!props.noTitle && <h2 className="text-lg font-bold">{props.title}</h2>}

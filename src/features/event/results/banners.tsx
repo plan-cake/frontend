@@ -8,10 +8,14 @@ export function getResultBanners(
   timeslots: Date[],
   isWeekEvent: boolean,
 ) {
-  if (!isWeekEvent && timeslots[timeslots.length - 1] < new Date()) {
+  if (
+    !isWeekEvent &&
+    timeslots.length > 0 &&
+    timeslots[timeslots.length - 1] < new Date()
+  ) {
     return (
       <Banner type="info" noTitle showPing>
-        <p className="font-semibold">This event has past.</p>
+        <p className="font-semibold">This event has passed.</p>
       </Banner>
     );
   } else if (participants.length === 0) {
