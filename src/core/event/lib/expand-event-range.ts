@@ -77,29 +77,18 @@ function generateSlotsForSpecificRange(range: SpecificDateRange): Date[] {
   }
 
   // Validate Duration
-  const startDateStr = range.dateRange.from.split("T")[0];
-  const endDateStr = range.dateRange.to.split("T")[0];
+  const startDate = parseISO(range.dateRange.from.split("T")[0]);
+  const endDate = parseISO(range.dateRange.to.split("T")[0]);
 
-  const { startUTC: eventStartUTC } = getDailyBoundariesInUTC(
-    startDateStr,
-    range.timezone,
-    range.timeRange,
-  );
-  const { endUTC: eventEndUTC } = getDailyBoundariesInUTC(
-    endDateStr,
-    range.timezone,
-    range.timeRange,
-  );
-
-  if (checkDateRange(eventStartUTC, eventEndUTC)) {
+  if (checkDateRange(startDate, endDate)) {
     return [];
   }
 
   // Generate Slots
   const slots: Date[] = [];
   const days = eachDayOfInterval({
-    start: parseISO(startDateStr),
-    end: parseISO(endDateStr),
+    start: startDate,
+    end: endDate,
   });
 
   for (const day of days) {

@@ -1,4 +1,4 @@
-export type ToastType = "error" | "copy" | "success" | "info";
+import { ToastType } from "@/features/system-feedback/type";
 
 export type ToastData = {
   id: number;
