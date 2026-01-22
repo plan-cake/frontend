@@ -8,7 +8,7 @@ export function getResultBanners(
   timeslots: Date[],
   isWeekEvent: boolean,
 ) {
-  if (!isWeekEvent && timeslots.every((slot) => slot < new Date())) {
+  if (!isWeekEvent && timeslots[timeslots.length - 1] < new Date()) {
     return (
       <Banner type="info" noTitle showPing>
         <p className="font-semibold">This event has past.</p>
