@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -17,6 +17,7 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
+import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
@@ -41,8 +42,23 @@ export default function ClientPage({
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
-  const { addToast } = useToast();
+  const isMobile = useCheckMobile();
+  const { addToast, removeToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    if (isMobile) return;
+
+    const toastId = addToast(
+      "info",
+      "Hold down shift to select multiple slots at once.",
+      { title: "SHIFT TIP", isPersistent: true },
+    );
+
+    return () => {
+      removeToast(toastId);
+    };
+  }, [addToast, removeToast, isMobile]);
 
   const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
