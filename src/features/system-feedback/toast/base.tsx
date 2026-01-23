@@ -13,6 +13,7 @@ type BaseToastProps = {
   backgroundColor?: string;
   textColor?: string;
   duration?: number;
+  isPersistent?: boolean;
 };
 
 export default function BaseToast({
@@ -24,19 +25,25 @@ export default function BaseToast({
   backgroundColor,
   textColor,
   duration = 3000,
+  isPersistent = false,
 }: BaseToastProps) {
   return (
     <Toast.Root
       className={cn(
         "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 overflow-hidden rounded-full px-4 py-3 shadow-xl",
-        `bg-${backgroundColor} text-${textColor}`,
         "data-[state=closed]:animate-slideOut data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
       )}
+      style={{
+        backgroundColor: `var(--color-${backgroundColor})`,
+        color: `var(--color-${textColor})`,
+      }}
       open={open}
       onOpenChange={onOpenChange}
-      duration={duration}
+      duration={isPersistent ? Infinity : duration}
     >
-      <ProgressBar duration={duration} backgroundColor={backgroundColor} />
+      {!isPersistent && (
+        <ProgressBar duration={duration} backgroundColor={backgroundColor} />
+      )}
 
       <div className="z-10 flex items-center justify-center">{icon}</div>
 
@@ -44,7 +51,7 @@ export default function BaseToast({
         <Toast.Title className="text-sm font-semibold leading-none">
           {title}
         </Toast.Title>
-        <Toast.Description className="text-sm leading-snug opacity-90">
+        <Toast.Description className="w-40 text-sm leading-snug opacity-90">
           {message}
         </Toast.Description>
       </div>
@@ -67,8 +74,6 @@ export default function BaseToast({
           }}
           className={cn(
             "z-10 col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
-            "opacity-0 transition-opacity duration-200 ease-in-out",
-            "focus:opacity-100 group-hover:opacity-100",
             "hover:bg-black/20 focus:outline-none focus:ring-2 focus:ring-white/50",
           )}
         >

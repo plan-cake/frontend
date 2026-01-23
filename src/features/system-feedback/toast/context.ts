@@ -3,10 +3,14 @@ import { createContext, useContext } from "react";
 import { ToastType } from "@/features/system-feedback/type";
 
 export const ToastContext = createContext<{
-  addToast: (type: ToastType, message: string) => void;
+  addToast: (
+    type: ToastType,
+    message: string,
+    options?: { isPersistent?: boolean },
+  ) => number;
   removeToast: (id: number) => void;
 }>({
-  addToast: () => {},
+  addToast: () => 0,
   removeToast: () => {},
 });
 

@@ -6,6 +6,7 @@ export type ToastData = {
   title: string;
   message: string;
   open: boolean;
+  isPersistent: boolean;
 };
 
 export interface ToastErrorMessage {

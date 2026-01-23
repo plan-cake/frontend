@@ -17,17 +17,26 @@ export default function ToastProvider({
 }) {
   const [toasts, setToasts] = useState<ToastData[]>([]);
 
-  const addToast = useCallback((type: ToastType, message: string) => {
-    const data = {
-      id: Date.now() + Math.random(),
-      type,
-      title: TOAST_CONFIG[type].title,
-      message,
-      open: true,
-    };
+  const addToast = useCallback(
+    (
+      type: ToastType,
+      message: string,
+      options?: { isPersistent?: boolean },
+    ) => {
+      const data = {
+        id: Date.now() + Math.random(),
+        type,
+        title: TOAST_CONFIG[type].title,
+        message,
+        open: true,
+        isPersistent: options?.isPersistent ?? false,
+      };
 
-    setToasts((prevToasts) => [...prevToasts, data]);
-  }, []);
+      setToasts((prevToasts) => [...prevToasts, data]);
+      return data.id;
+    },
+    [],
+  );
 
   const removeToast = useCallback((id: number) => {
     setToasts((prevToasts) =>
@@ -62,6 +71,7 @@ export default function ToastProvider({
               icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
               backgroundColor={config.background}
               textColor={config.textColor}
+              isPersistent={toast.isPersistent}
             />
           );
         })}
