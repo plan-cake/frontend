@@ -47,11 +47,17 @@ export default function AttendeesPanel({
   const showSelfRemove =
     !isCreator && currentUser && participants.includes(currentUser);
 
+  const displayParticipants = useMemo(() => {
+    if (selectedParticipants.length === 0) return participants;
+    return selectedParticipants;
+  }, [selectedParticipants, participants]);
+
   const activeCount = useMemo(() => {
-    if (!hoveredSlot) return participants.length;
-    return participants.filter((p) => availabilities[hoveredSlot]?.includes(p))
-      .length;
-  }, [hoveredSlot, participants, availabilities]);
+    if (!hoveredSlot) return displayParticipants.length;
+    return displayParticipants.filter((p) =>
+      availabilities[hoveredSlot]?.includes(p),
+    ).length;
+  }, [hoveredSlot, displayParticipants, availabilities]);
 
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -77,8 +83,8 @@ export default function AttendeesPanel({
       <div className="flex justify-between px-6 pt-6">
         <div className="flex flex-col">
           <h2 className="text-md font-semibold">Attendees</h2>
-          {participants.length > 0 && (
-            <span className="text-sm">{`${activeCount}/${participants.length} available`}</span>
+          {displayParticipants.length > 0 && (
+            <span className="text-sm">{`${activeCount}/${displayParticipants.length} available`}</span>
           )}
         </div>
 
