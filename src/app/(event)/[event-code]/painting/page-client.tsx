@@ -20,8 +20,6 @@ import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
-const SHIFT_TIP_KEY = "shift-tip-dismissed";
-
 export default function ClientPage({
   eventCode,
   eventName,
@@ -50,25 +48,17 @@ export default function ClientPage({
     const isMobileView = window.matchMedia("(max-width: 768px)").matches;
     if (isMobileView) return;
 
-    if (window.localStorage.getItem(SHIFT_TIP_KEY)) {
-      return;
-    }
-
     const toastId = addToast(
       "info",
       "Hold down shift to select multiple slots at once.",
       {
         title: "SHIFT TIP",
         isPersistent: true,
-        onDismiss: () => {
-          window.localStorage.setItem(SHIFT_TIP_KEY, "true");
-        },
+        localStorageKey: "shift-tip-dismissed",
       },
     );
 
-    return () => {
-      removeToast(toastId);
-    };
+    return () => removeToast(toastId);
   }, [addToast, removeToast]);
 
   const handleNameChange = useDebouncedCallback(async (displayName) => {

@@ -20,8 +20,29 @@ export default function ToastProvider({
 
   const addToast = useCallback(
     (type: ToastType, message: string, options?: ToastOptions) => {
+      // check the local storage key to see if we should show the toast
+      // if the key exists, do not show the toast and return -1 as the id
+      if (options?.localStorageKey) {
+        if (
+          typeof window !== "undefined" &&
+          window.localStorage.getItem(options.localStorageKey)
+        ) {
+          return -1;
+        }
+      }
+
       const id = Date.now() + Math.random();
 
+      // handle onDismiss to set local storage key if provided
+      // and call the original onDismiss if provided
+      const handleDismiss = () => {
+        if (options?.localStorageKey && typeof window !== "undefined") {
+          window.localStorage.setItem(options.localStorageKey, "true");
+        }
+        options?.onDismiss?.();
+      };
+
+      // create new toast data
       const newToast: ToastData = {
         id,
         type,
@@ -29,8 +50,9 @@ export default function ToastProvider({
         open: true,
         title: options?.title ?? TOAST_CONFIG[type].title,
         isPersistent: options?.isPersistent ?? false,
-        onDismiss: options?.onDismiss,
+        onDismiss: handleDismiss,
         duration: options?.duration,
+        localStorageKey: options?.localStorageKey,
       };
 
       setToasts((prev) => [...prev, newToast]);
@@ -40,6 +62,8 @@ export default function ToastProvider({
   );
 
   const removeToast = useCallback((id: number) => {
+    if (id === -1) return;
+
     setToasts((prevToasts) =>
       prevToasts.map((t) => (t.id === id ? { ...t, open: false } : t)),
     );

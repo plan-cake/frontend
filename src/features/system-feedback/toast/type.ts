@@ -4,6 +4,7 @@ export type ToastOptions = {
   title?: string;
   duration?: number;
   isPersistent?: boolean;
+  localStorageKey?: string;
   onDismiss?: () => void;
 };
 
