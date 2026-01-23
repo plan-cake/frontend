@@ -17,9 +17,10 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
-import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+
+const SHIFT_TIP_KEY = "shift-tip-dismissed";
 
 export default function ClientPage({
   eventCode,
@@ -42,23 +43,33 @@ export default function ClientPage({
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
-  const isMobile = useCheckMobile();
   const { addToast, removeToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    if (isMobile) return;
+    const isMobileView = window.matchMedia("(max-width: 768px)").matches;
+    if (isMobileView) return;
+
+    if (window.localStorage.getItem(SHIFT_TIP_KEY)) {
+      return;
+    }
 
     const toastId = addToast(
       "info",
       "Hold down shift to select multiple slots at once.",
-      { title: "SHIFT TIP", isPersistent: true },
+      {
+        title: "SHIFT TIP",
+        isPersistent: true,
+        onDismiss: () => {
+          window.localStorage.setItem(SHIFT_TIP_KEY, "true");
+        },
+      },
     );
 
     return () => {
       removeToast(toastId);
     };
-  }, [addToast, removeToast, isMobile]);
+  }, [addToast, removeToast]);
 
   const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
