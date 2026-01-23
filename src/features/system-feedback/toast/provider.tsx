@@ -9,6 +9,7 @@ import { TOAST_CONFIG } from "@/features/system-feedback/toast/config";
 import ToastContext from "@/features/system-feedback/toast/context";
 import { ToastData } from "@/features/system-feedback/toast/type";
 import { ToastType } from "@/features/system-feedback/type";
+import { cn } from "@/lib/utils/classname";
 
 export default function ToastProvider({
   children,
@@ -76,7 +77,13 @@ export default function ToastProvider({
           );
         })}
 
-        <Toast.Viewport className="fixed bottom-10 right-0 z-[2147483647] m-0 flex list-none flex-col items-end gap-2.5 p-[var(--viewport-padding)] outline-none [--viewport-padding:_25px] md:bottom-0" />
+        <Toast.Viewport
+          className={cn(
+            "fixed bottom-12 right-0 z-[2147483647] md:bottom-0",
+            "flex list-none flex-col items-end outline-none",
+            "m-0 gap-2.5 p-[var(--viewport-padding)] [--viewport-padding:_25px]",
+          )}
+        />
       </Toast.Provider>
     </ToastContext.Provider>
   );
