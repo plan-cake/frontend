@@ -34,7 +34,7 @@ export default function ParticipantChip({
       onMouseLeave={() => onHoverChange(false)}
       onClick={onClick}
       className={cn(
-        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200 hover:cursor-pointer",
+        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-[opacity,shadow] duration-200 hover:cursor-pointer",
         "border border-transparent",
 
         // Availability Styling
