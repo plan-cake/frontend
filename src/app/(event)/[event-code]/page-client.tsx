@@ -1,12 +1,11 @@
 "use client";
 
-import { useState, useOptimistic, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
-import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -15,6 +14,7 @@ import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { getResultBanners } from "@/features/event/results/banners";
+import { useEventResults } from "@/features/event/results/use-results";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
@@ -38,96 +38,8 @@ export default function ClientPage({
     initialAvailabilityData.user_display_name != null;
   const userName = initialAvailabilityData.user_display_name || "";
 
-  /* HOVER HANDLING */
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
-
-  /* PARTICIPANT STATES */
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
-    [],
-  );
-  const [hoveredParticipant, setHoveredParticipant] = useState<string | null>(
-    null,
-  );
-
-  const participants = initialAvailabilityData.participants || [];
-  const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
-    participants,
-    (state, personToRemove: string) => {
-      state.filter((p) => p !== personToRemove);
-      if (selectedParticipants.includes(personToRemove)) {
-        setSelectedParticipants((prev) =>
-          prev.filter((p) => p !== personToRemove),
-        );
-      }
-      return state.filter((p) => p !== personToRemove);
-    },
-  );
-
-  const availabilities = initialAvailabilityData.availability || {};
-  const [optimisticAvailabilities, updateOptimisticAvailabilities] =
-    useOptimistic(availabilities, (state, person: string) => {
-      const updatedState = { ...state };
-      for (const slot in updatedState) {
-        updatedState[slot] = updatedState[slot].filter((p) => p !== person);
-      }
-      return updatedState;
-    });
-
-  const handleParticipantToggle = (person: string) => {
-    setSelectedParticipants((prev) =>
-      prev.includes(person)
-        ? prev.filter((p) => p !== person)
-        : [...prev, person],
-    );
-  };
-
-  const { filteredAvailabilities, gridNumParticipants } = useMemo(() => {
-    // 1. Determine which participants are "Active" based on your rules:
-    //    Priority 1: If chips are Selected, show ONLY them. (Hover is ignored).
-    //    Priority 2: If nothing Selected but something Hovered, show ONLY that chip.
-    //    Priority 3: Default to Everyone.
-
-    let activeParticipants: string[] = [];
-
-    if (selectedParticipants.length > 0) {
-      activeParticipants = selectedParticipants;
-    } else if (hoveredParticipant) {
-      activeParticipants = [hoveredParticipant];
-      setHoveredSlot(null);
-    } else {
-      return {
-        filteredAvailabilities: optimisticAvailabilities,
-        gridNumParticipants: optimisticParticipants.length,
-      };
-    }
-
-    // If people are selected, show only the intersection of their times
-    const filtered: ResultsAvailabilityMap = {};
-
-    for (const slot in optimisticAvailabilities) {
-      const availablePeople = optimisticAvailabilities[slot];
-      // Keep only the people who are BOTH available AND selected
-      const intersection = availablePeople.filter((p) =>
-        activeParticipants.includes(p),
-      );
-
-      if (intersection.length > 0) {
-        filtered[slot] = intersection;
-      }
-    }
-
-    return {
-      filteredAvailabilities: filtered,
-      gridNumParticipants: activeParticipants.length,
-    };
-  }, [
-    optimisticAvailabilities,
-    optimisticParticipants.length,
-    selectedParticipants,
-    hoveredParticipant,
-  ]);
-
-  /* TIMEZONE HANDLING */
+  /* FORM ERROR & TIMEZONE HANDLING */
+  const { handleError } = useFormErrors();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -136,8 +48,24 @@ export default function ClientPage({
     setTimezone(newTZ.toString());
   };
 
-  /* ERROR HANDLING */
-  const { handleError } = useFormErrors();
+  /* LOGIC HOOK */
+  const {
+    participants,
+    availabilities,
+    filteredAvailabilities,
+    gridNumParticipants,
+    hoveredSlot,
+    selectedParticipants,
+    setHoveredSlot,
+    setHoveredParticipant,
+    toggleParticipant,
+    handleRemoveParticipant,
+  } = useEventResults(
+    initialAvailabilityData,
+    eventCode,
+    isCreator,
+    handleError,
+  );
 
   /* SIDEBAR SPACING HANDLING */
   const DEFAULT_SPACER_HEIGHT = 200;
@@ -160,8 +88,8 @@ export default function ClientPage({
 
   /* BANNERS */
   const banners = getResultBanners(
-    optimisticAvailabilities,
-    optimisticParticipants,
+    availabilities,
+    participants,
     timeslots,
     eventRange.type === "weekday",
   );
@@ -225,17 +153,14 @@ export default function ClientPage({
 
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
-            participants={optimisticParticipants}
-            availabilities={optimisticAvailabilities}
+            participants={participants}
+            availabilities={availabilities}
             selectedParticipants={selectedParticipants}
-            onParticipantToggle={handleParticipantToggle}
+            onParticipantToggle={toggleParticipant}
             setHoveredParticipant={setHoveredParticipant}
             isCreator={isCreator}
             currentUser={userName}
-            eventCode={eventCode}
-            removeOptimisticParticipant={removeOptimisticParticipant}
-            updateOptimisticAvailabilities={updateOptimisticAvailabilities}
-            handleError={handleError}
+            onRemoveParticipant={handleRemoveParticipant}
           />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">

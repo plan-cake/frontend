@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState, startTransition } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
-import { removePerson } from "@/features/event/results/remove-person";
 import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
 
@@ -22,10 +21,7 @@ type AttendeesPanelProps = {
   // Context / Actions
   isCreator: boolean;
   currentUser: string;
-  eventCode: string;
-  removeOptimisticParticipant: (p: string) => void;
-  updateOptimisticAvailabilities: (p: string) => void;
-  handleError: (field: string, message: string) => void;
+  onRemoveParticipant: (person: string) => Promise<boolean>;
 };
 
 export default function AttendeesPanel({
@@ -37,10 +33,7 @@ export default function AttendeesPanel({
   setHoveredParticipant,
   isCreator,
   currentUser,
-  eventCode,
-  removeOptimisticParticipant,
-  updateOptimisticAvailabilities,
-  handleError,
+  onRemoveParticipant,
 }: AttendeesPanelProps) {
   /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
@@ -66,17 +59,6 @@ export default function AttendeesPanel({
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
-
-  const handleRemovePerson = async (person: string) => {
-    // IMMEDIATE: Update the UI right now
-    startTransition(() => {
-      removeOptimisticParticipant(person);
-      updateOptimisticAvailabilities(person);
-    });
-
-    // BACKGROUND: Call the server action
-    return await removePerson(eventCode, person, isCreator, handleError);
-  };
 
   return (
     <div className="bg-panel space-y-1 rounded-3xl shadow-md md:shadow-none">
@@ -109,7 +91,7 @@ export default function AttendeesPanel({
             type="delete"
             title="Remove Yourself?"
             description="Are you sure you want to remove yourself from this event?"
-            onConfirm={() => handleRemovePerson(currentUser)}
+            onConfirm={() => onRemoveParticipant(currentUser)}
           >
             <button
               className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
@@ -142,7 +124,7 @@ export default function AttendeesPanel({
               isSelected={selectedParticipants.includes(person)}
               areSelected={selectedParticipants.length > 0}
               isRemoving={isRemoving && isCreator}
-              onRemove={() => handleRemovePerson(person)}
+              onRemove={() => onRemoveParticipant(person)}
               onHoverChange={(isHovering) =>
                 !isRemoving && setHoveredParticipant(isHovering ? person : null)
               }
