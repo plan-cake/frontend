@@ -1,12 +1,17 @@
 import { ToastType } from "@/features/system-feedback/type";
 
-export type ToastData = {
+export type ToastOptions = {
+  title?: string;
+  duration?: number;
+  isPersistent?: boolean;
+  onDismiss?: () => void;
+};
+
+export type ToastData = ToastOptions & {
   id: number;
   type: ToastType;
-  title: string;
   message: string;
   open: boolean;
-  isPersistent: boolean;
 };
 
 export interface ToastErrorMessage {

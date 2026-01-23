@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils/classname";
 type BaseToastProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title: string;
+  title: string | undefined;
   message: string;
   icon: React.ReactNode;
   backgroundColor?: string;
@@ -51,7 +51,7 @@ export default function BaseToast({
         <Toast.Title className="text-sm font-semibold leading-none">
           {title}
         </Toast.Title>
-        <Toast.Description className="w-40 text-sm leading-snug opacity-90">
+        <Toast.Description className="text-sm leading-snug opacity-90">
           {message}
         </Toast.Description>
       </div>
@@ -75,6 +75,7 @@ export default function BaseToast({
           className={cn(
             "z-10 col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
             "hover:bg-black/20 focus:outline-none focus:ring-2 focus:ring-white/50",
+            !isPersistent && "opacity-0 group-hover:opacity-100",
           )}
         >
           <Cross2Icon className="h-4 w-4" />

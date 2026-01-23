@@ -7,7 +7,7 @@ import * as Toast from "@radix-ui/react-toast";
 import BaseToast from "@/features/system-feedback/toast/base";
 import { TOAST_CONFIG } from "@/features/system-feedback/toast/config";
 import ToastContext from "@/features/system-feedback/toast/context";
-import { ToastData } from "@/features/system-feedback/toast/type";
+import { ToastData, ToastOptions } from "@/features/system-feedback/toast/type";
 import { ToastType } from "@/features/system-feedback/type";
 import { cn } from "@/lib/utils/classname";
 
@@ -19,22 +19,22 @@ export default function ToastProvider({
   const [toasts, setToasts] = useState<ToastData[]>([]);
 
   const addToast = useCallback(
-    (
-      type: ToastType,
-      message: string,
-      options?: { title?: string; isPersistent?: boolean },
-    ) => {
-      const data = {
-        id: Date.now() + Math.random(),
+    (type: ToastType, message: string, options?: ToastOptions) => {
+      const id = Date.now() + Math.random();
+
+      const newToast: ToastData = {
+        id,
         type,
-        title: options?.title ?? TOAST_CONFIG[type].title,
         message,
         open: true,
+        title: options?.title ?? TOAST_CONFIG[type].title,
         isPersistent: options?.isPersistent ?? false,
+        onDismiss: options?.onDismiss,
+        duration: options?.duration,
       };
 
-      setToasts((prevToasts) => [...prevToasts, data]);
-      return data.id;
+      setToasts((prev) => [...prev, newToast]);
+      return id;
     },
     [],
   );
@@ -66,6 +66,9 @@ export default function ToastProvider({
               message={toast.message}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
+                  if (toast.onDismiss) {
+                    toast.onDismiss();
+                  }
                   removeToast(toast.id);
                 }
               }}
