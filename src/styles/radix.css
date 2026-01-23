@@ -1,0 +1,29 @@
+/* Collapsible animations */
+
+.collapsible-content {
+  overflow: hidden;
+}
+.collapsible-content[data-state="open"] {
+  animation: slideDown_collpasible 300ms ease-out;
+}
+.collapsible-content[data-state="closed"] {
+  animation: slideUp_collpasible 300ms ease-out;
+}
+
+@keyframes slideDown_collpasible {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-collapsible-content-height);
+  }
+}
+
+@keyframes slideUp_collpasible {
+  from {
+    height: var(--radix-collapsible-content-height);
+  }
+  to {
+    height: 0;
+  }
+}

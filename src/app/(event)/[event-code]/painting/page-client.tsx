@@ -3,31 +3,34 @@
 import { useState } from "react";
 
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
-import { convertAvailabilityToGrid } from "@/core/availability/utils";
 import { EventRange } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { validateAvailabilityData } from "@/features/event/availability/validate-data";
-import TimeZoneSelector from "@/features/event/components/timezone-selector";
-import ScheduleGrid from "@/features/event/grid/grid";
+import TimeZoneSelector from "@/features/event/components/selectors/timezone";
+import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
-import { useToast } from "@/features/toast/context";
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { RateLimitBanner, useToast } from "@/features/system-feedback";
+import { MESSAGES } from "@/lib/messages";
+import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function ClientPage({
   eventCode,
   eventName,
   eventRange,
+  timeslots,
   initialData,
 }: {
   eventCode: string;
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
   initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
@@ -41,23 +44,47 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
-    else if (e.target.value === "") {
+
+    if (displayName === "") {
       setErrors((prev) => ({
         ...prev,
-        displayName: "Please enter your name.",
+        displayName: MESSAGES.ERROR_NAME_MISSING,
       }));
+      return;
     }
-    setDisplayName(e.target.value);
-  };
+
+    try {
+      const response = await fetch("/api/availability/check-display-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          event_code: eventCode,
+          display_name: displayName,
+        }),
+      });
+
+      if (!response.ok) {
+        setErrors((prev) => ({
+          ...prev,
+          displayName: MESSAGES.ERROR_NAME_TAKEN,
+        }));
+      } else {
+        setErrors((prev) => ({ ...prev, displayName: "" }));
+      }
+    } catch (error) {
+      console.error("Error checking name availability:", error);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+    }
+  }, 300);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
     setErrors({}); // reset errors
 
     try {
-      const validationErrors = await validateAvailabilityData(state, eventCode);
+      const validationErrors = await validateAvailabilityData(state);
       if (Object.keys(validationErrors).length > 0) {
         setErrors(validationErrors);
         Object.values(validationErrors).forEach((error) =>
@@ -66,15 +93,10 @@ export default function ClientPage({
         return false;
       }
 
-      const availabilityGrid = convertAvailabilityToGrid(
-        userAvailability,
-        eventRange,
-      );
-
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: availabilityGrid,
+        availability: Array.from(userAvailability),
         time_zone: timeZone,
       };
 
@@ -88,12 +110,22 @@ export default function ClientPage({
         router.push(`/${eventCode}`);
         return true;
       } else {
-        addToast("error", formatApiError(await response.json()));
+        const body = await response.json();
+        const message = formatApiError(body);
+
+        if (response.status === 429) {
+          setErrors((prev) => ({
+            ...prev,
+            rate_limit: message || MESSAGES.ERROR_RATE_LIMIT,
+          }));
+        } else {
+          addToast("error", message);
+        }
         return false;
       }
     } catch (error) {
       console.error("Error submitting availability:", error);
-      addToast("error", "An unexpected error occurred. Please try again.");
+      addToast("error", MESSAGES.ERROR_GENERIC);
       return false;
     }
   };
@@ -102,14 +134,18 @@ export default function ClientPage({
   const cancelButton = (
     <LinkButton
       buttonStyle="transparent"
-      label={initialData ? "Cancel Edits" : "Cancel"}
+      label={initialData?.display_name ? "Cancel Edits" : "Cancel"}
       href={`/${eventCode}`}
     />
   );
   const submitButton = (
     <ActionButton
       buttonStyle="primary"
-      label={initialData ? "Update Availability" : "Submit Availability"}
+      label={
+        initialData?.display_name
+          ? "Update Availability"
+          : "Submit Availability"
+      }
       onClick={handleSubmitAvailability}
       loadOnSuccess
     />
@@ -118,6 +154,12 @@ export default function ClientPage({
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
+
+      {/* Rate Limit Error */}
+      {errors.rate_limit && (
+        <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
+      )}
+
       {/* Header and Button Row */}
       <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4">
         <div className="flex min-w-0 items-center space-x-2 md:flex-1">
@@ -125,6 +167,10 @@ export default function ClientPage({
           <EventInfoDrawer eventRange={eventRange} />
         </div>
         <div className="hidden shrink-0 items-center gap-2 md:flex">
+      <div className="flex w-full flex-wrap justify-between md:flex-row">
+        <h1 className="text-2xl">{eventName}</h1>
+        <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
+        <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
           {submitButton}
         </div>
@@ -133,7 +179,7 @@ export default function ClientPage({
       {/* Main Content */}
       <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
-        <div className="md:top-25 h-fit w-full shrink-0 space-y-6 overflow-y-auto md:sticky md:w-80">
+        <div className="md:top-25 h-fit w-full shrink-0 space-y-4 overflow-y-auto md:sticky md:w-80">
           <div className="w-fit">
             <p
               className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
@@ -145,7 +191,10 @@ export default function ClientPage({
               required
               type="text"
               value={displayName}
-              onChange={handleNameChange}
+              onChange={(e) => {
+                setDisplayName(e.target.value);
+                handleNameChange(e.target.value);
+              }}
               placeholder="add your name"
               className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
                 errors.displayName
@@ -159,10 +208,10 @@ export default function ClientPage({
 
           {/* Desktop-only Event Info */}
           <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} />
+            <EventInfo eventRange={eventRange} timezone={timeZone} />
           </div>
 
-          <div className="bg-panel rounded-3xl p-4 text-sm">
+          <div className="bg-panel rounded-3xl p-6 text-sm">
             Displaying event in
             <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
@@ -177,10 +226,11 @@ export default function ClientPage({
         {/* Right Panel */}
         <ScheduleGrid
           mode="paint"
-          eventRange={eventRange}
+          isWeekdayEvent={eventRange.type === "weekday"}
           timezone={timeZone}
           onToggleSlot={toggleSlot}
           userAvailability={userAvailability}
+          timeslots={timeslots}
         />
       </div>
 

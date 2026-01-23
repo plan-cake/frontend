@@ -1,83 +1,65 @@
-import { format, formatInTimeZone, toZonedTime } from "date-fns-tz";
+import { useEffect, useRef } from "react";
 
-import { ResultsAvailabilityMap } from "@/core/availability/types";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
-
-interface ResultsTimeBlockProps {
-  timeColWidth: number;
-  numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
-  numVisibleDays: number;
-  visibleDayKeys: string[];
-  hoveredSlot: string | null | undefined;
-
-  availabilities: ResultsAvailabilityMap;
-  numParticipants: number;
-
-  userTimezone: string;
-  onHoverSlot?: (iso: string | null) => void;
-}
+import { ResultsTimeBlockProps } from "@/features/event/grid/timeblocks/props";
 
 export default function ResultsTimeBlock({
-  timeColWidth,
   numQuarterHours,
-  startHour,
   timeslots,
   numVisibleDays,
-  visibleDayKeys,
-  userTimezone,
   availabilities,
   numParticipants,
   hoveredSlot,
   onHoverSlot,
+  hasNext = false,
+  hasPrev = false,
 }: ResultsTimeBlockProps) {
+  const timeBlockRef = useRef<HTMLDivElement>(null);
+
+  // on click outside to clear hovered slot
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        timeBlockRef.current &&
+        !timeBlockRef.current.contains(event.target as Node)
+      ) {
+        onHoverSlot?.(null);
+      }
+    };
+
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onHoverSlot?.(null);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("keydown", handleEscape);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [onHoverSlot]);
+
   return (
     <BaseTimeBlock
-      timeColWidth={timeColWidth}
+      ref={timeBlockRef}
       numQuarterHours={numQuarterHours}
-      startHour={startHour}
       visibleDaysCount={numVisibleDays}
+      hasNext={hasNext}
+      hasPrev={hasPrev}
     >
-      {timeslots.map((timeslot, timeslotIdx) => {
-        const timeslotIso = format(timeslot, "yyyy-MM-dd'T'HH:mm:ss");
-
-        const localSlot = toZonedTime(timeslot, userTimezone);
-        const localSlotIso = formatInTimeZone(
-          timeslot,
-          userTimezone,
-          "yyyy-MM-dd'T'HH:mm:ss",
-        );
-
-        const currentDayKey = localSlot.toLocaleDateString("en-CA");
-        const dayIndex = visibleDayKeys.indexOf(currentDayKey);
-        if (dayIndex === -1) return null;
-
-        const gridColumn = dayIndex + 1;
-        const gridRow =
-          (localSlot.getHours() - startHour) * 4 +
-          Math.floor(localSlot.getMinutes() / 15) +
-          1;
+      {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
+        const { row: gridRow, column: gridColumn } = coords;
 
         // borders
-        const cellClasses: string[] = ["cursor-default"];
-        if (gridRow < numQuarterHours) {
-          cellClasses.push("border-b");
-
-          if (gridRow % 4 === 0) {
-            cellClasses.push("border-solid border-gray-400");
-          } else {
-            cellClasses.push("border-dashed border-gray-400");
-          }
-        }
+        const cellClasses = [...baseClasses, "cursor-default"];
 
         const matchCount =
-          availabilities[timeslotIso]?.length > 0
-            ? availabilities[timeslotIso].length
-            : 0;
+          availabilities[iso]?.length > 0 ? availabilities[iso].length : 0;
         const opacity = matchCount / numParticipants || 0;
-        const isHovered = hoveredSlot === timeslotIso;
+        const isHovered = hoveredSlot === iso;
 
         // background colors
         const opacityPercent = Math.round(opacity * 100);
@@ -90,14 +72,14 @@ export default function ResultsTimeBlock({
 
         return (
           <TimeSlot
-            key={`slot-${timeslotIdx}`}
-            slotIso={localSlotIso}
+            key={iso}
+            slotIso={iso}
             cellClasses={cellClasses.join(" ")}
             isHovered={isHovered}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerEnter={() => {
-              onHoverSlot?.(timeslotIso);
+              onHoverSlot?.(iso);
             }}
             dynamicStyle={dynamicStyle}
           />

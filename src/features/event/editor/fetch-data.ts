@@ -1,19 +1,27 @@
-import formatApiError from "@/lib/utils/api/format-api-error";
+import { cache } from "react";
+
+import handleErrorResponse from "@/lib/utils/api/handle-api-error";
 
 export type EventDetailsResponse = {
   title: string;
   duration?: number;
-  start_hour: number;
-  end_hour: number;
   time_zone: string;
+  timeslots: string[];
+  is_creator: boolean;
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
-  start_weekday?: number;
-  end_weekday?: number;
+  start_time: string;
+  end_time: string;
 };
 
-export async function fetchEventDetails(
+export const getCachedEventDetails = cache(
+  async (eventCode: string, cookieHeader?: string) => {
+    return await fetchEventDetails(eventCode, cookieHeader);
+  },
+);
+
+async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
 ): Promise<EventDetailsResponse> {
@@ -31,8 +39,7 @@ export async function fetchEventDetails(
   );
 
   if (!res.ok) {
-    const errorMessage = formatApiError(await res.json());
-    throw new Error("Failed to fetch event details: " + errorMessage);
+    handleErrorResponse(res.status, await res.json());
   }
 
   return res.json();

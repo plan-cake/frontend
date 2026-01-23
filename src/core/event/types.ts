@@ -4,6 +4,7 @@ export type EventInformation = {
   title: string;
   customCode: string;
   eventRange: EventRange;
+  timeslots: Date[];
 };
 
 // discriminated union for event ranges - this is your single source of truth
@@ -41,8 +42,8 @@ export type SpecificDateRange = {
     to: string;
   };
   timeRange: {
-    from: number; // hour in 24h format, e.g., 9 for 9:00 AM
-    to: number; // hour in 24h format, e.g., 17 for 5:00 PM
+    from: string;
+    to: string;
   };
 };
 
@@ -52,8 +53,8 @@ export type WeekdayRange = {
   timezone: string;
   weekdays: WeekdayMap;
   timeRange: {
-    from: number; // hour in 24h format, e.g., 9 for 9:00 AM
-    to: number; // hour in 24h format, e.g., 17 for 5:00 PM
+    from: string;
+    to: string;
   };
 };
 

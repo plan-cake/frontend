@@ -1,3 +1,5 @@
+import { DEFAULT_RANGE_SPECIFIC } from "@/core/event/lib/default-range";
+import { expandEventRange } from "@/core/event/lib/expand-event-range";
 import {
   EventRangeReducer,
   EventRangeAction,
@@ -29,27 +31,23 @@ export function EventInfoReducer(
       return {
         title: "",
         customCode: "",
-        eventRange: {
-          type: "specific",
-          duration: 60,
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-          dateRange: {
-            from: new Date().toISOString(),
-            to: new Date().toISOString(),
-          },
-          timeRange: {
-            from: 9,
-            to: 17,
-          },
-        },
+        eventRange: DEFAULT_RANGE_SPECIFIC,
+        timeslots: expandEventRange(DEFAULT_RANGE_SPECIFIC),
       };
     default:
+      const newEventRange = EventRangeReducer(
+        state.eventRange,
+        action as EventRangeAction,
+      );
+
+      if (newEventRange === state.eventRange) {
+        return state;
+      }
+
       return {
         ...state,
-        eventRange: EventRangeReducer(
-          state.eventRange,
-          action as EventRangeAction,
-        ),
+        eventRange: newEventRange,
+        timeslots: expandEventRange(newEventRange),
       };
   }
 }

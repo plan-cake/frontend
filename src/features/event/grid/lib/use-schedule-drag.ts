@@ -31,6 +31,20 @@ export default function useScheduleDrag(
   const isDragging = useRef(false);
 
   useEffect(() => {
+    const preventScroll = (e: TouchEvent) => {
+      if (isDragging.current) {
+        if (e.cancelable) e.preventDefault();
+      }
+    };
+
+    // { passive: false } tells the browser "I might cancel this event, wait for me."
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+    return () => {
+      window.removeEventListener("touchmove", preventScroll);
+    };
+  }, []);
+
+  useEffect(() => {
     isDragging.current =
       dragState.current.startSlot !== null ||
       dragState.current.endSlot !== null;

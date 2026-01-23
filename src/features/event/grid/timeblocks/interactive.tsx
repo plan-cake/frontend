@@ -1,79 +1,41 @@
-import { toZonedTime } from "date-fns-tz";
-
-import { AvailabilitySet } from "@/core/availability/types";
 import useScheduleDrag from "@/features/event/grid/lib/use-schedule-drag";
 import TimeSlot from "@/features/event/grid/time-slot";
 import BaseTimeBlock from "@/features/event/grid/timeblocks/base";
-
-interface InteractiveTimeBlockProps {
-  timeColWidth: number;
-  numQuarterHours: number;
-  startHour: number;
-  timeslots: Date[];
-  numVisibleDays: number;
-  visibleDayKeys: string[];
-
-  userTimezone: string;
-  availability: AvailabilitySet;
-  onToggle: (slotIso: string, togglingOn: boolean) => void;
-}
+import { InteractiveTimeBlockProps } from "@/features/event/grid/timeblocks/props";
 
 export default function InteractiveTimeBlock({
-  timeColWidth,
   numQuarterHours,
-  startHour,
   timeslots,
   numVisibleDays,
-  visibleDayKeys,
-  userTimezone,
   availability,
   onToggle,
+  hasNext = false,
+  hasPrev = false,
 }: InteractiveTimeBlockProps) {
   const dragHandlers = useScheduleDrag(onToggle, "paint");
 
   return (
     <BaseTimeBlock
-      timeColWidth={timeColWidth}
       numQuarterHours={numQuarterHours}
-      startHour={startHour}
       visibleDaysCount={numVisibleDays}
+      hasNext={hasNext}
+      hasPrev={hasPrev}
     >
-      {timeslots.map((timeslot, timeslotIdx) => {
-        const slotIso = timeslot.toISOString();
-        const localSlot = toZonedTime(timeslot, userTimezone);
+      {timeslots.map(({ iso, coords, cellClasses: baseClasses }) => {
+        const { row: gridRow, column: gridColumn } = coords;
 
-        const currentDayKey = localSlot.toLocaleDateString("en-CA");
-        const dayIndex = visibleDayKeys.indexOf(currentDayKey);
-        if (dayIndex === -1) return null;
-
-        const gridColumn = dayIndex + 1;
-        const gridRow =
-          (localSlot.getHours() - startHour) * 4 +
-          Math.floor(localSlot.getMinutes() / 15) +
-          1;
-
-        // borders
-        const cellClasses: string[] = [];
-        if (gridRow < numQuarterHours) {
-          cellClasses.push("border-b");
-
-          if (gridRow % 4 === 0) {
-            cellClasses.push("border-solid border-gray-400");
-          } else {
-            cellClasses.push("border-dashed border-gray-400");
-          }
-        }
-
-        const isSelected = availability.has(slotIso);
+        const isSelected = availability.has(iso);
         const isToggling =
-          dragHandlers.draggedSlots.has(slotIso) &&
+          dragHandlers.draggedSlots.has(iso) &&
           dragHandlers.togglingOn === !isSelected;
+
         // don't highlight if we're toggling, in case the user is hovering a slot that
         // won't be toggled
         const isHovered =
-          dragHandlers.hoveredSlot === slotIso &&
+          dragHandlers.hoveredSlot === iso &&
           dragHandlers.draggedSlots.size === 0;
 
+        const cellClasses = [...baseClasses];
         if (isSelected && (isHovered || isToggling)) {
           cellClasses.push(
             "bg-[color-mix(in_srgb,var(--color-accent),var(--color-white)_30%)]",
@@ -84,21 +46,22 @@ export default function InteractiveTimeBlock({
           );
         } else if (isSelected) {
           cellClasses.push("bg-accent");
+        } else {
+          cellClasses.push("bg-background");
         }
 
         return (
           <TimeSlot
-            key={`slot-${timeslotIdx}`}
-            slotIso={slotIso}
+            key={iso}
+            slotIso={iso}
             cellClasses={cellClasses.join(" ")}
-            isSelected={isSelected}
             gridColumn={gridColumn}
             gridRow={gridRow}
             onPointerDown={() =>
-              dragHandlers.onPointerDown(slotIso, false, isSelected)
+              dragHandlers.onPointerDown(iso, false, isSelected)
             }
             onPointerEnter={() => {
-              dragHandlers.onPointerEnter(slotIso, false);
+              dragHandlers.onPointerEnter(iso, false);
             }}
             onPointerLeave={() => {
               dragHandlers.onPointerLeave();

@@ -1,13 +1,34 @@
 import { EventRange } from "@/core/event/types";
 import { generateWeekdayMap } from "@/core/event/weekday-utils";
 import { EventDetailsResponse } from "@/features/event/editor/fetch-data";
+import {
+  getTimezoneDetails,
+  parseIsoDateTime,
+} from "@/lib/utils/date-time-format";
 
 export function processEventData(eventData: EventDetailsResponse): {
   eventName: string;
   eventRange: EventRange;
+  timeslots: Date[];
+  isCreator: boolean;
 } {
   const eventName: string = eventData.title;
+  const timeslots: Date[] = eventData.timeslots.map((ts) => {
+    return parseIsoDateTime(ts);
+  });
   let eventRange: EventRange;
+
+  const start = getTimezoneDetails({
+    time: eventData.start_time,
+    date: eventData.start_date!,
+    toTZ: eventData.time_zone,
+  });
+
+  const end = getTimezoneDetails({
+    time: eventData.end_time,
+    date: eventData.end_date!,
+    toTZ: eventData.time_zone,
+  });
 
   if (eventData.event_type === "Date") {
     eventRange = {
@@ -15,30 +36,27 @@ export function processEventData(eventData: EventDetailsResponse): {
       duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       dateRange: {
-        from: eventData.start_date!,
-        to: eventData.end_date!,
+        from: start.date,
+        to: end.date,
       },
       timeRange: {
-        from: eventData.start_hour,
-        to: eventData.end_hour,
+        from: start.time,
+        to: end.time,
       },
     };
   } else {
-    const weekdays = generateWeekdayMap(
-      eventData.start_weekday!,
-      eventData.end_weekday!,
-    );
+    const weekdays = generateWeekdayMap(start.weekday, end.weekday);
     eventRange = {
       type: "weekday",
       duration: eventData.duration || 0,
       timezone: eventData.time_zone,
       weekdays: weekdays,
       timeRange: {
-        from: eventData.start_hour,
-        to: eventData.end_hour,
+        from: start.time,
+        to: end.time,
       },
     };
   }
 
-  return { eventName, eventRange };
+  return { eventName, eventRange, timeslots, isCreator: eventData.is_creator };
 }

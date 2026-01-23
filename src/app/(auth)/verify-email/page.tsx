@@ -2,10 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-import { useSearchParams } from "next/navigation";
+import { notFound, useSearchParams } from "next/navigation";
 
 import MessagePage from "@/components/layout/message-page";
 import LinkButton from "@/features/button/components/link";
+import { useToast } from "@/features/system-feedback";
+import { MESSAGES } from "@/lib/messages";
 
 export default function Page() {
   const [verifying, setVerifying] = useState(true);
@@ -13,6 +15,12 @@ export default function Page() {
 
   const searchParams = useSearchParams();
   const token = searchParams.get("code");
+  if (!token) {
+    notFound();
+  }
+
+  // TOASTS AND ERROR STATES
+  const { addToast } = useToast();
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -34,14 +42,14 @@ export default function Page() {
         })
         .catch((err) => {
           console.error("Fetch error:", err);
-          alert("An error occurred. Please try again.");
+          addToast("error", MESSAGES.ERROR_GENERIC);
         });
 
       setVerifying(false);
     };
 
     verifyEmail();
-  }, [token]);
+  }, [token, addToast]);
 
   return (
     <div className="flex h-screen items-center justify-center">
