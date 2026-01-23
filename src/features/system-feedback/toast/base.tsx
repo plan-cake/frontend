@@ -1,6 +1,7 @@
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
 
+import ProgressBar from "@/features/system-feedback/toast/progress-bar";
 import { cn } from "@/lib/utils/classname";
 
 type BaseToastProps = {
@@ -9,7 +10,9 @@ type BaseToastProps = {
   title: string;
   message: string;
   icon: React.ReactNode;
-  toastStyle: string;
+  backgroundColor?: string;
+  textColor?: string;
+  duration?: number;
 };
 
 export default function BaseToast({
@@ -18,25 +21,31 @@ export default function BaseToast({
   title,
   message,
   icon,
-  toastStyle,
+  backgroundColor,
+  textColor,
+  duration = 3000,
 }: BaseToastProps) {
   return (
     <Toast.Root
       className={cn(
-        "group grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full px-6 py-3 text-white shadow-xl",
-        toastStyle,
+        "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 overflow-hidden rounded-full px-4 py-3 shadow-xl",
+        `bg-${backgroundColor} text-${textColor}`,
         "data-[state=closed]:animate-slideOut data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
       )}
       open={open}
       onOpenChange={onOpenChange}
-      duration={3000}
+      duration={duration}
     >
-      {icon}
+      <ProgressBar duration={duration} backgroundColor={backgroundColor} />
 
-      <div className="col-start-2 flex flex-col">
-        <Toast.Title className="flex text-sm font-bold">{title}</Toast.Title>
-        <Toast.Description asChild>
-          <div className="m-0 text-[13px] leading-[1.3]">{message}</div>
+      <div className="z-10 flex items-center justify-center">{icon}</div>
+
+      <div className="z-10 flex flex-col gap-1">
+        <Toast.Title className="text-sm font-semibold leading-none">
+          {title}
+        </Toast.Title>
+        <Toast.Description className="text-sm leading-snug opacity-90">
+          {message}
         </Toast.Description>
       </div>
 
@@ -57,7 +66,7 @@ export default function BaseToast({
             }
           }}
           className={cn(
-            "col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
+            "z-10 col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
             "opacity-0 transition-opacity duration-200 ease-in-out",
             "focus:opacity-100 group-hover:opacity-100",
             "hover:bg-black/20 focus:outline-none focus:ring-2 focus:ring-white/50",

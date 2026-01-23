@@ -60,7 +60,8 @@ export default function ToastProvider({
                 }
               }}
               icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
-              toastStyle={config.style}
+              backgroundColor={config.background}
+              textColor={config.textColor}
             />
           );
         })}
