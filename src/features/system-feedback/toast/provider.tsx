@@ -86,8 +86,13 @@ export default function ToastProvider({
             <BaseToast
               key={toast.id}
               open={toast.open}
+              backgroundColor={config.background}
+              textColor={config.textColor}
               title={toast.title}
               message={toast.message}
+              icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
+              isPersistent={toast.isPersistent}
+              duration={toast.duration}
               onOpenChange={(isOpen) => {
                 if (!isOpen) {
                   if (toast.onDismiss) {
@@ -96,10 +101,6 @@ export default function ToastProvider({
                   removeToast(toast.id);
                 }
               }}
-              icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
-              backgroundColor={config.background}
-              textColor={config.textColor}
-              isPersistent={toast.isPersistent}
             />
           );
         })}
