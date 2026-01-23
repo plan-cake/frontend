@@ -138,9 +138,9 @@ export default function AttendeesPanel({
               isRemoving={isRemoving && isCreator}
               onRemove={() => handleRemovePerson(person)}
               onHoverChange={(isHovering) =>
-                setHoveredParticipant(isHovering ? person : null)
+                !isRemoving && setHoveredParticipant(isHovering ? person : null)
               }
-              onClick={() => onParticipantToggle(person)}
+              onClick={() => !isRemoving && onParticipantToggle(person)}
             />
           );
         })}

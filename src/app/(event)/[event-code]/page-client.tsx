@@ -42,11 +42,25 @@ export default function ClientPage({
   const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
 
   /* PARTICIPANT STATES */
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    [],
+  );
+  const [hoveredParticipant, setHoveredParticipant] = useState<string | null>(
+    null,
+  );
+
   const participants = initialAvailabilityData.participants || [];
   const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
     participants,
-    (state, personToRemove: string) =>
-      state.filter((p) => p !== personToRemove),
+    (state, personToRemove: string) => {
+      state.filter((p) => p !== personToRemove);
+      if (selectedParticipants.includes(personToRemove)) {
+        setSelectedParticipants((prev) =>
+          prev.filter((p) => p !== personToRemove),
+        );
+      }
+      return state.filter((p) => p !== personToRemove);
+    },
   );
 
   const availabilities = initialAvailabilityData.availability || {};
@@ -58,13 +72,6 @@ export default function ClientPage({
       }
       return updatedState;
     });
-
-  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
-    [],
-  );
-  const [hoveredParticipant, setHoveredParticipant] = useState<string | null>(
-    null,
-  );
 
   const handleParticipantToggle = (person: string) => {
     setSelectedParticipants((prev) =>

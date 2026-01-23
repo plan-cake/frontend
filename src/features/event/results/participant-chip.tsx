@@ -34,7 +34,7 @@ export default function ParticipantChip({
       onMouseLeave={() => onHoverChange(false)}
       onClick={onClick}
       className={cn(
-        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200",
+        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200 hover:cursor-pointer",
         "border border-transparent",
 
         // Availability Styling
@@ -46,9 +46,7 @@ export default function ParticipantChip({
         areSelected && !isSelected && "bg-gray-200/25",
 
         // Hover Styling
-        !isRemoving &&
-          !isSelected &&
-          "hover:bg-accent hover:cursor-pointer hover:text-white",
+        !isRemoving && !isSelected && "hover:bg-accent hover:text-white",
 
         // Wiggle/Remove Styling
         isRemoving &&
