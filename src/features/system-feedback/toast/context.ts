@@ -6,7 +6,7 @@ export const ToastContext = createContext<{
   addToast: (
     type: ToastType,
     message: string,
-    options?: { isPersistent?: boolean },
+    options?: { title?: string; isPersistent?: boolean },
   ) => number;
   removeToast: (id: number) => void;
 }>({

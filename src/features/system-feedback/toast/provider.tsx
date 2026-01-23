@@ -22,12 +22,12 @@ export default function ToastProvider({
     (
       type: ToastType,
       message: string,
-      options?: { isPersistent?: boolean },
+      options?: { title?: string; isPersistent?: boolean },
     ) => {
       const data = {
         id: Date.now() + Math.random(),
         type,
-        title: TOAST_CONFIG[type].title,
+        title: options?.title ?? TOAST_CONFIG[type].title,
         message,
         open: true,
         isPersistent: options?.isPersistent ?? false,
