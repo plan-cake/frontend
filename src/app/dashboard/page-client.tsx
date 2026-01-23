@@ -69,7 +69,7 @@ export default function ClientPage({
         </div>
         <div className="bg-panel w-full rounded-3xl p-4">
           <EventGrid
-            {...(tab === "created" ? created_events : participated_events)}
+            events={tab === "created" ? created_events : participated_events}
           />
         </div>
       </div>
