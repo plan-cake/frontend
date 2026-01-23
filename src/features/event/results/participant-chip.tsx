@@ -9,48 +9,86 @@ export default function ParticipantChip({
   isAvailable,
   isRemoving,
   onRemove,
+  onHoverChange,
+  onClick,
+  isSelected,
+  areSelected,
 }: {
   person: string;
   index: number;
   isAvailable: boolean;
   isRemoving: boolean;
   onRemove: () => Promise<boolean>;
+  onHoverChange: (isHovering: boolean) => void;
+  onClick: () => void;
+  isSelected: boolean;
+  areSelected: boolean;
 }) {
   //  delay based on index
   const delay = (index % 4) * -0.1;
 
-  return (
-    <ConfirmationDialog
-      type="delete"
-      title="Remove Participant"
-      description={
-        <span>
-          Are you sure you want to remove{" "}
-          <span className="font-bold">{person}</span>?
-        </span>
-      }
-      onConfirm={onRemove}
-      disabled={!isRemoving}
+  const ChipContent = (
+    <li
+      style={{ animationDelay: `${delay}s` }}
+      onMouseEnter={() => onHoverChange(true)}
+      onMouseLeave={() => onHoverChange(false)}
+      onClick={onClick}
+      className={cn(
+        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200",
+        "border border-transparent",
+
+        // Availability Styling
+        !isAvailable && "bg-gray-200/25 line-through opacity-50",
+        isAvailable && "bg-accent/25 text-accent-text opacity-100",
+
+        // Selection Styling
+        isSelected && "bg-accent ring-accent text-white ring-2 ring-offset-1",
+        areSelected && !isSelected && "bg-gray-200/25",
+
+        // Hover Styling
+        !isRemoving &&
+          !isSelected &&
+          "hover:bg-accent hover:cursor-pointer hover:text-white",
+
+        // Wiggle/Remove Styling
+        isRemoving &&
+          "animate-wiggle hover:bg-red group scale-105 hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
+      )}
     >
-      <li
-        style={{ animationDelay: `${delay}s` }}
+      <span
         className={cn(
-          "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-all duration-200",
-          // Availability Logic
-          !isAvailable && "bg-gray-200/25 line-through opacity-50",
-          isAvailable && "bg-accent/25 text-accent-text opacity-100",
-          // Wiggle/Remove Logic
-          isRemoving &&
-            "animate-wiggle hover:bg-red group scale-105 hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
+          "transition-opacity duration-200",
+          isRemoving && "group-hover:opacity-0",
         )}
       >
-        <span className="transition-opacity duration-200 group-hover:opacity-0">
-          {person}
-        </span>
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+        {person}
+      </span>
+
+      {isRemoving && (
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 hover:opacity-100">
           <TrashIcon className="h-4 w-4" />
         </div>
-      </li>
-    </ConfirmationDialog>
+      )}
+    </li>
   );
+
+  if (isRemoving && onRemove) {
+    return (
+      <ConfirmationDialog
+        type="delete"
+        title="Remove Participant"
+        description={
+          <span>
+            Are you sure you want to remove{" "}
+            <span className="font-bold">{person}</span>?
+          </span>
+        }
+        onConfirm={onRemove}
+      >
+        {ChipContent}
+      </ConfirmationDialog>
+    );
+  }
+
+  return ChipContent;
 }

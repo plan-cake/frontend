@@ -8,27 +8,40 @@ import { removePerson } from "@/features/event/results/remove-person";
 import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
 
+type AttendeesPanelProps = {
+  // Data
+  hoveredSlot: string | null;
+  participants: string[];
+  availabilities: ResultsAvailabilityMap;
+  selectedParticipants: string[];
+
+  // State Handlers
+  onParticipantToggle: (participant: string) => void;
+  setHoveredParticipant: (participant: string | null) => void;
+
+  // Context / Actions
+  isCreator: boolean;
+  currentUser: string;
+  eventCode: string;
+  removeOptimisticParticipant: (p: string) => void;
+  updateOptimisticAvailabilities: (p: string) => void;
+  handleError: (field: string, message: string) => void;
+};
+
 export default function AttendeesPanel({
   hoveredSlot,
   participants,
   availabilities,
+  selectedParticipants,
+  onParticipantToggle,
+  setHoveredParticipant,
   isCreator,
   currentUser,
   eventCode,
   removeOptimisticParticipant,
   updateOptimisticAvailabilities,
   handleError,
-}: {
-  hoveredSlot: string | null;
-  participants: string[];
-  availabilities: ResultsAvailabilityMap;
-  isCreator: boolean;
-  currentUser: string;
-  eventCode: string;
-  removeOptimisticParticipant: (person: string) => void;
-  updateOptimisticAvailabilities: (person: string) => void;
-  handleError: (field: string, message: string) => void;
-}) {
+}: AttendeesPanelProps) {
   /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
   const showSelfRemove =
@@ -115,13 +128,19 @@ export default function AttendeesPanel({
           return (
             <ParticipantChip
               key={person}
-              person={person}
               index={index}
+              person={person}
               isAvailable={
                 !hoveredSlot || availabilities[hoveredSlot]?.includes(person)
               }
+              isSelected={selectedParticipants.includes(person)}
+              areSelected={selectedParticipants.length > 0}
               isRemoving={isRemoving && isCreator}
               onRemove={() => handleRemovePerson(person)}
+              onHoverChange={(isHovering) =>
+                setHoveredParticipant(isHovering ? person : null)
+              }
+              onClick={() => onParticipantToggle(person)}
             />
           );
         })}

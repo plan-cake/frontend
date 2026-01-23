@@ -1,11 +1,12 @@
 "use client";
 
-import { useState, useOptimistic, useRef, useEffect } from "react";
+import { useState, useOptimistic, useRef, useEffect, useMemo } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
+import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -37,6 +38,9 @@ export default function ClientPage({
     initialAvailabilityData.user_display_name != null;
   const userName = initialAvailabilityData.user_display_name || "";
 
+  /* HOVER HANDLING */
+  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+
   /* PARTICIPANT STATES */
   const participants = initialAvailabilityData.participants || [];
   const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
@@ -55,8 +59,66 @@ export default function ClientPage({
       return updatedState;
     });
 
-  /* HOVER HANDLING */
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
+  const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
+    [],
+  );
+  const [hoveredParticipant, setHoveredParticipant] = useState<string | null>(
+    null,
+  );
+
+  const handleParticipantToggle = (person: string) => {
+    setSelectedParticipants((prev) =>
+      prev.includes(person)
+        ? prev.filter((p) => p !== person)
+        : [...prev, person],
+    );
+  };
+
+  const { filteredAvailabilities, gridNumParticipants } = useMemo(() => {
+    // 1. Determine which participants are "Active" based on your rules:
+    //    Priority 1: If chips are Selected, show ONLY them. (Hover is ignored).
+    //    Priority 2: If nothing Selected but something Hovered, show ONLY that chip.
+    //    Priority 3: Default to Everyone.
+
+    let activeParticipants: string[] = [];
+
+    if (selectedParticipants.length > 0) {
+      activeParticipants = selectedParticipants;
+    } else if (hoveredParticipant) {
+      activeParticipants = [hoveredParticipant];
+      setHoveredSlot(null);
+    } else {
+      return {
+        filteredAvailabilities: optimisticAvailabilities,
+        gridNumParticipants: optimisticParticipants.length,
+      };
+    }
+
+    // If people are selected, show only the intersection of their times
+    const filtered: ResultsAvailabilityMap = {};
+
+    for (const slot in optimisticAvailabilities) {
+      const availablePeople = optimisticAvailabilities[slot];
+      // Keep only the people who are BOTH available AND selected
+      const intersection = availablePeople.filter((p) =>
+        activeParticipants.includes(p),
+      );
+
+      if (intersection.length > 0) {
+        filtered[slot] = intersection;
+      }
+    }
+
+    return {
+      filteredAvailabilities: filtered,
+      gridNumParticipants: activeParticipants.length,
+    };
+  }, [
+    optimisticAvailabilities,
+    optimisticParticipants.length,
+    selectedParticipants,
+    hoveredParticipant,
+  ]);
 
   /* TIMEZONE HANDLING */
   const [timezone, setTimezone] = useState(
@@ -134,8 +196,8 @@ export default function ClientPage({
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
-          availabilities={optimisticAvailabilities}
-          numParticipants={optimisticParticipants.length}
+          availabilities={filteredAvailabilities}
+          numParticipants={gridNumParticipants}
           timeslots={timeslots}
         />
 
@@ -158,6 +220,9 @@ export default function ClientPage({
             hoveredSlot={hoveredSlot}
             participants={optimisticParticipants}
             availabilities={optimisticAvailabilities}
+            selectedParticipants={selectedParticipants}
+            onParticipantToggle={handleParticipantToggle}
+            setHoveredParticipant={setHoveredParticipant}
             isCreator={isCreator}
             currentUser={userName}
             eventCode={eventCode}
