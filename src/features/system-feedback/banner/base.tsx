@@ -36,10 +36,10 @@ export function Banner({
       </div>
       <div>
         {(title || subtitle) && (
-          <div className="mb-1">
+          <>
             {title && <h2 className="text-lg font-bold">{title}</h2>}
             {subtitle && <p className="font-semibold">{subtitle}</p>}
-          </div>
+          </>
         )}
         {children && <div className="text-sm">{children}</div>}
       </div>
