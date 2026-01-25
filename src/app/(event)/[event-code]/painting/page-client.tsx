@@ -45,6 +45,12 @@ export default function ClientPage({
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   useEffect(() => {
+    /**
+     * Uses a custom media query instead of the useCheckMobile hook because
+     * this effect should run immediately on mount before rendering anything.
+     * If we used a hook, there would be a render cycle where the tip
+     * shows up on mobile before disappearing quickly.
+     */
     const isMobileView = window.matchMedia("(max-width: 768px)").matches;
     if (isMobileView) return;
 
