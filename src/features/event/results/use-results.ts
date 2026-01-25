@@ -1,4 +1,10 @@
-import { useState, useOptimistic, useMemo, startTransition } from "react";
+import {
+  useState,
+  useOptimistic,
+  useMemo,
+  useCallback,
+  startTransition,
+} from "react";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -22,11 +28,6 @@ export function useEventResults(
   const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
     initialData.participants || [],
     (state, personToRemove: string) => {
-      if (selectedParticipants.includes(personToRemove)) {
-        setSelectedParticipants((prev) =>
-          prev.filter((p) => p !== personToRemove),
-        );
-      }
       return state.filter((p) => p !== personToRemove);
     },
   );
@@ -41,6 +42,13 @@ export function useEventResults(
     });
 
   /* ACTIONS */
+  const handleSetHoveredParticipant = useCallback((person: string | null) => {
+    setHoveredParticipant(person);
+    if (person) {
+      setHoveredSlot(null);
+    }
+  }, []);
+
   const toggleParticipant = (person: string) => {
     setSelectedParticipants((prev) =>
       prev.includes(person)
@@ -51,6 +59,10 @@ export function useEventResults(
 
   const handleRemoveParticipant = async (person: string) => {
     // Immediate UI update
+    if (selectedParticipants.includes(person)) {
+      setSelectedParticipants((prev) => prev.filter((p) => p !== person));
+    }
+
     startTransition(() => {
       removeOptimisticParticipant(person);
       updateOptimisticAvailabilities(person);
@@ -68,7 +80,6 @@ export function useEventResults(
       activeParticipants = selectedParticipants;
     } else if (hoveredParticipant) {
       activeParticipants = [hoveredParticipant];
-      setHoveredSlot(null);
     } else {
       return {
         filteredAvailabilities: optimisticAvailabilities,
@@ -113,7 +124,7 @@ export function useEventResults(
     // Actions
     clearSelectedParticipants: () => setSelectedParticipants([]),
     setHoveredSlot,
-    setHoveredParticipant,
+    setHoveredParticipant: handleSetHoveredParticipant,
     toggleParticipant,
     handleRemoveParticipant,
   };
