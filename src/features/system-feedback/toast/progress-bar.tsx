@@ -32,7 +32,7 @@ export default function ProgressBar({
     >
       <Progress.Indicator
         className={cn(
-          "h-full w-full transform rounded-r-full transition-transform ease-linear will-change-transform",
+          "rounded-r-4xl h-full w-full transform transition-transform ease-linear will-change-transform",
         )}
         style={{
           transform: `translateX(-${100 - progress}%)`,

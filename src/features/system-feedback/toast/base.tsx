@@ -30,7 +30,7 @@ export default function BaseToast({
   return (
     <Toast.Root
       className={cn(
-        "group relative grid grid-cols-[auto_1fr_auto] items-center gap-x-4 overflow-hidden rounded-full px-4 py-3 shadow-xl",
+        "rounded-4xl group relative grid max-w-sm grid-cols-[auto_1fr_auto] items-center gap-x-4 overflow-hidden px-4 py-3 shadow-xl",
         "data-[state=closed]:animate-slideOut data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
       )}
       style={{
