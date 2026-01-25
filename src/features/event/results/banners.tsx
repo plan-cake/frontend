@@ -15,13 +15,15 @@ export function getResultBanners(
   ) {
     return (
       <Banner type="info" noTitle showPing>
-        <p className="font-semibold">This event has passed.</p>
+        <p className="font-semibold">
+          All the dates in this event have passed.
+        </p>
       </Banner>
     );
   } else if (participants.length === 0) {
     return (
       <Banner type="info" noTitle showPing>
-        <p className="font-semibold">No one filled out a time yet!</p>
+        <p className="font-semibold">No one has submitted availability yet!</p>
         <p>Add your availability by clicking the button above.</p>
       </Banner>
     );
@@ -36,7 +38,7 @@ export function getResultBanners(
     return (
       <Banner type="info" noTitle showPing>
         <p className="font-semibold">Oh dear :(</p>
-        <p>No one is available at the same time.</p>
+        <p>There is not a time where everyone is available.</p>
       </Banner>
     );
   }
