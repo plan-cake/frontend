@@ -50,7 +50,7 @@ export default function ClientPage({
 
     const toastId = addToast(
       "info",
-      "Hold down shift to select multiple slots at once.",
+      "Click once and hold shift to select multiple slots without dragging. Works well if you'r on a trackpad!",
       {
         title: "SHIFT TIP",
         isPersistent: true,
