@@ -95,6 +95,7 @@ export default function ClientPage({
     optimisticParticipants,
     timeslots,
     eventRange.type === "weekday",
+    participated,
   );
 
   return (

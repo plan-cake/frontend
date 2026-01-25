@@ -7,6 +7,7 @@ export function getResultBanners(
   participants: string[],
   timeslots: Date[],
   isWeekEvent: boolean,
+  participated: boolean,
 ) {
   if (
     !isWeekEvent &&
@@ -30,12 +31,14 @@ export function getResultBanners(
         <p>Add your availability by clicking the button above.</p>
       </Banner>
     );
-  } else if (participants.length === 1) {
+  } else if (participated && participants.length === 1) {
     return (
       <Banner type="info" subtitle="Waiting for others..." showPing>
         <p>Copy and share the link so others can join!</p>
       </Banner>
     );
+  } else if (!participated) {
+    return <Banner type="info" subtitle="Add your availability!" showPing />;
   } else if (!hasMutualAvailability(availabilities, participants)) {
     return (
       <Banner type="info" subtitle="Oh dear :(" showPing>
