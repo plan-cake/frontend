@@ -1,6 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 
-import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+  CheckIcon,
+  EraserIcon,
+  ResetIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
@@ -15,6 +20,7 @@ type AttendeesPanelProps = {
   selectedParticipants: string[];
 
   // State Handlers
+  clearSelectedParticipants: () => void;
   onParticipantToggle: (participant: string) => void;
   setHoveredParticipant: (participant: string | null) => void;
 
@@ -29,6 +35,7 @@ export default function AttendeesPanel({
   participants,
   availabilities,
   selectedParticipants,
+  clearSelectedParticipants,
   onParticipantToggle,
   setHoveredParticipant,
   isCreator,
@@ -40,6 +47,7 @@ export default function AttendeesPanel({
   const showSelfRemove =
     !isCreator && currentUser && participants.includes(currentUser);
 
+  const hasSelection = selectedParticipants.length > 0;
   const displayParticipants = useMemo(() => {
     if (selectedParticipants.length === 0) return participants;
     return selectedParticipants;
@@ -70,37 +78,51 @@ export default function AttendeesPanel({
           )}
         </div>
 
-        {participants.length > 0 && isCreator && (
+        <div className="space-x-2">
           <button
+            tabIndex={hasSelection ? 0 : -1}
             className={cn(
-              "text-red bg-red/15 h-9 w-9 rounded-full p-2 text-sm font-semibold",
-              "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+              "bg-accent/15 text-accent h-9 w-9 rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
+              "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
+              hasSelection ? "opacity-100" : "opacity-0 hover:cursor-default",
             )}
-            onClick={() => setIsRemoving(!isRemoving)}
+            onClick={clearSelectedParticipants}
           >
-            {isRemoving ? (
-              <CheckIcon className="h-5 w-5" />
-            ) : (
-              <EraserIcon className="h-5 w-5" />
-            )}
+            <ResetIcon className="h-5 w-5" />
           </button>
-        )}
 
-        {showSelfRemove && (
-          <ConfirmationDialog
-            type="delete"
-            title="Remove Yourself?"
-            description="Are you sure you want to remove yourself from this event?"
-            onConfirm={() => onRemoveParticipant(currentUser)}
-          >
+          {participants.length > 0 && isCreator && (
             <button
-              className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
-              aria-label="Remove self"
+              className={cn(
+                "text-red bg-red/15 h-9 w-9 rounded-full p-2 text-sm font-semibold",
+                "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+              )}
+              onClick={() => setIsRemoving(!isRemoving)}
             >
-              <TrashIcon className="h-5 w-5" />
+              {isRemoving ? (
+                <CheckIcon className="h-5 w-5" />
+              ) : (
+                <EraserIcon className="h-5 w-5" />
+              )}
             </button>
-          </ConfirmationDialog>
-        )}
+          )}
+
+          {showSelfRemove && (
+            <ConfirmationDialog
+              type="delete"
+              title="Remove Yourself?"
+              description="Are you sure you want to remove yourself from this event?"
+              onConfirm={() => onRemoveParticipant(currentUser)}
+            >
+              <button
+                className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
+                aria-label="Remove self"
+              >
+                <TrashIcon className="h-5 w-5" />
+              </button>
+            </ConfirmationDialog>
+          )}
+        </div>
       </div>
 
       <ul

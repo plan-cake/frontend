@@ -42,7 +42,8 @@ export default function ParticipantChip({
         isAvailable && "bg-accent/25 text-accent-text opacity-100",
 
         // Selection Styling
-        isSelected && "bg-accent ring-accent text-white ring-2 ring-offset-1",
+        isSelected &&
+          "bg-accent ring-accent ring-offset-background text-white ring-2 ring-offset-1",
         areSelected && !isSelected && "bg-gray-200/25",
 
         // Hover Styling

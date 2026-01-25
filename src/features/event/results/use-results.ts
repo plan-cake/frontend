@@ -111,6 +111,7 @@ export function useEventResults(
     selectedParticipants,
 
     // Actions
+    clearSelectedParticipants: () => setSelectedParticipants([]),
     setHoveredSlot,
     setHoveredParticipant,
     toggleParticipant,

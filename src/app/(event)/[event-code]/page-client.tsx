@@ -56,6 +56,7 @@ export default function ClientPage({
     gridNumParticipants,
     hoveredSlot,
     selectedParticipants,
+    clearSelectedParticipants,
     setHoveredSlot,
     setHoveredParticipant,
     toggleParticipant,
@@ -156,6 +157,7 @@ export default function ClientPage({
             participants={participants}
             availabilities={availabilities}
             selectedParticipants={selectedParticipants}
+            clearSelectedParticipants={clearSelectedParticipants}
             onParticipantToggle={toggleParticipant}
             setHoveredParticipant={setHoveredParticipant}
             isCreator={isCreator}
