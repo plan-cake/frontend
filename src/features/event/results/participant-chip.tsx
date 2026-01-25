@@ -64,7 +64,7 @@ export default function ParticipantChip({
       </span>
 
       {isRemoving && (
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 hover:opacity-100">
+        <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <TrashIcon className="h-4 w-4" />
         </div>
       )}
@@ -83,6 +83,7 @@ export default function ParticipantChip({
           </span>
         }
         onConfirm={onRemove}
+        disabled={!isRemoving}
       >
         {ChipContent}
       </ConfirmationDialog>

@@ -84,7 +84,7 @@ export default function AttendeesPanel({
             className={cn(
               "bg-accent/15 text-accent h-9 w-9 rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
               "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
-              hasSelection ? "opacity-100" : "opacity-0 hover:cursor-default",
+              hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
             )}
             onClick={clearSelectedParticipants}
           >
