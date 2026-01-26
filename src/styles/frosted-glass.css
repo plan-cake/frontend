@@ -160,3 +160,44 @@
     background-color: transparent;
   }
 }
+
+.frosted-glass .frosted-glass-error-button {
+  background-color: color-mix(
+    in srgb,
+    var(--color-error) 40%,
+    color-mix(in srgb, var(--color-background) 50%, transparent)
+  );
+  @supports (color: color-mix(in lab, red, red)) {
+    background-color: color-mix(
+      in oklab,
+      var(--color-error) 40%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
+  }
+
+  &:hover {
+    background-color: color-mix(
+      in srgb,
+      var(--color-error) 75%,
+      color-mix(in srgb, var(--color-background) 50%, transparent)
+    );
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(
+        in oklab,
+        var(--color-error) 75%,
+        color-mix(in srgb, var(--color-background) 50%, transparent)
+      );
+    }
+  }
+
+  &:active {
+    background-color: color-mix(in srgb, var(--color-error) 100%, transparent);
+    @supports (color: color-mix(in lab, red, red)) {
+      background-color: color-mix(
+        in oklab,
+        var(--color-error) 100%,
+        transparent
+      );
+    }
+  }
+}

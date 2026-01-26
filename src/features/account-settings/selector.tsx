@@ -99,7 +99,7 @@ function SettingsContent() {
           classname="mb-0 text-foreground"
         />
         <button
-          className="text-red bg-error/35 hover:bg-error active:bg-error/65 h-10 w-10 cursor-pointer rounded-full p-2 text-sm font-semibold hover:text-white"
+          className="frosted-glass-error-button text-red hover:text-foreground cursor-pointer rounded-full p-2 text-sm font-semibold"
           aria-label="Remove self"
         >
           <TrashIcon className="h-6 w-6" />
