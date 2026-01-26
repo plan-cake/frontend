@@ -1,10 +1,10 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import { PersonIcon } from "@radix-ui/react-icons";
 
-import AccountDropdown from "@/components/header/account-dropdown";
+import AccountSettings from "@/features/account-settings/selector";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { LoginContext } from "@/lib/providers";
@@ -12,20 +12,16 @@ import { LoginContext } from "@/lib/providers";
 export default function AccountButton() {
   const { loggedIn, setLoggedIn } = useContext(LoginContext);
 
+  // 1. Check Login Status
   useEffect(() => {
     const checkLogin = async () => {
       if (loggedIn) return;
-
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        if (res.ok) {
-          setLoggedIn(true);
-        } else {
-          setLoggedIn(false);
-        }
+        setLoggedIn(res.ok);
       } catch (err) {
         console.error("Fetch error:", err);
         setLoggedIn(false);
@@ -34,19 +30,25 @@ export default function AccountButton() {
     checkLogin();
   }, [loggedIn, setLoggedIn]);
 
+  const [open, setOpen] = useState(false);
+  const handleOpenChange = () => {
+    setOpen(!open);
+    return true;
+  };
+
   if (loggedIn) {
     return (
-      <AccountDropdown>
+      <AccountSettings open={open} setOpenChange={setOpen}>
         <ActionButton
           buttonStyle="frosted glass"
           icon={<PersonIcon />}
-          onClick={() => true}
+          onClick={handleOpenChange}
         />
-      </AccountDropdown>
-    );
-  } else {
-    return (
-      <LinkButton buttonStyle="frosted glass" label="Log In" href="/login" />
+      </AccountSettings>
     );
   }
+
+  return (
+    <LinkButton buttonStyle="frosted glass" label="Log In" href="/login" />
+  );
 }

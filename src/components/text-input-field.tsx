@@ -43,7 +43,7 @@ export default function TextInputField(props: TextInputFieldProps) {
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
   return (
-    <div className={`relative mb-4 w-full ${classname || ""}`}>
+    <div className={cn("relative mb-4 w-full", classname)}>
       {/* --- input field --- */}
       <input
         type={inputType}
@@ -73,7 +73,6 @@ export default function TextInputField(props: TextInputFieldProps) {
             : "focus:ring-foreground", // default
         )}
       />
-
       {/* --- floating label --- */}
       <label
         htmlFor={id}
@@ -113,7 +112,6 @@ export default function TextInputField(props: TextInputFieldProps) {
           label
         )}
       </label>
-
       {/* --- trailing icon --- */}
       {isPassword && (
         <button
