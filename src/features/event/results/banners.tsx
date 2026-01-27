@@ -25,7 +25,7 @@ export function getResultBanners(
     return (
       <Banner
         type="info"
-        subtitle="No one has submitted availability yet!"
+        subtitle="No one has submitted availability!"
         showPing
       >
         <p>Add your availability by clicking the button above.</p>
@@ -38,7 +38,11 @@ export function getResultBanners(
       </Banner>
     );
   } else if (!participated) {
-    return <Banner type="info" subtitle="Add your availability!" showPing />;
+    return (
+      <Banner type="info" subtitle="Dont be a stranger!" showPing>
+        <p>Add your availability by clicking the button above.</p>
+      </Banner>
+    );
   } else if (!hasMutualAvailability(availabilities, participants)) {
     return (
       <Banner type="info" subtitle="Oh dear :(" showPing>
