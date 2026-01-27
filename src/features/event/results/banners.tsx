@@ -39,7 +39,7 @@ export function getResultBanners(
     );
   } else if (!participated) {
     return (
-      <Banner type="info" subtitle="Dont be a stranger!" showPing>
+      <Banner type="info" subtitle="Don't be a stranger!" showPing>
         <p>Add your availability by clicking the button above.</p>
       </Banner>
     );
