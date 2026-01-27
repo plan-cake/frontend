@@ -88,6 +88,7 @@ function DashboardTabButton({
 }) {
   return (
     <button
+      type="button"
       className={cn(
         "text-nowrap rounded-full px-4 py-2",
         currentTab === value
