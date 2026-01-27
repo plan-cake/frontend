@@ -5,12 +5,11 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import AuthPageLayout from "@/components/layout/auth-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
-import PasswordCriteria from "@/features/auth/components/password-criteria";
 import PasswordValidation from "@/features/auth/components/password-validation";
 import ActionButton from "@/features/button/components/action";
-import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
@@ -47,10 +46,6 @@ export default function Page() {
     const { criteria } = PasswordValidation(password);
     setPasswordCriteria(criteria);
   }, [password]);
-
-  const stopRefresh = (e: React.FormEvent) => {
-    e.preventDefault();
-  };
 
   const handleSubmit = async () => {
     clearAllErrors();
@@ -106,32 +101,24 @@ export default function Page() {
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
-        {/* Title */}
-        <h1 className="font-display text-lion mb-4 block text-5xl leading-none md:text-8xl">
-          register
-        </h1>
-
-        {/* Rate Limit Error */}
-        {errors.rate_limit && (
-          <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
-        )}
-
-        {/* Email */}
+    <AuthPageLayout
+      title="register"
+      rateLimitError={errors.rate_limit}
+      fields={[
+        // Email
         <TextInputField
-          id={"email"}
+          id="email"
           type="email"
           label="Email*"
           value={email}
           onChange={handleEmailChange}
           outlined
           error={errors.email || errors.api}
-        />
+        />,
 
-        {/* Password */}
+        // Password
         <TextInputField
-          id={"password"}
+          id="password"
           type="password"
           label="Password*"
           value={password}
@@ -146,44 +133,39 @@ export default function Page() {
           }}
           outlined
           error={errors.password || errors.api}
-        />
+          showPasswordCriteria={showPasswordCriteria}
+          passwordCriteria={passwordCriteria}
+        />,
 
-        {/* Password Errors */}
-        {showPasswordCriteria && (
-          <div className="-mt-2 mb-2 w-full px-4">
-            <PasswordCriteria criteria={passwordCriteria} />
-          </div>
-        )}
-
-        {/* Retype Password */}
+        // Retype Password
         <TextInputField
-          id={"confirmPassword"}
+          id="confirmPassword"
           type="password"
           label="Retype Password*"
           value={confirmPassword}
           onChange={handleConfirmPasswordChange}
           outlined
           error={errors.confirmPassword || errors.api}
+        />,
+      ]}
+    >
+      {/* Register Button */}
+      <div className="flex w-full justify-end">
+        <ActionButton
+          buttonStyle="primary"
+          label="Register"
+          onClick={handleSubmit}
+          loadOnSuccess
         />
+      </div>
 
-        {/* Register Button */}
-        <div className="flex w-full justify-end">
-          <ActionButton
-            buttonStyle="primary"
-            label="Register"
-            onClick={handleSubmit}
-            loadOnSuccess
-          />
-        </div>
-
-        {/* Login Link */}
-        <div className="mt-2 w-full text-right text-xs">
-          Already have an account?{" "}
-          <Link href="/login">
-            <LinkText>Login!</LinkText>
-          </Link>
-        </div>
-      </form>
-    </div>
+      {/* Login Link */}
+      <div className="mt-2 w-full text-right text-xs">
+        Already have an account?{" "}
+        <Link href="/login">
+          <LinkText>Login!</LinkText>
+        </Link>
+      </div>
+    </AuthPageLayout>
   );
 }
