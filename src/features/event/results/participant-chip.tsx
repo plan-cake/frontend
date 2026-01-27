@@ -30,9 +30,16 @@ export default function ParticipantChip({
   const ChipContent = (
     <li
       style={{ animationDelay: `${delay}s` }}
-      onMouseEnter={() => onHoverChange(true)}
+      onMouseEnter={() => {
+        if (window.matchMedia("(hover: hover)").matches) {
+          onHoverChange(true);
+        }
+      }}
       onMouseLeave={() => onHoverChange(false)}
-      onClick={onClick}
+      onClick={() => {
+        onHoverChange(false);
+        onClick();
+      }}
       className={cn(
         "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-[opacity,shadow] duration-200 hover:cursor-pointer",
         "border border-transparent",
