@@ -3,7 +3,7 @@ import * as Popover from "@radix-ui/react-popover";
 import { cn } from "@/lib/utils/classname";
 
 export default function AccountSettingsPopover({
-  children, // Note: You aren't using this in your snippet, but I left it in
+  children,
   content,
   open,
   setOpen,

@@ -3,8 +3,8 @@ import { useContext, useRef, useState } from "react";
 import { TrashIcon, ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
-import AccountDropdown from "@/components/header/account-dropdown";
 import TextInputField from "@/components/text-input-field";
+import AccountSettingsDrawer from "@/features/account-settings/drawer";
 import AccountSettingsPopover from "@/features/account-settings/popover";
 import { useToast } from "@/features/system-feedback";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
@@ -19,16 +19,20 @@ export default function AccountSettings({
   setOpenChange,
 }: {
   children: React.ReactNode;
-  open?: boolean;
-  setOpenChange?: (open: boolean) => void;
+  open: boolean;
+  setOpenChange: (open: boolean) => void;
 }) {
   const isMobile = useCheckMobile();
 
   if (isMobile) {
     return (
-      <AccountDropdown content={<SettingsContent />}>
+      <AccountSettingsDrawer
+        content={<SettingsContent />}
+        open={open}
+        setOpen={setOpenChange}
+      >
         {children}
-      </AccountDropdown>
+      </AccountSettingsDrawer>
     );
   }
 
@@ -88,7 +92,7 @@ function SettingsContent() {
         miranda.mzheng@gmail.com
       </h2>
 
-      <div className="frosted-glass flex gap-2 rounded-3xl p-4">
+      <div className="frosted-glass flex gap-2 rounded-3xl border-none p-4">
         <TextInputField
           id="displayName"
           label="Display Name"
@@ -107,7 +111,7 @@ function SettingsContent() {
         </button>
       </div>
 
-      <div className="frosted-glass rounded-3xl">
+      <div className="frosted-glass rounded-3xl border-none">
         <button
           onClick={signOut}
           className={cn(
