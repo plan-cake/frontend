@@ -37,6 +37,8 @@ export default function TextInputField(props: TextInputFieldProps) {
     classname,
   } = props;
   const [showPassword, setShowPassword] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const isFloating = isFocused || value.length > 0;
 
   // determine input type
   const isPassword = type === "password";
@@ -46,50 +48,48 @@ export default function TextInputField(props: TextInputFieldProps) {
     <div className={cn("relative mb-4 w-full", classname)}>
       {/* --- input field --- */}
       <input
-        type={inputType}
         id={id}
+        type={inputType}
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        onFocus={onFocus}
-        onBlur={onBlur}
+        onFocus={() => {
+          setIsFocused(true);
+          onFocus?.();
+        }}
+        onBlur={() => {
+          setIsFocused(false);
+          onBlur?.();
+        }}
         placeholder=" " // triggers placeholder-shown state for floating label
         className={cn(
-          "peer w-full bg-transparent py-2",
-          "focus:outline-none",
-          outlined ? "rounded-full border px-4" : "border-b-1 px-2",
+          "text-foreground peer w-full bg-transparent py-2 focus:outline-none",
+          outlined ? "px-5" : "border-b-1 px-2",
           isPassword && "pr-10",
 
           // borders and colors
           error
             ? "border-error text-error" // error
             : "border-foreground", // default
-
-          // focus states
-          outlined
-            ? "focus:border-transparent focus:ring-2"
-            : "focus:ring-none",
-          error
-            ? "focus:ring-error" // error
-            : "focus:ring-foreground", // default
         )}
       />
       {/* --- floating label --- */}
       <label
         htmlFor={id}
         className={cn(
-          "absolute origin-[0_0] cursor-text px-1",
-          "transition-[top,scale] duration-200 ease-in-out",
+          "absolute origin-[0_0] cursor-text px-2",
+          "transition-[top,scale] duration-300 ease-in-out",
           outlined ? "left-4" : "left-1",
           classname,
 
           // --- Floating Animation ---
           // State when placeholder is shown (input is empty)
-          "peer-placeholder-shown:top-2.5 peer-placeholder-shown:scale-100",
+          "peer-placeholder-shown:top-2 peer-placeholder-shown:scale-100",
 
           // State when floated (on focus or when value exists)
-          "peer-focus:top-[-0.65rem] peer-focus:scale-75",
-          "peer-[:not(:placeholder-shown)]:top-[-0.65rem] peer-[:not(:placeholder-shown)]:scale-75",
-          "peer-focus:bg-background peer-[:not(:placeholder-shown)]:bg-background",
+          "peer-focus:top-[-0.55rem] peer-focus:scale-75",
+          "peer-[:not(:placeholder-shown)]:top-[-0.55rem] peer-[:not(:placeholder-shown)]:scale-75",
+          "peer-[:autofill]:top-[-0.55rem] peer-[:autofill]:scale-75",
+
           outlined
             ? ""
             : "peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
@@ -112,6 +112,33 @@ export default function TextInputField(props: TextInputFieldProps) {
           label
         )}
       </label>
+
+      {outlined && (
+        <fieldset
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-0 z-10 h-full rounded-full border bg-transparent transition-[border]",
+            "peer-[:autofill]:[&>legend]:w-auto peer-[:autofill]:[&>legend]:max-w-full",
+            // Border Colors
+            error ? "border-error" : "border-foreground",
+            isFocused &&
+              (error ? "border-error border-2" : "border-foreground border-2"),
+          )}
+        >
+          <legend
+            className={cn(
+              "invisible ml-4 h-0 overflow-hidden transition-[width] duration-300",
+              isFloating ? "w-auto" : "w-0",
+            )}
+          >
+            <span className="px-1 text-xs font-medium">
+              {error ? error : label}
+            </span>
+            {error && <span className="inline-block w-4" />}
+          </legend>
+        </fieldset>
+      )}
+
       {/* --- trailing icon --- */}
       {isPassword && (
         <button
