@@ -99,6 +99,7 @@ function SettingsContent() {
           classname="mb-0 text-foreground"
         />
         <button
+          onClick={() => handleDisplayNameChange("")}
           className="frosted-glass-error-button text-red hover:text-foreground cursor-pointer rounded-full p-2 text-sm font-semibold"
           aria-label="Remove self"
         >

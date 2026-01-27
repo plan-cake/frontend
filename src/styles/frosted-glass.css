@@ -200,4 +200,8 @@
       );
     }
   }
+
+  &:focus {
+    outline: var(--color-red) auto 1px;
+  }
 }
