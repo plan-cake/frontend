@@ -14,6 +14,7 @@ type BaseToastProps = {
   textColor?: string;
   duration?: number;
   isPersistent?: boolean;
+  isPaused: boolean;
 };
 
 export default function BaseToast({
@@ -26,7 +27,10 @@ export default function BaseToast({
   textColor,
   duration = 3000,
   isPersistent = false,
+  isPaused,
 }: BaseToastProps) {
+  const effectiveDuration = isPersistent || isPaused ? Infinity : duration;
+
   return (
     <Toast.Root
       className={cn(
@@ -39,10 +43,14 @@ export default function BaseToast({
       }}
       open={open}
       onOpenChange={onOpenChange}
-      duration={isPersistent ? Infinity : duration}
+      duration={effectiveDuration}
     >
       {!isPersistent && (
-        <ProgressBar duration={duration} backgroundColor={backgroundColor} />
+        <ProgressBar
+          duration={duration}
+          backgroundColor={backgroundColor}
+          isPaused={isPaused}
+        />
       )}
 
       <div className="z-10 flex items-center justify-center">{icon}</div>
