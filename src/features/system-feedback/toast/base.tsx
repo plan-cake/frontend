@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react"; // Import hooks
+
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
 
@@ -29,7 +31,34 @@ export default function BaseToast({
   isPersistent = false,
   isPaused,
 }: BaseToastProps) {
-  const effectiveDuration = isPersistent || isPaused ? Infinity : duration;
+  // 1. We track the remaining time in a ref so it doesn't trigger re-renders
+  const remainingTime = useRef(duration);
+  const startTime = useRef<number>(0);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // 2. This effect handles the custom timer logic
+  useEffect(() => {
+    if (isPersistent || !open) return;
+
+    if (!isPaused) {
+      startTime.current = Date.now();
+      timerRef.current = setTimeout(() => {
+        onOpenChange(false);
+      }, remainingTime.current);
+    }
+
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+
+        if (!isPaused) {
+          const elapsed = Date.now() - startTime.current;
+          remainingTime.current = Math.max(0, remainingTime.current - elapsed);
+        }
+      }
+    };
+  }, [isPaused, open, isPersistent, onOpenChange]);
 
   return (
     <Toast.Root
@@ -43,7 +72,7 @@ export default function BaseToast({
       }}
       open={open}
       onOpenChange={onOpenChange}
-      duration={effectiveDuration}
+      duration={Infinity}
     >
       {!isPersistent && (
         <ProgressBar
@@ -73,10 +102,6 @@ export default function BaseToast({
               document.activeElement &&
               document.activeElement instanceof HTMLElement
             ) {
-              // After clicking this button, the focus would be on the toasts.
-              // If there is more than 1 toast, the focus causes the timers for all the
-              // toasts to be paused until the user clicked on something else.
-              // This just removes that focus.
               document.activeElement.blur();
             }
           }}

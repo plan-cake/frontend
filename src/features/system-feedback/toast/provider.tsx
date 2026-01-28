@@ -80,10 +80,12 @@ export default function ToastProvider({
         {children}
 
         <Toast.Viewport
+          onMouseEnter={() => setIsHoveringToast(true)}
+          onMouseLeave={() => setIsHoveringToast(false)}
           className={cn(
             "fixed bottom-12 right-0 z-[2147483647] md:bottom-0",
             "flex list-none flex-col items-end outline-none",
-            "m-0 space-y-1 p-[var(--viewport-padding)] [--viewport-padding:_25px]",
+            "m-0 space-y-1 pb-[var(--viewport-padding)] pr-[var(--viewport-padding)] [--viewport-padding:_25px]",
           )}
         >
           {toasts.map((toast) => {
@@ -91,31 +93,26 @@ export default function ToastProvider({
             const Icon = config.icon;
 
             return (
-              <div
+              <BaseToast
                 key={toast.id}
-                onMouseEnter={() => setIsHoveringToast(true)}
-                onMouseLeave={() => setIsHoveringToast(false)}
-              >
-                <BaseToast
-                  open={toast.open}
-                  backgroundColor={config.background}
-                  textColor={config.textColor}
-                  title={toast.title}
-                  message={toast.message}
-                  icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
-                  isPersistent={toast.isPersistent}
-                  duration={toast.duration}
-                  isPaused={isHoveringToast}
-                  onOpenChange={(isOpen) => {
-                    if (!isOpen) {
-                      if (toast.onDismiss) {
-                        toast.onDismiss();
-                      }
-                      removeToast(toast.id);
+                open={toast.open}
+                backgroundColor={config.background}
+                textColor={config.textColor}
+                title={toast.title}
+                message={toast.message}
+                icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
+                isPersistent={toast.isPersistent}
+                duration={toast.duration}
+                isPaused={isHoveringToast}
+                onOpenChange={(isOpen) => {
+                  if (!isOpen) {
+                    if (toast.onDismiss) {
+                      toast.onDismiss();
                     }
-                  }}
-                />
-              </div>
+                    removeToast(toast.id);
+                  }
+                }}
+              />
             );
           })}
         </Toast.Viewport>
