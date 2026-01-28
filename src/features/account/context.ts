@@ -4,14 +4,16 @@ import { AccountDetails } from "@/features/account/type";
 
 export const AccountContext = createContext<{
   isLoading: boolean;
-  setIsLoading: (isLoading: boolean) => void;
+  isLoggedIn: boolean;
   details: AccountDetails | null;
-  setDetails: (details: AccountDetails | null) => void;
+  login: (details: AccountDetails) => void;
+  logout: () => void;
 }>({
   isLoading: true,
-  setIsLoading: () => { },
+  isLoggedIn: false,
   details: null,
-  setDetails: () => { },
+  login: () => { },
+  logout: () => { },
 });
 
 export function useAccount() {
