@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 import AccountContext from "@/features/account/context";
 import { AccountDetails } from "@/features/account/type";
@@ -15,15 +15,15 @@ export default function AccountProvider({
 
   const isLoggedIn = details !== null;
 
-  const login = (details: AccountDetails) => {
+  const login = useCallback((details: AccountDetails) => {
     setDetails(details);
     setIsLoading(false);
-  };
+  }, []);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     setDetails(null);
     setIsLoading(false);
-  };
+  }, []);
 
   return (
     <AccountContext.Provider
