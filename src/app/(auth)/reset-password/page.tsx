@@ -98,6 +98,7 @@ export default function Page() {
       fields={[
         // New Password
         <TextInputField
+          key="password"
           id="password"
           type="password"
           label="New Password*"
@@ -119,6 +120,7 @@ export default function Page() {
 
         // Retype Password
         <TextInputField
+          key="confirmPassword"
           id="confirmPassword"
           type="password"
           label="Retype Password*"
