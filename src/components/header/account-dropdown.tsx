@@ -1,18 +1,18 @@
-import { forwardRef, ReactNode, useContext, useRef } from "react";
+import { forwardRef, ReactNode, useRef } from "react";
 
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
 import { ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
+import { useAccount } from "@/features/account/context";
 import { useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
-import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
 
 export default function AccountDropdown({ children }: { children: ReactNode }) {
   const isSubmitting = useRef(false);
-  const { setLoggedIn } = useContext(LoginContext);
+  const { logout } = useAccount();
   const router = useRouter();
 
   // TOASTS AND ERROR STATES
@@ -28,7 +28,7 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
     })
       .then(async (res) => {
         if (res.ok) {
-          setLoggedIn(false);
+          logout();
           addToast("success", MESSAGES.SUCCESS_LOGOUT);
           router.push("/login");
         } else {
