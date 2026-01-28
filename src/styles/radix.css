@@ -27,3 +27,14 @@
     height: 0;
   }
 }
+
+/* Toast animations */
+
+@keyframes toast-progress {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
