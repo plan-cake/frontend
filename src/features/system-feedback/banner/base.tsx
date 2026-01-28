@@ -2,31 +2,22 @@ import { BANNER_CONFIG } from "@/features/system-feedback/banner/config";
 import { BannerType } from "@/features/system-feedback/type";
 import { cn } from "@/lib/utils/classname";
 
-type BaseBannerProps = {
+type BannerProps = {
   type: BannerType;
   className?: string;
   showPing?: boolean;
-  children: React.ReactNode;
+  title?: string;
+  subtitle?: string;
+  children?: React.ReactNode;
 };
-
-type WithTitle = BaseBannerProps & {
-  noTitle?: false;
-  title: string;
-};
-
-type WithoutTitle = BaseBannerProps & {
-  noTitle: true;
-  title?: never;
-};
-
-type BannerProps = WithTitle | WithoutTitle;
 
 export function Banner({
   type,
   className,
   showPing = false,
+  title,
+  subtitle,
   children,
-  ...props
 }: BannerProps) {
   const Icon = BANNER_CONFIG[type].icon;
 
@@ -44,8 +35,13 @@ export function Banner({
         <Icon className="relative z-10 h-5 w-5 shrink-0" />
       </div>
       <div>
-        {!props.noTitle && <h2 className="text-lg font-bold">{props.title}</h2>}
-        {children}
+        {(title || subtitle) && (
+          <>
+            {title && <h2 className="text-lg font-bold">{title}</h2>}
+            {subtitle && <p className="font-semibold">{subtitle}</p>}
+          </>
+        )}
+        {children && <div className="text-sm">{children}</div>}
       </div>
     </div>
   );

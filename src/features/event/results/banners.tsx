@@ -7,6 +7,7 @@ export function getResultBanners(
   participants: string[],
   timeslots: Date[],
   isWeekEvent: boolean,
+  participated: boolean,
 ) {
   if (
     !isWeekEvent &&
@@ -14,29 +15,38 @@ export function getResultBanners(
     timeslots[timeslots.length - 1] < new Date()
   ) {
     return (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">This event has passed.</p>
-      </Banner>
+      <Banner
+        type="info"
+        subtitle="All the dates in this event have passed."
+        showPing
+      />
     );
   } else if (participants.length === 0) {
     return (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">No one filled out a time yet!</p>
+      <Banner
+        type="info"
+        subtitle="No one has submitted availability!"
+        showPing
+      >
         <p>Add your availability by clicking the button above.</p>
       </Banner>
     );
-  } else if (participants.length === 1) {
+  } else if (participated && participants.length === 1) {
     return (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">Waiting for others...</p>
+      <Banner type="info" subtitle="Waiting for others..." showPing>
         <p>Copy and share the link so others can join!</p>
+      </Banner>
+    );
+  } else if (!participated) {
+    return (
+      <Banner type="info" subtitle="Don't be a stranger!" showPing>
+        <p>Add your availability by clicking the button above.</p>
       </Banner>
     );
   } else if (!hasMutualAvailability(availabilities, participants)) {
     return (
-      <Banner type="info" noTitle showPing>
-        <p className="font-semibold">Oh dear :(</p>
-        <p>No one is available at the same time.</p>
+      <Banner type="info" subtitle="Oh dear :(" showPing>
+        <p>There is not a time where everyone is available.</p>
       </Banner>
     );
   }
