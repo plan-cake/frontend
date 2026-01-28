@@ -10,7 +10,7 @@ import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 
 export default function AccountButton() {
-  const { isLoggedIn, login, logout } = useAccount();
+  const { isLoading, isLoggedIn, login, logout } = useAccount();
 
   useEffect(() => {
     const checkLogin = async () => {
@@ -46,7 +46,12 @@ export default function AccountButton() {
     );
   } else {
     return (
-      <LinkButton buttonStyle="frosted glass" label="Log In" href="/login" />
+      <LinkButton
+        buttonStyle="frosted glass"
+        label="Log In"
+        href="/login"
+        loading={isLoading}
+      />
     );
   }
 }
