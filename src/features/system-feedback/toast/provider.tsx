@@ -17,7 +17,7 @@ export default function ToastProvider({
   children: React.ReactNode;
 }) {
   const [toasts, setToasts] = useState<ToastData[]>([]);
-  const [isHoveringToast, setIsHoveringToast] = useState(false);
+  const [isHoveringViewport, setIsHoveringViewport] = useState(false);
 
   const addToast = useCallback(
     (type: ToastType, message: string, options?: ToastOptions) => {
@@ -80,8 +80,8 @@ export default function ToastProvider({
         {children}
 
         <Toast.Viewport
-          onMouseEnter={() => setIsHoveringToast(true)}
-          onMouseLeave={() => setIsHoveringToast(false)}
+          onMouseEnter={() => setIsHoveringViewport(true)}
+          onMouseLeave={() => setIsHoveringViewport(false)}
           className={cn(
             "fixed bottom-12 right-0 z-[2147483647] md:bottom-0",
             "flex list-none flex-col items-end outline-none",
@@ -103,7 +103,7 @@ export default function ToastProvider({
                 icon={<Icon className="col-start-1 row-span-2 h-5 w-5" />}
                 isPersistent={toast.isPersistent}
                 duration={toast.duration}
-                isPaused={isHoveringToast}
+                isPaused={isHoveringViewport}
                 onOpenChange={(isOpen) => {
                   if (!isOpen) {
                     if (toast.onDismiss) {

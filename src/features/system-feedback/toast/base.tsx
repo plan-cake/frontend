@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"; // Import hooks
+import { useEffect, useRef } from "react";
 
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
@@ -31,12 +31,13 @@ export default function BaseToast({
   isPersistent = false,
   isPaused,
 }: BaseToastProps) {
-  // 1. We track the remaining time in a ref so it doesn't trigger re-renders
+  // Whenever the viewport hover state changes, the toast provider rerenders
+  // all toasts, which means that all toast durations will get reset. In order
+  // to prevent that, each toast will manually manage its own duration timer.
   const remainingTime = useRef(duration);
   const startTime = useRef<number>(0);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // 2. This effect handles the custom timer logic
   useEffect(() => {
     if (isPersistent || !open) return;
 
