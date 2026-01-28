@@ -107,6 +107,7 @@ export default function Page() {
       fields={[
         // Email
         <TextInputField
+          key="email"
           id="email"
           type="email"
           label="Email*"
@@ -118,6 +119,7 @@ export default function Page() {
 
         // Password
         <TextInputField
+          key="password"
           id="password"
           type="password"
           label="Password*"
@@ -139,6 +141,7 @@ export default function Page() {
 
         // Retype Password
         <TextInputField
+          key="confirmPassword"
           id="confirmPassword"
           type="password"
           label="Retype Password*"
