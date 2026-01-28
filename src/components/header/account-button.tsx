@@ -1,20 +1,20 @@
 "use client";
 
-import { useContext, useEffect } from "react";
+import { useEffect } from "react";
 
 import { PersonIcon } from "@radix-ui/react-icons";
 
 import AccountDropdown from "@/components/header/account-dropdown";
+import { useAccount } from "@/features/account/context";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import { LoginContext } from "@/lib/providers";
 
 export default function AccountButton() {
-  const { loggedIn, setLoggedIn } = useContext(LoginContext);
+  const { isLoggedIn, login, logout } = useAccount();
 
   useEffect(() => {
     const checkLogin = async () => {
-      if (loggedIn) return;
+      if (isLoggedIn) return;
 
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
@@ -22,19 +22,19 @@ export default function AccountButton() {
           headers: { "Content-Type": "application/json" },
         });
         if (res.ok) {
-          setLoggedIn(true);
+          login(await res.json());
         } else {
-          setLoggedIn(false);
+          logout();
         }
       } catch (err) {
         console.error("Fetch error:", err);
-        setLoggedIn(false);
+        logout();
       }
     };
     checkLogin();
-  }, [loggedIn, setLoggedIn]);
+  }, [isLoggedIn, login, logout]);
 
-  if (loggedIn) {
+  if (isLoggedIn) {
     return (
       <AccountDropdown>
         <ActionButton
