@@ -13,6 +13,7 @@ import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
+import { getResultBanners } from "@/features/event/results/banners";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
@@ -88,6 +89,15 @@ export default function ClientPage({
     return () => observer.disconnect();
   }, []);
 
+  /* BANNERS */
+  const banners = getResultBanners(
+    optimisticAvailabilities,
+    optimisticParticipants,
+    timeslots,
+    eventRange.type === "weekday",
+    participated,
+  );
+
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
@@ -116,6 +126,8 @@ export default function ClientPage({
         </div>
       </div>
 
+      <div className="md:hidden">{banners}</div>
+
       <div className="h-fit md:flex md:flex-row md:gap-4">
         <ScheduleGrid
           mode="view"
@@ -141,6 +153,8 @@ export default function ClientPage({
             "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
           )}
         >
+          <div className="hidden md:block">{banners}</div>
+
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
             participants={optimisticParticipants}

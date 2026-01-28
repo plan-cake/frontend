@@ -5,6 +5,8 @@ permissions:
 
 on:
   pull_request:
+    # Having edited here updates the check when changing the base branch
+    types: [synchronize, opened, reopened, edited]
 
 jobs:
   check_branch:
