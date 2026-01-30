@@ -41,8 +41,10 @@ export default function ParticipantChip({
         onClick();
       }}
       className={cn(
-        "relative flex w-fit items-center justify-center rounded-full px-3 py-1 text-sm transition-[opacity,shadow] duration-200 hover:cursor-pointer",
+        "relative flex w-fit touch-manipulation items-center justify-center rounded-full transition-[opacity,shadow] duration-200 hover:cursor-pointer",
+        "text-bas px-3 py-1.5 md:text-sm",
         "border border-transparent",
+        "after:absolute after:-inset-1 after:content-['']",
 
         // Availability Styling
         !isAvailable && "bg-gray-200/25 line-through opacity-50",
@@ -58,7 +60,7 @@ export default function ParticipantChip({
 
         // Wiggle/Remove Styling
         isRemoving &&
-          "animate-wiggle hover:bg-red group scale-105 hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
+          "animate-wiggle hover:bg-red scale-102 group hover:cursor-pointer hover:text-white hover:opacity-100 active:bg-red-400 md:scale-100",
       )}
     >
       <span

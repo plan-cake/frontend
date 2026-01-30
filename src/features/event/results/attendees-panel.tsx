@@ -69,40 +69,44 @@ export default function AttendeesPanel({
   }, []);
 
   return (
-    <div className="bg-panel space-y-1 rounded-3xl shadow-md md:shadow-none">
-      <div className="flex justify-between px-6 pt-6">
+    <div className="bg-panel relative flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
+      <div
+        className={cn(
+          "absolute left-0 right-0 top-0 z-10 flex justify-between px-6 pb-6 pt-6",
+          "bg-panel/30 mask-b-from-70% backdrop-blur-sm",
+        )}
+      >
         <div className="flex flex-col">
           <h2 className="text-md font-semibold">Attendees</h2>
           {displayParticipants.length > 0 && (
             <span className="text-sm">{`${activeCount}/${displayParticipants.length} available`}</span>
           )}
         </div>
-
         <div className="space-x-2">
           <button
             tabIndex={hasSelection ? 0 : -1}
             className={cn(
-              "bg-accent/15 text-accent h-9 w-9 rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
+              "bg-accent/15 text-accent rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
               "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
               hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
             )}
             onClick={clearSelectedParticipants}
           >
-            <ResetIcon className="h-5 w-5" />
+            <ResetIcon className="h-6 w-6" />
           </button>
 
           {participants.length > 0 && isCreator && (
             <button
               className={cn(
-                "text-red bg-red/15 h-9 w-9 rounded-full p-2 text-sm font-semibold",
+                "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
                 "hover:bg-red/25 active:bg-red/40 cursor-pointer",
               )}
               onClick={() => setIsRemoving(!isRemoving)}
             >
               {isRemoving ? (
-                <CheckIcon className="h-5 w-5" />
+                <CheckIcon className="h-6 w-6" />
               ) : (
-                <EraserIcon className="h-5 w-5" />
+                <EraserIcon className="h-6 w-6" />
               )}
             </button>
           )}
@@ -115,10 +119,10 @@ export default function AttendeesPanel({
               onConfirm={() => onRemoveParticipant(currentUser)}
             >
               <button
-                className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
+                className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
                 aria-label="Remove self"
               >
-                <TrashIcon className="h-5 w-5" />
+                <TrashIcon className="h-6 w-6" />
               </button>
             </ConfirmationDialog>
           )}
@@ -127,8 +131,7 @@ export default function AttendeesPanel({
 
       <ul
         className={cn(
-          "max-h-31 flex flex-wrap gap-2 overflow-y-auto overflow-x-visible md:max-h-none md:overflow-visible",
-          "mr-6 pb-6 pl-6 pr-1 pt-1",
+          "pt-22 max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5",
         )}
       >
         {participants.length === 0 && (
