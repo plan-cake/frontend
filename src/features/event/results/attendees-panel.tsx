@@ -42,6 +42,12 @@ export default function AttendeesPanel({
   currentUser,
   onRemoveParticipant,
 }: AttendeesPanelProps) {
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const handleScroll = (e: React.UIEvent<HTMLUListElement>) => {
+    setIsScrolled(e.currentTarget.scrollTop > 5);
+  };
+
   /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
   const showSelfRemove =
@@ -72,8 +78,8 @@ export default function AttendeesPanel({
     <div className="bg-panel relative flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
       <div
         className={cn(
-          "absolute left-0 right-0 top-0 z-10 flex justify-between px-6 pb-6 pt-6",
-          "bg-panel/30 mask-b-from-70% backdrop-blur-sm",
+          "bg-panel absolute left-0 right-0 top-0 z-10 flex justify-between px-6 pt-6",
+          isScrolled ? "mask-b-from-70% pb-10" : "pb-3",
         )}
       >
         <div className="flex flex-col">
@@ -130,8 +136,9 @@ export default function AttendeesPanel({
       </div>
 
       <ul
+        onScroll={handleScroll}
         className={cn(
-          "pt-22 max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5",
+          "max-h-53 pt-21 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5",
         )}
       >
         {participants.length === 0 && (
