@@ -3,32 +3,28 @@
 import { useCallback, useState } from "react";
 
 import AccountContext from "@/features/account/context";
-import { AccountDetails } from "@/features/account/type";
+import { AccountDetails, LoginState } from "@/features/account/type";
 
 export default function AccountProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [loginState, setLoginState] = useState<LoginState>("loading");
   const [details, setDetails] = useState<AccountDetails | null>(null);
-
-  const isLoggedIn = details !== null;
 
   const login = useCallback((details: AccountDetails) => {
     setDetails(details);
-    setIsLoading(false);
+    setLoginState("logged_in");
   }, []);
 
   const logout = useCallback(() => {
     setDetails(null);
-    setIsLoading(false);
+    setLoginState("logged_out");
   }, []);
 
   return (
-    <AccountContext.Provider
-      value={{ isLoading, isLoggedIn, details, login, logout }}
-    >
+    <AccountContext.Provider value={{ loginState, details, login, logout }}>
       {children}
     </AccountContext.Provider>
   );

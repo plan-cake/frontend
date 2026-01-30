@@ -1,16 +1,14 @@
 import { createContext, useContext } from "react";
 
-import { AccountDetails } from "@/features/account/type";
+import { AccountDetails, LoginState } from "@/features/account/type";
 
 export const AccountContext = createContext<{
-  isLoading: boolean;
-  isLoggedIn: boolean;
+  loginState: LoginState;
   details: AccountDetails | null;
   login: (details: AccountDetails) => void;
   logout: () => void;
 }>({
-  isLoading: true,
-  isLoggedIn: false,
+  loginState: "loading",
   details: null,
   login: () => { },
   logout: () => { },

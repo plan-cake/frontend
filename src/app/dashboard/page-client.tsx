@@ -26,13 +26,13 @@ export default function ClientPage({
 }: DashboardPageProps) {
   const [tab, setTab] = useState<DashboardTab>("created");
   const isMobile = useCheckMobile();
-  const { isLoading, isLoggedIn } = useAccount();
+  const { loginState } = useAccount();
 
   return (
     <div className="flex min-h-screen flex-col gap-4 pl-6 pr-6">
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      {!isLoading && !isLoggedIn && (
+      {loginState === "logged_out" && (
         <Banner type="info" title="Logged in as a Guest">
           <div>
             This data is only available from this browser.{" "}

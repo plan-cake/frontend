@@ -10,11 +10,11 @@ import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 
 export default function AccountButton() {
-  const { isLoading, isLoggedIn, login, logout } = useAccount();
+  const { loginState, login, logout } = useAccount();
 
   useEffect(() => {
     const checkLogin = async () => {
-      if (isLoggedIn) return;
+      if (loginState === "logged_in") return;
 
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
@@ -32,9 +32,9 @@ export default function AccountButton() {
       }
     };
     checkLogin();
-  }, [isLoggedIn, login, logout]);
+  }, [loginState, login, logout]);
 
-  if (isLoggedIn) {
+  if (loginState === "logged_in") {
     return (
       <AccountDropdown>
         <ActionButton
@@ -50,7 +50,7 @@ export default function AccountButton() {
         buttonStyle="frosted glass"
         label="Log In"
         href="/login"
-        loading={isLoading}
+        loading={loginState === "loading"}
       />
     );
   }
