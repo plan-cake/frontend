@@ -80,6 +80,8 @@ export default function useScheduleDrag(
       setDraggedSlots(
         generateDragSlots(dragState.current.lastToggledSlot!, hoveredSlot),
       );
+    } else if (!isShifting) {
+      resetDragSlots();
     }
   }, [hoveredSlot, isShifting]);
 
