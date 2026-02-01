@@ -61,6 +61,7 @@ export default function useScheduleDrag(
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.key === "Shift" && !isDragging.current) {
         setIsShifting(false);
+        setDraggedSlots(new Set());
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -80,8 +81,6 @@ export default function useScheduleDrag(
       setDraggedSlots(
         generateDragSlots(dragState.current.lastToggledSlot!, hoveredSlot),
       );
-    } else if (!isShifting) {
-      resetDragSlots();
     }
   }, [hoveredSlot, isShifting]);
 
