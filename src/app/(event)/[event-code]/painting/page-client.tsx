@@ -6,6 +6,7 @@ import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
+import Checkbox from "@/components/checkbox";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
@@ -106,6 +107,9 @@ export default function ClientPage({
       addToast("error", MESSAGES.ERROR_GENERIC);
     }
   }, 300);
+
+  // DEFAULT NAME SETTING
+  const [saveDefaultName, setSaveDefaultName] = useState(false);
 
   // DEFAULT NAME APPLICATION
   // This also accounts for the situation where a user directly opens the painting page
@@ -226,30 +230,41 @@ export default function ClientPage({
       <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="md:top-25 h-fit w-full shrink-0 space-y-4 overflow-y-auto md:sticky md:w-80">
-          <div className="w-fit">
-            <p
-              className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
-            >
-              {errors.displayName ? errors.displayName : "Error Placeholder"}
-            </p>
-            Hi,{" "}
-            <input
-              required
-              type="text"
-              value={displayName}
-              onChange={(e) => {
-                setDisplayName(e.target.value);
-                handleNameChange(e.target.value);
-              }}
-              placeholder="add your name"
-              className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
-                errors.displayName
-                  ? "border-error placeholder:text-error"
-                  : "border-gray-400"
-              }`}
-            />
-            <br />
-            add your availabilities here
+          <div className="space-y-2">
+            <div className="w-fit">
+              <p
+                className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
+              >
+                {errors.displayName ? errors.displayName : "Error Placeholder"}
+              </p>
+              Hi,{" "}
+              <input
+                required
+                type="text"
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value);
+                  handleNameChange(e.target.value);
+                }}
+                placeholder="add your name"
+                className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
+                  errors.displayName
+                    ? "border-error placeholder:text-error"
+                    : "border-gray-400"
+                }`}
+              />
+              <br />
+              add your availabilities here
+            </div>
+            {loginState === "logged_in" && !accountDetails!.defaultName && (
+              <div className="text-foreground/75">
+                <Checkbox
+                  label="Save as default name"
+                  checked={saveDefaultName}
+                  onChange={(checked) => setSaveDefaultName(checked)}
+                ></Checkbox>
+              </div>
+            )}
           </div>
 
           {/* Desktop-only Event Info */}
