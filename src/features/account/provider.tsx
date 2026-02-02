@@ -11,20 +11,24 @@ export default function AccountProvider({
   children: React.ReactNode;
 }) {
   const [loginState, setLoginState] = useState<LoginState>("loading");
-  const [details, setDetails] = useState<AccountDetails | null>(null);
+  const [accountDetails, setAccountDetails] = useState<AccountDetails | null>(
+    null,
+  );
 
-  const login = useCallback((details: AccountDetails) => {
-    setDetails(details);
+  const login = useCallback((accountDetails: AccountDetails) => {
+    setAccountDetails(accountDetails);
     setLoginState("logged_in");
   }, []);
 
   const logout = useCallback(() => {
-    setDetails(null);
+    setAccountDetails(null);
     setLoginState("logged_out");
   }, []);
 
   return (
-    <AccountContext.Provider value={{ loginState, details, login, logout }}>
+    <AccountContext.Provider
+      value={{ loginState, accountDetails, login, logout }}
+    >
       {children}
     </AccountContext.Provider>
   );
