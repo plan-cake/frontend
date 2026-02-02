@@ -22,7 +22,11 @@ export default function AccountButton() {
           headers: { "Content-Type": "application/json" },
         });
         if (res.ok) {
-          login(await res.json());
+          const data = await res.json();
+          login({
+            email: data.email,
+            defaultName: data.default_display_name,
+          });
         } else {
           logout();
         }
