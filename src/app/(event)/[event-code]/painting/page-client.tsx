@@ -10,6 +10,7 @@ import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
 import { EventRange } from "@/core/event/types";
+import { useAccount } from "@/features/account/context";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
@@ -36,11 +37,13 @@ export default function ClientPage({
   initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
+  const { loginState, accountDetails } = useAccount();
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
     initialData,
     eventRange.type,
+    loginState === "logged_in" ? accountDetails!.defaultName || null : null,
   );
   const { displayName, timeZone, userAvailability } = state;
 
