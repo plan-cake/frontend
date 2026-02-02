@@ -50,19 +50,6 @@ export default function ClientPage({
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  // Default name application. This accounts for the situation where a user directly opens
-  // the painting page instead of coming from the results page.
-  const nameInitialized = useRef(false);
-  useEffect(() => {
-    if (loginState === "logged_in" && !nameInitialized.current) {
-      setDisplayName(accountDetails!.defaultName || displayName);
-      nameInitialized.current = true;
-      addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
-        title: "NAME AUTOFILLED",
-      });
-    }
-  }, [loginState, accountDetails, setDisplayName, displayName, addToast]);
-
   // useEffect(() => {
   //   /**
   //    * Uses a custom media query instead of the useCheckMobile hook because
@@ -120,6 +107,29 @@ export default function ClientPage({
       addToast("error", MESSAGES.ERROR_GENERIC);
     }
   }, 300);
+
+  // DEFAULT NAME APPLICATION
+  // This also accounts for the situation where a user directly opens the painting page
+  // instead of coming from the results page.
+  const nameInitialized = useRef(false);
+  useEffect(() => {
+    if (loginState === "logged_in" && !nameInitialized.current) {
+      const newName = accountDetails!.defaultName || displayName;
+      setDisplayName(newName);
+      handleNameChange(newName);
+      addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
+        title: "NAME AUTOFILLED",
+      });
+      nameInitialized.current = true;
+    }
+  }, [
+    loginState,
+    accountDetails,
+    setDisplayName,
+    displayName,
+    addToast,
+    handleNameChange,
+  ]);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
