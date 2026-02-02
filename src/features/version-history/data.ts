@@ -50,6 +50,15 @@ export function getVersionHistoryData(): VersionHistoryData {
             "Fixed touch interactions on the results page to allow for natural scrolling gestures",
           ],
         },
+        {
+          version: "v0.2.2",
+          date: new Date(2026, 1, 2),
+          changes: [
+            "Added banners to results page for event status and participation levels",
+            "Updated toasts to support persistent and temporary messages",
+            "Temporarily disabled shift painting for fixes",
+          ],
+        },
       ],
     },
   ];
