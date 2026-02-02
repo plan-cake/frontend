@@ -115,7 +115,8 @@ export default function ClientPage({
   // This also accounts for the situation where a user directly opens the painting page
   // instead of coming from the results page.
   const { loginState, accountDetails, login } = useAccount();
-  const nameInitialized = useRef(false);
+  // If editing, don't try to autofill the name
+  const nameInitialized = useRef(!!initialData);
   useEffect(() => {
     if (nameInitialized.current) return;
     if (loginState !== "logged_in") return;
