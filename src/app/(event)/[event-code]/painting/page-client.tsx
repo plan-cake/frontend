@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
@@ -50,6 +50,16 @@ export default function ClientPage({
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Default name application. This accounts for the situation where a user directly opens
+  // the painting page instead of coming from the results page.
+  const nameInitialized = useRef(false);
+  useEffect(() => {
+    if (loginState === "logged_in" && !nameInitialized.current) {
+      setDisplayName(accountDetails!.defaultName || displayName);
+      nameInitialized.current = true;
+    }
+  }, [loginState, accountDetails, setDisplayName, displayName]);
 
   // useEffect(() => {
   //   /**
