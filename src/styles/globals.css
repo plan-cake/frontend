@@ -24,12 +24,3 @@ body {
   --time-picker-primary: var(--accent);
   --time-picker-primary-light: rgba(59, 130, 246, 0.1);
 }
-
-/* In your global CSS */
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
-.no-scrollbar {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
