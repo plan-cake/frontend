@@ -57,8 +57,11 @@ export default function ClientPage({
     if (loginState === "logged_in" && !nameInitialized.current) {
       setDisplayName(accountDetails!.defaultName || displayName);
       nameInitialized.current = true;
+      addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
+        title: "NAME AUTOFILLED",
+      });
     }
-  }, [loginState, accountDetails, setDisplayName, displayName]);
+  }, [loginState, accountDetails, setDisplayName, displayName, addToast]);
 
   // useEffect(() => {
   //   /**

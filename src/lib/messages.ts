@@ -36,4 +36,7 @@ export const MESSAGES = {
   // copy link messages
   COPY_LINK_SUCCESS: "Link copied to clipboard!",
   COPY_LINK_FAILURE: "Failed to copy link. Please try again.",
+
+  // info messages
+  INFO_NAME_AUTOFILLED: "You can change this behavior anytime in account settings.",
 };
