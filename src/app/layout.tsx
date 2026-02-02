@@ -19,10 +19,43 @@ const nunito = Nunito({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  title: "Plancake",
-  description: "Stacking up perfect plans, one pancake at a time",
-};
+export function generateMetadata(): Metadata {
+  const description =
+    "Stacking up perfect plans has never been easier. Plancake is the simplest way to coordinate availability and schedule group meetings for free.";
+
+  return {
+    title: "Plancake - Stacking up perfect plans",
+
+    // text that appears below your link in search engines
+    description: description,
+
+    // keywords for SEO optimization
+    keywords: [
+      "Plancake",
+      "scheduling",
+      "meeting finder",
+      "availability poll",
+      "group scheduling tool",
+      "event planner",
+      "event planning",
+      "free scheduling app",
+      "find a time to meet",
+      "When2meet",
+      "Doodle",
+      "mobile friendly scheduler",
+    ],
+
+    // for link previews on social media
+    openGraph: {
+      title: "Plancake - Stacking up perfect plans",
+      description: description,
+      type: "website",
+      locale: "en_US",
+      url: "https://plancake.org",
+      siteName: "Plancake",
+    },
+  };
+}
 
 export default function RootLayout({
   children,
