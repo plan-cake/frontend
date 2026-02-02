@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState, startTransition } from "react";
 
-import { CheckIcon, EraserIcon, TrashIcon } from "@radix-ui/react-icons";
+import { CheckIcon, EraserIcon, ExitIcon } from "@radix-ui/react-icons";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
@@ -96,7 +96,7 @@ export default function AttendeesPanel({
               className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 h-9 w-9 cursor-pointer rounded-full p-2 text-sm font-semibold"
               aria-label="Remove self"
             >
-              <TrashIcon className="h-5 w-5" />
+              <ExitIcon className="h-5 w-5" />
             </button>
           </ConfirmationDialog>
         )}
