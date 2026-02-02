@@ -37,7 +37,6 @@ export default function ClientPage({
   initialData: SelfAvailabilityResponse | null;
 }) {
   const router = useRouter();
-  const { loginState, accountDetails } = useAccount();
 
   // AVAILABILITY STATE
   const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
@@ -111,6 +110,7 @@ export default function ClientPage({
   // DEFAULT NAME APPLICATION
   // This also accounts for the situation where a user directly opens the painting page
   // instead of coming from the results page.
+  const { loginState, accountDetails } = useAccount();
   const nameInitialized = useRef(false);
   useEffect(() => {
     if (nameInitialized.current) return;
