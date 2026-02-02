@@ -158,6 +158,7 @@ export default function ClientPage({
             ...accountDetails!,
             defaultName: displayName,
           });
+          addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
         } else {
           console.error("Failed to save default name");
           addToast("error", MESSAGES.ERROR_GENERIC);

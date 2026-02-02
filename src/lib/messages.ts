@@ -32,6 +32,7 @@ export const MESSAGES = {
   SUCCESS_EMAIL_SENT: "Email resent. Please check your inbox.",
   SUCCESS_PASSWORD_RESET: "Password has been reset successfully.",
   SUCCESS_LOGOUT: "You have been logged out.",
+  SUCCESS_DEFAULT_NAME_SAVED: "Default name saved successfully.",
 
   // copy link messages
   COPY_LINK_SUCCESS: "Link copied to clipboard!",
