@@ -150,36 +150,38 @@ export default function ClientPage({
           ref={sidebarRef}
           className={cn(
             "fixed bottom-1 left-0 z-10 w-full shrink-0 px-6",
-            "md:top-25 md:sticky md:h-full md:w-80 md:space-y-4 md:px-0",
+            "md:relative md:bottom-auto md:left-auto md:w-80 md:px-0",
           )}
         >
-          <div className="hidden md:block">{banners}</div>
+          <div className="hidden md:mb-4 md:block">{banners}</div>
 
-          <AttendeesPanel
-            hoveredSlot={hoveredSlot}
-            participants={optimisticParticipants}
-            availabilities={optimisticAvailabilities}
-            isCreator={isCreator}
-            currentUser={userName}
-            eventCode={eventCode}
-            removeOptimisticParticipant={removeOptimisticParticipant}
-            updateOptimisticAvailabilities={updateOptimisticAvailabilities}
-            handleError={handleError}
-          />
+          <div className="md:top-25 md:sticky md:space-y-4">
+            <AttendeesPanel
+              hoveredSlot={hoveredSlot}
+              participants={optimisticParticipants}
+              availabilities={optimisticAvailabilities}
+              isCreator={isCreator}
+              currentUser={userName}
+              eventCode={eventCode}
+              removeOptimisticParticipant={removeOptimisticParticipant}
+              updateOptimisticAvailabilities={updateOptimisticAvailabilities}
+              handleError={handleError}
+            />
 
-          <div className="bg-panel hidden rounded-3xl p-6 md:block">
-            <EventInfo eventRange={eventRange} timezone={timezone} />
-          </div>
+            <div className="bg-panel hidden rounded-3xl p-6 md:block">
+              <EventInfo eventRange={eventRange} timezone={timezone} />
+            </div>
 
-          <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">
-            Displaying event in
-            <span className="text-accent ml-1 font-bold">
-              <TimeZoneSelector
-                id="timezone-select"
-                value={timezone}
-                onChange={handleTZChange}
-              />
-            </span>
+            <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">
+              Displaying event in
+              <span className="text-accent ml-1 font-bold">
+                <TimeZoneSelector
+                  id="timezone-select"
+                  value={timezone}
+                  onChange={handleTZChange}
+                />
+              </span>
+            </div>
           </div>
         </div>
       </div>
