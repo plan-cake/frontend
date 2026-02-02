@@ -18,7 +18,7 @@ export const MESSAGES = {
 
   // availability errors
   ERROR_NAME_MISSING: "Missing name.",
-  ERROR_NAME_TAKEN: "This code is unavailable. Please choose another.",
+  ERROR_NAME_TAKEN: "This name is unavailable. Please choose another.",
   ERROR_AVAILABILITY_MISSING: "Please select your availability on the grid.",
 
   // event errors
