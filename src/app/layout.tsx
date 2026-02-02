@@ -24,10 +24,8 @@ export function generateMetadata(): Metadata {
     "Stacking up perfect plans has never been easier. Plancake is the simplest way to coordinate availability and schedule group meetings for free.";
 
   return {
-    title: {
-      default: "Plancake - Stacking up perfect plans",
-      template: "%s • Plancake",
-    },
+    title: "Plancake - Stacking up perfect plans",
+
     // text that appears below your link in search engines
     description: description,
 
