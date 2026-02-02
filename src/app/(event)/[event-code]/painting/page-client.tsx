@@ -120,9 +120,9 @@ export default function ClientPage({
   useEffect(() => {
     if (nameInitialized.current) return;
     if (loginState !== "logged_in") return;
-    if (!accountDetails!.defaultName) return;
+    if (!accountDetails || !accountDetails.defaultName) return;
 
-    const newName = accountDetails!.defaultName;
+    const newName = accountDetails.defaultName;
     setDisplayName(newName);
     handleNameChange(newName);
     addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
@@ -147,12 +147,18 @@ export default function ClientPage({
 
       // Save the default name if checkbox checked
       if (saveDefaultName) {
-        const response = await fetch("/api/account/set-default-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ display_name: displayName }),
-        });
-        if (response.ok) {
+        let defaultNameSaved = false;
+        if (accountDetails) {
+          const response = await fetch("/api/account/set-default-name/", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ display_name: displayName }),
+          });
+          if (response.ok) {
+            defaultNameSaved = true;
+          }
+        }
+        if (defaultNameSaved) {
           // Update account context
           login({
             ...accountDetails!,
