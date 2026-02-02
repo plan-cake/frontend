@@ -113,23 +113,18 @@ export default function ClientPage({
   // instead of coming from the results page.
   const nameInitialized = useRef(false);
   useEffect(() => {
-    if (loginState === "logged_in" && !nameInitialized.current) {
-      const newName = accountDetails!.defaultName || displayName;
-      setDisplayName(newName);
-      handleNameChange(newName);
-      addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
-        title: "NAME AUTOFILLED",
-      });
-      nameInitialized.current = true;
-    }
-  }, [
-    loginState,
-    accountDetails,
-    setDisplayName,
-    displayName,
-    addToast,
-    handleNameChange,
-  ]);
+    if (nameInitialized.current) return;
+    if (loginState !== "logged_in") return;
+    if (!accountDetails!.defaultName) return;
+
+    const newName = accountDetails!.defaultName;
+    setDisplayName(newName);
+    handleNameChange(newName);
+    addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
+      title: "NAME AUTOFILLED",
+    });
+    nameInitialized.current = true;
+  }, [loginState, accountDetails, setDisplayName, addToast, handleNameChange]);
 
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
