@@ -42,7 +42,8 @@ export default function ParticipantChip({
       }}
       className={cn(
         "relative flex w-fit touch-manipulation items-center justify-center rounded-full transition-[opacity,shadow] duration-200 hover:cursor-pointer",
-        "text-bas px-3 py-1.5 md:text-sm",
+        "px-3 py-1.5 text-base",
+        "md:px-3 md:py-1 md:text-sm",
         "border border-transparent",
         "after:absolute after:-inset-1 after:content-['']",
 
