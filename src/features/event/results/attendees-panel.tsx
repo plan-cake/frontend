@@ -72,7 +72,8 @@ export default function AttendeesPanel({
     <div className="bg-panel relative flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
       <div
         className={cn(
-          "bg-panel absolute left-0 right-0 top-0 z-10 flex justify-between px-6 pb-2 pt-6",
+          "absolute left-0 right-0 top-0 z-10",
+          "bg-panel flex touch-none select-none justify-between px-6 pb-2 pt-6",
         )}
       >
         <div className="flex flex-col">
