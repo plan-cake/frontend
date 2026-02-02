@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import {
   CheckIcon,
   EraserIcon,
+  ExitIcon,
   ResetIcon,
-  TrashIcon,
 } from "@radix-ui/react-icons";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
@@ -128,7 +128,7 @@ export default function AttendeesPanel({
                 className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
                 aria-label="Remove self"
               >
-                <TrashIcon className="h-6 w-6" />
+                <ExitIcon className="h-6 w-6" />
               </button>
             </ConfirmationDialog>
           )}

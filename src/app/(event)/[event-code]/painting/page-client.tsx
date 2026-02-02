@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
@@ -41,31 +41,31 @@ export default function ClientPage({
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
-  const { addToast, removeToast } = useToast();
+  const { addToast } = useToast();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  useEffect(() => {
-    /**
-     * Uses a custom media query instead of the useCheckMobile hook because
-     * this effect should run immediately on mount before rendering anything.
-     * If we used a hook, there would be a render cycle where the tip
-     * shows up on mobile before disappearing quickly.
-     */
-    const isMobileView = window.matchMedia("(max-width: 768px)").matches;
-    if (isMobileView) return;
+  // useEffect(() => {
+  //   /**
+  //    * Uses a custom media query instead of the useCheckMobile hook because
+  //    * this effect should run immediately on mount before rendering anything.
+  //    * If we used a hook, there would be a render cycle where the tip
+  //    * shows up on mobile before disappearing quickly.
+  //    */
+  //   const isMobileView = window.matchMedia("(max-width: 768px)").matches;
+  //   if (isMobileView) return;
 
-    const toastId = addToast(
-      "info",
-      "Click once and hold shift to select multiple slots without dragging. Works well if you're on a trackpad!",
-      {
-        title: "SHIFT TIP",
-        isPersistent: true,
-        localStorageKey: "shift-tip-dismissed",
-      },
-    );
+  //   const toastId = addToast(
+  //     "info",
+  //     "Click once and hold shift to select multiple slots without dragging. Works well if you're on a trackpad!",
+  //     {
+  //       title: "SHIFT TIP",
+  //       isPersistent: true,
+  //       localStorageKey: "shift-tip-dismissed",
+  //     },
+  //   );
 
-    return () => removeToast(toastId);
-  }, [addToast, removeToast]);
+  //   return () => removeToast(toastId);
+  // }, [addToast, removeToast]);
 
   const handleNameChange = useDebouncedCallback(async (displayName) => {
     if (errors.displayName) setErrors((prev) => ({ ...prev, displayName: "" }));
