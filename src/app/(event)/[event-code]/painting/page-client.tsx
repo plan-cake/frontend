@@ -114,7 +114,7 @@ export default function ClientPage({
   // DEFAULT NAME APPLICATION
   // This also accounts for the situation where a user directly opens the painting page
   // instead of coming from the results page.
-  const { loginState, accountDetails } = useAccount();
+  const { loginState, accountDetails, login } = useAccount();
   const nameInitialized = useRef(false);
   useEffect(() => {
     if (nameInitialized.current) return;
@@ -142,6 +142,26 @@ export default function ClientPage({
           addToast("error", error),
         );
         return false;
+      }
+
+      // Save the default name if checkbox checked
+      if (saveDefaultName) {
+        const response = await fetch("/api/account/set-default-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ display_name: displayName }),
+        });
+        if (response.ok) {
+          // Update account context
+          login({
+            ...accountDetails!,
+            defaultName: displayName,
+          });
+        } else {
+          console.error("Failed to save default name");
+          addToast("error", MESSAGES.ERROR_GENERIC);
+          return false;
+        }
       }
 
       const payload_availability = Array.from(userAvailability).map((iso) => {
