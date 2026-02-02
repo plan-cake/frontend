@@ -11,7 +11,6 @@ import { formatDateTime } from "@/lib/utils/date-time-format";
 export function useAvailability(
   initialData: SelfAvailabilityResponse | null,
   eventType: string,
-  defaultName: string | null,
 ) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isoStrings = [];
@@ -24,7 +23,7 @@ export function useAvailability(
   }
 
   const initialState: AvailabilityState = {
-    displayName: initialData?.display_name || defaultName || "",
+    displayName: initialData?.display_name || "",
     timeZone: initialData?.time_zone || initialTimeZone,
     userAvailability: createUserAvailability(isoStrings),
   };

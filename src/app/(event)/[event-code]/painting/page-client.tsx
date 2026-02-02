@@ -43,7 +43,6 @@ export default function ClientPage({
   const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
     initialData,
     eventRange.type,
-    loginState === "logged_in" ? accountDetails!.defaultName || null : null,
   );
   const { displayName, timeZone, userAvailability } = state;
 
