@@ -1,0 +1,25 @@
+import { createContext, useContext } from "react";
+
+import { AccountDetails, LoginState } from "@/features/account/type";
+
+export const AccountContext = createContext<{
+  loginState: LoginState;
+  details: AccountDetails | null;
+  login: (details: AccountDetails) => void;
+  logout: () => void;
+}>({
+  loginState: "loading",
+  details: null,
+  login: () => { },
+  logout: () => { },
+});
+
+export function useAccount() {
+  const context = useContext(AccountContext);
+  if (!context) {
+    throw new Error("useAccount must be used within an AccountProvider");
+  }
+  return context;
+}
+
+export default AccountContext;
