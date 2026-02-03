@@ -67,6 +67,7 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
       const response = await fetch("/api/event/check-code/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ custom_code: code }),
       });
       if (!response.ok)
@@ -94,7 +95,11 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
         />
       </FormSelectorField>
 
-      <FormSelectorField label="Intended Duration" htmlFor="duration-select" isVertical>
+      <FormSelectorField
+        label="Intended Duration"
+        htmlFor="duration-select"
+        isVertical
+      >
         <DurationSelector
           id="duration-select"
           value={eventRange.duration}

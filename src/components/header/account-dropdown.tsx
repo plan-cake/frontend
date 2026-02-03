@@ -25,6 +25,7 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
     await fetch("/api/auth/logout/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
     })
       .then(async (res) => {
         if (res.ok) {

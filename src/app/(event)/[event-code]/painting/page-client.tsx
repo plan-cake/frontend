@@ -88,6 +88,7 @@ export default function ClientPage({
       const response = await fetch("/api/availability/check-display-name/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({
           event_code: eventCode,
           display_name: displayName,
@@ -152,6 +153,7 @@ export default function ClientPage({
           const response = await fetch("/api/account/set-default-name/", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ display_name: displayName }),
           });
           if (response.ok) {
@@ -187,6 +189,7 @@ export default function ClientPage({
       const response = await fetch("/api/availability/add/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 

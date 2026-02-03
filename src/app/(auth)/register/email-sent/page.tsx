@@ -53,6 +53,7 @@ export default function Page() {
       const res = await fetch("/api/auth/resend-register-email/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email }),
       });
 

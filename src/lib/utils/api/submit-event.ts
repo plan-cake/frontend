@@ -65,6 +65,7 @@ export default async function submitEvent(
     const res = await fetch(apiRoute, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(jsonBody),
     });
     if (res.ok) {

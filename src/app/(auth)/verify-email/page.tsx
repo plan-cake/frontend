@@ -33,6 +33,7 @@ export default function Page() {
       await fetch("/api/auth/verify-email/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ verification_code: token }),
       })
         .then(async (res) => {
