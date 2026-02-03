@@ -8,22 +8,26 @@ import {
 export const TOAST_CONFIG = {
   error: {
     icon: ExclamationTriangleIcon,
-    style: "bg-red",
+    background: "red",
+    textColor: "white",
     title: "ERROR",
   },
   copy: {
     icon: CopyIcon,
-    style: "bg-foreground text-background",
+    background: "foreground",
+    textColor: "background",
     title: "COPIED",
   },
   success: {
     icon: CheckIcon,
-    style: "bg-foreground text-background",
+    background: "foreground",
+    textColor: "background",
     title: "SUCCESS",
   },
   info: {
     icon: InfoCircledIcon,
-    style: "bg-blue",
+    background: "blue",
+    textColor: "white",
     title: "INFORMATION",
   },
 } as const;
