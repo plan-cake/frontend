@@ -58,7 +58,11 @@ export default function Page() {
       });
 
       if (res.ok) {
-        login(await res.json());
+        const data = await res.json();
+        login({
+          email: data.email,
+          defaultName: data.default_display_name,
+        });
         router.push("/dashboard");
         return true;
       } else {

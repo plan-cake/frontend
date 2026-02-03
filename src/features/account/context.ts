@@ -4,12 +4,12 @@ import { AccountDetails, LoginState } from "@/features/account/type";
 
 export const AccountContext = createContext<{
   loginState: LoginState;
-  details: AccountDetails | null;
-  login: (details: AccountDetails) => void;
+  accountDetails: AccountDetails | null;
+  login: (accountDetails: AccountDetails) => void;
   logout: () => void;
 }>({
   loginState: "loading",
-  details: null,
+  accountDetails: null,
   login: () => { },
   logout: () => { },
 });
