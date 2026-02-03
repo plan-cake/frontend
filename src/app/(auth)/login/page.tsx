@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -8,18 +8,18 @@ import { useRouter } from "next/navigation";
 import Checkbox from "@/components/checkbox";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
+import { useAccount } from "@/features/account/context";
 import ActionButton from "@/features/button/components/action";
 import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
-import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export default function Page() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const { setLoggedIn } = useContext(LoginContext);
+  const { login } = useAccount();
   const router = useRouter();
 
   // TOASTS AND ERROR STATES
@@ -62,7 +62,11 @@ export default function Page() {
       });
 
       if (res.ok) {
-        setLoggedIn(true);
+        const data = await res.json();
+        login({
+          email: data.email,
+          defaultName: data.default_display_name,
+        });
         router.push("/dashboard");
         return true;
       } else {

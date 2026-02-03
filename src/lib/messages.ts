@@ -18,7 +18,7 @@ export const MESSAGES = {
 
   // availability errors
   ERROR_NAME_MISSING: "Missing name.",
-  ERROR_NAME_TAKEN: "This code is unavailable. Please choose another.",
+  ERROR_NAME_TAKEN: "This name is unavailable. Please choose another.",
   ERROR_AVAILABILITY_MISSING: "Please select your availability on the grid.",
 
   // event errors
@@ -32,8 +32,12 @@ export const MESSAGES = {
   SUCCESS_EMAIL_SENT: "Email resent. Please check your inbox.",
   SUCCESS_PASSWORD_RESET: "Password has been reset successfully.",
   SUCCESS_LOGOUT: "You have been logged out.",
+  SUCCESS_DEFAULT_NAME_SAVED: "Default name saved successfully.",
 
   // copy link messages
   COPY_LINK_SUCCESS: "Link copied to clipboard!",
   COPY_LINK_FAILURE: "Failed to copy link. Please try again.",
+
+  // info messages
+  INFO_NAME_AUTOFILLED: "You can change this behavior anytime in account settings.",
 };

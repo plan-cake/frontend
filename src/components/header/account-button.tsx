@@ -1,34 +1,43 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { PersonIcon } from "@radix-ui/react-icons";
 
+import { useAccount } from "@/features/account/context";
 import AccountSettings from "@/features/account-settings/selector";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import { LoginContext } from "@/lib/providers";
 
 export default function AccountButton() {
-  const { loggedIn, setLoggedIn } = useContext(LoginContext);
+  const { loginState, login, logout } = useAccount();
 
   // 1. Check Login Status
   useEffect(() => {
     const checkLogin = async () => {
-      if (loggedIn) return;
+      if (loginState === "logged_in") return;
+
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
-        setLoggedIn(res.ok);
+        if (res.ok) {
+          const data = await res.json();
+          login({
+            email: data.email,
+            defaultName: data.default_display_name,
+          });
+        } else {
+          logout();
+        }
       } catch (err) {
         console.error("Fetch error:", err);
-        setLoggedIn(false);
+        logout();
       }
     };
     checkLogin();
-  }, [loggedIn, setLoggedIn]);
+  }, [loginState, login, logout]);
 
   const [open, setOpen] = useState(false);
   const handleOpenChange = () => {
@@ -36,7 +45,7 @@ export default function AccountButton() {
     return true;
   };
 
-  if (loggedIn) {
+  if (loginState === "logged_in") {
     return (
       <AccountSettings open={open} setOpenChange={setOpen}>
         <ActionButton
@@ -49,6 +58,11 @@ export default function AccountButton() {
   }
 
   return (
-    <LinkButton buttonStyle="frosted glass" label="Log In" href="/login" />
+    <LinkButton
+      buttonStyle="frosted glass"
+      label="Log In"
+      href="/login"
+      loading={loginState === "loading"}
+    />
   );
 }
