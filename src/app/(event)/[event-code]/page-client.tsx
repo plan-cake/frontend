@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useOptimistic, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
@@ -14,6 +14,7 @@ import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { getResultBanners } from "@/features/event/results/banners";
+import { useEventResults } from "@/features/event/results/use-results";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
@@ -37,28 +38,8 @@ export default function ClientPage({
     initialAvailabilityData.user_display_name != null;
   const userName = initialAvailabilityData.user_display_name || "";
 
-  /* PARTICIPANT STATES */
-  const participants = initialAvailabilityData.participants || [];
-  const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
-    participants,
-    (state, personToRemove: string) =>
-      state.filter((p) => p !== personToRemove),
-  );
-
-  const availabilities = initialAvailabilityData.availability || {};
-  const [optimisticAvailabilities, updateOptimisticAvailabilities] =
-    useOptimistic(availabilities, (state, person: string) => {
-      const updatedState = { ...state };
-      for (const slot in updatedState) {
-        updatedState[slot] = updatedState[slot].filter((p) => p !== person);
-      }
-      return updatedState;
-    });
-
-  /* HOVER HANDLING */
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
-
-  /* TIMEZONE HANDLING */
+  /* FORM ERROR & TIMEZONE HANDLING */
+  const { handleError } = useFormErrors();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -67,8 +48,25 @@ export default function ClientPage({
     setTimezone(newTZ.toString());
   };
 
-  /* ERROR HANDLING */
-  const { handleError } = useFormErrors();
+  /* LOGIC HOOK */
+  const {
+    participants,
+    availabilities,
+    filteredAvailabilities,
+    gridNumParticipants,
+    hoveredSlot,
+    selectedParticipants,
+    clearSelectedParticipants,
+    setHoveredSlot,
+    setHoveredParticipant,
+    toggleParticipant,
+    handleRemoveParticipant,
+  } = useEventResults(
+    initialAvailabilityData,
+    eventCode,
+    isCreator,
+    handleError,
+  );
 
   /* SIDEBAR SPACING HANDLING */
   const DEFAULT_SPACER_HEIGHT = 200;
@@ -91,8 +89,8 @@ export default function ClientPage({
 
   /* BANNERS */
   const banners = getResultBanners(
-    optimisticAvailabilities,
-    optimisticParticipants,
+    availabilities,
+    participants,
     timeslots,
     eventRange.type === "weekday",
     participated,
@@ -135,8 +133,8 @@ export default function ClientPage({
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
-          availabilities={optimisticAvailabilities}
-          numParticipants={optimisticParticipants.length}
+          availabilities={filteredAvailabilities}
+          numParticipants={gridNumParticipants}
           timeslots={timeslots}
         />
 
@@ -158,14 +156,15 @@ export default function ClientPage({
           <div className="md:top-25 md:sticky md:space-y-4">
             <AttendeesPanel
               hoveredSlot={hoveredSlot}
-              participants={optimisticParticipants}
-              availabilities={optimisticAvailabilities}
+              participants={participants}
+              availabilities={availabilities}
+              selectedParticipants={selectedParticipants}
+              clearSelectedParticipants={clearSelectedParticipants}
+              onParticipantToggle={toggleParticipant}
+              setHoveredParticipant={setHoveredParticipant}
               isCreator={isCreator}
               currentUser={userName}
-              eventCode={eventCode}
-              removeOptimisticParticipant={removeOptimisticParticipant}
-              updateOptimisticAvailabilities={updateOptimisticAvailabilities}
-              handleError={handleError}
+              onRemoveParticipant={handleRemoveParticipant}
             />
 
             <div className="bg-panel hidden rounded-3xl p-6 md:block">
