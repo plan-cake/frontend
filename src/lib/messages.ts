@@ -40,4 +40,5 @@ export const MESSAGES = {
 
   // info messages
   INFO_NAME_AUTOFILLED: "You can change this behavior anytime in account settings.",
+  INFO_ALREADY_LOGGED_IN: "You are already logged in.",
 };
