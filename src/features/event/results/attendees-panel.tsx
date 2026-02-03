@@ -131,7 +131,10 @@ export default function AttendeesPanel({
 
       <ul
         className={cn(
-          "max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 pt-20 md:max-h-none md:gap-2.5",
+          "flex flex-wrap gap-2.5 px-6 pb-6 pt-20",
+          "flex-1 overflow-y-auto",
+          "max-h-53 md:max-h-none",
+          "md:gap-2.5",
         )}
       >
         {participants.length === 0 && (

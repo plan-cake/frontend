@@ -153,25 +153,27 @@ export default function ClientPage({
         >
           <div className="hidden md:mb-4 md:block">{banners}</div>
 
-          <div className="md:top-25 md:sticky md:space-y-4">
-            <AttendeesPanel
-              hoveredSlot={hoveredSlot}
-              participants={participants}
-              availabilities={availabilities}
-              selectedParticipants={selectedParticipants}
-              clearSelectedParticipants={clearSelectedParticipants}
-              onParticipantToggle={toggleParticipant}
-              setHoveredParticipant={setHoveredParticipant}
-              isCreator={isCreator}
-              currentUser={userName}
-              onRemoveParticipant={handleRemoveParticipant}
-            />
+          <div className="md:top-25 md:sticky md:flex md:max-h-[calc(100vh-8rem)] md:flex-col md:space-y-4">
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+              <AttendeesPanel
+                hoveredSlot={hoveredSlot}
+                participants={participants}
+                availabilities={availabilities}
+                selectedParticipants={selectedParticipants}
+                clearSelectedParticipants={clearSelectedParticipants}
+                onParticipantToggle={toggleParticipant}
+                setHoveredParticipant={setHoveredParticipant}
+                isCreator={isCreator}
+                currentUser={userName}
+                onRemoveParticipant={handleRemoveParticipant}
+              />
+            </div>
 
-            <div className="bg-panel hidden rounded-3xl p-6 md:block">
+            <div className="bg-panel hidden shrink-0 rounded-3xl p-6 md:block">
               <EventInfo eventRange={eventRange} timezone={timezone} />
             </div>
 
-            <div className="bg-panel hidden rounded-3xl p-6 text-sm md:block">
+            <div className="bg-panel hidden shrink-0 rounded-3xl p-6 text-sm md:block">
               Displaying event in
               <span className="text-accent ml-1 font-bold">
                 <TimeZoneSelector
