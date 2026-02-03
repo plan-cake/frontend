@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { PersonIcon } from "@radix-ui/react-icons";
 
 import { useAccount } from "@/features/account/context";
-import AccountSettings from "@/features/account-settings/selector";
+import AccountSettings from "@/features/account/settings/selector";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 
