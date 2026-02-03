@@ -97,6 +97,28 @@ export default function ClientPage({
     participated,
   );
 
+  /* BUTTONS */
+  const editButton = isCreator ? (
+    <LinkButton
+      buttonStyle="secondary"
+      icon={<Pencil1Icon />}
+      label="Edit Event"
+      shrinkOnMobile
+      href={`/${eventCode}/edit`}
+    />
+  ) : null;
+
+  const copyButton = <CopyToastButton code={eventCode} />;
+
+  const availabilityButton = (
+    <LinkButton
+      buttonStyle="primary"
+      icon={<Pencil2Icon />}
+      label={(participated ? "Edit" : "Add") + " Availability"}
+      href={`/${eventCode}/painting`}
+    />
+  );
+
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
