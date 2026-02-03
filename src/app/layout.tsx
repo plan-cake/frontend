@@ -4,6 +4,7 @@ import { Modak, Nunito } from "next/font/google";
 import Header from "@/components/header/header";
 import { Providers } from "@/lib/providers";
 import "@/styles/globals.css";
+import "@poursha98/react-ios-time-picker/styles.css";
 
 const modak = Modak({
   weight: "400",

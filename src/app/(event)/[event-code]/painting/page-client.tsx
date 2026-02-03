@@ -161,12 +161,6 @@ export default function ClientPage({
       )}
 
       {/* Header and Button Row */}
-      <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4">
-        <div className="flex min-w-0 items-center space-x-2 md:flex-1">
-          <h1 className="max-w-full truncate text-2xl font-bold md:max-w-[50vw]">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
-        </div>
-        <div className="hidden shrink-0 items-center gap-2 md:flex">
       <div className="flex w-full flex-wrap justify-between md:flex-row">
         <h1 className="text-2xl">{eventName}</h1>
         <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />

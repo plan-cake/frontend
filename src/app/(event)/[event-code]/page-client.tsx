@@ -7,7 +7,6 @@ import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
-import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -114,10 +113,6 @@ export default function ClientPage({
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
-      <div className="flex w-full flex-col gap-2 md:flex-row md:items-center md:justify-between md:gap-4">
-        <div className="flex min-w-0 items-center space-x-2 md:flex-1">
-          <h1 className="max-w-full truncate text-2xl font-bold md:max-w-[50vw]">{eventName}</h1>
-          <EventInfoDrawer eventRange={eventRange} />
       <div className="md:flex md:justify-between">
         <div className="flex items-center justify-between space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
@@ -185,7 +180,11 @@ export default function ClientPage({
       </div>
 
       <MobileFooterTray
-        buttons={[editButton, copyButton, availabilityButton].filter(Boolean)}
+        buttons={
+          [editButton, copyButton, availabilityButton].filter(
+            (button): button is NonNullable<typeof button> => button !== null,
+          )
+        }
       />
     </div>
   );
