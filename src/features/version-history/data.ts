@@ -1,75 +1,56 @@
 import { VersionHistoryData } from "@/features/version-history/type";
 
 export function getVersionHistoryData(): VersionHistoryData {
-  return [
-    {
-      version: "v0.1",
-      date: new Date(2025, 9, 19),
-      changes: ["Initial beta release"],
-      minorVersions: [
+    return [
         {
-          version: "v0.1.1",
-          date: new Date(2025, 9, 22),
-          changes: [
-            "Fixed broken redirect after event creation",
-            "Fixed event editing error preventing updates",
-          ],
+            version: "v0.1",
+            date: new Date(2025, 9, 19),
+            changes: ["Initial beta release"],
+            minorVersions: [
+                {
+                    version: "v0.1.1",
+                    date: new Date(2025, 9, 22),
+                    changes: [
+                        "Fixed broken redirect after event creation",
+                        "Fixed event editing error preventing updates",
+                    ],
+                },
+                {
+                    version: "v0.1.2",
+                    date: new Date(2025, 10, 2),
+                    changes: [
+                        "Updated all buttons on the site to be more responsive",
+                        "Fixed an issue where painting the grid up to midnight would fill entire days",
+                        "Fixed event grid time display in different time zones",
+                        "Fixed an issue where remaining toasts would not disappear after dismissing one",
+                    ],
+                },
+            ],
         },
         {
-          version: "v0.1.2",
-          date: new Date(2025, 10, 2),
-          changes: [
-            "Updated all buttons on the site to be more responsive",
-            "Fixed an issue where painting the grid up to midnight would fill entire days",
-            "Fixed event grid time display in different time zones",
-            "Fixed an issue where remaining toasts would not disappear after dismissing one",
-          ],
+            version: "v0.2",
+            date: new Date(2026, 0, 16),
+            changes: [
+                "Added functionality for event participant removal",
+                "Added a version history page",
+                "Updated error handling across the site",
+                "Updated certain parts of the event editor",
+                "Improved readability of \"Frosted Glass\"-styled components",
+                "Temporarily disabled weekday events for fixes",
+            ],
+            bugFixes: [
+                "Fixed the theme transition on the landing page",
+            ],
+            minorVersions: [],
         },
-      ],
-    },
-    {
-      version: "v0.2",
-      date: new Date(2026, 0, 16),
-      changes: [
-        "Added functionality for event participant removal",
-        "Added a version history page",
-        "Updated error handling across the site",
-        "Updated certain parts of the event editor",
-        'Improved readability of "Frosted Glass"-styled components',
-        "Temporarily disabled weekday events for fixes",
-      ],
-      bugFixes: ["Fixed the theme transition on the landing page"],
-      minorVersions: [
-        {
-          version: "v0.2.1",
-          date: new Date(2026, 0, 21),
-          changes: [
-            "Added custom titles and descriptions on link previews",
-            "Added animations and page indicators for events with multi-page grids",
-            "Updated the hovered timeslot on the results page for better visibility",
-            "Fixed touch interactions on the results page to allow for natural scrolling gestures",
-          ],
-        },
-        {
-          version: "v0.2.2",
-          date: new Date(2026, 1, 2),
-          changes: [
-            "Added banners to results page for event status and participation levels",
-            "Updated toasts to support persistent and temporary messages",
-            "Temporarily disabled shift painting for fixes",
-          ],
-        },
-      ],
-    },
-  ];
+    ];
 }
 
 export function getCurrentVersion(): string {
-  const history = getVersionHistoryData();
-  const latestMajor = history[history.length - 1];
-  if (latestMajor.minorVersions && latestMajor.minorVersions.length > 0) {
-    return latestMajor.minorVersions[latestMajor.minorVersions.length - 1]
-      .version;
-  }
-  return `${latestMajor.version}.0`;
+    const history = getVersionHistoryData();
+    const latestMajor = history[history.length - 1];
+    if (latestMajor.minorVersions && latestMajor.minorVersions.length > 0) {
+        return latestMajor.minorVersions[latestMajor.minorVersions.length - 1].version;
+    }
+    return `${latestMajor.version}.0`;
 }

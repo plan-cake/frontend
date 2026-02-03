@@ -4,12 +4,12 @@ import { useState } from "react";
 
 import Link from "next/link";
 
-import AuthPageLayout from "@/components/layout/auth-page";
 import MessagePage from "@/components/layout/message-page";
 import LinkText from "@/components/link-text";
 import TextInputField from "@/components/text-input-field";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
+import { RateLimitBanner } from "@/features/system-feedback";
 import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
@@ -26,6 +26,10 @@ export default function Page() {
     handleError("email", "");
     handleError("api", "");
     setEmail(value);
+  };
+
+  const stopRefresh = (e: React.FormEvent) => {
+    e.preventDefault();
   };
 
   const handleSubmit = async () => {
@@ -82,22 +86,31 @@ export default function Page() {
           ]}
         />
       ) : (
-        <AuthPageLayout
-          title="forgot password"
-          fields={[
-            <TextInputField
-              key="email"
-              id="email"
-              type="email"
-              label="Email*"
-              value={email}
-              onChange={handleEmailChange}
-              outlined
-              error={errors.email || errors.api}
-            />,
-          ]}
-          rateLimitError={errors.rate_limit}
+        <form
+          onSubmit={stopRefresh}
+          className="flex w-80 flex-col items-center"
         >
+          {/* Title */}
+          <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
+            forgot password
+          </h1>
+
+          {/* Rate Limit Error */}
+          {errors.rate_limit && (
+            <RateLimitBanner>{errors.rate_limit}</RateLimitBanner>
+          )}
+
+          {/* Email */}
+          <TextInputField
+            id={"email"}
+            type="email"
+            label="Email*"
+            value={email}
+            onChange={handleEmailChange}
+            outlined
+            error={errors.email || errors.api}
+          />
+
           <div className="flex w-full items-center justify-between">
             {/* Forgot Password */}
             <Link href="/login" className="mb-8 text-xs">
@@ -112,7 +125,7 @@ export default function Page() {
               loadOnSuccess
             />
           </div>
-        </AuthPageLayout>
+        </form>
       )}
     </div>
   );

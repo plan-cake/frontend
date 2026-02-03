@@ -19,10 +19,10 @@ export default function Home() {
               simple
             </span>
           </h1>
-          <h2 className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed">
+          <p className="mx-auto mb-12 max-w-2xl text-xl leading-relaxed">
             The fluffiest way to coordinate schedules and plan group events.
             Stack up availability and serve the perfect meeting time.
-          </h2>
+          </p>
           <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
             <LinkButton
               buttonStyle="primary"

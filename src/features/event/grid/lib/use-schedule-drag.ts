@@ -50,27 +50,26 @@ export default function useScheduleDrag(
       dragState.current.endSlot !== null;
   }, [dragState.current.startSlot, dragState.current.endSlot]);
 
-  // // track shift key state
-  // useEffect(() => {
-  //   if (mode !== "paint") return;
-  //   const handleKeyDown = (e: KeyboardEvent) => {
-  //     if (e.key === "Shift" && !isDragging.current) {
-  //       setIsShifting(true);
-  //     }
-  //   };
-  //   const handleKeyUp = (e: KeyboardEvent) => {
-  //     if (e.key === "Shift" && !isDragging.current) {
-  //       setIsShifting(false);
-  //       setDraggedSlots(new Set());
-  //     }
-  //   };
-  //   window.addEventListener("keydown", handleKeyDown);
-  //   window.addEventListener("keyup", handleKeyUp);
-  //   return () => {
-  //     window.removeEventListener("keydown", handleKeyDown);
-  //     window.removeEventListener("keyup", handleKeyUp);
-  //   };
-  // }, [mode]);
+  // track shift key state
+  useEffect(() => {
+    if (mode !== "paint") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging.current) {
+        setIsShifting(true);
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      if (e.key === "Shift" && !isDragging.current) {
+        setIsShifting(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, [mode]);
 
   useEffect(() => {
     if (dragState.current.lastToggledSlot === null) {

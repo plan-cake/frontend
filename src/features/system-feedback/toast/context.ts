@@ -1,18 +1,14 @@
 import { createContext, useContext } from "react";
 
-import { ToastOptions } from "@/features/system-feedback/toast/type";
 import { ToastType } from "@/features/system-feedback/type";
 
-type ToastContextValue = {
-  addToast: (
-    type: ToastType,
-    message: string,
-    options?: ToastOptions,
-  ) => number;
+export const ToastContext = createContext<{
+  addToast: (type: ToastType, message: string) => void;
   removeToast: (id: number) => void;
-};
-
-export const ToastContext = createContext<ToastContextValue | null>(null);
+}>({
+  addToast: () => {},
+  removeToast: () => {},
+});
 
 export function useToast() {
   const context = useContext(ToastContext);

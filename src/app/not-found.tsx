@@ -1,12 +1,13 @@
 import { Metadata } from "next";
 
-import { constructMetadata } from "@/lib/utils/construct-metadata";
-
 export function generateMetadata(): Metadata {
-  return constructMetadata(
-    "Not Found",
-    "The page you are looking for could not be found.",
-  );
+  return {
+    title: "Not Found • Plancake",
+    openGraph: {
+      title: "Not Found • Plancake",
+      description: "The page you are looking for could not be found.",
+    },
+  };
 }
 
 export default function NotFound() {

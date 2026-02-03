@@ -8,7 +8,6 @@ import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
 import { processAvailabilityData } from "@/lib/utils/api/process-availability-data";
 import { processEventData } from "@/lib/utils/api/process-event-data";
-import { constructMetadata } from "@/lib/utils/construct-metadata";
 
 export async function generateMetadata({
   params,
@@ -19,18 +18,21 @@ export async function generateMetadata({
   const initialEventData = await getCachedEventDetails(eventCode, authCookies);
 
   if (!initialEventData) {
-    return constructMetadata(
-      "Event Not Found",
-      "The event you are looking for could not be found.",
-    );
+    return {
+      title: "Event Not Found • Plancake",
+    };
   }
 
   const { eventName } = processEventData(initialEventData);
 
-  return constructMetadata(
-    eventName,
-    "View event details and add your availability for this event.",
-  );
+  return {
+    title: `${eventName} • Plancake`,
+    openGraph: {
+      title: `${eventName} • Plancake`,
+      description:
+        "View event details and add your availability for this event.",
+    },
+  };
 }
 
 export default async function Page({ params }: EventCodePageProps) {

@@ -1,22 +1,15 @@
-import { useEffect, useRef } from "react";
-
 import { Cross2Icon } from "@radix-ui/react-icons";
 import * as Toast from "@radix-ui/react-toast";
 
-import ProgressBar from "@/features/system-feedback/toast/progress-bar";
 import { cn } from "@/lib/utils/classname";
 
 type BaseToastProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  title: string | undefined;
+  title: string;
   message: string;
   icon: React.ReactNode;
-  backgroundColor?: string;
-  textColor?: string;
-  duration?: number;
-  isPersistent?: boolean;
-  isPaused: boolean;
+  toastStyle: string;
 };
 
 export default function BaseToast({
@@ -25,72 +18,25 @@ export default function BaseToast({
   title,
   message,
   icon,
-  backgroundColor,
-  textColor,
-  duration = 3000,
-  isPersistent = false,
-  isPaused,
+  toastStyle,
 }: BaseToastProps) {
-  // Whenever the viewport hover state changes, the toast provider rerenders
-  // all toasts, which means that all toast durations will get reset. In order
-  // to prevent that, each toast will manually manage its own duration timer.
-  const remainingTime = useRef(duration);
-  const startTime = useRef<number>(0);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-
-  useEffect(() => {
-    if (isPersistent || !open) return;
-
-    if (!isPaused) {
-      startTime.current = Date.now();
-      timerRef.current = setTimeout(() => {
-        onOpenChange(false);
-      }, remainingTime.current);
-    }
-
-    return () => {
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-        timerRef.current = null;
-
-        if (!isPaused) {
-          const elapsed = Date.now() - startTime.current;
-          remainingTime.current = Math.max(0, remainingTime.current - elapsed);
-        }
-      }
-    };
-  }, [isPaused, open, isPersistent, onOpenChange]);
-
   return (
     <Toast.Root
       className={cn(
-        "rounded-4xl group relative grid max-w-sm grid-cols-[auto_1fr_auto] items-center gap-x-4 overflow-hidden px-4 py-3 shadow-xl",
+        "group grid grid-cols-[auto_auto] items-center gap-x-[15px] rounded-full px-6 py-3 text-white shadow-xl",
+        toastStyle,
         "data-[state=closed]:animate-slideOut data-[state=open]:animate-slideIn data-[swipe=end]:animate-swipeOut data-[swipe=cancel]:translate-x-0 data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=cancel]:transition-[transform_200ms_ease-out]",
       )}
-      style={{
-        backgroundColor: `var(--color-${backgroundColor})`,
-        color: `var(--color-${textColor})`,
-      }}
       open={open}
       onOpenChange={onOpenChange}
-      duration={Infinity}
+      duration={3000}
     >
-      {!isPersistent && (
-        <ProgressBar
-          duration={duration}
-          backgroundColor={backgroundColor}
-          isPaused={isPaused}
-        />
-      )}
+      {icon}
 
-      <div className="z-10 flex items-center justify-center">{icon}</div>
-
-      <div className="z-10 flex flex-col gap-1">
-        <Toast.Title className="text-sm font-semibold leading-none">
-          {title}
-        </Toast.Title>
-        <Toast.Description className="text-sm leading-snug opacity-90">
-          {message}
+      <div className="col-start-2 flex flex-col">
+        <Toast.Title className="flex text-sm font-bold">{title}</Toast.Title>
+        <Toast.Description asChild>
+          <div className="m-0 text-[13px] leading-[1.3]">{message}</div>
         </Toast.Description>
       </div>
 
@@ -103,14 +49,18 @@ export default function BaseToast({
               document.activeElement &&
               document.activeElement instanceof HTMLElement
             ) {
+              // After clicking this button, the focus would be on the toasts.
+              // If there is more than 1 toast, the focus causes the timers for all the
+              // toasts to be paused until the user clicked on something else.
+              // This just removes that focus.
               document.activeElement.blur();
             }
           }}
           className={cn(
-            "z-10 col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
+            "col-start-3 row-span-2 flex h-6 w-6 items-center justify-center rounded-full",
+            "opacity-0 transition-opacity duration-200 ease-in-out",
+            "focus:opacity-100 group-hover:opacity-100",
             "hover:bg-black/20 focus:outline-none focus:ring-2 focus:ring-white/50",
-            !isPersistent &&
-              "opacity-0 focus-visible:opacity-100 group-hover:opacity-100",
           )}
         >
           <Cross2Icon className="h-4 w-4" />

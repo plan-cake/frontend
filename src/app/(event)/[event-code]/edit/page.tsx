@@ -5,7 +5,6 @@ import { EventCodePageProps } from "@/features/event/code-page-props";
 import EventEditor from "@/features/event/editor/editor";
 import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { processEventData } from "@/lib/utils/api/process-event-data";
-import { constructMetadata } from "@/lib/utils/construct-metadata";
 
 export async function generateMetadata({
   params,
@@ -15,18 +14,20 @@ export async function generateMetadata({
   const initialEventData = await getCachedEventDetails(eventCode);
 
   if (!initialEventData) {
-    return constructMetadata(
-      "Event Not Found",
-      "The event you are looking for could not be found.",
-    );
+    return {
+      title: "Event Not Found • Plancake",
+    };
   }
 
   const { eventName } = processEventData(initialEventData);
 
-  return constructMetadata(
-    `Editing ${eventName}`,
-    "Edit dates, times, and details of your Plancake event.",
-  );
+  return {
+    title: `Editing ${eventName} • Plancake`,
+    openGraph: {
+      title: `Editing ${eventName} • Plancake`,
+      description: "Edit dates, times, and details of your Plancake event.",
+    },
+  };
 }
 
 export default async function Page({ params }: EventCodePageProps) {
