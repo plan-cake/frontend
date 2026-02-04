@@ -77,9 +77,15 @@ export default function AttendeesPanel({
         )}
       >
         <div className="flex flex-col">
-          <h2 className="text-md font-semibold">Attendees</h2>
+          <h2 className="text-md font-semibold">
+            {isRemoving ? "Removing a" : "A"}ttendees
+          </h2>
           {displayParticipants.length > 0 && (
-            <span className="text-sm">{`${activeCount}/${displayParticipants.length} available`}</span>
+            <span className="text-sm">
+              {isRemoving
+                ? `Select to remove`
+                : `${activeCount}/${displayParticipants.length} available`}
+            </span>
           )}
         </div>
         <div className="space-x-2">
