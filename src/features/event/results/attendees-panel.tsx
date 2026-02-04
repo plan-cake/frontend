@@ -100,7 +100,7 @@ export default function AttendeesPanel({
               <ResetIcon className="h-6 w-6" />
             </button>
 
-            {participants.length > 0 && isCreator && (
+            {isCreator && (
               <button
                 className={cn(
                   "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
