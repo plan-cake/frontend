@@ -85,54 +85,57 @@ export default function AttendeesPanel({
             </span>
           )}
         </div>
-        <div className="space-x-2">
-          <button
-            tabIndex={hasSelection ? 0 : -1}
-            className={cn(
-              "bg-accent/15 text-accent rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
-              "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
-              hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
-            )}
-            onClick={clearSelectedParticipants}
-          >
-            <ResetIcon className="h-6 w-6" />
-          </button>
-
-          {participants.length > 0 && isCreator && (
+        {participants.length > 0 && (
+          // Don't render buttons if there are no participants to avoid taking up space
+          <div className="space-x-2">
             <button
+              tabIndex={hasSelection ? 0 : -1}
               className={cn(
-                "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
-                "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+                "bg-accent/15 text-accent rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
+                "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
+                hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
               )}
-              onClick={() => {
-                setIsRemoving(!isRemoving);
-                clearSelectedParticipants();
-              }}
+              onClick={clearSelectedParticipants}
             >
-              {isRemoving ? (
-                <CheckIcon className="h-6 w-6" />
-              ) : (
-                <EraserIcon className="h-6 w-6" />
-              )}
+              <ResetIcon className="h-6 w-6" />
             </button>
-          )}
 
-          {showSelfRemove && (
-            <ConfirmationDialog
-              type="delete"
-              title="Remove Yourself?"
-              description="Are you sure you want to remove yourself from this event?"
-              onConfirm={() => onRemoveParticipant(currentUser)}
-            >
+            {participants.length > 0 && isCreator && (
               <button
-                className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
-                aria-label="Remove self"
+                className={cn(
+                  "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
+                  "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+                )}
+                onClick={() => {
+                  setIsRemoving(!isRemoving);
+                  clearSelectedParticipants();
+                }}
               >
-                <ExitIcon className="h-6 w-6" />
+                {isRemoving ? (
+                  <CheckIcon className="h-6 w-6" />
+                ) : (
+                  <EraserIcon className="h-6 w-6" />
+                )}
               </button>
-            </ConfirmationDialog>
-          )}
-        </div>
+            )}
+
+            {showSelfRemove && (
+              <ConfirmationDialog
+                type="delete"
+                title="Remove Yourself?"
+                description="Are you sure you want to remove yourself from this event?"
+                onConfirm={() => onRemoveParticipant(currentUser)}
+              >
+                <button
+                  className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
+                  aria-label="Remove self"
+                >
+                  <ExitIcon className="h-6 w-6" />
+                </button>
+              </ConfirmationDialog>
+            )}
+          </div>
+        )}
       </div>
 
       <ul className="max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5">
