@@ -5,7 +5,7 @@ type ReleaseDate = {
     year: number; // full year, e.g., 2025
     month: number; // 0-indexed month, e.g., 0 for January
     day: number; // day of the month, e.g., 15
-}
+};
 
 export type MinorVersionData = {
     version: MinorVersionNumber;
