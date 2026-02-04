@@ -92,7 +92,7 @@ function SettingsContent() {
         miranda.mzheng@gmail.com
       </h2>
 
-      <div className="frosted-glass flex gap-2 rounded-3xl border-none p-4">
+      <div className="frosted-glass-inset flex gap-2 rounded-3xl border-none p-4">
         <TextInputField
           id="displayName"
           label="Display Name"
@@ -111,7 +111,7 @@ function SettingsContent() {
         </button>
       </div>
 
-      <div className="frosted-glass rounded-3xl border-none">
+      <div className="frosted-glass-inset rounded-3xl border-none">
         <button
           onClick={signOut}
           className={cn(

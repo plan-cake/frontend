@@ -65,6 +65,7 @@
   box-shadow: var(--shadow-md);
 }
 
+.frosted-glass-inset,
 .frosted-glass .frosted-glass {
   border-width: 0px;
 
