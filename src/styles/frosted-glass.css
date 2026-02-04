@@ -162,6 +162,7 @@
   }
 }
 
+.frosted-glass-error-button,
 .frosted-glass .frosted-glass-error-button {
   background-color: color-mix(
     in srgb,
@@ -200,9 +201,5 @@
         transparent
       );
     }
-  }
-
-  &:focus {
-    outline: var(--color-red) auto 1px;
   }
 }
