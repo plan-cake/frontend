@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils/classname";
+
 type CheckboxProps = {
   label: string;
   checked: boolean;
@@ -11,7 +13,11 @@ export default function Checkbox(props: CheckboxProps) {
       <input
         type="checkbox"
         id="confirm"
-        className="checked:border-accent checked:bg-accent peer h-4 w-4 appearance-none rounded-sm border border-gray-300"
+        className={cn(
+          "h-4 w-4 appearance-none rounded-sm border border-gray-300",
+          "checked:border-accent checked:bg-accent peer",
+          "hover:cursor-pointer",
+        )}
         checked={checked}
         onChange={(e) => onChange(e.target.checked)}
       />
