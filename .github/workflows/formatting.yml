@@ -32,14 +32,15 @@ jobs:
         run: npm ci
 
       - name: Run ESLint
+        id: eslint
         run: |
           npm run lint -- \
             --format node_modules/@microsoft/eslint-formatter-sarif/sarif.js \
             --output-file eslint-results.sarif
-        continue-on-error: true
 
       - name: Upload SARIF to GitHub
-        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        # Should run either on success or failure of ESLint
+        if: (success() || failure()) && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: eslint-results.sarif
