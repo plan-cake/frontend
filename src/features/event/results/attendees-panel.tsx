@@ -69,8 +69,8 @@ export default function AttendeesPanel({
   }, []);
 
   return (
-    <div className="bg-panel flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
-      <div className="flex touch-none select-none justify-between px-6 pb-2 pt-6">
+    <div className="bg-panel flex flex-col gap-2 overflow-hidden rounded-3xl shadow-md md:shadow-none">
+      <div className="flex touch-none select-none justify-between px-6 pt-6">
         <div className="flex flex-col">
           <h2 className="text-md font-semibold">
             {isRemoving ? "Removing a" : "A"}ttendees
