@@ -69,7 +69,7 @@ export default function AttendeesPanel({
   }, []);
 
   return (
-    <div className="bg-panel flex flex-col gap-2 overflow-hidden rounded-3xl shadow-md md:shadow-none">
+    <div className="max-h-53 bg-panel flex flex-col gap-2 overflow-hidden rounded-3xl shadow-md md:shadow-none">
       <div className="flex touch-none select-none justify-between px-6 pt-6">
         <div className="flex flex-col">
           <h2 className="text-md font-semibold">
@@ -138,7 +138,7 @@ export default function AttendeesPanel({
         )}
       </div>
 
-      <ul className="max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5">
+      <ul className="flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 md:max-h-none md:gap-2.5">
         {participants.length === 0 && (
           <li className="text-sm italic opacity-50">No attendees yet</li>
         )}
