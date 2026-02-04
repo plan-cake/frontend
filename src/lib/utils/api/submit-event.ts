@@ -27,14 +27,14 @@ export default async function submitEvent(
   onSuccess: (code: string) => void,
   handleError: (field: string, message: string) => void,
 ): Promise<boolean> {
-  let apiRoute = "";
+  let apiRoute = `${process.env.NEXT_PUBLIC_API_URL}/event`;
 
   if (eventType === "specific") {
-    apiRoute =
-      type === "new" ? "/api/event/date-create/" : "/api/event/date-edit/";
+    apiRoute +=
+      type === "new" ? "/date-create/" : "/date-edit/";
   } else {
-    apiRoute =
-      type === "new" ? "/api/event/week-create/" : "/api/event/week-edit/";
+    apiRoute +=
+      type === "new" ? "/week-create/" : "/week-edit/";
   }
 
   if (data.timeslots.length === 0) {

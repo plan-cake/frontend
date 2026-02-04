@@ -61,15 +61,18 @@ export default function Page() {
     }
 
     try {
-      const res = await fetch("/api/auth/reset-password/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          reset_token: pwdResetToken,
-          new_password: newPassword,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/reset-password/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            reset_token: pwdResetToken,
+            new_password: newPassword,
+          }),
+        },
+      );
       if (res.ok) {
         router.push("/reset-password/success");
         return true;

@@ -85,15 +85,18 @@ export default function ClientPage({
     }
 
     try {
-      const response = await fetch("/api/availability/check-display-name/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({
-          event_code: eventCode,
-          display_name: displayName,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/availability/check-display-name/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            event_code: eventCode,
+            display_name: displayName,
+          }),
+        },
+      );
 
       if (!response.ok) {
         setErrors((prev) => ({
@@ -150,12 +153,15 @@ export default function ClientPage({
       if (saveDefaultName) {
         let defaultNameSaved = false;
         if (accountDetails) {
-          const response = await fetch("/api/account/set-default-name/", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ display_name: displayName }),
-          });
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/account/set-default-name/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ display_name: displayName }),
+            },
+          );
           if (response.ok) {
             defaultNameSaved = true;
           }
@@ -186,12 +192,15 @@ export default function ClientPage({
         time_zone: timeZone,
       };
 
-      const response = await fetch("/api/availability/add/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/availability/add/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload),
+        },
+      );
 
       if (response.ok) {
         router.push(`/${eventCode}`);

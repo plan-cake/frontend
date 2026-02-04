@@ -64,12 +64,15 @@ function Options({ isEditing = false, errors }: AdvancedOptionsProps) {
     if (isEditing || !code) return;
 
     try {
-      const response = await fetch("/api/event/check-code/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify({ custom_code: code }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/event/check-code/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ custom_code: code }),
+        },
+      );
       if (!response.ok)
         handleError("customCode", MESSAGES.ERROR_EVENT_CODE_TAKEN);
     } catch {

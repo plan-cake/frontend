@@ -22,7 +22,7 @@ export default function AccountDropdown({ children }: { children: ReactNode }) {
     if (isSubmitting.current) return;
     isSubmitting.current = true;
 
-    await fetch("/api/auth/logout/", {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       credentials: "include",
