@@ -12,6 +12,7 @@ import { AvailabilityDataResponse } from "@/features/event/availability/fetch-da
 import { removePerson } from "@/features/event/results/remove-person";
 import { findConsensusAndConflicts } from "@/features/event/results/utils";
 import { useToast } from "@/features/system-feedback/toast/context";
+import { MESSAGES } from "@/lib/messages";
 
 export function useEventResults(
   initialData: AvailabilityDataResponse,
@@ -142,7 +143,7 @@ export function useEventResults(
 
   useEffect(() => {
     if (showOnlyBestTimes && hasNoConsensus) {
-      addToast("info", "There is not a time where everyone is available.");
+      addToast("info", MESSAGES.INFO_NO_MUTUAL_AVAILABILITY);
     }
   }, [hasNoConsensus, showOnlyBestTimes, addToast]);
 

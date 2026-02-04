@@ -36,4 +36,10 @@ export const MESSAGES = {
   // copy link messages
   COPY_LINK_SUCCESS: "Link copied to clipboard!",
   COPY_LINK_FAILURE: "Failed to copy link. Please try again.",
+
+  // info messages
+  INFO_EVENT_PASSED: "All dates in this event have passed.",
+  INFO_ADD_AVAILABILITY: "Add your availability by clicking the button above.",
+  INFO_COPY_SHARE_LINK: "Copy and share the link so others can join!",
+  INFO_NO_MUTUAL_AVAILABILITY: "There is no time where everyone is available.",
 };
