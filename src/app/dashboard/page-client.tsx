@@ -59,7 +59,7 @@ export default function ClientPage({
         {currentTabEvents.length ? (
           <EventGrid events={currentTabEvents} />
         ) : (
-          <div className="flex h-full flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
+          <div className="flex flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
             <div>
               {tab === "created"
                 ? "You haven't created any events yet."
