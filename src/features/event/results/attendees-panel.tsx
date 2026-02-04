@@ -54,7 +54,7 @@ export default function AttendeesPanel({
   }, [selectedParticipants, participants]);
 
   const activeCount = useMemo(() => {
-    if (!hoveredSlot) return displayParticipants.length;
+    if (!hoveredSlot) return null;
     return displayParticipants.filter((p) =>
       availabilities[hoveredSlot]?.includes(p),
     ).length;
@@ -84,7 +84,9 @@ export default function AttendeesPanel({
             <span className="text-sm">
               {isRemoving
                 ? `Select to remove`
-                : `${activeCount}/${displayParticipants.length} available`}
+                : activeCount === null
+                  ? "Hover grid for availability"
+                  : `${activeCount}/${displayParticipants.length} available`}
             </span>
           )}
         </div>
