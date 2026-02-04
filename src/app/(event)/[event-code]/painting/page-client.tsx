@@ -7,6 +7,7 @@ import { useDebouncedCallback } from "use-debounce";
 
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
+import Panel from "@/components/panel";
 import { useAvailability } from "@/core/availability/use-availability";
 import { EventRange } from "@/core/event/types";
 import ActionButton from "@/features/button/components/action";
@@ -19,7 +20,6 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
-import Panel from "@/components/panel";
 
 export default function ClientPage({
   eventCode,
