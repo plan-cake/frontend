@@ -136,10 +136,18 @@ function MajorVersion({
 }) {
   const [bugsOpen, setBugsOpen] = useState(false);
 
-  const releaseDate = versionData.date.toLocaleDateString(undefined, {
+  const releaseDate = new Date(
+    Date.UTC(
+      versionData.releaseDate.year,
+      versionData.releaseDate.month,
+      versionData.releaseDate.day,
+    ),
+  );
+  const releaseDateString = releaseDate.toLocaleDateString(undefined, {
     year: "numeric",
     month: "long",
     day: "numeric",
+    timeZone: "UTC",
   });
 
   return (
@@ -151,7 +159,7 @@ function MajorVersion({
         extend={extendLine}
       />
       <div className="px-4">
-        <span className="text-foreground/50 italic">{releaseDate}</span>
+        <span className="text-foreground/50 italic">{releaseDateString}</span>
         <ul>
           {versionData.changes.map((change) => (
             <li key={change}>- {change}</li>
@@ -202,9 +210,17 @@ function MinorVersion({
 }) {
   const [open, setOpen] = useState(false);
 
-  const releaseDate = versionData.date.toLocaleDateString(undefined, {
+  const releaseDate = new Date(
+    Date.UTC(
+      versionData.releaseDate.year,
+      versionData.releaseDate.month,
+      versionData.releaseDate.day,
+    ),
+  );
+  const releaseDateString = releaseDate.toLocaleDateString(undefined, {
     month: "short",
     day: "numeric",
+    timeZone: "UTC",
   });
 
   return (
@@ -219,7 +235,9 @@ function MinorVersion({
           <Collapsible.Trigger asChild className="cursor-pointer">
             <div className="group flex items-center gap-2">
               <span className="font-bold">{versionData.version}</span>
-              <span className="text-foreground/50 italic">{releaseDate}</span>
+              <span className="text-foreground/50 italic">
+                {releaseDateString}
+              </span>
               <ChevronRightIcon
                 className={cn(
                   "h-6 w-6 transition-transform duration-200",
