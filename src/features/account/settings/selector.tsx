@@ -1,15 +1,15 @@
-import { useContext, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 import { TrashIcon, ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import TextInputField from "@/components/text-input-field";
-import AccountSettingsDrawer from "@/features/account-settings/drawer";
-import AccountSettingsPopover from "@/features/account-settings/popover";
+import { useAccount } from "@/features/account/context";
+import AccountSettingsDrawer from "@/features/account/settings/drawer";
+import AccountSettingsPopover from "@/features/account/settings/popover";
 import { useToast } from "@/features/system-feedback";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { MESSAGES } from "@/lib/messages";
-import { LoginContext } from "@/lib/providers";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
 
@@ -49,7 +49,7 @@ export default function AccountSettings({
 
 function SettingsContent() {
   const isSubmitting = useRef(false);
-  const { setLoggedIn } = useContext(LoginContext);
+  const { logout } = useAccount();
   const router = useRouter();
 
   const [displayName, setDisplayName] = useState("mirandazheng");
@@ -71,7 +71,7 @@ function SettingsContent() {
     })
       .then(async (res) => {
         if (res.ok) {
-          setLoggedIn(false);
+          logout();
           addToast("success", MESSAGES.SUCCESS_LOGOUT);
           router.push("/login");
         } else {
