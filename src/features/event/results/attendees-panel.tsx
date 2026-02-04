@@ -109,7 +109,10 @@ export default function AttendeesPanel({
                 "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
                 "hover:bg-red/25 active:bg-red/40 cursor-pointer",
               )}
-              onClick={() => setIsRemoving(!isRemoving)}
+              onClick={() => {
+                setIsRemoving(!isRemoving);
+                clearSelectedParticipants();
+              }}
             >
               {isRemoving ? (
                 <CheckIcon className="h-6 w-6" />
