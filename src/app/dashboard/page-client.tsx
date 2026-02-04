@@ -76,7 +76,7 @@ export default function ClientPage({
                   ? "You haven't created any events yet."
                   : "You haven't participated in any events yet."}
               </div>
-              <div>{`When you do, it'll show up here!`}</div>
+              <div>{`When you do, it'll show up here for quick access!`}</div>
             </div>
           )}
         </div>
