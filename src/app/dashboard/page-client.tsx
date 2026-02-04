@@ -47,29 +47,27 @@ export default function ClientPage({
           </div>
         </Banner>
       )}
-      <div className="flex flex-col gap-4">
-        <SegmentedControl
-          value={tab}
-          onChange={setTab}
-          options={[
-            { label: "My Events", value: "created" },
-            { label: "Others' Events", value: "participated" },
-          ]}
-        />
-        <div className="bg-panel w-full rounded-3xl p-4">
-          {currentTabEvents.length ? (
-            <EventGrid events={currentTabEvents} />
-          ) : (
-            <div className="flex h-full flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
-              <div>
-                {tab === "created"
-                  ? "You haven't created any events yet."
-                  : "You haven't participated in any events yet."}
-              </div>
-              <div>{`When you do, it'll show up here for quick access!`}</div>
+      <SegmentedControl
+        value={tab}
+        onChange={setTab}
+        options={[
+          { label: "My Events", value: "created" },
+          { label: "Others' Events", value: "participated" },
+        ]}
+      />
+      <div className="bg-panel w-full rounded-3xl p-4">
+        {currentTabEvents.length ? (
+          <EventGrid events={currentTabEvents} />
+        ) : (
+          <div className="flex h-full flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
+            <div>
+              {tab === "created"
+                ? "You haven't created any events yet."
+                : "You haven't participated in any events yet."}
             </div>
-          )}
-        </div>
+            <div>{`When you do, it'll show up here for quick access!`}</div>
+          </div>
+        )}
       </div>
     </div>
   );
