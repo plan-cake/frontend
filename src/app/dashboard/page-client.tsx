@@ -28,6 +28,9 @@ export default function ClientPage({
   const isMobile = useCheckMobile();
   const { loggedIn } = useContext(LoginContext);
 
+  const currentTabEvents =
+    tab === "created" ? created_events : participated_events;
+
   return (
     <div className="flex min-h-screen flex-col gap-4 pl-6 pr-6">
       <HeaderSpacer />
@@ -64,9 +67,18 @@ export default function ClientPage({
           />
         </div>
         <div className="bg-panel w-full rounded-3xl p-4">
-          <EventGrid
-            events={tab === "created" ? created_events : participated_events}
-          />
+          {currentTabEvents.length ? (
+            <EventGrid events={currentTabEvents} />
+          ) : (
+            <div className="flex h-full flex-col items-center justify-center gap-4 p-2 italic opacity-75">
+              <div>
+                {tab === "created"
+                  ? "You haven't created any events yet."
+                  : "You haven't participated in any events yet."}
+              </div>
+              <div>{`When you do, it'll show up here!`}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
