@@ -5,13 +5,12 @@ import { useContext, useState } from "react";
 import Link from "next/link";
 
 import HeaderSpacer from "@/components/header-spacer";
+import SegmentedControl from "@/components/segmented-control";
 import EventGrid, {
   EventGridProps,
 } from "@/features/dashboard/components/event-grid";
 import { Banner } from "@/features/system-feedback";
-import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { LoginContext } from "@/lib/providers";
-import { cn } from "@/lib/utils/classname";
 
 type DashboardTab = "created" | "participated";
 
@@ -25,7 +24,6 @@ export default function ClientPage({
   participated_events,
 }: DashboardPageProps) {
   const [tab, setTab] = useState<DashboardTab>("created");
-  const isMobile = useCheckMobile();
   const { loggedIn } = useContext(LoginContext);
 
   const currentTabEvents =
@@ -49,23 +47,15 @@ export default function ClientPage({
           </div>
         </Banner>
       )}
-      <div className={cn("flex gap-4", isMobile && "flex-col")}>
-        <div className={cn("flex", !isMobile && "flex-col")}>
-          <DashboardTabButton
-            label="My Events"
-            value="created"
-            currentTab={tab}
-            isMobile={isMobile}
-            setTab={setTab}
-          />
-          <DashboardTabButton
-            label="Others' Events"
-            value="participated"
-            currentTab={tab}
-            isMobile={isMobile}
-            setTab={setTab}
-          />
-        </div>
+      <div className="flex flex-col gap-4">
+        <SegmentedControl
+          value={tab}
+          onChange={setTab}
+          options={[
+            { label: "My Events", value: "created" },
+            { label: "Others' Events", value: "participated" },
+          ]}
+        />
         <div className="bg-panel w-full rounded-3xl p-4">
           {currentTabEvents.length ? (
             <EventGrid events={currentTabEvents} />
@@ -82,34 +72,5 @@ export default function ClientPage({
         </div>
       </div>
     </div>
-  );
-}
-
-function DashboardTabButton({
-  label,
-  value,
-  currentTab,
-  isMobile,
-  setTab,
-}: {
-  label: string;
-  value: DashboardTab;
-  currentTab: DashboardTab;
-  isMobile: boolean;
-  setTab: (value: DashboardTab) => void;
-}) {
-  return (
-    <button
-      className={cn(
-        "text-nowrap rounded-full px-4 py-2",
-        currentTab === value
-          ? "bg-accent text-white"
-          : "hover:bg-accent/25 cursor-pointer",
-        !isMobile && "w-full text-left",
-      )}
-      onClick={() => setTab(value)}
-    >
-      {label}
-    </button>
   );
 }
