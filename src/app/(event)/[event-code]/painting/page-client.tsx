@@ -19,6 +19,7 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import Panel from "@/components/panel";
 
 export default function ClientPage({
   eventCode,
@@ -224,11 +225,11 @@ export default function ClientPage({
           </div>
 
           {/* Desktop-only Event Info */}
-          <div className="bg-panel hidden rounded-3xl p-6 md:block">
+          <Panel className="hidden md:block">
             <EventInfo eventRange={eventRange} timezone={timeZone} />
-          </div>
+          </Panel>
 
-          <div className="bg-panel rounded-3xl p-6 text-sm">
+          <Panel className="text-sm">
             Displaying event in
             <span className="text-accent ml-1 font-bold">
               <TimeZoneSelector
@@ -237,7 +238,7 @@ export default function ClientPage({
                 onChange={setTimeZone}
               />
             </span>
-          </div>
+          </Panel>
         </div>
 
         {/* Right Panel */}

@@ -6,6 +6,7 @@ import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
+import Panel from "@/components/panel";
 import { EventRange } from "@/core/event/types";
 import LinkButton from "@/features/button/components/link";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
@@ -169,20 +170,20 @@ export default function ClientPage({
               />
             </div>
 
-            <div className="bg-panel hidden shrink-0 rounded-3xl p-6 md:block">
+            <Panel className="hidden shrink-0 md:block">
               <EventInfo eventRange={eventRange} timezone={timezone} />
-            </div>
+            </Panel>
 
-            <div className="bg-panel hidden shrink-0 rounded-3xl p-6 text-sm md:block">
+            <Panel className="hidden shrink-0 text-sm md:block">
               Displaying event in
-              <span className="text-accent ml-1 font-bold">
+              <span className="text-accent font-bold">
                 <TimeZoneSelector
                   id="timezone-select"
                   value={timezone}
                   onChange={handleTZChange}
                 />
               </span>
-            </div>
+            </Panel>
           </div>
         </div>
       </div>

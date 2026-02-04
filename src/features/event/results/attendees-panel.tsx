@@ -7,6 +7,7 @@ import {
   ResetIcon,
 } from "@radix-ui/react-icons";
 
+import Panel from "@/components/panel";
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import ParticipantChip from "@/features/event/results/participant-chip";
 import { ConfirmationDialog } from "@/features/system-feedback";
@@ -69,7 +70,7 @@ export default function AttendeesPanel({
   }, []);
 
   return (
-    <div className="bg-panel relative flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
+    <Panel className="relative flex flex-col overflow-hidden p-0 shadow-md md:shadow-none">
       <div
         className={cn(
           "absolute left-0 right-0 top-0 z-10",
@@ -161,6 +162,6 @@ export default function AttendeesPanel({
           );
         })}
       </ul>
-    </div>
+    </Panel>
   );
 }
