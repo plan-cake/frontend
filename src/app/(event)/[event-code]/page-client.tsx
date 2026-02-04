@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
+import Checkbox from "@/components/checkbox";
 import CopyToastButton from "@/components/copy-toast-button";
 import HeaderSpacer from "@/components/header-spacer";
 import Panel from "@/components/panel";
@@ -57,11 +58,13 @@ export default function ClientPage({
     gridNumParticipants,
     hoveredSlot,
     selectedParticipants,
+    showOnlyBestTimes,
     clearSelectedParticipants,
     setHoveredSlot,
     setHoveredParticipant,
     toggleParticipant,
     handleRemoveParticipant,
+    setShowOnlyBestTimes,
   } = useEventResults(
     initialAvailabilityData,
     eventCode,
@@ -170,19 +173,26 @@ export default function ClientPage({
               />
             </div>
 
-            <Panel className="hidden shrink-0 md:block">
-              <EventInfo eventRange={eventRange} timezone={timezone} />
+            <Panel className="hidden shrink-0 text-sm md:block">
+              <Checkbox
+                label="Only show best times"
+                checked={showOnlyBestTimes}
+                onChange={setShowOnlyBestTimes}
+              />
+              <div className="mt-3">
+                Displaying event in
+                <span className="text-accent font-bold">
+                  <TimeZoneSelector
+                    id="timezone-select"
+                    value={timezone}
+                    onChange={handleTZChange}
+                  />
+                </span>
+              </div>
             </Panel>
 
-            <Panel className="hidden shrink-0 text-sm md:block">
-              Displaying event in
-              <span className="text-accent font-bold">
-                <TimeZoneSelector
-                  id="timezone-select"
-                  value={timezone}
-                  onChange={handleTZChange}
-                />
-              </span>
+            <Panel className="hidden shrink-0 md:block">
+              <EventInfo eventRange={eventRange} timezone={timezone} />
             </Panel>
           </div>
         </div>
