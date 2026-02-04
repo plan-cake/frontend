@@ -154,7 +154,12 @@ export default function AttendeesPanel({
               isSelected={selectedParticipants.includes(person)}
               areSelected={selectedParticipants.length > 0}
               isRemoving={isRemoving && isCreator}
-              onRemove={() => onRemoveParticipant(person)}
+              onRemove={() => {
+                if (participants.length === 1) {
+                  setIsRemoving(false);
+                }
+                return onRemoveParticipant(person);
+              }}
               onHoverChange={(isHovering) =>
                 !isRemoving && setHoveredParticipant(isHovering ? person : null)
               }
