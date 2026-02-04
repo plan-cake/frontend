@@ -32,7 +32,7 @@ export default function ClientPage({
     tab === "created" ? created_events : participated_events;
 
   return (
-    <div className="flex min-h-screen flex-col gap-4 px-6">
+    <div className="flex min-h-screen flex-col gap-4 px-6 pb-4">
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {loggedIn === false && (
