@@ -81,7 +81,7 @@ export default function AttendeesPanel({
             {isRemoving ? "Removing a" : "A"}ttendees
           </h2>
           {displayParticipants.length > 0 && (
-            <span className="text-sm">
+            <span className="text-sm opacity-75">
               {isRemoving
                 ? `Select to remove`
                 : activeCount === null
