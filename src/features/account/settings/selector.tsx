@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 
 import { TrashIcon, ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
+import { useDebouncedCallback } from "use-debounce";
 
 import TextInputField from "@/components/text-input-field";
 import { useAccount } from "@/features/account/context";
@@ -49,14 +50,39 @@ export default function AccountSettings({
 
 function SettingsContent() {
   const isSubmitting = useRef(false);
-  const { logout } = useAccount();
+  const { login, logout, accountDetails } = useAccount();
   const router = useRouter();
 
-  const [displayName, setDisplayName] = useState("mirandazheng");
+  const [defaultName, setDefaultName] = useState(
+    accountDetails?.defaultName || "",
+  );
 
-  const handleDisplayNameChange = (value: string) => {
-    setDisplayName(value);
-  };
+  const handleDefaultNameChange = useDebouncedCallback(async (name: string) => {
+    try {
+      if (name) {
+        await fetch("/api/account/set-default-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ display_name: name }),
+        });
+      } else {
+        await fetch("/api/account/remove-default-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
+      }
+
+      if (accountDetails) {
+        login({ ...accountDetails, defaultName: name });
+      }
+
+      addToast("success", "Profile updated successfully");
+    } catch (err) {
+      console.error("Fetch error:", err);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+      setDefaultName(accountDetails?.defaultName || "");
+    }
+  }, 600);
 
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
@@ -89,21 +115,27 @@ function SettingsContent() {
   return (
     <div className="flex flex-col gap-2 p-2">
       <h2 className="text-foreground text-center font-bold">
-        miranda.mzheng@gmail.com
+        {accountDetails?.email}
       </h2>
 
       <div className="frosted-glass-inset flex gap-2 rounded-3xl border-none p-4">
         <TextInputField
           id="displayName"
           label="Display Name"
-          value={displayName}
+          value={defaultName}
           type="text"
-          onChange={handleDisplayNameChange}
+          onChange={(newValue) => {
+            setDefaultName(newValue);
+            handleDefaultNameChange(newValue);
+          }}
           outlined
           classname="mb-0 text-foreground"
         />
         <button
-          onClick={() => handleDisplayNameChange("")}
+          onClick={() => {
+            setDefaultName("");
+            handleDefaultNameChange("");
+          }}
           className="frosted-glass-error-button text-red cursor-pointer rounded-full p-2 text-sm font-semibold hover:text-white"
           aria-label="Remove self"
         >
