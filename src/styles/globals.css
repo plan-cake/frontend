@@ -8,6 +8,7 @@
 @import "./centered-absolute.css";
 @import "./radix.css";
 @import "./scrollbar.css";
+@import "@poursha98/react-ios-time-picker/styles.css";
 
 /* GLOBAL STYLES */
 
