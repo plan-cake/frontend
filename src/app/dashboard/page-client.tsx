@@ -1,16 +1,16 @@
 "use client";
 
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import Link from "next/link";
 
 import HeaderSpacer from "@/components/header-spacer";
+import { useAccount } from "@/features/account/context";
 import EventGrid, {
   EventGridProps,
 } from "@/features/dashboard/components/event-grid";
 import { Banner } from "@/features/system-feedback";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
-import { LoginContext } from "@/lib/providers";
 import { cn } from "@/lib/utils/classname";
 
 type DashboardTab = "created" | "participated";
@@ -26,13 +26,13 @@ export default function ClientPage({
 }: DashboardPageProps) {
   const [tab, setTab] = useState<DashboardTab>("created");
   const isMobile = useCheckMobile();
-  const { loggedIn } = useContext(LoginContext);
+  const { loginState } = useAccount();
 
   return (
     <div className="flex min-h-screen flex-col gap-4 pl-6 pr-6">
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
-      {loggedIn === false && (
+      {loginState === "logged_out" && (
         <Banner type="info" title="Logged in as a Guest">
           <div>
             This data is only available from this browser.{" "}
