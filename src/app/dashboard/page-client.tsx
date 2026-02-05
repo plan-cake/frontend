@@ -23,7 +23,11 @@ export default function ClientPage({
   created_events,
   participated_events,
 }: DashboardPageProps) {
-  const [tab, setTab] = useState<DashboardTab>("created");
+  const [tab, setTab] = useState<DashboardTab>(
+    !created_events.length && participated_events.length
+      ? "participated"
+      : "created",
+  );
   const { loggedIn } = useContext(LoginContext);
 
   const currentTabEvents =
