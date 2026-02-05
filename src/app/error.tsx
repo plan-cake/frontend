@@ -58,7 +58,11 @@ export default function EventErrorPage({
         buttonStyle="primary"
         label="Try Again"
         onClick={() => {
-          reset();
+          if (statusCode === "500") {
+            window.location.reload();
+          } else {
+            reset();
+          }
           return true;
         }}
       />
