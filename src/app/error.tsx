@@ -4,29 +4,41 @@ import { useEffect } from "react";
 
 import ActionButton from "@/features/button/components/action";
 
-function getErrorDetails(error: Error) {
+function getErrorDetails(error: Error & { digest?: string }) {
   let status = 500; // Default error code
   let message = error.message; // Default message
   let title = "Oops! Something went wrong."; // Default title
 
-  try {
-    // Try to parse the message as JSON
-    const errorData = JSON.parse(error.message);
+  // Handle errors in production that are obscured
+  // Most of the time this will only happen if the backend is unreachable
+  if (
+    error.digest &&
+    (message.includes("Server Components render") || message.length === 0)
+  ) {
+    title = "Service Unavailable";
+    message =
+      "We're having trouble connecting to our servers. Please try again later.";
+    status = 503;
+  } else {
+    try {
+      // Try to parse the message as JSON
+      const errorData = JSON.parse(error.message);
 
-    // Check if it's our structured error
-    if (
-      typeof errorData === "object" &&
-      errorData !== null &&
-      "status" in errorData &&
-      "title" in errorData &&
-      "message" in errorData
-    ) {
-      status = errorData.status;
-      title = errorData.title;
-      message = errorData.message;
+      // Check if it's our structured error
+      if (
+        typeof errorData === "object" &&
+        errorData !== null &&
+        "status" in errorData &&
+        "title" in errorData &&
+        "message" in errorData
+      ) {
+        status = errorData.status;
+        title = errorData.title;
+        message = errorData.message;
+      }
+    } catch {
+      // If parsing fails, we just use the original message and default status
     }
-  } catch {
-    // If parsing fails, we just use the original message and default status
   }
 
   return { statusCode: String(status), title, message };
@@ -58,7 +70,11 @@ export default function EventErrorPage({
         buttonStyle="primary"
         label="Try Again"
         onClick={() => {
-          reset();
+          if (statusCode === "500" || statusCode === "503") {
+            window.location.reload();
+          } else {
+            reset();
+          }
           return true;
         }}
       />

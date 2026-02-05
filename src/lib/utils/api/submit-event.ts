@@ -2,6 +2,7 @@ import { EventRange } from "@/core/event/types";
 import { EventEditorType } from "@/features/event/editor/types";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export type EventSubmitData = {
   title: string;
@@ -44,7 +45,9 @@ export default async function submitEvent(
   const jsonBody: EventSubmitJsonBody = {
     title: data.title,
     time_zone: data.eventRange.timezone,
-    timeslots: data.timeslots.map((d) => d.toISOString()),
+    timeslots: data.timeslots.map((d) =>
+      timeslotToISOString(d, data.eventRange.timezone, eventType),
+    ),
   };
 
   // only include duration if set

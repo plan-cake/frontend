@@ -1,27 +1,16 @@
 "use client";
 
-import { createContext, useState } from "react";
-
 import { ThemeProvider } from "next-themes";
 
+import AccountProvider from "@/features/account/provider";
 import { ToastProvider } from "@/features/system-feedback";
 
-export const LoginContext = createContext<{
-  loggedIn: boolean | null;
-  setLoggedIn: (loggedIn: boolean) => void;
-}>({
-  loggedIn: null,
-  setLoggedIn: () => {},
-});
-
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [loggedIn, setLoggedIn] = useState<boolean | null>(null);
-
   return (
     <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-      <LoginContext.Provider value={{ loggedIn, setLoggedIn }}>
+      <AccountProvider>
         <ToastProvider>{children}</ToastProvider>
-      </LoginContext.Provider>
+      </AccountProvider>
     </ThemeProvider>
   );
 }

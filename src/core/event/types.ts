@@ -12,11 +12,7 @@ export type EventRange = SpecificDateRange | WeekdayRange;
 
 // represents selected weekdays
 export type Weekday = "Sun" | "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat";
-export type WeekdayMap = {
-  [day in Weekday]: 0 | 1;
-};
-
-export const days: Array<Weekday> = [
+export const ALL_WEEKDAYS: Weekday[] = [
   "Sun",
   "Mon",
   "Tue",
@@ -25,11 +21,6 @@ export const days: Array<Weekday> = [
   "Fri",
   "Sat",
 ];
-
-export type WeekdayTimeRange = {
-  slotTimeUTC: Date;
-  dayEndUTC: Date;
-};
 
 /* EVENT RANGE MODELS */
 
@@ -51,7 +42,7 @@ export type WeekdayRange = {
   type: "weekday";
   duration: number;
   timezone: string;
-  weekdays: WeekdayMap;
+  weekdays: Weekday[];
   timeRange: {
     from: string;
     to: string;

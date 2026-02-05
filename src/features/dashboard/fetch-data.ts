@@ -9,6 +9,7 @@ export type DashboardEventResponse = {
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
+  participants: string[];
   event_code: string;
 };
 
