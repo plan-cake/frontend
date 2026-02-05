@@ -4,10 +4,22 @@ import { useEffect } from "react";
 
 import ActionButton from "@/features/button/components/action";
 
-function getErrorDetails(error: Error) {
+function getErrorDetails(error: Error & { digest?: string }) {
   let status = 500; // Default error code
   let message = error.message; // Default message
   let title = "Oops! Something went wrong."; // Default title
+
+  // Handle errors in production that are obscured
+  // Most of the time this will only happen if the backend is unreachable
+  if (
+    error.digest &&
+    (message.includes("Server Components render") || message.length === 0)
+  ) {
+    title = "Service Unavailable";
+    message =
+      "We're having trouble connecting to our servers. Please try again later.";
+    status = 503;
+  }
 
   try {
     // Try to parse the message as JSON
