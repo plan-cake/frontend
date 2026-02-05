@@ -19,26 +19,26 @@ function getErrorDetails(error: Error & { digest?: string }) {
     message =
       "We're having trouble connecting to our servers. Please try again later.";
     status = 503;
-  }
+  } else {
+    try {
+      // Try to parse the message as JSON
+      const errorData = JSON.parse(error.message);
 
-  try {
-    // Try to parse the message as JSON
-    const errorData = JSON.parse(error.message);
-
-    // Check if it's our structured error
-    if (
-      typeof errorData === "object" &&
-      errorData !== null &&
-      "status" in errorData &&
-      "title" in errorData &&
-      "message" in errorData
-    ) {
-      status = errorData.status;
-      title = errorData.title;
-      message = errorData.message;
+      // Check if it's our structured error
+      if (
+        typeof errorData === "object" &&
+        errorData !== null &&
+        "status" in errorData &&
+        "title" in errorData &&
+        "message" in errorData
+      ) {
+        status = errorData.status;
+        title = errorData.title;
+        message = errorData.message;
+      }
+    } catch {
+      // If parsing fails, we just use the original message and default status
     }
-  } catch {
-    // If parsing fails, we just use the original message and default status
   }
 
   return { statusCode: String(status), title, message };
