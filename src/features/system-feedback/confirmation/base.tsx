@@ -80,35 +80,40 @@ export default function ConfirmationDialog({
         {triggerElement}
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
-        <Dialog.Content
-          className={cn(
-            "fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
-            "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
-            "max-w-3xl",
-          )}
-        >
-          <Dialog.Title className="flex flex-col items-center gap-4">
-            {showIcon && renderIcon()}
-            <p className="text-lg font-bold">{title}</p>
-          </Dialog.Title>
-          <Dialog.Description className="mt-2 text-center">
-            {description}
-          </Dialog.Description>
+        <Dialog.Overlay className="dialog-overlay fixed inset-0 z-40 bg-gray-700/40 transition-opacity" />
 
-          <div className="mt-[25px] flex justify-center gap-4">
-            <ActionButton
-              buttonStyle="transparent"
-              label="Cancel"
-              onClick={handleClose}
-            />
-            <ActionButton
-              buttonStyle={config.btnStyle}
-              label="Confirm"
-              onClick={handleConfirm}
-            />
+        <div className="fixed inset-0 z-40 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+            <Dialog.Content
+              className={cn(
+                "dialog-content",
+                "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
+                "max-w-3xl",
+              )}
+            >
+              <Dialog.Title className="flex flex-col items-center gap-4">
+                {showIcon && renderIcon()}
+                <p className="text-lg font-bold">{title}</p>
+              </Dialog.Title>
+              <Dialog.Description className="mt-2 text-center">
+                {description}
+              </Dialog.Description>
+
+              <div className="mt-[25px] flex justify-center gap-4">
+                <ActionButton
+                  buttonStyle="transparent"
+                  label="Cancel"
+                  onClick={handleClose}
+                />
+                <ActionButton
+                  buttonStyle={config.btnStyle}
+                  label="Confirm"
+                  onClick={handleConfirm}
+                />
+              </div>
+            </Dialog.Content>
           </div>
-        </Dialog.Content>
+        </div>
       </Dialog.Portal>
     </Dialog.Root>
   );
