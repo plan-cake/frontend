@@ -65,10 +65,11 @@ export function getVersionHistoryData(): VersionHistoryData {
 }
 
 export function getCurrentVersion(): string {
-    const history = getVersionHistoryData();
-    const latestMajor = history[history.length - 1];
-    if (latestMajor.minorVersions && latestMajor.minorVersions.length > 0) {
-        return latestMajor.minorVersions[latestMajor.minorVersions.length - 1].version;
-    }
-    return `${latestMajor.version}.0`;
+  const history = getVersionHistoryData();
+  const latestMajor = history[history.length - 1];
+  if (latestMajor.minorVersions && latestMajor.minorVersions.length > 0) {
+    return latestMajor.minorVersions[latestMajor.minorVersions.length - 1]
+      .version;
+  }
+  return `${latestMajor.version}.0`;
 }

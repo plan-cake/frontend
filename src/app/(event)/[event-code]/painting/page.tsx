@@ -7,6 +7,7 @@ import { EventCodePageProps } from "@/features/event/code-page-props";
 import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
 import { processEventData } from "@/lib/utils/api/process-event-data";
+import { constructMetadata } from "@/lib/utils/construct-metadata";
 
 export async function generateMetadata({
   params,
@@ -16,21 +17,18 @@ export async function generateMetadata({
   const initialEventData = await getCachedEventDetails(eventCode);
 
   if (!initialEventData) {
-    return {
-      title: "Event Not Found • Plancake",
-    };
+    return constructMetadata(
+      "Event Not Found",
+      "The event you are looking for could not be found.",
+    );
   }
 
   const { eventName } = processEventData(initialEventData);
 
-  return {
-    title: `${eventName} • Plancake`,
-    openGraph: {
-      title: `${eventName} • Plancake`,
-      description:
-        "Add your availability for this event and let others know when you're free!",
-    },
-  };
+  return constructMetadata(
+    eventName,
+    "Add your availability for this event and let others know when you're free!",
+  );
 }
 
 export default async function Page({ params }: EventCodePageProps) {
