@@ -62,7 +62,7 @@ export default function TextInputField(props: TextInputFieldProps) {
         }}
         placeholder=" " // triggers placeholder-shown state for floating label
         className={cn(
-          "text-foreground peer w-full bg-transparent py-2 focus:outline-none",
+          "text-foreground peer w-full rounded-full bg-transparent py-2 focus:outline-none",
           outlined ? "px-5" : "border-b-1 px-2",
           isPassword && "pr-10",
 
