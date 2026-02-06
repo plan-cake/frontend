@@ -15,7 +15,6 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { getResultBanners } from "@/features/event/results/banners";
 import { useEventResults } from "@/features/event/results/use-results";
-import { useFormErrors } from "@/lib/hooks/use-form-errors";
 import { cn } from "@/lib/utils/classname";
 
 export default function ClientPage({
@@ -39,7 +38,6 @@ export default function ClientPage({
   const userName = initialAvailabilityData.user_display_name || "";
 
   /* FORM ERROR & TIMEZONE HANDLING */
-  const { handleError } = useFormErrors();
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -61,12 +59,7 @@ export default function ClientPage({
     setHoveredParticipant,
     toggleParticipant,
     handleRemoveParticipant,
-  } = useEventResults(
-    initialAvailabilityData,
-    eventCode,
-    isCreator,
-    handleError,
-  );
+  } = useEventResults(initialAvailabilityData, eventCode, isCreator);
 
   /* SIDEBAR SPACING HANDLING */
   const DEFAULT_SPACER_HEIGHT = 200;
