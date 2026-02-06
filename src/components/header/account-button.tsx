@@ -12,10 +12,19 @@ import LinkButton from "@/features/button/components/link";
 export default function AccountButton() {
   const { loginState, login, logout } = useAccount();
 
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
+  const handleOpenChange = () => {
+    setAccountSettingsOpen(!accountSettingsOpen);
+    return true;
+  };
+
   // 1. Check Login Status
   useEffect(() => {
     const checkLogin = async () => {
       if (loginState === "logged_in") return;
+
+      // always close account settings when logging out
+      setAccountSettingsOpen(false);
 
       try {
         const res = await fetch("/api/auth/check-account-auth/", {
@@ -30,6 +39,7 @@ export default function AccountButton() {
           });
         } else {
           logout();
+          setAccountSettingsOpen(false);
         }
       } catch (err) {
         console.error("Fetch error:", err);
@@ -39,15 +49,12 @@ export default function AccountButton() {
     checkLogin();
   }, [loginState, login, logout]);
 
-  const [open, setOpen] = useState(false);
-  const handleOpenChange = () => {
-    setOpen(!open);
-    return true;
-  };
-
   if (loginState === "logged_in") {
     return (
-      <AccountSettings open={open} setOpenChange={setOpen}>
+      <AccountSettings
+        open={accountSettingsOpen}
+        setOpenChange={setAccountSettingsOpen}
+      >
         <ActionButton
           buttonStyle="frosted glass"
           icon={<PersonIcon />}
