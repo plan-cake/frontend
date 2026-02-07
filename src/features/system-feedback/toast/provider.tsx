@@ -27,13 +27,22 @@ export default function ToastProvider({
 
     const handleResize = () => {
       const viewport = window.visualViewport;
-      const offset = window.innerHeight - viewport!.height;
-      setKeyboardHeight(offset > 0 ? offset : 0);
+
+      if (!viewport) {
+        setKeyboardHeight(0);
+        return;
+      }
+
+      const offset = window.innerHeight - viewport.height;
+
+      setKeyboardHeight(offset);
     };
 
-    window.visualViewport.addEventListener("resize", handleResize);
-    return () =>
+    window.visualViewport?.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
       window.visualViewport?.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   const addToast = useCallback(
