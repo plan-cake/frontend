@@ -59,7 +59,7 @@ export default function ClientPage({
     setHoveredParticipant,
     toggleParticipant,
     handleRemoveParticipant,
-  } = useEventResults(initialAvailabilityData, eventCode, isCreator);
+  } = useEventResults(initialAvailabilityData, eventCode, isCreator, userName);
 
   /* SIDEBAR SPACING HANDLING */
   const DEFAULT_SPACER_HEIGHT = 200;

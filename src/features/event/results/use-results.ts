@@ -15,6 +15,7 @@ export function useEventResults(
   initialData: AvailabilityDataResponse,
   eventCode: string,
   isCreator: boolean,
+  userName: string | null,
 ) {
   const { addToast } = useToast();
 
@@ -60,6 +61,8 @@ export function useEventResults(
   };
 
   const handleRemoveParticipant = async (person: string) => {
+    const isRemovingSelf = userName === person;
+
     // Immediate UI update
     if (selectedParticipants.includes(person)) {
       setSelectedParticipants((prev) => prev.filter((p) => p !== person));
@@ -76,7 +79,12 @@ export function useEventResults(
     if (!result.success) {
       addToast("error", result.error || "Error removing participant");
     } else if (result.success) {
-      addToast("success", `${person} has been removed from the event.`);
+      addToast(
+        "success",
+        isRemovingSelf
+          ? "You have been removed from the event."
+          : `${person} has been removed from the event.`,
+      );
     }
 
     return result.success;
