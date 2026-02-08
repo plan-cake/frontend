@@ -8,12 +8,17 @@ import { createUserAvailability } from "@/core/availability/utils";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { formatDateTime } from "@/lib/utils/date-time-format";
 
-export function useAvailability(initialData: SelfAvailabilityResponse | null) {
+export function useAvailability(
+  initialData: SelfAvailabilityResponse | null,
+  eventType: string,
+) {
   const initialTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
   const isoStrings = [];
   if (initialData && initialData.available_dates) {
     for (const dateStr of initialData.available_dates) {
-      isoStrings.push(formatDateTime(dateStr));
+      isoStrings.push(
+        formatDateTime(dateStr, initialData.time_zone, eventType),
+      );
     }
   }
 

@@ -54,7 +54,7 @@ export default function AttendeesPanel({
   }, [selectedParticipants, participants]);
 
   const activeCount = useMemo(() => {
-    if (!hoveredSlot) return displayParticipants.length;
+    if (!hoveredSlot) return null;
     return displayParticipants.filter((p) =>
       availabilities[hoveredSlot]?.includes(p),
     ).length;
@@ -69,71 +69,76 @@ export default function AttendeesPanel({
   }, []);
 
   return (
-    <div className="bg-panel relative flex flex-col overflow-hidden rounded-3xl shadow-md md:shadow-none">
-      <div
-        className={cn(
-          "absolute left-0 right-0 top-0 z-10",
-          "bg-panel flex touch-none select-none justify-between px-6 pb-2 pt-6",
-        )}
-      >
+    <div className="max-h-53 bg-panel flex flex-col gap-2 overflow-hidden rounded-3xl shadow-md md:shadow-none">
+      <div className="flex touch-none select-none justify-between px-6 pt-6">
         <div className="flex flex-col">
-          <h2 className="text-md font-semibold">Attendees</h2>
+          <h2 className="text-md font-semibold">
+            {isRemoving ? "Removing a" : "A"}ttendees
+          </h2>
           {displayParticipants.length > 0 && (
-            <span className="text-sm">{`${activeCount}/${displayParticipants.length} available`}</span>
+            <span className="text-sm opacity-75">
+              {isRemoving
+                ? `Select to remove`
+                : activeCount === null
+                  ? "Hover grid for availability"
+                  : `${activeCount}/${displayParticipants.length} available`}
+            </span>
           )}
         </div>
-        <div className="space-x-2">
-          <button
-            tabIndex={hasSelection ? 0 : -1}
-            className={cn(
-              "bg-accent/15 text-accent rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
-              "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
-              hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
-            )}
-            onClick={clearSelectedParticipants}
-          >
-            <ResetIcon className="h-6 w-6" />
-          </button>
-
-          {participants.length > 0 && isCreator && (
+        {participants.length > 0 && (
+          // Don't render buttons if there are no participants to avoid taking up space
+          <div className="space-x-2">
             <button
+              tabIndex={hasSelection ? 0 : -1}
               className={cn(
-                "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
-                "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+                "bg-accent/15 text-accent rounded-full p-2 text-sm font-semibold transition-[shadow,opacity] duration-200",
+                "hover:bg-accent/25 active:bg-accent/40 cursor-pointer",
+                hasSelection ? "opacity-100" : "pointer-events-none opacity-0",
               )}
-              onClick={() => setIsRemoving(!isRemoving)}
+              onClick={clearSelectedParticipants}
             >
-              {isRemoving ? (
-                <CheckIcon className="h-6 w-6" />
-              ) : (
-                <EraserIcon className="h-6 w-6" />
-              )}
+              <ResetIcon className="h-6 w-6" />
             </button>
-          )}
 
-          {showSelfRemove && (
-            <ConfirmationDialog
-              type="delete"
-              title="Remove Yourself?"
-              description="Are you sure you want to remove yourself from this event?"
-              onConfirm={() => onRemoveParticipant(currentUser)}
-            >
+            {isCreator && (
               <button
-                className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
-                aria-label="Remove self"
+                className={cn(
+                  "text-red bg-red/15 rounded-full p-2 text-sm font-semibold",
+                  "hover:bg-red/25 active:bg-red/40 cursor-pointer",
+                )}
+                onClick={() => {
+                  setIsRemoving(!isRemoving);
+                  clearSelectedParticipants();
+                }}
               >
-                <ExitIcon className="h-6 w-6" />
+                {isRemoving ? (
+                  <CheckIcon className="h-6 w-6" />
+                ) : (
+                  <EraserIcon className="h-6 w-6" />
+                )}
               </button>
-            </ConfirmationDialog>
-          )}
-        </div>
+            )}
+
+            {showSelfRemove && (
+              <ConfirmationDialog
+                type="delete"
+                title="Remove Yourself?"
+                description="Are you sure you want to remove yourself from this event?"
+                onConfirm={() => onRemoveParticipant(currentUser)}
+              >
+                <button
+                  className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
+                  aria-label="Remove self"
+                >
+                  <ExitIcon className="h-6 w-6" />
+                </button>
+              </ConfirmationDialog>
+            )}
+          </div>
+        )}
       </div>
 
-      <ul
-        className={cn(
-          "max-h-53 flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 pt-20 md:max-h-none md:gap-2.5",
-        )}
-      >
+      <ul className="flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 pt-1 md:max-h-none md:gap-2.5">
         {participants.length === 0 && (
           <li className="text-sm italic opacity-50">No attendees yet</li>
         )}
@@ -149,7 +154,12 @@ export default function AttendeesPanel({
               isSelected={selectedParticipants.includes(person)}
               areSelected={selectedParticipants.length > 0}
               isRemoving={isRemoving && isCreator}
-              onRemove={() => onRemoveParticipant(person)}
+              onRemove={() => {
+                if (participants.length === 1) {
+                  setIsRemoving(false);
+                }
+                return onRemoveParticipant(person);
+              }}
               onHoverChange={(isHovering) =>
                 !isRemoving && setHoveredParticipant(isHovering ? person : null)
               }
