@@ -59,24 +59,30 @@ function SettingsContent() {
 
   const handleDefaultNameChange = useDebouncedCallback(async (name: string) => {
     try {
+      let res;
       if (name) {
-        await fetch("/api/account/set-default-name/", {
+        res = await fetch("/api/account/set-default-name/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ display_name: name }),
         });
       } else {
-        await fetch("/api/account/remove-default-name/", {
+        res = await fetch("/api/account/remove-default-name/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
         });
       }
 
-      if (accountDetails) {
-        login({ ...accountDetails, defaultName: name });
-      }
+      if (!res.ok) {
+        const errorData = await res.json();
+        addToast("error", formatApiError(errorData));
+      } else {
+        if (accountDetails) {
+          login({ ...accountDetails, defaultName: name });
+        }
 
-      addToast("success", "Profile updated successfully");
+        addToast("success", "Profile updated successfully");
+      }
     } catch (err) {
       console.error("Fetch error:", err);
       addToast("error", MESSAGES.ERROR_GENERIC);
@@ -137,7 +143,7 @@ function SettingsContent() {
             handleDefaultNameChange("");
           }}
           className="frosted-glass-error-button text-red cursor-pointer rounded-full p-2 text-sm font-semibold hover:text-white"
-          aria-label="Remove self"
+          aria-label="Clear display name"
         >
           <TrashIcon className="h-6 w-6" />
         </button>
@@ -150,6 +156,7 @@ function SettingsContent() {
             "flex w-full items-center gap-3 rounded-3xl p-4 text-sm transition-colors",
             "frosted-glass-button rounded-3xl text-left",
           )}
+          aria-label="Sign out of your account"
         >
           <ExitIcon className="h-4 w-4" />
           Sign Out
