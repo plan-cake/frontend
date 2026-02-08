@@ -13,6 +13,7 @@ import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
+import ActionButton from "@/features/button/components/action";
 
 export default function AccountSettings({
   children,
@@ -124,29 +125,26 @@ function SettingsContent() {
         {accountDetails?.email}
       </h2>
 
-      <div className="frosted-glass-inset flex gap-2 rounded-3xl border-none p-4">
-        <TextInputField
-          id="displayName"
-          label="Display Name"
-          value={defaultName}
-          type="text"
-          onChange={(newValue) => {
-            setDefaultName(newValue);
-            handleDefaultNameChange(newValue);
-          }}
-          outlined
-          classname="mb-0 text-foreground"
-        />
-        <button
-          onClick={() => {
-            setDefaultName("");
-            handleDefaultNameChange("");
-          }}
-          className="frosted-glass-error-button text-red cursor-pointer rounded-full p-2 text-sm font-semibold hover:text-white"
-          aria-label="Clear display name"
-        >
-          <TrashIcon className="h-6 w-6" />
-        </button>
+      <div className="frosted-glass-inset rounded-3xl border-none p-4">
+        <div className="flex gap-2">
+          <TextInputField
+            id="displayName"
+            label="Display Name"
+            value={defaultName}
+            type="text"
+            onChange={(newValue) => {
+              setDefaultName(newValue);
+              handleDefaultNameChange(newValue);
+            }}
+            outlined
+            classname="mb-0 text-foreground"
+          />
+          <ActionButton
+            buttonStyle="danger"
+            icon={<TrashIcon />}
+            onClick={() => true}
+          />
+        </div>
       </div>
 
       <div className="frosted-glass-inset rounded-3xl border-none">
