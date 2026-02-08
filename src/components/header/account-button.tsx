@@ -14,7 +14,7 @@ export default function AccountButton() {
 
   const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
   const handleOpenChange = () => {
-    setAccountSettingsOpen(!accountSettingsOpen);
+    setAccountSettingsOpen((prev) => !prev);
     return true;
   };
 
