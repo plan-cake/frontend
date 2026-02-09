@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import TextInputField from "@/components/text-input-field";
 import { useAccount } from "@/features/account/context";
 import AccountSettingsDrawer from "@/features/account/settings/drawer";
+import { MAX_DEFAULT_NAME_LENGTH } from "@/features/account/settings/lib/constants";
 import AccountSettingsPopover from "@/features/account/settings/popover";
 import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/system-feedback";
@@ -74,7 +75,7 @@ function SettingsContent() {
 
       if (res.ok) {
         login({ ...accountDetails!, defaultName: defaultName });
-        addToast("success", "Default name updated successfully.");
+        addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
         return true;
       } else {
         setDefaultName(accountDetails?.defaultName || "");
@@ -91,7 +92,7 @@ function SettingsContent() {
       if (res.ok) {
         login({ ...accountDetails!, defaultName: "" });
         setDefaultName("");
-        addToast("success", "Default name removed successfully.");
+        addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_REMOVED);
         return true;
       } else {
         setDefaultName(accountDetails?.defaultName || "");
@@ -108,8 +109,8 @@ function SettingsContent() {
   };
 
   const handleDefaultNameChange = (value: string) => {
-    if (value.length > 25) {
-      setDefaultNameError("Max 25 characters.");
+    if (value.length > MAX_DEFAULT_NAME_LENGTH) {
+      setDefaultNameError(MESSAGES.ERROR_DEFAULT_NAME_LENGTH);
     } else {
       setDefaultNameError("");
       setDefaultName(value);
