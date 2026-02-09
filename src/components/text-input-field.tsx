@@ -49,7 +49,7 @@ export default function TextInputField(props: TextInputFieldProps) {
 
   return (
     <div className={`w-full ${classname || ""}`}>
-      <div className="relative mb-4 w-full">
+      <div className="relative w-full">
         {/* --- input field --- */}
         <input
           type={inputType}
