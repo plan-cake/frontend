@@ -140,7 +140,7 @@ function SettingsContent() {
       </h2>
 
       <div className="frosted-glass-inset flex flex-col gap-2 rounded-3xl border-none p-4">
-        <div className="flex gap-2">
+        <form className="flex gap-2">
           <TextInputField
             id="defaultName"
             label="Default Name"
@@ -155,18 +155,20 @@ function SettingsContent() {
           {defaultName !== (accountDetails?.defaultName || "") && (
             <>
               <ActionButton
+                type="button"
                 buttonStyle="secondary"
                 icon={<Cross2Icon />}
                 onClick={() => resetEdits()}
               />
               <ActionButton
+                type="submit"
                 buttonStyle={defaultName ? "primary" : "danger"}
                 icon={defaultName ? <CheckIcon /> : <TrashIcon />}
                 onClick={async () => await applyDefaultName()}
               />
             </>
           )}
-        </div>
+        </form>
         <div className="text-sm leading-tight opacity-75">
           This name will be autofilled when filling out your availability.
           Remove it anytime!
