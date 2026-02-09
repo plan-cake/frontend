@@ -171,7 +171,7 @@ function SettingsContent() {
         </form>
         <div className="text-sm leading-tight opacity-75">
           This name will be autofilled when filling out your availability.
-          Remove it anytime!
+          Change or remove it anytime!
         </div>
       </div>
 
