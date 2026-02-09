@@ -61,8 +61,10 @@ function SettingsContent() {
   const [defaultName, setDefaultName] = useState(
     accountDetails?.defaultName || "",
   );
+  const [defaultNameError, setDefaultNameError] = useState("");
 
   const applyDefaultName = async () => {
+    setDefaultNameError("");
     if (defaultName) {
       const res = await fetch("/api/account/set-default-name/", {
         method: "POST",
@@ -103,6 +105,15 @@ function SettingsContent() {
   const resetEdits = () => {
     setDefaultName(accountDetails?.defaultName || "");
     return true;
+  };
+
+  const handleDefaultNameChange = (value: string) => {
+    if (value.length > 25) {
+      setDefaultNameError("Max 25 characters.");
+    } else {
+      setDefaultNameError("");
+      setDefaultName(value);
+    }
   };
 
   // TOASTS AND ERROR STATES
@@ -147,8 +158,9 @@ function SettingsContent() {
             value={defaultName}
             type="text"
             onChange={(newValue) => {
-              setDefaultName(newValue);
+              handleDefaultNameChange(newValue);
             }}
+            error={defaultNameError}
             outlined
             classname="mb-0 text-foreground"
           />
