@@ -179,6 +179,10 @@ function SettingsContent() {
             </>
           )}
         </div>
+        <div className="text-sm leading-tight opacity-75">
+          This name will be autofilled when filling out your availability.
+          Remove it anytime!
+        </div>
       </div>
 
       <div className="frosted-glass-inset rounded-3xl border-none">
