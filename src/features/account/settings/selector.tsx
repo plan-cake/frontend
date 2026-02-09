@@ -81,32 +81,28 @@ function SettingsContent() {
         return false;
       }
     } else {
-      return await removeDefaultName();
+      const res = await fetch("/api/account/remove-default-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      if (res.ok) {
+        login({ ...accountDetails!, defaultName: "" });
+        setDefaultName("");
+        addToast("success", "Default name removed successfully.");
+        return true;
+      } else {
+        setDefaultName(accountDetails?.defaultName || "");
+        const errorData = await res.json();
+        addToast("error", formatApiError(errorData));
+        return false;
+      }
     }
   };
 
   const resetEdits = () => {
     setDefaultName(accountDetails?.defaultName || "");
     return true;
-  };
-
-  const removeDefaultName = async () => {
-    const res = await fetch("/api/account/remove-default-name/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    });
-
-    if (res.ok) {
-      login({ ...accountDetails!, defaultName: "" });
-      setDefaultName("");
-      addToast("success", "Default name removed successfully.");
-      return true;
-    } else {
-      setDefaultName(accountDetails?.defaultName || "");
-      const errorData = await res.json();
-      addToast("error", formatApiError(errorData));
-      return false;
-    }
   };
 
   // TOASTS AND ERROR STATES
@@ -163,19 +159,11 @@ function SettingsContent() {
                 icon={<Cross2Icon />}
                 onClick={() => resetEdits()}
               />
-              {defaultName ? (
-                <ActionButton
-                  buttonStyle="primary"
-                  icon={<CheckIcon />}
-                  onClick={async () => await applyDefaultName()}
-                />
-              ) : (
-                <ActionButton
-                  buttonStyle="danger"
-                  icon={<TrashIcon />}
-                  onClick={async () => await removeDefaultName()}
-                />
-              )}
+              <ActionButton
+                buttonStyle={defaultName ? "primary" : "danger"}
+                icon={defaultName ? <CheckIcon /> : <TrashIcon />}
+                onClick={async () => await applyDefaultName()}
+              />
             </>
           )}
         </div>
