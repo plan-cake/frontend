@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import {
   EyeNoneIcon,
@@ -47,6 +47,22 @@ export default function TextInputField(props: TextInputFieldProps) {
   const isPassword = type === "password";
   const inputType = isPassword ? (showPassword ? "text" : "password") : type;
 
+  // ref for placeholder size
+  const labelRef = useRef<HTMLLabelElement>(null);
+  const [labelWidth, setLabelWidth] = useState(0);
+  useEffect(() => {
+    if (labelRef.current) {
+      setLabelWidth(labelRef.current.offsetWidth * 0.75);
+    }
+  }, [label, error]);
+
+  // border element classes
+  const borderClasses = cn(
+    "pointer-events-none absolute inset-0 rounded-full",
+    "border peer-focus:border-2",
+    error ? "border-error" : "border-foreground",
+  );
+
   return (
     <div className={`w-full ${classname || ""}`}>
       <div className="relative w-full">
@@ -62,27 +78,55 @@ export default function TextInputField(props: TextInputFieldProps) {
           className={cn(
             "peer w-full bg-transparent py-2",
             "focus:outline-none",
-            outlined ? "rounded-full border px-4" : "border-b-1 px-2",
-            isPassword && "pr-10",
-
-            // borders and colors
-            error
-              ? "border-error text-error" // error
-              : "border-foreground", // default
-
-            // focus states
             outlined
-              ? "focus:border-transparent focus:ring-2"
-              : "focus:ring-none",
-            error
-              ? "focus:ring-error" // error
-              : "focus:ring-foreground", // default
+              ? // Transparent border for proper spacing, actual border handled separately
+                "rounded-full border border-transparent px-4"
+              : "border-b-1 px-2",
+            isPassword && "pr-10",
           )}
         />
+
+        {/* --- border for outlined style --- */}
+        {/**
+         * There are two stacked borders, one with a cutout for the label (using a CSS
+         * mask) and another that fills that gap with a full border. The second border
+         * fades out when the label is floated.
+         *
+         * The size of the cutout is determined by the label width, measured with a ref.
+         */}
+        {outlined && (
+          <>
+            <div
+              className={borderClasses}
+              style={{
+                maskImage: `linear-gradient(
+                  to right,
+                  black 0px,
+                  black 16px,
+                  transparent 16px,
+                  transparent ${labelWidth + 16}px,
+                  black ${labelWidth + 16}px),
+                  linear-gradient(black, black)
+                `,
+                maskSize: "100% 50%, 100% 50%",
+                maskPosition: "top, bottom",
+                maskRepeat: "no-repeat",
+              }}
+            />
+            <div
+              className={cn(
+                borderClasses,
+                "transition-opacity duration-200 ease-in-out",
+                "peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0",
+              )}
+            />
+          </>
+        )}
 
         {/* --- floating label --- */}
         <label
           htmlFor={id}
+          ref={labelRef}
           className={cn(
             "absolute origin-[0_0] cursor-text px-1",
             "transition-[top,scale] duration-200 ease-in-out",
@@ -96,7 +140,6 @@ export default function TextInputField(props: TextInputFieldProps) {
             // State when floated (on focus or when value exists)
             "peer-focus:top-[-0.65rem] peer-focus:scale-75",
             "peer-[:not(:placeholder-shown)]:top-[-0.65rem] peer-[:not(:placeholder-shown)]:scale-75",
-            "peer-focus:bg-background peer-[:not(:placeholder-shown)]:bg-background",
             outlined
               ? ""
               : "peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
