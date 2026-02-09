@@ -51,11 +51,24 @@ export default function TextInputField(props: TextInputFieldProps) {
   const labelRef = useRef<HTMLLabelElement>(null);
   const [labelWidth, setLabelWidth] = useState(0);
   useEffect(() => {
-    if (labelRef.current) {
-      // This accounts for the label being scaled down when floated
-      setLabelWidth(labelRef.current.offsetWidth * 0.75);
-    }
+    const measureLabel = () => {
+      if (labelRef.current) {
+        // This accounts for the label being scaled down when floated
+        setLabelWidth(labelRef.current.offsetWidth * 0.75);
+      }
+    };
+
+    // Measure on mount and dependency changes
+    measureLabel();
+
+    // Also measure on window resize (mostly for zooming)
+    window.addEventListener("resize", measureLabel);
+    // Cleanup on unmount
+    return () => {
+      window.removeEventListener("resize", measureLabel);
+    };
   }, [label, error]);
+  const labelStartPos = "1rem"; // Equal to left-4
 
   // border element classes
   const borderClasses = cn(
@@ -101,12 +114,13 @@ export default function TextInputField(props: TextInputFieldProps) {
               className={borderClasses}
               style={{
                 maskImage: `linear-gradient(
-                  to right,
-                  black 0px,
-                  black 16px,
-                  transparent 16px,
-                  transparent ${labelWidth + 16}px,
-                  black ${labelWidth + 16}px),
+                    to right,
+                    black 0px,
+                    black ${labelStartPos},
+                    transparent ${labelStartPos},
+                    transparent calc(${labelStartPos} + ${labelWidth}px),
+                    black calc(${labelStartPos} + ${labelWidth}px)
+                  ),
                   linear-gradient(black, black)
                 `,
                 maskSize: "100% 50%, 100% 50%",
