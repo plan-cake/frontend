@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 
-import { TrashIcon, ExitIcon } from "@radix-ui/react-icons";
+import { ExitIcon, TrashIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -8,12 +8,12 @@ import TextInputField from "@/components/text-input-field";
 import { useAccount } from "@/features/account/context";
 import AccountSettingsDrawer from "@/features/account/settings/drawer";
 import AccountSettingsPopover from "@/features/account/settings/popover";
+import ActionButton from "@/features/button/components/action";
 import { useToast } from "@/features/system-feedback";
 import useCheckMobile from "@/lib/hooks/use-check-mobile";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { cn } from "@/lib/utils/classname";
-import ActionButton from "@/features/button/components/action";
 
 export default function AccountSettings({
   children,
