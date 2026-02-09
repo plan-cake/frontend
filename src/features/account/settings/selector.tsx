@@ -2,8 +2,8 @@ import { useRef, useState } from "react";
 
 import {
   CheckIcon,
-  Cross2Icon,
   ExitIcon,
+  ResetIcon,
   TrashIcon,
 } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
@@ -169,7 +169,7 @@ function SettingsContent() {
               <ActionButton
                 type="button"
                 buttonStyle="secondary"
-                icon={<Cross2Icon />}
+                icon={<ResetIcon />}
                 onClick={() => resetEdits()}
               />
               <ActionButton
