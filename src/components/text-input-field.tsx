@@ -138,7 +138,7 @@ export default function TextInputField(props: TextInputFieldProps) {
 
       {/* Password Criteria */}
       {showPasswordCriteria && (
-        <div className="-mt-2 mb-2 w-full px-4">
+        <div className="mt-2 w-full px-4">
           <PasswordCriteria criteria={passwordCriteria} />
         </div>
       )}
