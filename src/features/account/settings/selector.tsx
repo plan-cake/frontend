@@ -1,8 +1,12 @@
 import { useRef, useState } from "react";
 
-import { ExitIcon, TrashIcon } from "@radix-ui/react-icons";
+import {
+  CheckIcon,
+  Cross2Icon,
+  ExitIcon,
+  TrashIcon,
+} from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
-import { useDebouncedCallback } from "use-debounce";
 
 import TextInputField from "@/components/text-input-field";
 import { useAccount } from "@/features/account/context";
@@ -58,38 +62,52 @@ function SettingsContent() {
     accountDetails?.defaultName || "",
   );
 
-  const handleDefaultNameChange = useDebouncedCallback(async (name: string) => {
-    try {
-      let res;
-      if (name) {
-        res = await fetch("/api/account/set-default-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ display_name: name }),
-        });
-      } else {
-        res = await fetch("/api/account/remove-default-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
-      }
+  const applyDefaultName = async () => {
+    if (defaultName) {
+      const res = await fetch("/api/account/set-default-name/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ display_name: defaultName }),
+      });
 
-      if (!res.ok) {
+      if (res.ok) {
+        login({ ...accountDetails!, defaultName: defaultName });
+        addToast("success", "Default name updated successfully.");
+        return true;
+      } else {
+        setDefaultName(accountDetails?.defaultName || "");
         const errorData = await res.json();
         addToast("error", formatApiError(errorData));
-      } else {
-        if (accountDetails) {
-          login({ ...accountDetails, defaultName: name });
-        }
-
-        addToast("success", "Profile updated successfully");
+        return false;
       }
-    } catch (err) {
-      console.error("Fetch error:", err);
-      addToast("error", MESSAGES.ERROR_GENERIC);
-      setDefaultName(accountDetails?.defaultName || "");
+    } else {
+      return await removeDefaultName();
     }
-  }, 600);
+  };
+
+  const resetEdits = () => {
+    setDefaultName(accountDetails?.defaultName || "");
+    return true;
+  };
+
+  const removeDefaultName = async () => {
+    const res = await fetch("/api/account/remove-default-name/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+    });
+
+    if (res.ok) {
+      login({ ...accountDetails!, defaultName: "" });
+      setDefaultName("");
+      addToast("success", "Default name removed successfully.");
+      return true;
+    } else {
+      setDefaultName(accountDetails?.defaultName || "");
+      const errorData = await res.json();
+      addToast("error", formatApiError(errorData));
+      return false;
+    }
+  };
 
   // TOASTS AND ERROR STATES
   const { addToast } = useToast();
@@ -125,7 +143,7 @@ function SettingsContent() {
         {accountDetails?.email}
       </h2>
 
-      <div className="frosted-glass-inset rounded-3xl border-none p-4">
+      <div className="frosted-glass-inset flex flex-col gap-2 rounded-3xl border-none p-4">
         <div className="flex gap-2">
           <TextInputField
             id="defaultName"
@@ -134,16 +152,32 @@ function SettingsContent() {
             type="text"
             onChange={(newValue) => {
               setDefaultName(newValue);
-              handleDefaultNameChange(newValue);
             }}
             outlined
             classname="mb-0 text-foreground"
           />
-          <ActionButton
-            buttonStyle="danger"
-            icon={<TrashIcon />}
-            onClick={() => true}
-          />
+          {defaultName !== (accountDetails?.defaultName || "") && (
+            <>
+              <ActionButton
+                buttonStyle="secondary"
+                icon={<Cross2Icon />}
+                onClick={() => resetEdits()}
+              />
+              {defaultName ? (
+                <ActionButton
+                  buttonStyle="primary"
+                  icon={<CheckIcon />}
+                  onClick={async () => await applyDefaultName()}
+                />
+              ) : (
+                <ActionButton
+                  buttonStyle="danger"
+                  icon={<TrashIcon />}
+                  onClick={async () => await removeDefaultName()}
+                />
+              )}
+            </>
+          )}
         </div>
       </div>
 
