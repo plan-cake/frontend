@@ -128,8 +128,8 @@ function SettingsContent() {
       <div className="frosted-glass-inset rounded-3xl border-none p-4">
         <div className="flex gap-2">
           <TextInputField
-            id="displayName"
-            label="Display Name"
+            id="defaultName"
+            label="Default Name"
             value={defaultName}
             type="text"
             onChange={(newValue) => {
