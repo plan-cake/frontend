@@ -128,7 +128,7 @@ export default function TextInputField(props: TextInputFieldProps) {
           htmlFor={id}
           ref={labelRef}
           className={cn(
-            "absolute origin-[0_0] cursor-text px-1",
+            "pointer-events-none absolute origin-[0_0] cursor-text select-none px-1",
             "transition-[top,scale] duration-200 ease-in-out",
             outlined ? "left-4" : "left-1",
             classname,
