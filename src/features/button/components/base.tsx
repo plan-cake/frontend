@@ -22,6 +22,7 @@ type Ref = HTMLButtonElement | HTMLAnchorElement;
 const BaseButton = forwardRef<Ref, BaseButtonProps>(
   (
     {
+      type,
       buttonStyle,
       icon,
       label,
@@ -114,13 +115,19 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
 
     if (disabled || isLoading) {
       return (
-        <button disabled ref={ref as React.Ref<HTMLButtonElement>} {...props}>
+        <button
+          disabled
+          type={type}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          {...props}
+        >
           {buttonContent}
         </button>
       );
     } else if (isLink) {
       return (
         <Link
+          type={type}
           ref={ref as React.Ref<HTMLAnchorElement>}
           {...props}
           className={"group focus:outline-none"}
@@ -132,6 +139,7 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
     } else {
       return (
         <button
+          type={type}
           ref={ref as React.Ref<HTMLButtonElement>}
           {...props}
           className={"group focus:outline-none"}
