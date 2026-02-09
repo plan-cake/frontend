@@ -52,6 +52,7 @@ export default function TextInputField(props: TextInputFieldProps) {
   const [labelWidth, setLabelWidth] = useState(0);
   useEffect(() => {
     if (labelRef.current) {
+      // This accounts for the label being scaled down when floated
       setLabelWidth(labelRef.current.offsetWidth * 0.75);
     }
   }, [label, error]);
