@@ -41,25 +41,25 @@
 
 /* Confirmation Dialog animations */
 .dialog-overlay[data-state="open"] {
-  animation: overlay-show 400ms ease-out;
+  animation: dialog-overlay-show 400ms ease-out;
 }
 
 .dialog-overlay[data-state="closed"] {
-  animation: overlay-hide 300ms ease-in;
+  animation: dialog-overlay-hide 300ms ease-in;
   animation-delay: 50ms;
 }
 
 .dialog-content[data-state="open"] {
-  animation: content-show 400ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dialog-content-show 400ms cubic-bezier(0.16, 1, 0.3, 1);
   animation-delay: 100ms;
   animation-fill-mode: backwards;
 }
 
 .dialog-content[data-state="closed"] {
-  animation: content-hide 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: dialog-content-hide 250ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-@keyframes overlay-show {
+@keyframes dialog-overlay-show {
   from {
     opacity: 0;
   }
@@ -68,7 +68,7 @@
   }
 }
 
-@keyframes overlay-hide {
+@keyframes dialog-overlay-hide {
   from {
     opacity: 1;
   }
@@ -77,7 +77,7 @@
   }
 }
 
-@keyframes content-show {
+@keyframes dialog-content-show {
   from {
     opacity: 0;
     transform: scale(0.92) translateY(10px);
@@ -88,7 +88,7 @@
   }
 }
 
-@keyframes content-hide {
+@keyframes dialog-content-hide {
   from {
     opacity: 1;
     transform: scale(1) translateY(0);
