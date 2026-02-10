@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import {
   CheckIcon,
@@ -55,7 +55,6 @@ export default function AccountSettings({
 }
 
 function SettingsContent() {
-  const isSubmitting = useRef(false);
   const { login, logout, accountDetails } = useAccount();
   const router = useRouter();
 
@@ -127,28 +126,25 @@ function SettingsContent() {
   const { addToast } = useToast();
 
   const signOut = async () => {
-    if (isSubmitting.current) return;
-    isSubmitting.current = true;
-
-    await fetch("/api/auth/logout/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-    })
-      .then(async (res) => {
-        if (res.ok) {
-          logout();
-          addToast("success", MESSAGES.SUCCESS_LOGOUT);
-          router.push("/login");
-        } else {
-          addToast("error", formatApiError(await res.json()));
-        }
-      })
-      .catch((err) => {
-        console.error("Fetch error:", err);
-        addToast("error", MESSAGES.ERROR_GENERIC);
+    try {
+      const res = await fetch("/api/auth/logout/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
       });
-
-    isSubmitting.current = false;
+      if (res.ok) {
+        logout();
+        addToast("success", MESSAGES.SUCCESS_LOGOUT);
+        router.push("/login");
+        return true;
+      } else {
+        addToast("error", formatApiError(await res.json()));
+        return false;
+      }
+    } catch (e) {
+      console.error("Fetch error:", e);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+      return false;
+    }
   };
 
   return (
@@ -199,18 +195,14 @@ function SettingsContent() {
         </div>
       </div>
 
-      <div className="frosted-glass-inset rounded-3xl border-none">
-        <button
+      <div className="flex justify-center">
+        <ActionButton
+          buttonStyle="primary"
+          icon={<ExitIcon />}
+          label="Sign Out"
           onClick={signOut}
-          className={cn(
-            "flex w-full items-center gap-3 rounded-3xl p-4 text-sm transition-colors",
-            "frosted-glass-button rounded-3xl text-left",
-          )}
-          aria-label="Sign out of your account"
-        >
-          <ExitIcon className="h-4 w-4" />
-          Sign Out
-        </button>
+          loadOnSuccess
+        />
       </div>
     </div>
   );
