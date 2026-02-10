@@ -27,6 +27,7 @@ export default function AccountSettingsPopover({
             "frosted-glass",
             "w-100 z-50 rounded-3xl p-4",
             "data-[state=open]:animate-slideUpAndFade",
+            "data-[state=closed]:animate-slideDownAndFadeOut",
           )}
           aria-label="Account settings"
         >
