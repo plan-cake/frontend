@@ -163,7 +163,6 @@ function SettingsContent() {
             }}
             error={defaultNameError}
             outlined
-            className="text-foreground"
           />
           {defaultName !== (accountDetails?.defaultName || "") && (
             <>
