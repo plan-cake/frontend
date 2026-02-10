@@ -1,6 +1,5 @@
 import { TrashIcon } from "@radix-ui/react-icons";
 
-import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
 
 export default function ParticipantChip({
@@ -37,8 +36,12 @@ export default function ParticipantChip({
       }}
       onMouseLeave={() => onHoverChange(false)}
       onClick={() => {
-        onHoverChange(false);
-        onClick();
+        if (isRemoving && onRemove) {
+          onRemove();
+        } else {
+          onHoverChange(false);
+          onClick();
+        }
       }}
       className={cn(
         "relative flex w-fit touch-manipulation items-center justify-center rounded-full transition-[opacity,shadow] duration-200 hover:cursor-pointer",
@@ -80,25 +83,6 @@ export default function ParticipantChip({
       )}
     </li>
   );
-
-  if (isRemoving && onRemove) {
-    return (
-      <ConfirmationDialog
-        type="delete"
-        title="Remove Participant"
-        description={
-          <span>
-            Are you sure you want to remove{" "}
-            <span className="font-bold">{person}</span>?
-          </span>
-        }
-        onConfirm={onRemove}
-        disabled={!isRemoving}
-      >
-        {ChipContent}
-      </ConfirmationDialog>
-    );
-  }
 
   return ChipContent;
 }

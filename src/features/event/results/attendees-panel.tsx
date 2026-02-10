@@ -44,6 +44,7 @@ export default function AttendeesPanel({
 }: AttendeesPanelProps) {
   /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
+  const [personToRemove, setPersonToRemove] = useState<string | null>(null);
   const showSelfRemove =
     !isCreator && currentUser && participants.includes(currentUser);
 
@@ -138,36 +139,54 @@ export default function AttendeesPanel({
         )}
       </div>
 
-      <ul className="flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 pt-1 md:max-h-none md:gap-2.5">
-        {participants.length === 0 && (
-          <li className="text-sm italic opacity-50">No attendees yet</li>
-        )}
-        {participants.map((person: string, index: number) => {
-          return (
-            <ParticipantChip
-              key={person}
-              index={index}
-              person={person}
-              isAvailable={
-                !hoveredSlot || availabilities[hoveredSlot]?.includes(person)
-              }
-              isSelected={selectedParticipants.includes(person)}
-              areSelected={selectedParticipants.length > 0}
-              isRemoving={isRemoving && isCreator}
-              onRemove={() => {
-                if (participants.length === 1) {
-                  setIsRemoving(false);
+      <ConfirmationDialog
+        type="delete"
+        title="Remove Participant"
+        description={
+          <span>
+            Are you sure you want to remove{" "}
+            <span className="font-bold">{personToRemove}</span>?
+          </span>
+        }
+        open={!!personToRemove}
+        onOpenChange={(open) => !open && setPersonToRemove(null)}
+        onConfirm={async () => {
+          if (!personToRemove) return false;
+          const success = await onRemoveParticipant(personToRemove);
+          if (success && participants.length === 1) setIsRemoving(false);
+          return success;
+        }}
+      >
+        <ul className="flex flex-wrap gap-3 overflow-y-auto px-6 pb-6 pt-1 md:max-h-none md:gap-2.5">
+          {participants.length === 0 && (
+            <li className="text-sm italic opacity-50">No attendees yet</li>
+          )}
+          {participants.map((person: string, index: number) => {
+            return (
+              <ParticipantChip
+                key={person}
+                index={index}
+                person={person}
+                isAvailable={
+                  !hoveredSlot || availabilities[hoveredSlot]?.includes(person)
                 }
-                return onRemoveParticipant(person);
-              }}
-              onHoverChange={(isHovering) =>
-                !isRemoving && setHoveredParticipant(isHovering ? person : null)
-              }
-              onClick={() => !isRemoving && onParticipantToggle(person)}
-            />
-          );
-        })}
-      </ul>
+                isSelected={selectedParticipants.includes(person)}
+                areSelected={selectedParticipants.length > 0}
+                isRemoving={isRemoving && isCreator}
+                onRemove={async () => {
+                  setPersonToRemove(person);
+                  return true;
+                }}
+                onHoverChange={(isHovering) =>
+                  !isRemoving &&
+                  setHoveredParticipant(isHovering ? person : null)
+                }
+                onClick={() => !isRemoving && onParticipantToggle(person)}
+              />
+            );
+          })}
+        </ul>
+      </ConfirmationDialog>
     </div>
   );
 }
