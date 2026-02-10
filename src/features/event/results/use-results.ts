@@ -78,7 +78,7 @@ export function useEventResults(
 
     if (!result.success) {
       addToast("error", result.error || "Error removing participant");
-    } else if (result.success) {
+    } else {
       addToast(
         "success",
         isRemovingSelf
