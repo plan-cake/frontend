@@ -83,6 +83,9 @@ export default function ConfirmationDialog({
         <Dialog.Overlay className="dialog-overlay fixed inset-0 z-40 bg-gray-700/40 transition-opacity" />
 
         <Dialog.Content
+          onEscapeKeyDown={(event) => {
+            event.stopPropagation();
+          }}
           className={cn(
             "dialog-content fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
             "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
@@ -107,6 +110,7 @@ export default function ConfirmationDialog({
               buttonStyle={config.btnStyle}
               label="Confirm"
               onClick={handleConfirm}
+              loadOnSuccess
             />
           </div>
         </Dialog.Content>
