@@ -24,9 +24,9 @@ export default function AccountSettingsPopover({
           onOpenAutoFocus={(e) => e.preventDefault()}
           side="bottom"
           className={cn(
-            "w-100 z-50 rounded-3xl border border-gray-400 p-4 shadow-lg",
-            "data-[state=open]:animate-slideUpAndFade",
             "frosted-glass",
+            "w-100 z-50 rounded-3xl p-4",
+            "data-[state=open]:animate-slideUpAndFade",
           )}
           aria-label="Account settings"
         >
