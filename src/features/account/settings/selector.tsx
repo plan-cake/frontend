@@ -158,7 +158,7 @@ function SettingsContent() {
       </h2>
 
       <div className="frosted-glass-inset flex flex-col gap-2 rounded-3xl border-none p-4">
-        <form className="flex">
+        <form onSubmit={(e) => e.preventDefault()} className="flex">
           <TextInputField
             id="defaultName"
             label="Default Name"
