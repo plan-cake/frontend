@@ -21,7 +21,7 @@ export type TextInputFieldProps = {
   onBlur?: () => void;
   outlined?: boolean;
   error?: string;
-  classname?: string;
+  className?: string;
   showPasswordCriteria?: boolean;
   passwordCriteria?: { [key: string]: boolean };
 };
@@ -37,7 +37,7 @@ export default function TextInputField(props: TextInputFieldProps) {
     onBlur,
     error,
     outlined,
-    classname,
+    className,
     showPasswordCriteria = false,
     passwordCriteria = {},
   } = props;
@@ -78,7 +78,7 @@ export default function TextInputField(props: TextInputFieldProps) {
   );
 
   return (
-    <div className={`w-full ${classname || ""}`}>
+    <div className={`w-full ${className || ""}`}>
       <div className="relative w-full">
         {/* --- input field --- */}
         <input
@@ -146,7 +146,7 @@ export default function TextInputField(props: TextInputFieldProps) {
             "pointer-events-none absolute origin-[0_0] cursor-text select-none px-1",
             "transition-[top,scale] duration-200 ease-in-out",
             outlined ? "left-4" : "left-1",
-            classname,
+            className,
 
             // --- Floating Animation ---
             // State when placeholder is shown (input is empty)
@@ -168,7 +168,7 @@ export default function TextInputField(props: TextInputFieldProps) {
           {error ? (
             <span className="flex items-center gap-1">
               <ExclamationTriangleIcon
-                className={`${classname}`}
+                className={`${className}`}
                 aria-hidden="true"
               />
               {error}

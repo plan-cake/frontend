@@ -121,7 +121,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
             value={title}
             onChange={setTitle}
             error={errors.title || errors.api}
-            classname="text-2xl font-semibold"
+            className="text-2xl font-semibold"
           />
         </div>
         <div className="hidden gap-2 md:flex">
