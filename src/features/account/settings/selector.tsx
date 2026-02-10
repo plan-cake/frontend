@@ -172,7 +172,7 @@ function SettingsContent() {
           />
           <div
             className={cn(
-              "flex shrink-0 gap-2 overflow-hidden",
+              "flex shrink-0 gap-2 overflow-hidden rounded-r-full",
               "transition-[width] duration-300 ease-in-out",
               isChangingDefaultName ? "w-24" : "w-0",
             )}
