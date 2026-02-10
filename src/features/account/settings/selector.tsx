@@ -152,7 +152,7 @@ function SettingsContent() {
       </h2>
 
       <div className="frosted-glass-inset flex flex-col gap-2 rounded-3xl border-none p-4">
-        <form className="flex gap-2">
+        <form className="flex">
           <TextInputField
             id="defaultName"
             label="Default Name"
@@ -164,22 +164,28 @@ function SettingsContent() {
             error={defaultNameError}
             outlined
           />
-          {defaultName !== (accountDetails?.defaultName || "") && (
-            <>
-              <ActionButton
-                type="button"
-                buttonStyle="secondary"
-                icon={<ResetIcon />}
-                onClick={() => resetEdits()}
-              />
-              <ActionButton
-                type="submit"
-                buttonStyle={defaultName ? "primary" : "danger"}
-                icon={defaultName ? <CheckIcon /> : <TrashIcon />}
-                onClick={async () => await applyDefaultName()}
-              />
-            </>
-          )}
+          <div
+            className={cn(
+              "flex shrink-0 gap-2 overflow-hidden",
+              "transition-[width,padding] duration-300 ease-in-out",
+              defaultName !== (accountDetails?.defaultName || "")
+                ? "w-24 pl-2"
+                : "w-0",
+            )}
+          >
+            <ActionButton
+              type="button"
+              buttonStyle="secondary"
+              icon={<ResetIcon />}
+              onClick={() => resetEdits()}
+            />
+            <ActionButton
+              type="submit"
+              buttonStyle={defaultName ? "primary" : "danger"}
+              icon={defaultName ? <CheckIcon /> : <TrashIcon />}
+              onClick={async () => await applyDefaultName()}
+            />
+          </div>
         </form>
         <div className="text-sm leading-tight opacity-75">
           This name will be autofilled when filling out your availability.
