@@ -148,7 +148,7 @@ function SettingsContent() {
   };
 
   return (
-    <div className="flex flex-col gap-2 p-2">
+    <div className="flex flex-col gap-4">
       <h2 className="text-foreground text-center font-bold">
         {accountDetails?.email}
       </h2>
