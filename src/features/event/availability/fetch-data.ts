@@ -57,6 +57,9 @@ export async function fetchSelfAvailability(
     // 400 error is expected if the user has not submitted availability yet
     if (res.status !== 400) {
       handleErrorResponse(res.status, await res.json());
+    } else {
+      // Return no data since the user hasn't participated
+      return null;
     }
   }
 
