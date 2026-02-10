@@ -84,7 +84,7 @@ export default function ConfirmationDialog({
 
         <Dialog.Content
           className={cn(
-            "dialog-content animate-fadeIn fixed inset-0 left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
+            "dialog-content fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
             "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
             "h-fit w-3/4 md:w-fit md:max-w-3xl",
           )}
