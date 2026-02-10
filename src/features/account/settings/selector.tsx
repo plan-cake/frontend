@@ -173,10 +173,12 @@ function SettingsContent() {
           <div
             className={cn(
               "flex shrink-0 gap-2 overflow-hidden",
-              "transition-[width,padding] duration-300 ease-in-out",
-              isChangingDefaultName ? "w-24 pl-2" : "w-0",
+              "transition-[width] duration-300 ease-in-out",
+              isChangingDefaultName ? "w-24" : "w-0",
             )}
           >
+            {/* This div is a placeholder to maintain spacing */}
+            <div />
             <ActionButton
               type="button"
               buttonStyle="secondary"
