@@ -22,9 +22,10 @@ export default function AccountSettingsPopover({
           align="end"
           sideOffset={20}
           onOpenAutoFocus={(e) => e.preventDefault()}
+          side="bottom"
           className={cn(
             "w-100 z-50 rounded-3xl border border-gray-400 p-4 shadow-lg",
-            "data-[state=open]:data-[side=bottom]:animate-slideUpAndFade data-[state=open]:data-[side=left]:animate-slideRightAndFade data-[state=open]:data-[side=right]:animate-slideLeftAndFade data-[state=open]:data-[side=top]:animate-slideDownAndFade",
+            "data-[state=open]:animate-slideUpAndFade",
             "frosted-glass",
           )}
           aria-label="Account settings"
