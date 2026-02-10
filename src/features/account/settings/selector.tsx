@@ -64,7 +64,13 @@ function SettingsContent() {
   );
   const [defaultNameError, setDefaultNameError] = useState("");
 
+  // editing states
+  const isChangingDefaultName =
+    defaultName !== (accountDetails?.defaultName || "");
+  const isRemovingDefaultName = isChangingDefaultName && defaultName === "";
+
   const applyDefaultName = async () => {
+    if (!isChangingDefaultName) return true;
     setDefaultNameError("");
     if (defaultName) {
       const res = await fetch("/api/account/set-default-name/", {
@@ -168,9 +174,7 @@ function SettingsContent() {
             className={cn(
               "flex shrink-0 gap-2 overflow-hidden",
               "transition-[width,padding] duration-300 ease-in-out",
-              defaultName !== (accountDetails?.defaultName || "")
-                ? "w-24 pl-2"
-                : "w-0",
+              isChangingDefaultName ? "w-24 pl-2" : "w-0",
             )}
           >
             <ActionButton
@@ -181,8 +185,8 @@ function SettingsContent() {
             />
             <ActionButton
               type="submit"
-              buttonStyle={defaultName ? "primary" : "danger"}
-              icon={defaultName ? <CheckIcon /> : <TrashIcon />}
+              buttonStyle={isRemovingDefaultName ? "danger" : "primary"}
+              icon={isRemovingDefaultName ? <TrashIcon /> : <CheckIcon />}
               onClick={async () => await applyDefaultName()}
             />
           </div>
