@@ -12,9 +12,14 @@ type ConfirmationDialogProps = {
   title: string;
   description: React.ReactNode;
   onConfirm: () => boolean | Promise<boolean>;
-  children: React.ReactNode;
+  children?: React.ReactNode;
   disabled?: boolean;
   showIcon?: boolean;
+
+  // controlled props
+  // (for when the dialog needs to be controlled by the parent component)
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 export default function ConfirmationDialog({
@@ -25,18 +30,31 @@ export default function ConfirmationDialog({
   children: triggerElement,
   disabled = false,
   showIcon = false,
+  open: controlledOpen,
+  onOpenChange,
 }: ConfirmationDialogProps) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  // use controlled state if provided, otherwise local state
+  const isControlled = controlledOpen !== undefined;
+  const open = isControlled ? controlledOpen : internalOpen;
+
+  const handleOpenChange = (newOpen: boolean) => {
+    if (!isControlled) {
+      setInternalOpen(newOpen);
+    }
+    onOpenChange?.(newOpen);
+  };
 
   const handleClose = () => {
-    setOpen(false);
+    handleOpenChange(false);
     return true;
   };
 
   const handleConfirm = async () => {
     const success = await onConfirm();
     if (success) {
-      setOpen(false);
+      handleOpenChange(false);
     }
     return success;
   };
@@ -65,27 +83,27 @@ export default function ConfirmationDialog({
   };
 
   return (
-    <Dialog.Root open={open} onOpenChange={setOpen}>
-      <Dialog.Trigger
-        asChild
-        disabled={disabled}
-        onClick={(e) => {
-          if (disabled) {
-            e.preventDefault();
-            e.stopPropagation();
-          }
-        }}
-        aria-disabled={disabled}
-      >
-        {triggerElement}
-      </Dialog.Trigger>
+    <Dialog.Root open={open} onOpenChange={handleOpenChange}>
+      {triggerElement && (
+        <Dialog.Trigger
+          asChild
+          disabled={disabled}
+          onClick={(e) => {
+            if (disabled) {
+              e.preventDefault();
+              e.stopPropagation();
+            }
+          }}
+          aria-disabled={disabled}
+        >
+          {triggerElement}
+        </Dialog.Trigger>
+      )}
+
       <Dialog.Portal>
         <Dialog.Overlay className="dialog-overlay fixed inset-0 z-40 bg-gray-700/40 transition-opacity" />
-
         <Dialog.Content
-          onEscapeKeyDown={(event) => {
-            event.stopPropagation();
-          }}
+          onEscapeKeyDown={(event) => event.stopPropagation()}
           className={cn(
             "dialog-content fixed left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2",
             "bg-panel rounded-3xl p-6 shadow-md focus:outline-none",
