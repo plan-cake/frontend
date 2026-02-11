@@ -56,7 +56,7 @@ export default function AccountButton() {
         setOpenChange={setAccountSettingsOpen}
       >
         <ActionButton
-          buttonStyle="frosted glass"
+          buttonStyle="frosted glass inset"
           icon={<PersonIcon />}
           onClick={handleOpenChange}
         />
@@ -66,7 +66,7 @@ export default function AccountButton() {
 
   return (
     <LinkButton
-      buttonStyle="frosted glass"
+      buttonStyle="frosted glass inset"
       label="Log In"
       href="/login"
       loading={loginState === "loading"}
