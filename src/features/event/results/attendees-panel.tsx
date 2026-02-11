@@ -44,9 +44,11 @@ export default function AttendeesPanel({
 }: AttendeesPanelProps) {
   /* REMOVING STATES */
   const [isRemoving, setIsRemoving] = useState(false);
-  const [personToRemove, setPersonToRemove] = useState<string | null>(null);
   const showSelfRemove =
     !isCreator && currentUser && participants.includes(currentUser);
+
+  const [personToRemove, setPersonToRemove] = useState<string | null>(null);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
 
   const hasSelection = selectedParticipants.length > 0;
   const displayParticipants = useMemo(() => {
@@ -68,6 +70,11 @@ export default function AttendeesPanel({
     window.addEventListener("keydown", handleEscape);
     return () => window.removeEventListener("keydown", handleEscape);
   }, []);
+
+  const promptRemove = (person: string) => {
+    setPersonToRemove(person);
+    setIsConfirmationOpen(true);
+  };
 
   return (
     <div className="max-h-53 bg-panel flex flex-col gap-2 overflow-hidden rounded-3xl shadow-md md:shadow-none">
@@ -124,10 +131,7 @@ export default function AttendeesPanel({
               <button
                 className="text-red bg-red/15 hover:bg-red/25 active:bg-red/40 cursor-pointer rounded-full p-2 text-sm font-semibold"
                 aria-label="Remove self"
-                onClick={async () => {
-                  setPersonToRemove(currentUser);
-                  return false;
-                }}
+                onClick={() => promptRemove(currentUser)}
               >
                 <ExitIcon className="h-6 w-6" />
               </button>
@@ -152,10 +156,7 @@ export default function AttendeesPanel({
               isSelected={selectedParticipants.includes(person)}
               areSelected={selectedParticipants.length > 0}
               isRemoving={isRemoving && isCreator}
-              onRemove={async () => {
-                setPersonToRemove(person);
-                return false;
-              }}
+              onRemove={() => promptRemove(person)}
               onHoverChange={(isHovering) =>
                 !isRemoving && setHoveredParticipant(isHovering ? person : null)
               }
@@ -184,14 +185,13 @@ export default function AttendeesPanel({
           )
         }
         // Controlled Props
-        open={!!personToRemove}
-        onOpenChange={(open) => !open && setPersonToRemove(null)}
+        open={isConfirmationOpen}
+        onOpenChange={setIsConfirmationOpen}
         onConfirm={async () => {
           if (!personToRemove) return false;
           const success = await onRemoveParticipant(personToRemove);
           if (success) {
             if (participants.length === 1) setIsRemoving(false);
-            setPersonToRemove(null);
           }
           return success;
         }}
