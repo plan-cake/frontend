@@ -1,5 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
+import { Cross1Icon } from "@radix-ui/react-icons";
 
+import ActionButton from "@/features/button/components/action";
 import { cn } from "@/lib/utils/classname";
 
 export default function AccountSettingsDrawer({
@@ -13,6 +15,11 @@ export default function AccountSettingsDrawer({
   open: boolean;
   setOpen: (open: boolean) => void;
 }) {
+  const handleClose = () => {
+    setOpen(false);
+    return true;
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <div>{children}</div>
@@ -25,6 +32,16 @@ export default function AccountSettingsDrawer({
           className="animate-slideUp data-[state=closed]:animate-slideDown h-7/8 fixed bottom-0 left-0 right-0 z-50 flex w-full flex-col p-4 outline-none"
           aria-label="Account Settings"
         >
+          <div>
+            <ActionButton
+              buttonStyle="frosted glass inset"
+              icon={<Cross1Icon />}
+              label="Close Drawer"
+              shrinkOnMobile
+              onClick={handleClose}
+            />
+          </div>
+
           <div
             className={cn(
               "rounded-t-4xl absolute -bottom-12 left-0 right-0 top-0 -z-10 border-t shadow-lg",
