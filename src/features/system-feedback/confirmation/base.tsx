@@ -15,6 +15,7 @@ type ConfirmationDialogProps = {
   children?: React.ReactNode;
   disabled?: boolean;
   showIcon?: boolean;
+  autoClose?: boolean;
 
   // controlled props
   // (for when the dialog needs to be controlled by the parent component)
@@ -30,6 +31,7 @@ export default function ConfirmationDialog({
   children: triggerElement,
   disabled = false,
   showIcon = false,
+  autoClose = false,
   open: controlledOpen,
   onOpenChange,
 }: ConfirmationDialogProps) {
@@ -52,6 +54,14 @@ export default function ConfirmationDialog({
   };
 
   const handleConfirm = async () => {
+    // If autoClose is enabled, we optimistically close
+    // the dialog before calling onConfirm
+    if (autoClose) {
+      handleOpenChange(false);
+      onConfirm();
+      return true;
+    }
+
     const success = await onConfirm();
     if (success) {
       handleOpenChange(false);
@@ -128,7 +138,7 @@ export default function ConfirmationDialog({
               buttonStyle={config.btnStyle}
               label="Confirm"
               onClick={handleConfirm}
-              loadOnSuccess
+              loadOnSuccess={!autoClose}
             />
           </div>
         </Dialog.Content>
