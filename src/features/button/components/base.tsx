@@ -127,7 +127,6 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
     } else if (isLink) {
       return (
         <Link
-          type={type}
           ref={ref as React.Ref<HTMLAnchorElement>}
           {...props}
           className={"group focus:outline-none"}
