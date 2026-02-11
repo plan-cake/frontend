@@ -167,8 +167,12 @@ export default function AttendeesPanel({
 
       <ConfirmationDialog
         type="delete"
-        title="Remove Participant"
         autoClose={true}
+        title={
+          personToRemove === currentUser
+            ? "Remove Yourself"
+            : "Remove Participant"
+        }
         description={
           personToRemove == currentUser ? (
             "Are you sure you want to remove yourself from this event?"
