@@ -4,6 +4,7 @@ export type ButtonStyle =
   | "primary"
   | "secondary"
   | "frosted glass"
+  | "frosted glass inset"
   | "transparent"
   | "danger";
 

@@ -217,6 +217,22 @@ function getStyleClasses(
       paddingShrink = 0.25;
       spinnerClasses = "border-foreground";
       break;
+    case "frosted glass inset":
+      switch (state) {
+        case "rest":
+          styleClasses = "frosted-glass-inset frosted-glass-inset-button";
+          break;
+        case "loading":
+          styleClasses =
+            "frosted-glass-inset frosted-glass-inset-button-loading";
+          break;
+        case "disabled":
+          styleClasses =
+            "frosted-glass-inset text-violet/40 dark:text-white/40";
+          break;
+      }
+      spinnerClasses = "border-foreground";
+      break;
     case "transparent":
       switch (state) {
         case "rest":
