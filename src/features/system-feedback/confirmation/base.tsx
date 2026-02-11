@@ -11,8 +11,6 @@ type ConfirmationDialogProps = {
   type: ConfirmationDialogType;
   title: string;
   description: React.ReactNode;
-  open?: boolean;
-  onOpenChange?: (open: boolean) => void;
   onConfirm: () => boolean | Promise<boolean>;
   children: React.ReactNode;
   disabled?: boolean;
@@ -23,18 +21,15 @@ export default function ConfirmationDialog({
   type,
   title,
   description,
-  open: initialOpen = false,
-  onOpenChange,
   onConfirm,
   children: triggerElement,
   disabled = false,
   showIcon = false,
 }: ConfirmationDialogProps) {
-  const [open, setOpen] = useState(initialOpen);
+  const [open, setOpen] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
-    if (onOpenChange) onOpenChange(false);
     return true;
   };
 
@@ -42,7 +37,6 @@ export default function ConfirmationDialog({
     const success = await onConfirm();
     if (success) {
       setOpen(false);
-      if (onOpenChange) onOpenChange(false);
     }
     return success;
   };
@@ -71,13 +65,7 @@ export default function ConfirmationDialog({
   };
 
   return (
-    <Dialog.Root
-      open={open}
-      onOpenChange={(open) => {
-        setOpen(open);
-        if (onOpenChange) onOpenChange(open);
-      }}
-    >
+    <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger
         asChild
         disabled={disabled}
@@ -122,6 +110,7 @@ export default function ConfirmationDialog({
               buttonStyle={config.btnStyle}
               label="Confirm"
               onClick={handleConfirm}
+              loadOnSuccess
             />
           </div>
         </Dialog.Content>
