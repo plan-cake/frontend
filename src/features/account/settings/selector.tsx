@@ -64,12 +64,11 @@ function SettingsContent() {
   const [defaultNameError, setDefaultNameError] = useState("");
 
   // editing states
-  const isChangingDefaultName =
-    defaultName !== (accountDetails?.defaultName || "");
-  const isRemovingDefaultName = isChangingDefaultName && defaultName === "";
+  const [editedDefaultName, setEditedDefaultName] = useState(false);
+  const isRemovingDefaultName = editedDefaultName && defaultName === "";
 
   const applyDefaultName = async () => {
-    if (!isChangingDefaultName) return true;
+    if (!editedDefaultName) return true;
     setDefaultNameError("");
     if (defaultName) {
       const res = await fetch("/api/account/set-default-name/", {
@@ -81,6 +80,7 @@ function SettingsContent() {
       if (res.ok) {
         login({ ...accountDetails!, defaultName: defaultName });
         addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
+        setEditedDefaultName(false);
         return true;
       } else {
         setDefaultName(accountDetails?.defaultName || "");
@@ -98,6 +98,7 @@ function SettingsContent() {
         login({ ...accountDetails!, defaultName: "" });
         setDefaultName("");
         addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_REMOVED);
+        setEditedDefaultName(false);
         return true;
       } else {
         setDefaultName(accountDetails?.defaultName || "");
@@ -110,6 +111,7 @@ function SettingsContent() {
 
   const resetEdits = () => {
     setDefaultName(accountDetails?.defaultName || "");
+    setEditedDefaultName(false);
     return true;
   };
 
@@ -119,6 +121,7 @@ function SettingsContent() {
     } else {
       setDefaultNameError("");
       setDefaultName(value);
+      setEditedDefaultName(true);
     }
   };
 
@@ -170,7 +173,7 @@ function SettingsContent() {
             className={cn(
               "flex shrink-0 gap-2 overflow-hidden rounded-r-full",
               "transition-[width] duration-300 ease-in-out",
-              isChangingDefaultName ? "w-24" : "w-0",
+              editedDefaultName ? "w-24" : "w-0",
             )}
           >
             {/* This div is a placeholder to maintain spacing */}
