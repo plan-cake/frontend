@@ -132,7 +132,7 @@ export default function TextInputField(props: TextInputFieldProps) {
               className={cn(
                 borderClasses,
                 "transition-opacity duration-200 ease-in-out",
-                "peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0",
+                "peer-autofill:opacity-0 peer-focus:opacity-0 peer-[:not(:placeholder-shown)]:opacity-0",
               )}
             />
           </>
@@ -154,10 +154,11 @@ export default function TextInputField(props: TextInputFieldProps) {
 
             // State when floated (on focus or when value exists)
             "peer-focus:top-[-0.55rem] peer-focus:scale-75",
+            "peer-autofill:top-[-0.55rem] peer-autofill:scale-75",
             "peer-[:not(:placeholder-shown)]:top-[-0.55rem] peer-[:not(:placeholder-shown)]:scale-75",
             outlined
               ? ""
-              : "peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
+              : "peer-autofill:top-[-1rem] peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
 
             // colors
             error
