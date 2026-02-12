@@ -70,40 +70,46 @@ function SettingsContent() {
   const applyDefaultName = async () => {
     if (!editedDefaultName) return true;
     setDefaultNameError("");
-    if (defaultName) {
-      const res = await fetch("/api/account/set-default-name/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ display_name: defaultName }),
-      });
+    try {
+      if (defaultName) {
+        const res = await fetch("/api/account/set-default-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ display_name: defaultName }),
+        });
 
-      if (res.ok) {
-        login({ ...accountDetails!, defaultName: defaultName });
-        addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
-        setEditedDefaultName(false);
-        return true;
+        if (res.ok) {
+          login({ ...accountDetails!, defaultName: defaultName });
+          addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
+          setEditedDefaultName(false);
+          return true;
+        } else {
+          const errorData = await res.json();
+          addToast("error", formatApiError(errorData));
+          return false;
+        }
       } else {
-        const errorData = await res.json();
-        addToast("error", formatApiError(errorData));
-        return false;
-      }
-    } else {
-      const res = await fetch("/api/account/remove-default-name/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+        const res = await fetch("/api/account/remove-default-name/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        });
 
-      if (res.ok) {
-        login({ ...accountDetails!, defaultName: "" });
-        setDefaultName("");
-        addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_REMOVED);
-        setEditedDefaultName(false);
-        return true;
-      } else {
-        const errorData = await res.json();
-        addToast("error", formatApiError(errorData));
-        return false;
+        if (res.ok) {
+          login({ ...accountDetails!, defaultName: "" });
+          setDefaultName("");
+          addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_REMOVED);
+          setEditedDefaultName(false);
+          return true;
+        } else {
+          const errorData = await res.json();
+          addToast("error", formatApiError(errorData));
+          return false;
+        }
       }
+    } catch (e) {
+      console.error("Fetch error:", e);
+      addToast("error", MESSAGES.ERROR_GENERIC);
+      return false;
     }
   };
 
