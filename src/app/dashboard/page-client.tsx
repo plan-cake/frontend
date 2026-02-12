@@ -5,13 +5,12 @@ import { useState } from "react";
 import Link from "next/link";
 
 import HeaderSpacer from "@/components/header-spacer";
+import SegmentedControl from "@/components/segmented-control";
 import { useAccount } from "@/features/account/context";
 import EventGrid, {
   EventGridProps,
 } from "@/features/dashboard/components/event-grid";
 import { Banner } from "@/features/system-feedback";
-import useCheckMobile from "@/lib/hooks/use-check-mobile";
-import { cn } from "@/lib/utils/classname";
 
 type DashboardTab = "created" | "participated";
 
@@ -24,12 +23,18 @@ export default function ClientPage({
   created_events,
   participated_events,
 }: DashboardPageProps) {
-  const [tab, setTab] = useState<DashboardTab>("created");
-  const isMobile = useCheckMobile();
+  const [tab, setTab] = useState<DashboardTab>(
+    !created_events.length && participated_events.length
+      ? "participated"
+      : "created",
+  );
   const { loginState } = useAccount();
 
+  const currentTabEvents =
+    tab === "created" ? created_events : participated_events;
+
   return (
-    <div className="flex min-h-screen flex-col gap-4 pl-6 pr-6">
+    <div className="flex min-h-screen flex-col gap-4 px-6 pb-4">
       <HeaderSpacer />
       <h1 className="text-2xl font-bold">Dashboard</h1>
       {loginState === "logged_out" && (
@@ -46,59 +51,32 @@ export default function ClientPage({
           </div>
         </Banner>
       )}
-      <div className={cn("flex gap-4", isMobile && "flex-col")}>
-        <div className={cn("flex", !isMobile && "flex-col")}>
-          <DashboardTabButton
-            label="My Events"
-            value="created"
-            currentTab={tab}
-            isMobile={isMobile}
-            setTab={setTab}
-          />
-          <DashboardTabButton
-            label="Others' Events"
-            value="participated"
-            currentTab={tab}
-            isMobile={isMobile}
-            setTab={setTab}
+      <div className="bg-panel w-full rounded-3xl">
+        <div className="px-2 pt-2">
+          <SegmentedControl
+            value={tab}
+            onChange={setTab}
+            options={[
+              { label: "My Events", value: "created" },
+              { label: "Others' Events", value: "participated" },
+            ]}
           />
         </div>
-        <div className="bg-panel w-full rounded-3xl p-4">
-          <EventGrid
-            events={tab === "created" ? created_events : participated_events}
-          />
+        <div className="p-4 pt-2">
+          {currentTabEvents.length ? (
+            <EventGrid events={currentTabEvents} />
+          ) : (
+            <div className="flex flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
+              <div>
+                {tab === "created"
+                  ? "You haven't created any events yet."
+                  : "You haven't participated in any events yet."}
+              </div>
+              <div>{`When you do, it'll show up here for quick access!`}</div>
+            </div>
+          )}
         </div>
       </div>
     </div>
-  );
-}
-
-function DashboardTabButton({
-  label,
-  value,
-  currentTab,
-  isMobile,
-  setTab,
-}: {
-  label: string;
-  value: DashboardTab;
-  currentTab: DashboardTab;
-  isMobile: boolean;
-  setTab: (value: DashboardTab) => void;
-}) {
-  return (
-    <button
-      type="button"
-      className={cn(
-        "text-nowrap rounded-full px-4 py-2",
-        currentTab === value
-          ? "bg-accent text-white"
-          : "hover:bg-accent/25 cursor-pointer",
-        !isMobile && "w-full text-left",
-      )}
-      onClick={() => setTab(value)}
-    >
-      {label}
-    </button>
   );
 }
