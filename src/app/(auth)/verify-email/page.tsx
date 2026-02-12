@@ -30,9 +30,10 @@ export default function Page() {
         return;
       }
 
-      await fetch("/api/auth/verify-email/", {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify-email/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ verification_code: token }),
       })
         .then(async (res) => {

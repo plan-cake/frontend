@@ -25,7 +25,7 @@ async function fetchEventDetails(
   eventCode: string,
   cookieHeader?: string,
 ): Promise<EventDetailsResponse> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/event/get-details/?event_code=${eventCode}`,
     {

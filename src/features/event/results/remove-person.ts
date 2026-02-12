@@ -10,7 +10,7 @@ export async function removePerson(
   isCreator: boolean,
 ) {
   const authCookies = await getAuthCookieString();
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   const apiRoute = isCreator
     ? `${baseUrl}/availability/remove/`
