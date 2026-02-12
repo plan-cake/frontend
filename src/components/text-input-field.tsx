@@ -153,8 +153,8 @@ export default function TextInputField(props: TextInputFieldProps) {
             "peer-placeholder-shown:top-2.5 peer-placeholder-shown:scale-100",
 
             // State when floated (on focus or when value exists)
-            "peer-focus:top-[-0.65rem] peer-focus:scale-75",
-            "peer-[:not(:placeholder-shown)]:top-[-0.65rem] peer-[:not(:placeholder-shown)]:scale-75",
+            "peer-focus:top-[-0.55rem] peer-focus:scale-75",
+            "peer-[:not(:placeholder-shown)]:top-[-0.55rem] peer-[:not(:placeholder-shown)]:scale-75",
             outlined
               ? ""
               : "peer-focus:top-[-1rem] peer-[:not(:placeholder-shown)]:top-[-1rem]",
