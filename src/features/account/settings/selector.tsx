@@ -83,7 +83,6 @@ function SettingsContent() {
         setEditedDefaultName(false);
         return true;
       } else {
-        setDefaultName(accountDetails?.defaultName || "");
         const errorData = await res.json();
         addToast("error", formatApiError(errorData));
         return false;
@@ -101,7 +100,6 @@ function SettingsContent() {
         setEditedDefaultName(false);
         return true;
       } else {
-        setDefaultName(accountDetails?.defaultName || "");
         const errorData = await res.json();
         addToast("error", formatApiError(errorData));
         return false;
