@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "react-day-picker/style.css";
 @import "@poursha98/react-ios-time-picker/styles.css";
+
 @import "./tailwind.css";
 @import "./text.css";
 @import "./frosted-glass.css";
@@ -8,7 +9,6 @@
 @import "./centered-absolute.css";
 @import "./radix.css";
 @import "./scrollbar.css";
-
 
 /* GLOBAL STYLES */
 

@@ -5,7 +5,6 @@ import Header from "@/components/header/header";
 import { Providers } from "@/lib/providers";
 import "@/styles/globals.css";
 
-
 const modak = Modak({
   weight: "400",
   subsets: ["latin"],
