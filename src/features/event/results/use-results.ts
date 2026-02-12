@@ -9,13 +9,16 @@ import {
 import { ResultsAvailabilityMap } from "@/core/availability/types";
 import { AvailabilityDataResponse } from "@/features/event/availability/fetch-data";
 import { removePerson } from "@/features/event/results/remove-person";
+import { useToast } from "@/features/system-feedback/toast/context";
 
 export function useEventResults(
   initialData: AvailabilityDataResponse,
   eventCode: string,
   isCreator: boolean,
-  handleError: (field: string, message: string) => void,
+  userName: string | null,
 ) {
+  const { addToast } = useToast();
+
   /* STATES */
   const [selectedParticipants, setSelectedParticipants] = useState<string[]>(
     [],
@@ -58,6 +61,8 @@ export function useEventResults(
   };
 
   const handleRemoveParticipant = async (person: string) => {
+    const isRemovingSelf = userName === person;
+
     // Immediate UI update
     if (selectedParticipants.includes(person)) {
       setSelectedParticipants((prev) => prev.filter((p) => p !== person));
@@ -69,7 +74,20 @@ export function useEventResults(
     });
 
     // Server Action
-    return await removePerson(eventCode, person, isCreator, handleError);
+    const result = await removePerson(eventCode, person, isCreator);
+
+    if (!result.success) {
+      addToast("error", result.error || "Error removing participant");
+    } else {
+      addToast(
+        "success",
+        isRemovingSelf
+          ? "You have been removed from the event."
+          : `${person} has been removed from the event.`,
+      );
+    }
+
+    return result.success;
   };
 
   /* DERIVED LOGIC */

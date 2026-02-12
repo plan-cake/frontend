@@ -50,11 +50,15 @@ export default function Page() {
     }
 
     try {
-      const res = await fetch("/api/auth/resend-register-email/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/resend-register-email/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email }),
+        },
+      );
 
       if (res.ok) {
         addToast("success", MESSAGES.SUCCESS_EMAIL_SENT);

@@ -17,10 +17,14 @@ export default function AccountButton() {
       if (loginState === "logged_in") return;
 
       try {
-        const res = await fetch("/api/auth/check-account-auth/", {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/auth/check-account-auth/`,
+          {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          },
+        );
         if (res.ok) {
           const data = await res.json();
           login({
