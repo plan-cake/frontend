@@ -8,7 +8,6 @@ export async function removePerson(
   eventCode: string,
   person: string,
   isCreator: boolean,
-  handleError: (field: string, message: string) => void,
 ) {
   const authCookies = await getAuthCookieString();
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -32,17 +31,18 @@ export async function removePerson(
     });
 
     if (!response.ok) {
-      handleError("toast", response.statusText);
-      return false;
+      return {
+        success: false,
+        error: response.statusText,
+      };
     }
 
     // Revalidate the event page to reflect changes
     revalidatePath(`/${eventCode}`);
 
-    return true;
+    return { success: true };
   } catch (error) {
-    handleError("toast", "Error removing participant");
     console.error("Error removing participant:", error);
-    return false;
+    return { success: false, error: "Error removing participant" };
   }
 }
