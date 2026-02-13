@@ -89,40 +89,31 @@ export default function ClientPage({
     participated,
   );
 
-  /* BUTTONS */
-  const editButton = isCreator ? (
-    <LinkButton
-      buttonStyle="secondary"
-      icon={<Pencil1Icon />}
-      label="Edit Event"
-      shrinkOnMobile
-      href={`/${eventCode}/edit`}
-    />
-  ) : null;
-
-  const copyButton = <CopyToastButton code={eventCode} />;
-
-  const availabilityButton = (
-    <LinkButton
-      buttonStyle="primary"
-      icon={<Pencil2Icon />}
-      label={(participated ? "Edit" : "Add") + " Availability"}
-      href={`/${eventCode}/painting`}
-    />
-  );
-
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
-      <div className="flex w-full flex-wrap items-end justify-between gap-2">
-        <div className="flex items-center space-x-2">
+      <div className="md:flex md:justify-between">
+        <div className="flex items-center justify-between space-x-2">
           <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          {editButton}
-          {copyButton}
-          {availabilityButton}
+        <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
+          {isCreator && (
+            <LinkButton
+              buttonStyle="secondary"
+              icon={<Pencil1Icon />}
+              label="Edit Event"
+              shrinkOnMobile
+              href={`/${eventCode}/edit`}
+            />
+          )}
+          <CopyToastButton code={eventCode} />
+          <LinkButton
+            buttonStyle="primary"
+            icon={<Pencil2Icon />}
+            label={(participated ? "Edit" : "Add") + " Availability"}
+            href={`/${eventCode}/painting`}
+          />
         </div>
       </div>
 
