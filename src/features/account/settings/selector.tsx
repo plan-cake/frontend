@@ -1,11 +1,6 @@
 import { useState } from "react";
 
-import {
-  CheckIcon,
-  ExitIcon,
-  ResetIcon,
-  TrashIcon,
-} from "@radix-ui/react-icons";
+import { CheckIcon, ExitIcon } from "@radix-ui/react-icons";
 import { useRouter } from "next/navigation";
 
 import TextInputField from "@/components/text-input-field";
@@ -64,11 +59,11 @@ function SettingsContent() {
   const [defaultNameError, setDefaultNameError] = useState("");
 
   // editing states
-  const [editedDefaultName, setEditedDefaultName] = useState(false);
-  const isRemovingDefaultName = editedDefaultName && defaultName === "";
+  const isEditingDefaultName =
+    defaultName !== (accountDetails?.defaultName || "");
 
   const applyDefaultName = async () => {
-    if (!editedDefaultName) return true;
+    if (!isEditingDefaultName) return true;
     setDefaultNameError("");
     try {
       if (defaultName) {
@@ -85,7 +80,6 @@ function SettingsContent() {
         if (res.ok) {
           login({ ...accountDetails!, defaultName: defaultName });
           addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
-          setEditedDefaultName(false);
           return true;
         } else {
           const errorData = await res.json();
@@ -106,7 +100,6 @@ function SettingsContent() {
           login({ ...accountDetails!, defaultName: "" });
           setDefaultName("");
           addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_REMOVED);
-          setEditedDefaultName(false);
           return true;
         } else {
           const errorData = await res.json();
@@ -121,19 +114,12 @@ function SettingsContent() {
     }
   };
 
-  const resetEdits = () => {
-    setDefaultName(accountDetails?.defaultName || "");
-    setEditedDefaultName(false);
-    return true;
-  };
-
   const handleDefaultNameChange = (value: string) => {
     if (value.length > MAX_DEFAULT_NAME_LENGTH) {
       setDefaultNameError(MESSAGES.ERROR_DEFAULT_NAME_LENGTH);
     } else {
       setDefaultNameError("");
       setDefaultName(value);
-      setEditedDefaultName(true);
     }
   };
 
@@ -189,21 +175,15 @@ function SettingsContent() {
             className={cn(
               "flex shrink-0 gap-2 overflow-hidden rounded-r-full",
               "transition-[width] duration-300 ease-in-out",
-              editedDefaultName ? "w-24" : "w-0",
+              isEditingDefaultName ? "w-12" : "w-0",
             )}
           >
             {/* This div is a placeholder to maintain spacing */}
             <div />
             <ActionButton
-              type="button"
-              buttonStyle="secondary"
-              icon={<ResetIcon />}
-              onClick={() => resetEdits()}
-            />
-            <ActionButton
               type="submit"
-              buttonStyle={isRemovingDefaultName ? "danger" : "primary"}
-              icon={isRemovingDefaultName ? <TrashIcon /> : <CheckIcon />}
+              buttonStyle="primary"
+              icon={<CheckIcon />}
               onClick={async () => await applyDefaultName()}
             />
           </div>
