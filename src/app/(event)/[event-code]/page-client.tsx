@@ -94,7 +94,7 @@ export default function ClientPage({
       <HeaderSpacer />
       <div className="md:flex md:justify-between">
         <div className="flex items-center justify-between space-x-2">
-          <h1 className="text-2xl">{eventName}</h1>
+          <h1 className="whitespace-nowrap text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
         <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
