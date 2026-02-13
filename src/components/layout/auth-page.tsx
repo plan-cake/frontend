@@ -21,10 +21,13 @@ export default function AuthPageLayout({
   };
 
   return (
-    <div className="flex h-screen flex-col items-center justify-center gap-4">
-      <form onSubmit={stopRefresh} className="flex w-80 flex-col items-center">
+    <div className="flex h-screen flex-col items-center justify-center">
+      <form
+        onSubmit={stopRefresh}
+        className="flex w-80 flex-col items-center gap-4"
+      >
         {/* Title */}
-        <h1 className="font-display text-lion mb-4 block text-center text-5xl leading-none md:text-8xl">
+        <h1 className="font-display text-lion block text-center text-5xl leading-none md:text-8xl">
           {title}
         </h1>
 
@@ -37,7 +40,8 @@ export default function AuthPageLayout({
         ))}
 
         {/* Page-specific content (buttons, links, checkboxes, etc.) */}
-        {children}
+        {/* Given its own div to avoid gap affecting the content in unintended ways */}
+        <div className="w-full">{children}</div>
       </form>
     </div>
   );

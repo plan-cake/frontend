@@ -113,7 +113,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
       )}
 
       <div className="-mb-1 flex w-full items-center justify-between">
-        <div className="md:w-1/2">
+        <div className="mb-4 md:w-1/2">
           <TextInputField
             id={"event-name"}
             type="text"
@@ -121,7 +121,7 @@ function EventEditorContent({ type, initialData }: EventEditorProps) {
             value={title}
             onChange={setTitle}
             error={errors.title || errors.api}
-            classname="text-2xl font-semibold"
+            className="text-2xl font-semibold"
           />
         </div>
         <div className="hidden gap-2 md:flex">

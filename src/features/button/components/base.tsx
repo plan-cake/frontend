@@ -22,6 +22,7 @@ type Ref = HTMLButtonElement | HTMLAnchorElement;
 const BaseButton = forwardRef<Ref, BaseButtonProps>(
   (
     {
+      type,
       buttonStyle,
       icon,
       label,
@@ -114,7 +115,12 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
 
     if (disabled || isLoading) {
       return (
-        <button disabled ref={ref as React.Ref<HTMLButtonElement>} {...props}>
+        <button
+          disabled
+          type={type}
+          ref={ref as React.Ref<HTMLButtonElement>}
+          {...props}
+        >
           {buttonContent}
         </button>
       );
@@ -132,6 +138,7 @@ const BaseButton = forwardRef<Ref, BaseButtonProps>(
     } else {
       return (
         <button
+          type={type}
           ref={ref as React.Ref<HTMLButtonElement>}
           {...props}
           className={"group focus:outline-none"}
@@ -207,6 +214,22 @@ function getStyleClasses(
           break;
       }
       paddingShrink = 0.25;
+      spinnerClasses = "border-foreground";
+      break;
+    case "frosted glass inset":
+      switch (state) {
+        case "rest":
+          styleClasses = "frosted-glass-inset frosted-glass-inset-button";
+          break;
+        case "loading":
+          styleClasses =
+            "frosted-glass-inset frosted-glass-inset-button-loading";
+          break;
+        case "disabled":
+          styleClasses =
+            "frosted-glass-inset text-violet/40 dark:text-white/40";
+          break;
+      }
       spinnerClasses = "border-foreground";
       break;
     case "transparent":

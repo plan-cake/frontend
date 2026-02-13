@@ -1,6 +1,7 @@
+import { MAX_DEFAULT_NAME_LENGTH } from "@/features/account/settings/lib/constants";
 import {
-  MAX_TITLE_LENGTH,
   MAX_DURATION,
+  MAX_TITLE_LENGTH,
 } from "@/features/event/editor/validate-data";
 
 export const MESSAGES = {
@@ -28,11 +29,15 @@ export const MESSAGES = {
   ERROR_EVENT_RANGE_INVALID: "Please select a valid date/time range.",
   ERROR_EVENT_RANGE_TOO_LONG: `Too many days selected. Max is ${MAX_DURATION}.`,
 
+  // default name errors
+  ERROR_DEFAULT_NAME_LENGTH: `Max ${MAX_DEFAULT_NAME_LENGTH} characters.`,
+
   // success messages
   SUCCESS_EMAIL_SENT: "Email resent. Please check your inbox.",
   SUCCESS_PASSWORD_RESET: "Password has been reset successfully.",
   SUCCESS_LOGOUT: "You have been logged out.",
   SUCCESS_DEFAULT_NAME_SAVED: "Default name saved successfully.",
+  SUCCESS_DEFAULT_NAME_REMOVED: "Default name removed successfully.",
 
   // copy link messages
   COPY_LINK_SUCCESS: "Link copied to clipboard!",

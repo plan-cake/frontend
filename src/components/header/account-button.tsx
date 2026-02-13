@@ -1,20 +1,30 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { PersonIcon } from "@radix-ui/react-icons";
 
-import AccountDropdown from "@/components/header/account-dropdown";
 import { useAccount } from "@/features/account/context";
+import AccountSettings from "@/features/account/settings/selector";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 
 export default function AccountButton() {
   const { loginState, login, logout } = useAccount();
 
+  const [accountSettingsOpen, setAccountSettingsOpen] = useState(false);
+  const handleOpenChange = () => {
+    setAccountSettingsOpen((prev) => !prev);
+    return true;
+  };
+
+  // 1. Check Login Status
   useEffect(() => {
     const checkLogin = async () => {
       if (loginState === "logged_in") return;
+
+      // always close account settings when logging out
+      setAccountSettingsOpen(false);
 
       try {
         const res = await fetch(
@@ -33,6 +43,7 @@ export default function AccountButton() {
           });
         } else {
           logout();
+          setAccountSettingsOpen(false);
         }
       } catch (err) {
         console.error("Fetch error:", err);
@@ -44,22 +55,25 @@ export default function AccountButton() {
 
   if (loginState === "logged_in") {
     return (
-      <AccountDropdown>
+      <AccountSettings
+        open={accountSettingsOpen}
+        setOpenChange={setAccountSettingsOpen}
+      >
         <ActionButton
-          buttonStyle="frosted glass"
+          buttonStyle="frosted glass inset"
           icon={<PersonIcon />}
-          onClick={() => true}
+          onClick={handleOpenChange}
         />
-      </AccountDropdown>
-    );
-  } else {
-    return (
-      <LinkButton
-        buttonStyle="frosted glass"
-        label="Log In"
-        href="/login"
-        loading={loginState === "loading"}
-      />
+      </AccountSettings>
     );
   }
+
+  return (
+    <LinkButton
+      buttonStyle="frosted glass inset"
+      label="Log In"
+      href="/login"
+      loading={loginState === "loading"}
+    />
+  );
 }

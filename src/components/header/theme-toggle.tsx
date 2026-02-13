@@ -15,7 +15,7 @@ export default function FixedThemeToggle() {
 
   return (
     <ActionButton
-      buttonStyle="frosted glass"
+      buttonStyle="frosted glass inset"
       icon={resolvedTheme === "dark" ? <FiMoon /> : <FiSun />}
       onClick={toggleTheme}
     />
