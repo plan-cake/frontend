@@ -1,13 +1,16 @@
-import { ReactNode } from "react";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
 export type ButtonStyle =
   | "primary"
   | "secondary"
   | "frosted glass"
+  | "frosted glass inset"
   | "transparent"
   | "danger";
 
 export type BaseButtonProps = {
+  /** The HTML button type. Defaults to "button". */
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   /**
    * The style of the button. There are four styles:
    * - `primary`: An important button, filled with the main accent color.
@@ -82,6 +85,8 @@ export type BaseButtonProps = {
 };
 
 type CommonButtonProps = {
+  /** @inheritdoc BaseButtonProps */
+  type?: ButtonHTMLAttributes<HTMLButtonElement>["type"];
   /** @inheritdoc BaseButtonProps */
   buttonStyle: ButtonStyle;
   /** @inheritdoc BaseButtonProps */

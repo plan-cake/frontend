@@ -5,7 +5,7 @@ import LinkButton from "@/features/button/components/link";
 export default function DashboardButton() {
   return (
     <LinkButton
-      buttonStyle="frosted glass"
+      buttonStyle="frosted glass inset"
       icon={<DashboardIcon className="h-5 w-5" />}
       href="/dashboard"
     />

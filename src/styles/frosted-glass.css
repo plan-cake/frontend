@@ -1,106 +1,152 @@
 /* FROSTED GLASS */
 
+/* These are the default values, which only apply to the base frosted glass class */
+:root {
+  --glass-base: var(--color-background);
+  --glass-base-amt: 50%;
+  --glass-tint: var(--color-foreground);
+  --glass-tint-amt: 20%;
+
+  --glass-border-base: var(--color-background);
+  --glass-border-base-amt: 50%;
+  --glass-border-tint: var(--color-foreground);
+  --glass-border-tint-amt: 40%;
+}
+
+/* Defining the mix as a variable to avoid repeating it. Having all the classes in the
+   selector forces the variable to be recomputed on each class, so you can override the
+   value each time if desired. */
+.frosted-glass,
+.frosted-glass-inset,
+.frosted-glass-button,
+.frosted-glass-inset-button,
+.frosted-glass-button-loading,
+.frosted-glass-inset-button-loading {
+  --glass-bg-mix: color-mix(
+    in srgb,
+    var(--glass-tint) var(--glass-tint-amt),
+    color-mix(in srgb, var(--glass-base) var(--glass-base-amt), transparent)
+  );
+
+  --glass-border-mix: color-mix(
+    in srgb,
+    var(--glass-border-tint) var(--glass-border-tint-amt),
+    color-mix(
+      in srgb,
+      var(--glass-border-base) var(--glass-border-base-amt),
+      transparent
+    )
+  );
+
+  background-color: var(--glass-bg-mix);
+}
+
+/* oklab option for better color mixing */
+@supports (color: color-mix(in lab, red, red)) {
+  .frosted-glass,
+  .frosted-glass-inset,
+  .frosted-glass-button,
+  .frosted-glass-inset-button,
+  .frosted-glass-button-loading,
+  .frosted-glass-inset-button-loading {
+    --glass-bg-mix: color-mix(
+      in oklab,
+      var(--glass-tint) var(--glass-tint-amt),
+      color-mix(in oklab, var(--glass-base) var(--glass-base-amt), transparent)
+    );
+
+    --glass-border-mix: color-mix(
+      in oklab,
+      var(--glass-border-tint) var(--glass-border-tint-amt),
+      color-mix(
+        in oklab,
+        var(--glass-border-base) var(--glass-border-base-amt),
+        transparent
+      )
+    );
+  }
+}
+
 .frosted-glass {
   backdrop-filter: blur(var(--blur-sm));
-  /* copied from the generated tailwind css */
-  border-style: var(--tw-border-style);
-  border-width: 1px;
-  /* dark background */
-  background-color: color-mix(
-    in srgb,
-    var(--color-violet) 20%,
-    color-mix(in srgb, var(--color-background) 50%, transparent)
-  );
-  @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(
-      in oklab,
-      var(--color-violet) 20%,
-      color-mix(in srgb, var(--color-background) 50%, transparent)
-    );
-  }
-  /* dark border */
-  border-color: color-mix(
-    in srgb,
-    var(--color-violet) 40%,
-    color-mix(in srgb, var(--color-background) 50%, transparent)
-  );
-  @supports (color: color-mix(in lab, red, red)) {
-    border-color: color-mix(
-      in oklab,
-      var(--color-violet) 40%,
-      color-mix(in srgb, var(--color-background) 50%, transparent)
-    );
-  }
-  /* dark mode stuff */
-  &:where(.dark, .dark *) {
-    /* light background */
-    background-color: color-mix(
-      in srgb,
-      var(--color-white) 10%,
-      color-mix(in srgb, var(--color-background) 50%, transparent)
-    );
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(
-        in oklab,
-        var(--color-white) 10%,
-        color-mix(in srgb, var(--color-background) 50%, transparent)
-      );
-    }
-    /* light border */
-    border-color: color-mix(
-      in srgb,
-      var(--color-white) 20%,
-      color-mix(in srgb, var(--color-background) 50%, transparent)
-    );
-    @supports (color: color-mix(in lab, red, red)) {
-      border-color: color-mix(
-        in oklab,
-        var(--color-white) 20%,
-        color-mix(in srgb, var(--color-background) 50%, transparent)
-      );
-    }
-  }
-
-  /* shadow */
   box-shadow: var(--shadow-md);
-}
 
-.frosted-glass .frosted-glass {
-  /* copied from the generated tailwind css */
-  /* ALWAYS light background so it's not too dark against the parent glass */
-  background-color: color-mix(in srgb, var(--color-white) 10%, transparent);
-  @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-white) 10%, transparent);
+  border-width: 1px;
+  border-style: var(--tw-border-style);
+  border-color: var(--glass-border-mix);
+
+  &:where(.dark, .dark *) {
+    --glass-tint-amt: 10%;
+    --glass-border-tint-amt: 20%;
   }
-
-  /* no shadow on nested glass */
-  box-shadow: none;
 }
 
-.frosted-glass .frosted-glass-button {
+.frosted-glass-inset {
+  --glass-base-amt: 60%;
+  --glass-tint-amt: 0%;
+
+  &:where(.dark, .dark *) {
+    --glass-base-amt: 75%;
+  }
+}
+
+.frosted-glass-button {
   &:hover {
-    background-color: color-mix(in srgb, var(--color-white) 30%, transparent);
-    @supports (color: color-mix(in lab, red, red)) {
-      background-color: color-mix(
-        in oklab,
-        var(--color-white) 30%,
-        transparent
-      );
+    --glass-base-amt: 50%;
+    --glass-tint-amt: 10%;
+
+    &:where(.dark, .dark *) {
+      --glass-tint-amt: 20%;
     }
   }
 
   &:active {
-    background-color: transparent;
+    --glass-tint-amt: 30%;
+
+    &:where(.dark, .dark *) {
+      --glass-tint-amt: 5%;
+    }
   }
 }
 
-.frosted-glass .frosted-glass-button-loading {
-  background-color: color-mix(in srgb, var(--color-white) 30%, transparent);
-  @supports (color: color-mix(in lab, red, red)) {
-    background-color: color-mix(in oklab, var(--color-white) 30%, transparent);
+.frosted-glass-inset-button {
+  &:hover {
+    --glass-base-amt: 90%;
+    --glass-tint-amt: 0%;
+
+    &:where(.dark, .dark *) {
+      --glass-base-amt: 0%;
+      --glass-tint-amt: 20%;
+    }
   }
 
+  &:active {
+    --glass-tint-amt: 30%;
+
+    &:where(.dark, .dark *) {
+      --glass-base-amt: 100%;
+      --glass-tint-amt: 0%;
+    }
+  }
+}
+
+.frosted-glass-button-loading {
+  --glass-base-amt: 0%;
+  --glass-tint-amt: 40%;
+
   &:where(.dark, .dark *) {
-    background-color: transparent;
+    --glass-base-amt: 10%;
+    --glass-tint-amt: 0%;
+  }
+}
+
+.frosted-glass-inset-button-loading {
+  --glass-base-amt: 0%;
+  --glass-tint-amt: 30%;
+
+  &:where(.dark, .dark *) {
+    --glass-base-amt: 90%;
+    --glass-tint: #000000;
+    --glass-tint-amt: 10%;
   }
 }
