@@ -72,11 +72,15 @@ function SettingsContent() {
     setDefaultNameError("");
     try {
       if (defaultName) {
-        const res = await fetch("/api/account/set-default-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ display_name: defaultName }),
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/account/set-default-name/`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+            body: JSON.stringify({ display_name: defaultName }),
+          },
+        );
 
         if (res.ok) {
           login({ ...accountDetails!, defaultName: defaultName });
@@ -89,10 +93,14 @@ function SettingsContent() {
           return false;
         }
       } else {
-        const res = await fetch("/api/account/remove-default-name/", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-        });
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/account/remove-default-name/`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
+          },
+        );
 
         if (res.ok) {
           login({ ...accountDetails!, defaultName: "" });
@@ -134,10 +142,14 @@ function SettingsContent() {
 
   const signOut = async () => {
     try {
-      const res = await fetch("/api/auth/logout/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/auth/logout/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+        },
+      );
       if (res.ok) {
         logout();
         addToast("success", MESSAGES.SUCCESS_LOGOUT);
