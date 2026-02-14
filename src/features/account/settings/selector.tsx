@@ -162,7 +162,7 @@ function SettingsContent() {
         <form onSubmit={(e) => e.preventDefault()} className="flex">
           <TextInputField
             id="defaultName"
-            label="Default Name"
+            label="Nickname"
             value={defaultName}
             type="text"
             onChange={(newValue) => {

@@ -301,7 +301,7 @@ export default function ClientPage({
             {loginState === "logged_in" && !accountDetails!.defaultName && (
               <div className="text-foreground/75">
                 <Checkbox
-                  label="Save as default name"
+                  label="Save as nickname for autofill"
                   checked={saveDefaultName}
                   onChange={(checked) => setSaveDefaultName(checked)}
                 ></Checkbox>
