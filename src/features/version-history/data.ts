@@ -61,6 +61,25 @@ export function getVersionHistoryData(): VersionHistoryData {
         },
       ],
     },
+    {
+      version: "v0.3",
+      releaseDate: { year: 2026, month: 1, day: 14 },
+      changes: [
+        "Added event participant previews to the dashboard",
+        "Added a nickname to accounts for autofill when filling out availability",
+        "Added the ability to filter attendees on the results page",
+        "Added custom scrollbars",
+        "Re-added weekday events with fixes to data handling",
+        "Updated the dashboard layout, adding placeholder text and smarter tab logic",
+      ],
+      bugFixes: [
+        "Fixed an issue where the user could attempt to log in while already logged in",
+        "Fixed the display of version release dates",
+        "Fixed the event title text wrapping on the results page",
+        "Fixed the error messages on internal server errors",
+      ],
+      minorVersions: [],
+    },
   ];
 }
 
