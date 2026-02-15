@@ -2,6 +2,7 @@ import { EventRange } from "@/core/event/types";
 import { EventEditorType } from "@/features/event/editor/types";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export type EventSubmitData = {
   title: string;
@@ -26,14 +27,14 @@ export default async function submitEvent(
   onSuccess: (code: string) => void,
   handleError: (field: string, message: string) => void,
 ): Promise<boolean> {
-  let apiRoute = "";
+  let apiRoute = `${process.env.NEXT_PUBLIC_API_URL}/event`;
 
   if (eventType === "specific") {
-    apiRoute =
-      type === "new" ? "/api/event/date-create/" : "/api/event/date-edit/";
+    apiRoute +=
+      type === "new" ? "/date-create/" : "/date-edit/";
   } else {
-    apiRoute =
-      type === "new" ? "/api/event/week-create/" : "/api/event/week-edit/";
+    apiRoute +=
+      type === "new" ? "/week-create/" : "/week-edit/";
   }
 
   if (data.timeslots.length === 0) {
@@ -44,7 +45,9 @@ export default async function submitEvent(
   const jsonBody: EventSubmitJsonBody = {
     title: data.title,
     time_zone: data.eventRange.timezone,
-    timeslots: data.timeslots.map((d) => d.toISOString()),
+    timeslots: data.timeslots.map((d) =>
+      timeslotToISOString(d, data.eventRange.timezone, eventType),
+    ),
   };
 
   // only include duration if set
@@ -62,6 +65,7 @@ export default async function submitEvent(
     const res = await fetch(apiRoute, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(jsonBody),
     });
     if (res.ok) {

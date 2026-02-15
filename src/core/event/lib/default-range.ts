@@ -20,6 +20,6 @@ export const DEFAULT_RANGE_WEEKDAY: WeekdayRange = {
   type: "weekday" as const,
   duration: 0,
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  weekdays: { Sun: 0, Mon: 1, Tue: 1, Wed: 1, Thu: 0, Fri: 0, Sat: 0 },
+  weekdays: ["Mon", "Tue", "Wed"],
   timeRange: defaultTimeRange,
 };

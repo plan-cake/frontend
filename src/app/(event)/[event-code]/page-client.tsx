@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useOptimistic, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import { Pencil1Icon, Pencil2Icon } from "@radix-ui/react-icons";
 
@@ -14,7 +14,7 @@ import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import AttendeesPanel from "@/features/event/results/attendees-panel";
 import { getResultBanners } from "@/features/event/results/banners";
-import { useFormErrors } from "@/lib/hooks/use-form-errors";
+import { useEventResults } from "@/features/event/results/use-results";
 import { cn } from "@/lib/utils/classname";
 
 export default function ClientPage({
@@ -37,28 +37,7 @@ export default function ClientPage({
     initialAvailabilityData.user_display_name != null;
   const userName = initialAvailabilityData.user_display_name || "";
 
-  /* PARTICIPANT STATES */
-  const participants = initialAvailabilityData.participants || [];
-  const [optimisticParticipants, removeOptimisticParticipant] = useOptimistic(
-    participants,
-    (state, personToRemove: string) =>
-      state.filter((p) => p !== personToRemove),
-  );
-
-  const availabilities = initialAvailabilityData.availability || {};
-  const [optimisticAvailabilities, updateOptimisticAvailabilities] =
-    useOptimistic(availabilities, (state, person: string) => {
-      const updatedState = { ...state };
-      for (const slot in updatedState) {
-        updatedState[slot] = updatedState[slot].filter((p) => p !== person);
-      }
-      return updatedState;
-    });
-
-  /* HOVER HANDLING */
-  const [hoveredSlot, setHoveredSlot] = useState<string | null>(null);
-
-  /* TIMEZONE HANDLING */
+  /* FORM ERROR & TIMEZONE HANDLING */
   const [timezone, setTimezone] = useState(
     Intl.DateTimeFormat().resolvedOptions().timeZone,
   );
@@ -67,8 +46,20 @@ export default function ClientPage({
     setTimezone(newTZ.toString());
   };
 
-  /* ERROR HANDLING */
-  const { handleError } = useFormErrors();
+  /* LOGIC HOOK */
+  const {
+    participants,
+    availabilities,
+    filteredAvailabilities,
+    gridNumParticipants,
+    hoveredSlot,
+    selectedParticipants,
+    clearSelectedParticipants,
+    setHoveredSlot,
+    setHoveredParticipant,
+    toggleParticipant,
+    handleRemoveParticipant,
+  } = useEventResults(initialAvailabilityData, eventCode, isCreator, userName);
 
   /* SIDEBAR SPACING HANDLING */
   const DEFAULT_SPACER_HEIGHT = 200;
@@ -91,8 +82,8 @@ export default function ClientPage({
 
   /* BANNERS */
   const banners = getResultBanners(
-    optimisticAvailabilities,
-    optimisticParticipants,
+    availabilities,
+    participants,
     timeslots,
     eventRange.type === "weekday",
     participated,
@@ -101,12 +92,12 @@ export default function ClientPage({
   return (
     <div className="flex flex-col space-y-4 pl-6 pr-6">
       <HeaderSpacer />
-      <div className="md:flex md:justify-between">
-        <div className="flex items-center justify-between space-x-2">
+      <div className="flex flex-col justify-between gap-2 md:flex-row">
+        <div className="flex flex-1 justify-between">
           <h1 className="text-2xl">{eventName}</h1>
           <EventInfoDrawer eventRange={eventRange} timezone={timezone} />
         </div>
-        <div className="mt-2 flex w-full flex-wrap-reverse items-end justify-end gap-2 md:mt-0 md:flex-row md:items-center">
+        <div className="flex flex-wrap items-start justify-end gap-2">
           {isCreator && (
             <LinkButton
               buttonStyle="secondary"
@@ -135,8 +126,8 @@ export default function ClientPage({
           timezone={timezone}
           hoveredSlot={hoveredSlot}
           setHoveredSlot={setHoveredSlot}
-          availabilities={optimisticAvailabilities}
-          numParticipants={optimisticParticipants.length}
+          availabilities={filteredAvailabilities}
+          numParticipants={gridNumParticipants}
           timeslots={timeslots}
         />
 
@@ -157,14 +148,15 @@ export default function ClientPage({
 
           <AttendeesPanel
             hoveredSlot={hoveredSlot}
-            participants={optimisticParticipants}
-            availabilities={optimisticAvailabilities}
+            participants={participants}
+            availabilities={availabilities}
+            selectedParticipants={selectedParticipants}
+            clearSelectedParticipants={clearSelectedParticipants}
+            onParticipantToggle={toggleParticipant}
+            setHoveredParticipant={setHoveredParticipant}
             isCreator={isCreator}
             currentUser={userName}
-            eventCode={eventCode}
-            removeOptimisticParticipant={removeOptimisticParticipant}
-            updateOptimisticAvailabilities={updateOptimisticAvailabilities}
-            handleError={handleError}
+            onRemoveParticipant={handleRemoveParticipant}
           />
 
           <div className="bg-panel hidden rounded-3xl p-6 md:block">

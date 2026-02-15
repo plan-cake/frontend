@@ -9,6 +9,7 @@ export type DashboardEventResponse = {
   event_type: "Date" | "Week";
   start_date?: string;
   end_date?: string;
+  participants: string[];
   event_code: string;
 };
 
@@ -20,7 +21,7 @@ export type DashboardResponse = {
 export async function fetchDashboard(
   cookieHeader: string,
 ): Promise<DashboardResponse> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(`${baseUrl}/dashboard/get`, {
     method: "GET",
     headers: {

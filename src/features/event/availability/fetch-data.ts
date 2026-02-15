@@ -10,7 +10,7 @@ export async function fetchAvailabilityData(
   eventCode: string,
   cookieHeader: string,
 ): Promise<AvailabilityDataResponse> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-all/?event_code=${eventCode}`,
     {
@@ -40,7 +40,7 @@ export async function fetchSelfAvailability(
   eventCode: string,
   cookieHeader: string,
 ): Promise<SelfAvailabilityResponse | null> {
-  const baseUrl = process.env.API_URL;
+  const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const res = await fetch(
     `${baseUrl}/availability/get-self/?event_code=${eventCode}`,
     {
@@ -57,6 +57,9 @@ export async function fetchSelfAvailability(
     // 400 error is expected if the user has not submitted availability yet
     if (res.status !== 400) {
       handleErrorResponse(res.status, await res.json());
+    } else {
+      // Return no data since the user hasn't participated
+      return null;
     }
   }
 

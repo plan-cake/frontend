@@ -1,14 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
+import { parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 
+import Checkbox from "@/components/checkbox";
 import HeaderSpacer from "@/components/header-spacer";
 import MobileFooterTray from "@/components/mobile-footer-tray";
 import { useAvailability } from "@/core/availability/use-availability";
 import { EventRange } from "@/core/event/types";
+import { useAccount } from "@/features/account/context";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
 import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
@@ -19,6 +22,7 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
   eventCode,
@@ -36,8 +40,10 @@ export default function ClientPage({
   const router = useRouter();
 
   // AVAILABILITY STATE
-  const { state, setDisplayName, setTimeZone, toggleSlot } =
-    useAvailability(initialData);
+  const { state, setDisplayName, setTimeZone, toggleSlot } = useAvailability(
+    initialData,
+    eventRange.type,
+  );
   const { displayName, timeZone, userAvailability } = state;
 
   // TOASTS AND ERROR STATES
@@ -79,14 +85,18 @@ export default function ClientPage({
     }
 
     try {
-      const response = await fetch("/api/availability/check-display-name/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          event_code: eventCode,
-          display_name: displayName,
-        }),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/availability/check-display-name/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({
+            event_code: eventCode,
+            display_name: displayName,
+          }),
+        },
+      );
 
       if (!response.ok) {
         setErrors((prev) => ({
@@ -102,6 +112,29 @@ export default function ClientPage({
     }
   }, 300);
 
+  // DEFAULT NAME SETTING
+  const [saveDefaultName, setSaveDefaultName] = useState(false);
+
+  // DEFAULT NAME APPLICATION
+  // This also accounts for the situation where a user directly opens the painting page
+  // instead of coming from the results page.
+  const { loginState, accountDetails, login } = useAccount();
+  // If editing, don't try to autofill the name
+  const nameInitialized = useRef(!!initialData);
+  useEffect(() => {
+    if (nameInitialized.current) return;
+    if (loginState !== "logged_in") return;
+    if (!accountDetails || !accountDetails.defaultName) return;
+
+    const newName = accountDetails.defaultName;
+    setDisplayName(newName);
+    handleNameChange(newName);
+    addToast("success", MESSAGES.INFO_NAME_AUTOFILLED, {
+      title: "NAME AUTOFILLED",
+    });
+    nameInitialized.current = true;
+  }, [loginState, accountDetails, setDisplayName, addToast, handleNameChange]);
+
   // SUBMIT AVAILABILITY
   const handleSubmitAvailability = async () => {
     setErrors({}); // reset errors
@@ -116,18 +149,58 @@ export default function ClientPage({
         return false;
       }
 
+      // Save the default name if checkbox checked
+      if (saveDefaultName) {
+        let defaultNameSaved = false;
+        if (accountDetails) {
+          const response = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/account/set-default-name/`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({ display_name: displayName }),
+            },
+          );
+          if (response.ok) {
+            defaultNameSaved = true;
+          }
+        }
+        if (defaultNameSaved) {
+          // Update account context
+          login({
+            ...accountDetails!,
+            defaultName: displayName,
+          });
+          addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
+        } else {
+          console.error("Failed to save default name");
+          addToast("error", MESSAGES.ERROR_GENERIC);
+          return false;
+        }
+      }
+
+      const payload_availability = Array.from(userAvailability).map((iso) => {
+        const date = parseISO(iso);
+        return timeslotToISOString(date, timeZone, eventRange.type);
+      });
+
       const payload = {
         event_code: eventCode,
         display_name: displayName,
-        availability: Array.from(userAvailability),
+        availability: payload_availability,
         time_zone: timeZone,
       };
 
-      const response = await fetch("/api/availability/add/", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/availability/add/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify(payload),
+        },
+      );
 
       if (response.ok) {
         router.push(`/${eventCode}`);
@@ -185,8 +258,10 @@ export default function ClientPage({
 
       {/* Header and Button Row */}
       <div className="flex w-full flex-wrap justify-between md:flex-row">
-        <h1 className="text-2xl">{eventName}</h1>
-        <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
+        <div className="flex flex-1 justify-between">
+          <h1 className="text-2xl">{eventName}</h1>
+          <EventInfoDrawer eventRange={eventRange} timezone={timeZone} />
+        </div>
         <div className="hidden items-center gap-2 md:flex">
           {cancelButton}
           {submitButton}
@@ -197,30 +272,41 @@ export default function ClientPage({
       <div className="mb-12 flex h-fit flex-col gap-4 md:mb-0 md:flex-row">
         {/* Left Panel */}
         <div className="md:top-25 h-fit w-full shrink-0 space-y-4 overflow-y-auto md:sticky md:w-80">
-          <div className="w-fit">
-            <p
-              className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
-            >
-              {errors.displayName ? errors.displayName : "Error Placeholder"}
-            </p>
-            Hi,{" "}
-            <input
-              required
-              type="text"
-              value={displayName}
-              onChange={(e) => {
-                setDisplayName(e.target.value);
-                handleNameChange(e.target.value);
-              }}
-              placeholder="add your name"
-              className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
-                errors.displayName
-                  ? "border-error placeholder:text-error"
-                  : "border-gray-400"
-              }`}
-            />
-            <br />
-            add your availabilities here
+          <div className="space-y-2">
+            <div className="w-fit">
+              <p
+                className={`text-error text-right text-xs ${errors.displayName ? "visible" : "invisible"}`}
+              >
+                {errors.displayName ? errors.displayName : "Error Placeholder"}
+              </p>
+              Hi,{" "}
+              <input
+                required
+                type="text"
+                value={displayName}
+                onChange={(e) => {
+                  setDisplayName(e.target.value);
+                  handleNameChange(e.target.value);
+                }}
+                placeholder="add your name"
+                className={`inline-block w-auto border-b bg-transparent px-1 focus:outline-none ${
+                  errors.displayName
+                    ? "border-error placeholder:text-error"
+                    : "border-gray-400"
+                }`}
+              />
+              <br />
+              add your availabilities here
+            </div>
+            {loginState === "logged_in" && !accountDetails!.defaultName && (
+              <div className="text-foreground/75">
+                <Checkbox
+                  label="Save as nickname for autofill"
+                  checked={saveDefaultName}
+                  onChange={(checked) => setSaveDefaultName(checked)}
+                ></Checkbox>
+              </div>
+            )}
           </div>
 
           {/* Desktop-only Event Info */}

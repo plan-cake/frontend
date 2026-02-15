@@ -18,7 +18,10 @@ function processSingleEvent(
     endTime: eventData.end_time,
     startDate: eventData.start_date!,
     endDate: eventData.end_date!,
+    participants: eventData.participants,
+    timezone: eventData.time_zone,
   };
+
   return data;
 }
 

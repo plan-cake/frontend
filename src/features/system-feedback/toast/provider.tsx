@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import * as Toast from "@radix-ui/react-toast";
 
@@ -18,6 +18,32 @@ export default function ToastProvider({
 }) {
   const [toasts, setToasts] = useState<ToastData[]>([]);
   const [isHoveringViewport, setIsHoveringViewport] = useState(false);
+
+  // handles a keyboard height adjustment to ensure toasts are not covered
+  // by the keyboard on mobile devices
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  useEffect(() => {
+    if (!window.visualViewport) return;
+
+    const handleResize = () => {
+      const viewport = window.visualViewport;
+
+      if (!viewport) {
+        setKeyboardHeight(0);
+        return;
+      }
+
+      const offset = window.innerHeight - viewport.height;
+
+      setKeyboardHeight(offset);
+    };
+
+    window.visualViewport?.addEventListener("resize", handleResize);
+    handleResize();
+    return () => {
+      window.visualViewport?.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const addToast = useCallback(
     (type: ToastType, message: string, options?: ToastOptions) => {
@@ -82,8 +108,14 @@ export default function ToastProvider({
         <Toast.Viewport
           onMouseEnter={() => setIsHoveringViewport(true)}
           onMouseLeave={() => setIsHoveringViewport(false)}
+          style={{
+            // adjust the position of the toast viewport based on keyboard height
+            transform: `translateY(-${keyboardHeight}px)`,
+            transition: "transform 0.2s ease-out",
+          }}
           className={cn(
             "fixed bottom-12 right-0 z-[2147483647] md:bottom-0",
+            keyboardHeight > 0 && "bottom-0",
             "flex list-none flex-col items-end outline-none",
             "m-0 space-y-1 pb-[var(--viewport-padding)] pr-[var(--viewport-padding)] [--viewport-padding:_25px]",
           )}
