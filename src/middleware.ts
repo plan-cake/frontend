@@ -17,6 +17,9 @@ export function middleware(request: NextRequest) {
         // The valid Domain cookie (.example.com) will remain untouched because the browser
         // sees them as different scopes.
 
+        // This logic can only be removed AFTER February 15, 2027 (one year from now) just
+        // to be safe, since long session cookies have a 1 year lifetime
+
         cookieNames.forEach((name) => {
             response.headers.append(
                 "Set-Cookie",
