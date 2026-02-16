@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.functions import Lower
 
 
 class DateTimeNoTZField(models.DateTimeField):
@@ -117,7 +118,8 @@ class EventParticipant(models.Model):
                 fields=["user_event", "user_account"], name="unique_event_participant"
             ),
             models.UniqueConstraint(
-                fields=["user_event", "display_name"],
+                "user_event",
+                Lower("display_name"),
                 name="unique_display_name_per_event",
             ),
         ]
