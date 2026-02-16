@@ -1,20 +1,14 @@
 from datetime import datetime, timedelta
 
-from celery import shared_task
-from django.db.models import Q
-
-from api.models import (
-    PasswordResetToken,
-    UnverifiedUserAccount,
-    UserAccount,
-    UserSession,
-)
+from api.models import PasswordResetToken, UnverifiedUserAccount, UserSession
 from api.settings import (
     EMAIL_CODE_EXP_SECONDS,
     LONG_SESS_EXP_SECONDS,
     PWD_RESET_EXP_SECONDS,
     SESS_EXP_SECONDS,
 )
+from celery import shared_task
+from django.db.models import Q
 
 
 def session_cleanup():
@@ -34,13 +28,6 @@ def session_cleanup():
             & Q(last_used__lt=datetime.now() - timedelta(seconds=SESS_EXP_SECONDS))
         )
     ).delete()
-
-
-def guest_cleanup():
-    """
-    Removes guest users that no longer have any sessions.
-    """
-    UserAccount.objects.filter(is_guest=True, session_tokens__isnull=True).delete()
 
 
 def unverified_user_cleanup():
@@ -68,6 +55,5 @@ def daily_duties():
     - Cleaning up expired data in the database.
     """
     session_cleanup()
-    guest_cleanup()
     unverified_user_cleanup()
     password_reset_token_cleanup()
