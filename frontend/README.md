@@ -62,14 +62,7 @@ Replace all values in the file with the relevant information.
 
 ### Installation Steps
 
-1. **Clone the repository**
-
-   ```bash
-   https://github.com/plan-cake/frontend.git
-   cd frontend
-   ```
-
-2. **Install dependencies**
+1. **Install dependencies**
 
    ```bash
    npm install
@@ -81,7 +74,7 @@ Replace all values in the file with the relevant information.
    - Radix UI components
    - TypeScript and type definitions
 
-3. **Run the development server**
+2. **Run the development server**
 
    ```bash
    npm run dev
@@ -89,7 +82,7 @@ Replace all values in the file with the relevant information.
 
    The application will start on `http://localhost:3000` using Turbopack for fast refresh.
 
-4. **Open your browser**
+3. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000) to see the application.
 
 ### Available Scripts
