@@ -1,5 +1,8 @@
 from datetime import datetime, timedelta
 
+from celery import shared_task
+from django.db.models import Q
+
 from api.models import PasswordResetToken, UnverifiedUserAccount, UserSession
 from api.settings import (
     EMAIL_CODE_EXP_SECONDS,
@@ -7,8 +10,6 @@ from api.settings import (
     PWD_RESET_EXP_SECONDS,
     SESS_EXP_SECONDS,
 )
-from celery import shared_task
-from django.db.models import Q
 
 
 def session_cleanup():
