@@ -44,6 +44,7 @@ class UserSession(models.Model):
         UserAccount, on_delete=models.CASCADE, related_name="session_tokens"
     )
     is_extended = models.BooleanField(default=False)
+    created_at = DateTimeNoTZField(auto_now_add=True)
     last_used = DateTimeNoTZField(auto_now=True)
 
     class Meta:
@@ -95,6 +96,7 @@ class UrlCode(models.Model):
     user_event = models.OneToOneField(
         UserEvent, on_delete=models.CASCADE, related_name="url_code"
     )
+    created_at = DateTimeNoTZField(auto_now_add=True)
     last_used = DateTimeNoTZField(auto_now=True)
 
 
