@@ -150,3 +150,10 @@ def js_weekday(weekday: int) -> int:
     Converts a Python weekday (0 = Monday) to a JavaScript weekday (0 = Sunday).
     """
     return (weekday + 1) % 7
+
+
+def touch_url_code(url_code: str):
+    """
+    Updates the last_used timestamp for a URL code.
+    """
+    UrlCode.objects.filter(url_code=url_code).update(last_used=datetime.now())
