@@ -113,11 +113,14 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       }
     };
 
+    // hover handelers for range preview
     const handleDayMouseEnter: DayEventHandler<React.MouseEvent> = (day) => {
+      if (isMobile) return;
       setHoverDate(day);
     };
 
     const handleDayMouseLeave: DayEventHandler<React.MouseEvent> = () => {
+      if (isMobile) return;
       setHoverDate(undefined);
     };
 
