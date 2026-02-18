@@ -102,13 +102,15 @@ export function Calendar({
     range_preview: (date: Date) => {
       if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
 
-      // don't highlight days before the start date
-      if (isBefore(hoverDate, localRange.from)) return false;
-
-      return (
+      const canSelectForward =
         (isAfter(date, localRange.from) || isSameDay(date, localRange.from)) &&
-        (isBefore(date, hoverDate) || isSameDay(date, hoverDate))
-      );
+        (isBefore(date, hoverDate) || isSameDay(date, hoverDate));
+
+      const canSelectBackward =
+        (isBefore(date, localRange.from) || isSameDay(date, localRange.from)) &&
+        (isAfter(date, hoverDate) || isSameDay(date, hoverDate));
+
+      return canSelectForward || canSelectBackward;
     },
   };
 
