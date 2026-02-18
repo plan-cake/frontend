@@ -1,6 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { isBefore, isAfter, isSameDay } from "date-fns";
@@ -22,125 +28,152 @@ type CalendarProps = {
   dateRangeError?: string;
 };
 
-export function Calendar({
-  earliestDate,
-  className,
-  selectedRange,
-  setDateRange,
-  dateRangeError,
-}: CalendarProps) {
-  const defaultClassNames = getDefaultClassNames();
+export type CalendarHandle = {
+  scrollToSelected: () => void;
+};
 
-  const isMobile = useCheckMobile();
-  const numberOfMonths = isMobile ? 6 : 2;
-  const hideNavigation = isMobile ? true : false;
+export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
+  function Calendar(
+    { earliestDate, className, selectedRange, setDateRange, dateRangeError },
+    ref,
+  ) {
+    const defaultClassNames = getDefaultClassNames();
 
-  const today = new Date();
+    const isMobile = useCheckMobile();
+    const numberOfMonths = isMobile ? 6 : 2;
+    const hideNavigation = isMobile ? true : false;
 
-  const startDate =
-    earliestDate && earliestDate < today
-      ? new Date(
-          earliestDate.getUTCFullYear(),
-          earliestDate.getUTCMonth(),
-          earliestDate.getUTCDate(),
-        )
-      : today;
+    const today = new Date();
 
-  const [month, setMonth] = useState(startDate);
-  const [localRange, setLocalRange] = useState<DateRange | undefined>(
-    selectedRange,
-  );
-  const [hoverDate, setHoverDate] = useState<Date | undefined>(undefined);
+    const startDate =
+      earliestDate && earliestDate < today
+        ? new Date(
+            earliestDate.getUTCFullYear(),
+            earliestDate.getUTCMonth(),
+            earliestDate.getUTCDate(),
+          )
+        : today;
 
-  useEffect(() => {
-    setLocalRange(selectedRange);
-  }, [selectedRange]);
+    const [month, setMonth] = useState(startDate);
+    const [localRange, setLocalRange] = useState<DateRange | undefined>(
+      selectedRange,
+    );
+    const [hoverDate, setHoverDate] = useState<Date | undefined>(undefined);
 
-  // This handles the range selecting logic for the calendar. If the user clicks a day
-  // and there is already a range selected, it starts a new range. Otherwise, it
-  // continues the current range.
-  const handleSelect = (range: DateRange | undefined, selectedDay: Date) => {
-    // full range already exists, so start a new range with the clicked day as the start
-    if (localRange?.from && localRange?.to) {
-      const newRange = { from: selectedDay, to: undefined };
-      setLocalRange(newRange);
-      return;
-    }
+    // instead of giving the parent the full DOM of this component, we give it the
+    // helper function. the parent will recieve this function when it attaches a ref
+    // to this component, and can call it to scroll the calendar to the selected date.
+    const containerRef = useRef<HTMLDivElement>(null);
+    useImperativeHandle(ref, () => ({
+      scrollToSelected: () => {
+        if (!containerRef.current || !selectedRange.from) return;
 
-    // only start date exists, and user clicks the same day again, so make it a
-    // single-day range
-    if (
-      localRange?.from &&
-      !localRange?.to &&
-      isSameDay(localRange.from, selectedDay)
-    ) {
-      const newRange = { from: selectedDay, to: selectedDay };
-      setLocalRange(newRange);
-      setDateRange(newRange);
-      return;
-    }
+        const selectedEl = containerRef.current.querySelector(
+          '[aria-selected="true"], .rdp-day_selected',
+        );
 
-    // update local range to reflect the selection and update state
-    setLocalRange(range);
-    if (range?.from && range?.to) {
-      setDateRange(range);
-    }
-  };
+        if (selectedEl) {
+          selectedEl.scrollIntoView({ behavior: "auto", block: "center" });
+        }
+      },
+    }));
 
-  const handleDayMouseEnter: DayEventHandler<React.MouseEvent> = (day) => {
-    setHoverDate(day);
-  };
+    useEffect(() => {
+      setLocalRange(selectedRange);
+    }, [selectedRange]);
 
-  const handleDayMouseLeave: DayEventHandler<React.MouseEvent> = () => {
-    setHoverDate(undefined);
-  };
+    // handles the range selecting logic for the calendar. If the user clicks a day
+    // and there is already a range selected, it starts a new range. Otherwise, it
+    // continues the current range.
+    const handleSelect = (range: DateRange | undefined, selectedDay: Date) => {
+      // full range already exists, so start a new range with the clicked day as the start
+      if (localRange?.from && localRange?.to) {
+        const newRange = { from: selectedDay, to: undefined };
+        setLocalRange(newRange);
+        return;
+      }
 
-  const isSelectingEnd = localRange?.from && !localRange?.to && hoverDate;
+      // only start date exists, and user clicks the same day again, so make it a
+      // single-day range
+      if (
+        localRange?.from &&
+        !localRange?.to &&
+        isSameDay(localRange.from, selectedDay)
+      ) {
+        const newRange = { from: selectedDay, to: selectedDay };
+        setLocalRange(newRange);
+        setDateRange(newRange);
+        return;
+      }
 
-  const previewModifier = {
-    range_preview: (date: Date) => {
-      if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
+      // update local range to reflect the selection and update state
+      setLocalRange(range);
+      if (range?.from && range?.to) {
+        setDateRange(range);
+      }
+    };
 
-      const canSelectForward =
-        (isAfter(date, localRange.from) || isSameDay(date, localRange.from)) &&
-        (isBefore(date, hoverDate) || isSameDay(date, hoverDate));
+    const handleDayMouseEnter: DayEventHandler<React.MouseEvent> = (day) => {
+      setHoverDate(day);
+    };
 
-      const canSelectBackward =
-        (isBefore(date, localRange.from) || isSameDay(date, localRange.from)) &&
-        (isAfter(date, hoverDate) || isSameDay(date, hoverDate));
+    const handleDayMouseLeave: DayEventHandler<React.MouseEvent> = () => {
+      setHoverDate(undefined);
+    };
 
-      return canSelectForward || canSelectBackward;
-    },
-  };
+    // modifiers are used to apply custom styles to groups of days:
+    // "range_preview" applies to days that are in between the start date and the
+    // currently hovered date, but only when the user is in the process of selecting
+    // an end date
+    const isSelectingEnd = localRange?.from && !localRange?.to && hoverDate;
+    const previewModifier = {
+      range_preview: (date: Date) => {
+        if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
 
-  return (
-    <div className={cn("flex flex-col gap-4", className)}>
-      <DayPicker
-        mode="range"
-        numberOfMonths={numberOfMonths}
-        animate
-        hideNavigation={hideNavigation}
-        month={month}
-        onMonthChange={setMonth}
-        selected={localRange}
-        onSelect={handleSelect}
-        disabled={{ before: startDate }}
-        onDayMouseEnter={handleDayMouseEnter}
-        onDayMouseLeave={handleDayMouseLeave}
-        modifiers={previewModifier}
-        modifiersClassNames={{
-          range_preview: "rdp-range_preview",
-        }}
-        classNames={{
-          root: `${defaultClassNames.root} flex justify-center items-center`,
-        }}
-      />
-      {!isMobile && dateRangeError && (
-        <div className="text-error flex items-center justify-center gap-1 font-bold">
-          <ExclamationTriangleIcon />
-          {dateRangeError}
-        </div>
-      )}
-    </div>
-  );
-}
+        const canSelectForward =
+          (isAfter(date, localRange.from) ||
+            isSameDay(date, localRange.from)) &&
+          (isBefore(date, hoverDate) || isSameDay(date, hoverDate));
+
+        const canSelectBackward =
+          (isBefore(date, localRange.from) ||
+            isSameDay(date, localRange.from)) &&
+          (isAfter(date, hoverDate) || isSameDay(date, hoverDate));
+
+        return canSelectForward || canSelectBackward;
+      },
+    };
+
+    return (
+      <div ref={containerRef} className={cn("flex flex-col gap-4", className)}>
+        <DayPicker
+          mode="range"
+          numberOfMonths={numberOfMonths}
+          animate
+          hideNavigation={hideNavigation}
+          month={month}
+          onMonthChange={setMonth}
+          selected={localRange}
+          onSelect={handleSelect}
+          disabled={{ before: startDate }}
+          onDayMouseEnter={handleDayMouseEnter}
+          onDayMouseLeave={handleDayMouseLeave}
+          // modifiers + styles
+          modifiers={previewModifier}
+          modifiersClassNames={{
+            range_preview: "rdp-range_preview",
+          }}
+          classNames={{
+            root: `${defaultClassNames.root} flex justify-center items-center`,
+          }}
+        />
+        {!isMobile && dateRangeError && (
+          <div className="text-error flex items-center justify-center gap-1 font-bold">
+            <ExclamationTriangleIcon />
+            {dateRangeError}
+          </div>
+        )}
+      </div>
+    );
+  },
+);

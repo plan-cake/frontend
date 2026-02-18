@@ -1,13 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 import * as Dialog from "@radix-ui/react-dialog";
 import { ExclamationTriangleIcon, Cross1Icon } from "@radix-ui/react-icons";
 
 import { useEventContext } from "@/core/event/context";
 import ActionButton from "@/features/button/components/action";
-import { Calendar } from "@/features/event/editor/date-range/calendars/month";
+import {
+  Calendar,
+  CalendarHandle,
+} from "@/features/event/editor/date-range/calendars/month";
 import { SpecificDateRangeDisplayProps } from "@/features/event/editor/date-range/date-range-props";
 import SpecificDateRangeDisplay from "@/features/event/editor/date-range/specific-date-display";
 
@@ -19,11 +22,23 @@ export default function DateRangeDrawer({
   const { errors, setDateRange } = useEventContext();
 
   const [open, setOpen] = useState(false);
+  const calendarRef = useRef<CalendarHandle>(null);
 
   const handleClose = () => {
     setOpen(false);
     return true;
   };
+
+  // Scroll to the selected date when the drawer opens
+  useEffect(() => {
+    if (open) {
+      // Small timeout to wait for the Dialog animation/rendering to settle
+      const timer = setTimeout(() => {
+        calendarRef.current?.scrollToSelected();
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [open]);
 
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
@@ -74,6 +89,7 @@ export default function DateRangeDrawer({
             </div>
 
             <Calendar
+              ref={calendarRef}
               earliestDate={earliestDate}
               className="w-fit"
               selectedRange={{
