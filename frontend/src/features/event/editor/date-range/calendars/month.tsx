@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
 import { DateRange, DayPicker, getDefaultClassNames } from "react-day-picker";
@@ -41,15 +41,33 @@ export function Calendar({
       : today;
 
   const [month, setMonth] = useState(startDate);
+  const [localRange, setLocalRange] = useState<DateRange | undefined>(
+    selectedRange,
+  );
+
+  useEffect(() => {
+    setLocalRange(selectedRange);
+  }, [selectedRange]);
+
+  // This handles the range selecting logic for the calendar. If the user clicks a day
+  // and there is already a range selected, it starts a new range. Otherwise, it
+  // continues the current range.
+  const handleSelect = (range: DateRange | undefined, selectedDay: Date) => {
+    let newRange = range;
+
+    if (localRange?.from && localRange?.to) {
+      newRange = { from: selectedDay, to: undefined };
+    }
+
+    setLocalRange(newRange);
+
+    if (newRange?.from && newRange?.to) {
+      setDateRange(newRange);
+    }
+  };
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      {/* <button
-        onClick={() => setMonth(today)}
-        className="border-1 border-red rounded-full px-6 py-1 hover:bg-red-300 dark:hover:bg-red-900"
-      >
-        Today
-      </button> */}
       <DayPicker
         mode="range"
         numberOfMonths={numberOfMonths}
@@ -57,8 +75,8 @@ export function Calendar({
         hideNavigation={hideNavigation}
         month={month}
         onMonthChange={setMonth}
-        selected={selectedRange}
-        onSelect={setDateRange}
+        selected={localRange}
+        onSelect={handleSelect}
         disabled={{ before: startDate }}
         classNames={{
           root: `${defaultClassNames.root} flex justify-center items-center`,
