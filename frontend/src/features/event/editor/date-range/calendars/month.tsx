@@ -83,7 +83,6 @@ export function Calendar({
     // update local range to reflect the selection and update state
     setLocalRange(range);
     if (range?.from && range?.to) {
-      console.log("Setting date range:", range);
       setDateRange(range);
     }
   };
