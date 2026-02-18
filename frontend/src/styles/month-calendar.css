@@ -21,13 +21,8 @@
   border-radius: 100% !important;
 }
 
-.rdp-day:hover.rdp-range_preview {
-  border: none !important;
-  background-color: transparent !important;
-}
-
 /* hover rules only apply on non-touch devices so to ensure this, we
-   wrap it intisde this query */
+   wrap it inside this query */
 @media (hover: hover) {
   .rdp-day:hover > button {
     border: 1px solid var(--color-accent) !important;
@@ -38,6 +33,11 @@
   .rdp-button_next:hover {
     background-color: var(--calendar-accent-background) !important;
     border-radius: 100% !important;
+  }
+
+  .rdp-day:hover.rdp-range_preview {
+    border: none !important;
+    background-color: transparent !important;
   }
 
   .rdp-day:hover.rdp-range_preview > button {

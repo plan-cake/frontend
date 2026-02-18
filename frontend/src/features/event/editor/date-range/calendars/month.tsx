@@ -56,32 +56,21 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       return now;
     }, [earliestDate]);
 
-    const [month, setMonth] = useState(startDate);
+    const [month, setMonth] = useState(() => {
+      // Check media query immediately during initialization
+      const isMobileView =
+        typeof window !== "undefined" &&
+        window.matchMedia("(max-width: 767px)").matches;
+      return isMobileView ? startDate : selectedRange.from || startDate;
+    });
     const [localRange, setLocalRange] = useState<DateRange | undefined>(
       selectedRange,
     );
     const [hoverDate, setHoverDate] = useState<Date | undefined>(undefined);
 
-    useEffect(() => {
-      /**
-       * Uses a custom media query instead of the useCheckMobile hook because
-       * this effect should run immediately on mount before rendering anything.
-       * If we used a hook, there would be a render cycle where the wrong month
-       * is shown.
-       *
-       * There are no dependencies for this effect because it should only be run
-       * once on mount.
-       */
-      const isMobileView = window.matchMedia("(max-width: 767px)").matches;
-      const targetMonth = isMobileView
-        ? startDate
-        : selectedRange.from || startDate;
-      setMonth((prev) => (isSameDay(prev, targetMonth) ? prev : targetMonth));
-    }, []);
-
     /**
      * Instead of giving the parent the full DOM of this component, we give it the
-     * helper function. the parent will recieve this function when it attaches a ref
+     * helper function. the parent will receive this function when it attaches a ref
      * to this component, and can call it to scroll the calendar to the selected date.
      */
     const containerRef = useRef<HTMLDivElement>(null);
