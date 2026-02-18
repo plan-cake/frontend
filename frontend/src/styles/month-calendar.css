@@ -11,6 +11,11 @@
   justify-content: center;
 }
 
+.rdp-day:hover > button {
+  border: 1px solid var(--color-accent) !important;
+  border-radius: 100% !important;
+}
+
 /* preview range */
 .rdp-range_preview {
   background-color: var(--calendar-accent-background) !important;
@@ -18,8 +23,6 @@
 }
 
 .rdp-day:hover.rdp-range_preview > button {
-  border: 1px solid var(--color-accent) !important;
-  border-radius: 100% !important;
   background-color: var(--calendar-accent-background) !important;
 }
 
