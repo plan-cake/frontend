@@ -10,3 +10,20 @@
   display: flex;
   justify-content: center;
 }
+
+/* preview range */
+.rdp-range_preview {
+  background-color: var(--calendar-accent-background) !important;
+  border-radius: 100% !important;
+}
+
+.rdp-day:hover.rdp-range_preview > button {
+  border: 1px solid var(--color-accent) !important;
+  border-radius: 100% !important;
+  background-color: var(--calendar-accent-background) !important;
+}
+
+.rdp-day:hover.rdp-range_preview {
+  border: none !important;
+  background-color: transparent !important;
+}
