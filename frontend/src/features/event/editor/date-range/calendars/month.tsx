@@ -6,6 +6,7 @@ import {
   useRef,
   useImperativeHandle,
   forwardRef,
+  useMemo,
 } from "react";
 
 import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
@@ -43,16 +44,17 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
     const numberOfMonths = isMobile ? 6 : 2;
     const hideNavigation = isMobile ? true : false;
 
-    const today = new Date();
-
-    const startDate =
-      earliestDate && earliestDate < today
-        ? new Date(
-            earliestDate.getUTCFullYear(),
-            earliestDate.getUTCMonth(),
-            earliestDate.getUTCDate(),
-          )
-        : today;
+    const startDate = useMemo(() => {
+      const now = new Date();
+      if (earliestDate && earliestDate < now) {
+        return new Date(
+          earliestDate.getUTCFullYear(),
+          earliestDate.getUTCMonth(),
+          earliestDate.getUTCDate(),
+        );
+      }
+      return now;
+    }, [earliestDate]);
 
     const [month, setMonth] = useState(startDate);
     const [localRange, setLocalRange] = useState<DateRange | undefined>(
@@ -60,9 +62,28 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
     );
     const [hoverDate, setHoverDate] = useState<Date | undefined>(undefined);
 
-    // instead of giving the parent the full DOM of this component, we give it the
-    // helper function. the parent will recieve this function when it attaches a ref
-    // to this component, and can call it to scroll the calendar to the selected date.
+    useEffect(() => {
+      /**
+       * Uses a custom media query instead of the useCheckMobile hook because
+       * this effect should run immediately on mount before rendering anything.
+       * If we used a hook, there would be a render cycle where the wrong month
+       * is shown.
+       *
+       * There are no dependencies for this effect because it should only be run
+       * once on mount.
+       */
+      const isMobileView = window.matchMedia("(max-width: 767px)").matches;
+      const targetMonth = isMobileView
+        ? startDate
+        : selectedRange.from || startDate;
+      setMonth((prev) => (isSameDay(prev, targetMonth) ? prev : targetMonth));
+    }, []);
+
+    /**
+     * Instead of giving the parent the full DOM of this component, we give it the
+     * helper function. the parent will recieve this function when it attaches a ref
+     * to this component, and can call it to scroll the calendar to the selected date.
+     */
     const containerRef = useRef<HTMLDivElement>(null);
     useImperativeHandle(ref, () => ({
       scrollToSelected: () => {
@@ -82,19 +103,20 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       setLocalRange(selectedRange);
     }, [selectedRange]);
 
-    // handles the range selecting logic for the calendar. If the user clicks a day
-    // and there is already a range selected, it starts a new range. Otherwise, it
-    // continues the current range.
+    /**
+     * Handles the range selecting logic for the calendar.
+     * If the user clicks a day and there is already a range selected, it starts a new
+     * range. Otherwise, it continues the current range.
+     */
     const handleSelect = (range: DateRange | undefined, selectedDay: Date) => {
-      // full range already exists, so start a new range with the clicked day as the start
+      // full range already exists, start new range
       if (localRange?.from && localRange?.to) {
         const newRange = { from: selectedDay, to: undefined };
         setLocalRange(newRange);
         return;
       }
 
-      // only start date exists, and user clicks the same day again, so make it a
-      // single-day range
+      // only start date exists, same day is clicked, create single day range
       if (
         localRange?.from &&
         !localRange?.to &&
@@ -113,7 +135,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       }
     };
 
-    // hover handelers for range preview
+    /* RANGE PREVIEW HOVER HANDLERS */
     const handleDayMouseEnter: DayEventHandler<React.MouseEvent> = (day) => {
       if (isMobile) return;
       setHoverDate(day);
