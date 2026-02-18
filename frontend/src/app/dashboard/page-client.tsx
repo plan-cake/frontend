@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { startTransition, useOptimistic, useRef, useState } from "react";
 
 import Link from "next/link";
 
@@ -9,7 +9,13 @@ import SegmentedControl from "@/components/segmented-control";
 import { useAccount } from "@/features/account/context";
 import { DashboardEventProps } from "@/features/dashboard/components/event";
 import EventGrid from "@/features/dashboard/components/event-grid";
-import { Banner, ConfirmationDialog } from "@/features/system-feedback";
+import { deleteEvent } from "@/features/dashboard/delete-event";
+import {
+  Banner,
+  ConfirmationDialog,
+  useToast,
+} from "@/features/system-feedback";
+import { MESSAGES } from "@/lib/messages";
 
 type DashboardTab = "created" | "participated";
 
@@ -22,9 +28,16 @@ export default function ClientPage({
   created_events,
   participated_events,
 }: DashboardPageProps) {
-  const [createdEvents, setCreatedEvents] = useState(created_events);
-  const [participatedEvents, setParticipatedEvents] =
-    useState(participated_events);
+  const [optimisticCreatedEvents, deleteOptimisticCreatedEvent] = useOptimistic(
+    created_events,
+    (state, eventToDelete: string) => {
+      return state.filter((e) => e.code !== eventToDelete);
+    },
+  );
+  const [optimisticParticipatedEvents, deleteOptimisticParticipatedEvent] =
+    useOptimistic(participated_events, (state, eventToDelete: string) => {
+      return state.filter((e) => e.code !== eventToDelete);
+    });
   const [tab, setTab] = useState<DashboardTab>(
     !created_events.length && participated_events.length
       ? "participated"
@@ -33,38 +46,34 @@ export default function ClientPage({
 
   const [confirmationOpen, setConfirmationOpen] = useState(false);
   const eventToDelete = useRef<string | null>(null);
+  const { addToast } = useToast();
 
   const { loginState } = useAccount();
 
   const currentTabEvents =
-    tab === "created" ? createdEvents : participatedEvents;
+    tab === "created" ? optimisticCreatedEvents : optimisticParticipatedEvents;
 
-  const deleteEvent = (eventCode: string) => {
+  const handleDeleteEvent = async (eventCode: string) => {
     // Immediate UI update
-    if (tab === "created") {
-      setCreatedEvents(createdEvents.filter((e) => e.code !== eventCode));
-    } else {
-      setParticipatedEvents(
-        participatedEvents.filter((e) => e.code !== eventCode),
-      );
-    }
+    startTransition(() => {
+      if (tab === "created") {
+        deleteOptimisticCreatedEvent(eventCode);
+      } else {
+        deleteOptimisticParticipatedEvent(eventCode);
+      }
+    });
 
-    // API call
-    try {
-      fetch(`${process.env.NEXT_PUBLIC_API_URL}/event/delete/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ event_code: eventCode }),
-      });
-    } catch (e) {
-      console.error("Error deleting event:", e);
+    // Server Action
+    const result = await deleteEvent(eventCode);
+
+    if (!result.success) {
+      addToast("error", result.error || MESSAGES.ERROR_GENERIC);
+    } else {
+      addToast("success", MESSAGES.SUCCESS_EVENT_DELETE);
     }
   };
 
-  const handleDeleteEvent = (eventCode: string) => {
+  const onDeleteEvent = (eventCode: string) => {
     eventToDelete.current = eventCode;
     setConfirmationOpen(true);
   };
@@ -102,7 +111,7 @@ export default function ClientPage({
           {currentTabEvents.length ? (
             <EventGrid
               events={currentTabEvents}
-              onDeleteEvent={handleDeleteEvent}
+              onDeleteEvent={onDeleteEvent}
             />
           ) : (
             <div className="flex flex-col items-center justify-center gap-4 p-4 text-center italic opacity-75">
@@ -124,7 +133,7 @@ export default function ClientPage({
         open={confirmationOpen}
         onOpenChange={setConfirmationOpen}
         onConfirm={() => {
-          deleteEvent(eventToDelete.current!);
+          handleDeleteEvent(eventToDelete.current!);
           return true;
         }}
       />
