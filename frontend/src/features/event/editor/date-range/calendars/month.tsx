@@ -60,16 +60,31 @@ export function Calendar({
   // and there is already a range selected, it starts a new range. Otherwise, it
   // continues the current range.
   const handleSelect = (range: DateRange | undefined, selectedDay: Date) => {
-    let newRange = range;
-
+    // full range already exists, so start a new range with the clicked day as the start
     if (localRange?.from && localRange?.to) {
-      newRange = { from: selectedDay, to: undefined };
+      const newRange = { from: selectedDay, to: undefined };
+      setLocalRange(newRange);
+      return;
     }
 
-    setLocalRange(newRange);
-
-    if (newRange?.from && newRange?.to) {
+    // only start date exists, and user clicks the same day again, so make it a
+    // single-day range
+    if (
+      localRange?.from &&
+      !localRange?.to &&
+      isSameDay(localRange.from, selectedDay)
+    ) {
+      const newRange = { from: selectedDay, to: selectedDay };
+      setLocalRange(newRange);
       setDateRange(newRange);
+      return;
+    }
+
+    // update local range to reflect the selection and update state
+    setLocalRange(range);
+    if (range?.from && range?.to) {
+      console.log("Setting date range:", range);
+      setDateRange(range);
     }
   };
 
