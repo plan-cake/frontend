@@ -133,6 +133,7 @@ export default function ClientPage({
         open={confirmationOpen}
         onOpenChange={setConfirmationOpen}
         onConfirm={() => {
+          if (!eventToDelete.current) return false;
           handleDeleteEvent(eventToDelete.current!);
           return true;
         }}
