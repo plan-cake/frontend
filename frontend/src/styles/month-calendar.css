@@ -11,11 +11,6 @@
   justify-content: center;
 }
 
-.rdp-today > button {
-  border: 1px solid var(--calendar-accent) !important;
-  border-radius: 100% !important;
-}
-
 .rdp-day:hover > button {
   border: 1px solid var(--color-accent) !important;
   border-radius: 100% !important;
