@@ -124,12 +124,20 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
       setHoverDate(undefined);
     };
 
-    // modifiers are used to apply custom styles to groups of days:
-    // "range_preview" applies to days that are in between the start date and the
-    // currently hovered date, but only when the user is in the process of selecting
-    // an end date
+    /**
+     * MODIFIERS
+     * modifiers are used to apply custom styles to groups of days:
+     *  - "before_start" applies to days that are before the selected start date. There
+     *    should be no range preview styles and hover styles on these days.
+     *  - "range_preview" applies to days that are in between the start date and the
+     *    currently hovered date, but only when the user is in the process of selecting
+     *    an end date.
+     */
     const isSelectingEnd = localRange?.from && !localRange?.to && hoverDate;
-    const previewModifier = {
+    const modifiers = {
+      before_start: (date: Date) => {
+        return isBefore(date, startDate);
+      },
       range_preview: (date: Date) => {
         if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
 
@@ -162,9 +170,10 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
           onDayMouseEnter={handleDayMouseEnter}
           onDayMouseLeave={handleDayMouseLeave}
           // modifiers + styles
-          modifiers={previewModifier}
+          modifiers={modifiers}
           modifiersClassNames={{
             range_preview: "rdp-range_preview",
+            before_start: "rdp-before_start",
           }}
           classNames={{
             root: `${defaultClassNames.root} flex justify-center items-center`,

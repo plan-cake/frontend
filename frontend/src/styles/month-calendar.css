@@ -43,4 +43,8 @@
   .rdp-day:hover.rdp-range_preview > button {
     background-color: var(--calendar-accent-background) !important;
   }
+
+  .rdp-day:hover.rdp-before_start > button {
+    border: none !important;
+  }
 }
