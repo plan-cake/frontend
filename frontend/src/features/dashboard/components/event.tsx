@@ -95,7 +95,11 @@ export default function DashboardEvent({
           <DashboardCopyButton code={code} />
           {myEvent && (
             <>
-              <button className="cursor-pointer" onClick={navigateToEdit}>
+              <button
+                className="cursor-pointer"
+                onClick={navigateToEdit}
+                aria-label="Edit Event"
+              >
                 <div
                   className={
                     "border-foreground hover:bg-foreground/25 w-fit rounded-full border p-1.5"
@@ -104,7 +108,11 @@ export default function DashboardEvent({
                   <Pencil1Icon className="h-4 w-4" />
                 </div>
               </button>
-              <button className="cursor-pointer" onClick={handleDelete}>
+              <button
+                className="cursor-pointer"
+                onClick={handleDelete}
+                aria-label="Delete Event"
+              >
                 <div
                   className={
                     "border-foreground hover:bg-foreground/25 w-fit rounded-full border p-1.5"
