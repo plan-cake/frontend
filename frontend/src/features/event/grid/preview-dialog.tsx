@@ -75,6 +75,7 @@ export default function GridPreviewDialog({
           <p className="">Grid Preview</p>
           {isOpen ? (
             <button
+              aria-label="Close Preview"
               onClick={() => closeDialog()}
               className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 cursor-pointer rounded-full p-2"
             >
@@ -82,6 +83,7 @@ export default function GridPreviewDialog({
             </button>
           ) : (
             <button
+              aria-label="Open Preview"
               onClick={() => setIsOpen(!isOpen)}
               className="hover:text-accent hover:bg-accent/25 active:bg-accent/40 cursor-pointer rounded-full p-2"
             >
