@@ -109,6 +109,7 @@ export default function AttendeesPanel({
                 "transition-opacity duration-200",
                 !hasSelection && "pointer-events-none opacity-0",
               )}
+              aria-label="Clear Selection"
             />
 
             {isCreator && (
@@ -120,6 +121,9 @@ export default function AttendeesPanel({
                   clearSelectedParticipants();
                   return true;
                 }}
+                aria-label={
+                  isRemoving ? "Stop Removing" : "Remove Participants"
+                }
               />
             )}
 
@@ -131,6 +135,7 @@ export default function AttendeesPanel({
                   promptRemove(currentUser);
                   return true;
                 }}
+                aria-label="Remove Self from Event"
               />
             )}
           </div>

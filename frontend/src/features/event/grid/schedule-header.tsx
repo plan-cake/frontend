@@ -64,6 +64,7 @@ export default function ScheduleHeader({
               return true;
             }}
             className="ml-3 p-1.5"
+            aria-label="Previous Page"
           />
         </div>
       ) : (
@@ -117,6 +118,7 @@ export default function ScheduleHeader({
               return true;
             }}
             className="p-1.5"
+            aria-label="Next Page"
           />
         </div>
       ) : (
