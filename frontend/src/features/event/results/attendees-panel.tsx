@@ -8,11 +8,10 @@ import {
 } from "@radix-ui/react-icons";
 
 import { ResultsAvailabilityMap } from "@/core/availability/types";
+import ActionButton from "@/features/button/components/action";
 import ParticipantChip from "@/features/event/results/participant-chip";
 import { ConfirmationDialog } from "@/features/system-feedback";
 import { cn } from "@/lib/utils/classname";
-import ActionButton from "@/features/button/components/action";
-import { clear } from "console";
 
 type AttendeesPanelProps = {
   // Data
