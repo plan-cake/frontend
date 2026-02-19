@@ -5,6 +5,7 @@ export type ButtonStyle =
   | "secondary"
   | "frosted glass"
   | "frosted glass inset"
+  | "semi-transparent"
   | "transparent"
   | "danger";
 
@@ -15,6 +16,7 @@ export type BaseButtonProps = {
    * The style of the button. There are four styles:
    * - `primary`: An important button, filled with the main accent color.
    * - `secondary`: A less important button, outlined with the main accent color.
+   * - `semi-transparent`: A button with a semi-transparent background.
    * - `frosted glass`: A button with a frosted glass appearance, used only in the header.
    * - `transparent`: A button with no background until hovered.
    *
