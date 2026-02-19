@@ -146,8 +146,9 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
      */
     const isSelectingEnd = localRange?.from && !localRange?.to && hoverDate;
     const modifiers = {
-      before_start: (date: Date) => {
-        return isBefore(date, startDate);
+      range_preview_start: (date: Date) => {
+        if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
+        return isSameDay(date, localRange.from);
       },
       range_preview: (date: Date) => {
         if (!isSelectingEnd || !localRange?.from || !hoverDate) return false;
@@ -184,7 +185,7 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
           modifiers={modifiers}
           modifiersClassNames={{
             range_preview: "rdp-range_preview",
-            before_start: "rdp-before_start",
+            range_preview_start: "rdp-range_preview_start",
           }}
           classNames={{
             root: `${defaultClassNames.root} flex justify-center items-center`,
