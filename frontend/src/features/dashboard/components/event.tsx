@@ -8,6 +8,7 @@ import DashboardCopyButton from "@/features/dashboard/components/copy-button";
 import DateRangeRow from "@/features/dashboard/components/date-range-row";
 import ParticipantRow from "@/features/dashboard/components/participant-row";
 import WeekdayRow from "@/features/dashboard/components/weekday-row";
+import { cn } from "@/lib/utils/classname";
 import {
   formatTimeRange,
   getTimezoneDetails,
@@ -114,9 +115,10 @@ export default function DashboardEvent({
                 aria-label="Delete Event"
               >
                 <div
-                  className={
-                    "border-foreground hover:bg-foreground/25 w-fit rounded-full border p-1.5"
-                  }
+                  className={cn(
+                    "border-foreground w-fit rounded-full border p-1.5",
+                    "hover:bg-error/25 hover:text-error hover:border-error",
+                  )}
                 >
                   <TrashIcon className="h-4 w-4" />
                 </div>
