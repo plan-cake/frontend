@@ -53,13 +53,13 @@ export default function DateRangeDrawer({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-40 bg-gray-700/40" />
         <Dialog.Content
-          className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50 flex h-[500px] w-full flex-col"
+          className="animate-slideUp data-[state=closed]:animate-slideDown fixed bottom-0 left-0 right-0 z-50"
           aria-label="Date range picker"
         >
-          <div className="rounded-t-4xl bg-background flex flex-1 flex-col overflow-y-auto shadow-lg">
+          <div className="rounded-t-4xl bg-background flex h-[500px] flex-col shadow-lg">
             <div
               onPointerDown={handleClose}
-              className="bg-background sticky top-0 z-10 flex items-center gap-4 p-8 pb-4"
+              className="flex items-center gap-4 p-8 pb-4"
             >
               <ActionButton
                 buttonStyle="frosted glass"
@@ -87,18 +87,19 @@ export default function DateRangeDrawer({
                 Select a date range using the calendar below
               </Dialog.Description>
             </div>
-
-            <Calendar
-              ref={calendarRef}
-              earliestDate={earliestDate}
-              className="w-fit"
-              selectedRange={{
-                from: startDate || undefined,
-                to: endDate || undefined,
-              }}
-              setDateRange={setDateRange}
-              dateRangeError={errors.dateRange}
-            />
+            <div className="flex overflow-y-auto">
+              <Calendar
+                ref={calendarRef}
+                earliestDate={earliestDate}
+                className="w-fit"
+                selectedRange={{
+                  from: startDate || undefined,
+                  to: endDate || undefined,
+                }}
+                setDateRange={setDateRange}
+                dateRangeError={errors.dateRange}
+              />
+            </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>

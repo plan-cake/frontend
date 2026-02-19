@@ -79,11 +79,16 @@ export const Calendar = forwardRef<CalendarHandle, CalendarProps>(
         if (!containerRef.current || !selectedRange.from) return;
 
         const selectedEl = containerRef.current.querySelector(
-          '[aria-selected="true"], .rdp-day_selected',
+          ".rdp-selected:not(.rdp-outside)",
         );
 
         if (selectedEl) {
-          selectedEl.scrollIntoView({ behavior: "auto", block: "center" });
+          const monthEl = selectedEl.closest(".rdp-month");
+          if (monthEl) {
+            monthEl.scrollIntoView({ behavior: "auto", block: "start" });
+          } else {
+            selectedEl.scrollIntoView({ behavior: "auto", block: "center" });
+          }
         }
       },
     }));
