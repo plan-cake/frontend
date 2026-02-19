@@ -84,6 +84,10 @@ export type BaseButtonProps = {
    * `onClick`.
    */
   loadOnSuccess?: boolean;
+  /**
+   * Additional className to apply to the button, for further customization.
+   */
+  className?: string;
 };
 
 type CommonButtonProps = {
@@ -101,6 +105,8 @@ type CommonButtonProps = {
   loading?: boolean;
   /** @inheritdoc BaseButtonProps */
   disabled?: boolean;
+  /** @inheritdoc BaseButtonProps */
+  className?: string;
 };
 
 export type ActionButtonProps = CommonButtonProps & {
