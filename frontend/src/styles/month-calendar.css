@@ -41,10 +41,6 @@
   border-radius: 100%;
   z-index: -1; /* place behind the date text */
 
-  transition:
-    background-color 0.2s,
-    border-color 0.2s;
-
   background-color: transparent;
   border: 1px solid transparent;
 }
