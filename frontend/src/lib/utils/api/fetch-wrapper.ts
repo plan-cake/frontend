@@ -1,17 +1,39 @@
-import { ApiErrorData } from "@/lib/utils/api/handle-api-error";
+import { ApiErrorData, formatApiError } from "@/lib/utils/api/handle-api-error";
 
 export class ApiErrorResponse extends Error {
+  /**
+   * The HTTP status code returned by the API
+   */
   readonly status: number;
+  /**
+   * The error data returned by the API, structured according to `ApiErrorData`.
+   */
   readonly data: ApiErrorData;
+  /**
+   * If the error is due to a bad request (status code 400-499)
+   */
   readonly badRequest: boolean;
+  /**
+   * If the error is due to rate limiting (status code 429)
+   */
+  readonly rateLimited: boolean;
+  /**
+   * If the error is due to a server error (status code 500-599)
+   */
   readonly serverError: boolean;
+  /**
+   * The error data formatted into a string using `formatApiError`, for display in the UI.
+   */
+  readonly formattedMessage: string;
 
   constructor(status: number, data: ApiErrorData) {
     super(`API Error: ${status}`);
     this.status = status;
     this.data = data;
     this.badRequest = status >= 400 && status < 500;
+    this.rateLimited = status === 429;
     this.serverError = status >= 500;
+    this.formattedMessage = formatApiError(data);
   }
 }
 
