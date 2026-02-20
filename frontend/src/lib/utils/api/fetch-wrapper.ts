@@ -33,6 +33,6 @@ export async function fetchJson(url: string, options: RequestInit): Promise<obje
       throw new ApiErrorResponse(response.status, errorData);
     }
   } catch {
-    throw new ApiErrorResponse(503, { error: { general: ["Service Unavailable"] } });
+    throw new ApiErrorResponse(503, { error: { general: ["Service unavailable, please try again later."] } });
   }
 }
