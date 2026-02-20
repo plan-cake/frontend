@@ -1,15 +1,13 @@
-type ErrorObject = {
-  [subject: string]: string[];
-}
+import { ApiErrorData } from "@/lib/utils/api/handle-api-error";
 
 export class ApiErrorResponse extends Error {
   status: number;
-  error: ErrorObject;
+  data: ApiErrorData;
 
-  constructor(status: number, error: ErrorObject) {
+  constructor(status: number, data: ApiErrorData) {
     super(`API Error: ${status}`);
     this.status = status;
-    this.error = error;
+    this.data = data;
   }
 }
 
@@ -31,10 +29,10 @@ export async function fetchJson(url: string, options: RequestInit): Promise<obje
     if (response.ok) {
       return await response.json();
     } else {
-      const errorData: ErrorObject = (await response.json()).error;
+      const errorData: ApiErrorData = await response.json();
       throw new ApiErrorResponse(response.status, errorData);
     }
   } catch {
-    throw new ApiErrorResponse(503, { general: ["Service Unavailable"] });
+    throw new ApiErrorResponse(503, { error: { general: ["Service Unavailable"] } });
   }
 }
