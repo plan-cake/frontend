@@ -56,7 +56,16 @@ export type DashboardData = {
   participated_events: DashboardEvent[];
 }
 
-export type ApiEndpoints = {
+export type GetApiEndpoints = {
+  '/event/get-details/': EventDetails;
+
+  '/availability/get-self/': SelfAvailability;
+  '/availability/get-all/': AllAvailability;
+
+  '/dashboard/get/': DashboardData;
+}
+
+export type PostApiEndpoints = {
   '/auth/check-account-auth/': AccountData;
   '/auth/login/': AccountData;
   '/auth/logout/': MessageResponse;
@@ -71,16 +80,11 @@ export type ApiEndpoints = {
   '/event/check-code/': MessageResponse;
   '/event/date-edit/': MessageResponse;
   '/event/week-edit/': MessageResponse;
-  '/event/get-details/': EventDetails;
 
   '/availability/add/': MessageResponse;
   '/availability/check-display-name/': MessageResponse;
-  '/availability/get-self/': SelfAvailability;
-  '/availability/get-all/': AllAvailability;
   '/availability/remove-self/': MessageResponse;
   '/availability/remove/': MessageResponse;
-
-  '/dashboard/get/': DashboardData;
 
   '/account/remove-default-name/': MessageResponse;
   '/account/set-default-name/': MessageResponse;

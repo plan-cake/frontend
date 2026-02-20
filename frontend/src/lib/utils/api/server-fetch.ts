@@ -1,6 +1,6 @@
 import { getAuthCookieString } from "@/lib/utils/api/cookie-utils";
 import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
-import { ApiEndpoints } from "@/lib/utils/api/types";
+import { GetApiEndpoints } from "@/lib/utils/api/types";
 
 /**
  * Performs a GET request to the specified API endpoint from the server.
@@ -9,11 +9,11 @@ import { ApiEndpoints } from "@/lib/utils/api/types";
  * @param options Optional fetch options to override defaults.
  * @returns A Promise that resolves to the Response object from the fetch call. 
  */
-export async function serverGet<K extends keyof ApiEndpoints>(
+export async function serverGet<K extends keyof GetApiEndpoints>(
   endpoint: K,
   params?: Record<string, string>,
   options?: RequestInit
-): Promise<ApiEndpoints[K]> {
+): Promise<GetApiEndpoints[K]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   let queryString = "";
@@ -34,5 +34,5 @@ export async function serverGet<K extends keyof ApiEndpoints>(
     ...options,
   };
 
-  return (await fetchJson(url, requestOptions) as ApiEndpoints[K]);
+  return (await fetchJson(url, requestOptions) as GetApiEndpoints[K]);
 }
