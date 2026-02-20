@@ -28,16 +28,19 @@ export class ApiErrorResponse extends Error {
  * @returns A Promise that resolves to the Response object from the fetch call, or a 503 response if an error occurs.
  */
 export async function fetchJson(url: string, options: RequestInit): Promise<object> {
+  let response;
+
   try {
-    const response = await fetch(url, options);
-    if (response.ok) {
-      return await response.json();
-    } else {
-      const errorData: ApiErrorData = await response.json();
-      throw new ApiErrorResponse(response.status, errorData);
-    }
+    response = await fetch(url, options);
   } catch (e) {
     console.log("CAUGHT FETCH ERROR", e);
     throw new ApiErrorResponse(503, { error: { general: ["Service unavailable, please try again later."] } });
+  }
+
+  if (response.ok) {
+    return await response.json();
+  } else {
+    const errorData: ApiErrorData = await response.json();
+    throw new ApiErrorResponse(response.status, errorData);
   }
 }
