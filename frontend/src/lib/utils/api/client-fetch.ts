@@ -1,5 +1,5 @@
-import { safeFetch } from "@/lib/utils/api/safe-fetch";
-import { EndpointPath } from "@/lib/utils/api/types";
+import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
+import { ApiEndpoints } from "@/lib/utils/api/types";
 
 /**
  * Performs a GET request to the specified API endpoint from the client.
@@ -8,15 +8,15 @@ import { EndpointPath } from "@/lib/utils/api/types";
  * @param options Optional fetch options to override defaults.
  * @returns A Promise that resolves to the Response object from the fetch call. 
  */
-export async function clientGet(
-  endpoint: EndpointPath,
-  params: Record<string, string>,
+export async function clientGet<K extends keyof ApiEndpoints>(
+  endpoint: K,
+  params?: Record<string, string>,
   options?: RequestInit
-): Promise<Response> {
+): Promise<ApiEndpoints[K]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   let queryString = "";
-  if (Object.keys(params).length > 0) {
+  if (params && Object.keys(params).length > 0) {
     queryString = `?${new URLSearchParams(params).toString()}`;
   }
 
@@ -31,7 +31,7 @@ export async function clientGet(
     ...options,
   };
 
-  return await safeFetch(url, requestOptions);
+  return (await fetchJson(url, requestOptions) as ApiEndpoints[K]);
 }
 
 /**
@@ -41,11 +41,11 @@ export async function clientGet(
  * @param options Optional fetch options to override defaults.
  * @returns A Promise that resolves to the Response object from the fetch call.
  */
-export async function clientPost(
-  endpoint: EndpointPath,
-  body: object,
+export async function clientPost<K extends keyof ApiEndpoints>(
+  endpoint: K,
+  body?: object,
   options?: RequestInit
-): Promise<Response> {
+): Promise<ApiEndpoints[K]> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const url = `${baseUrl}${endpoint}`;
 
@@ -55,9 +55,9 @@ export async function clientPost(
       "Content-Type": "application/json",
     },
     credentials: "include",
-    body: JSON.stringify(body),
+    body: body ? JSON.stringify(body) : undefined,
     ...options,
   };
 
-  return await safeFetch(url, requestOptions);
+  return (await fetchJson(url, requestOptions) as ApiEndpoints[K]);
 }
