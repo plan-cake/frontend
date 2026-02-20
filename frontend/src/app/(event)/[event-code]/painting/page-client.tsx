@@ -21,6 +21,8 @@ import { ScheduleGrid } from "@/features/event/grid";
 import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
+import { clientPost } from "@/lib/utils/api/client-fetch";
+import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
@@ -85,30 +87,22 @@ export default function ClientPage({
     }
 
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/availability/check-display-name/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify({
-            event_code: eventCode,
-            display_name: displayName,
-          }),
-        },
-      );
-
-      if (!response.ok) {
+      await clientPost("/availability/check-display-name/", {
+        event_code: eventCode,
+        display_name: displayName,
+      });
+      setErrors((prev) => ({ ...prev, displayName: "" }));
+    } catch (e) {
+      const error = e as ApiErrorResponse;
+      if (error.badRequest) {
         setErrors((prev) => ({
           ...prev,
           displayName: MESSAGES.ERROR_NAME_TAKEN,
         }));
       } else {
-        setErrors((prev) => ({ ...prev, displayName: "" }));
+        const message = formatApiError(error.data);
+        addToast("error", message);
       }
-    } catch (error) {
-      console.error("Error checking name availability:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
     }
   }, 300);
 
@@ -139,89 +133,66 @@ export default function ClientPage({
   const handleSubmitAvailability = async () => {
     setErrors({}); // reset errors
 
-    try {
-      const validationErrors = await validateAvailabilityData(state);
-      if (Object.keys(validationErrors).length > 0) {
-        setErrors(validationErrors);
-        Object.values(validationErrors).forEach((error) =>
-          addToast("error", error),
-        );
-        return false;
-      }
+    const validationErrors = await validateAvailabilityData(state);
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      Object.values(validationErrors).forEach((error) =>
+        addToast("error", error),
+      );
+      return false;
+    }
 
-      // Save the default name if checkbox checked
-      if (saveDefaultName) {
-        let defaultNameSaved = false;
-        if (accountDetails) {
-          const response = await fetch(
-            `${process.env.NEXT_PUBLIC_API_URL}/account/set-default-name/`,
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              credentials: "include",
-              body: JSON.stringify({ display_name: displayName }),
-            },
-          );
-          if (response.ok) {
-            defaultNameSaved = true;
-          }
-        }
-        if (defaultNameSaved) {
-          // Update account context
+    // Save the default name if checkbox checked
+    if (saveDefaultName) {
+      if (accountDetails) {
+        try {
+          await clientPost("/account/set-default-name/", {
+            display_name: displayName,
+          });
           login({
-            ...accountDetails!,
+            ...accountDetails,
             defaultName: displayName,
           });
           addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
-        } else {
-          console.error("Failed to save default name");
-          addToast("error", MESSAGES.ERROR_GENERIC);
+        } catch (e) {
+          const error = e as ApiErrorResponse;
+          const message = formatApiError(error.data);
+          addToast("error", message);
           return false;
         }
-      }
-
-      const payload_availability = Array.from(userAvailability).map((iso) => {
-        const date = parseISO(iso);
-        return timeslotToISOString(date, timeZone, eventRange.type);
-      });
-
-      const payload = {
-        event_code: eventCode,
-        display_name: displayName,
-        availability: payload_availability,
-        time_zone: timeZone,
-      };
-
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/availability/add/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(payload),
-        },
-      );
-
-      if (response.ok) {
-        router.push(`/${eventCode}`);
-        return true;
       } else {
-        const body = await response.json();
-        const message = formatApiError(body);
-
-        if (response.status === 429) {
-          setErrors((prev) => ({
-            ...prev,
-            rate_limit: message || MESSAGES.ERROR_RATE_LIMIT,
-          }));
-        } else {
-          addToast("error", message);
-        }
+        addToast("error", MESSAGES.ERROR_GENERIC);
         return false;
       }
-    } catch (error) {
-      console.error("Error submitting availability:", error);
-      addToast("error", MESSAGES.ERROR_GENERIC);
+    }
+
+    const payload_availability = Array.from(userAvailability).map((iso) => {
+      const date = parseISO(iso);
+      return timeslotToISOString(date, timeZone, eventRange.type);
+    });
+
+    const payload = {
+      event_code: eventCode,
+      display_name: displayName,
+      availability: payload_availability,
+      time_zone: timeZone,
+    };
+
+    try {
+      await clientPost("/availability/add/", payload);
+      router.push(`/${eventCode}`);
+      return true;
+    } catch (e) {
+      const error = e as ApiErrorResponse;
+      const message = formatApiError(error.data);
+      if (error.status === 429) {
+        setErrors((prev) => ({
+          ...prev,
+          rate_limit: message || MESSAGES.ERROR_RATE_LIMIT,
+        }));
+      } else {
+        addToast("error", message);
+      }
       return false;
     }
   };
