@@ -1,13 +1,17 @@
 import { ApiErrorData } from "@/lib/utils/api/handle-api-error";
 
 export class ApiErrorResponse extends Error {
-  status: number;
-  data: ApiErrorData;
+  readonly status: number;
+  readonly data: ApiErrorData;
+  readonly badRequest: boolean;
+  readonly serverError: boolean;
 
   constructor(status: number, data: ApiErrorData) {
     super(`API Error: ${status}`);
     this.status = status;
     this.data = data;
+    this.badRequest = status >= 400 && status < 500;
+    this.serverError = status >= 500;
   }
 }
 
@@ -32,7 +36,8 @@ export async function fetchJson(url: string, options: RequestInit): Promise<obje
       const errorData: ApiErrorData = await response.json();
       throw new ApiErrorResponse(response.status, errorData);
     }
-  } catch {
+  } catch (e) {
+    console.log("CAUGHT FETCH ERROR", e);
     throw new ApiErrorResponse(503, { error: { general: ["Service unavailable, please try again later."] } });
   }
 }
