@@ -56,36 +56,68 @@ export type DashboardData = {
   participated_events: DashboardEvent[];
 }
 
-export type GetApiEndpoints = {
-  '/event/get-details/': EventDetails;
+export const ROUTES = {
+  auth: {
+    checkAccountAuth: "/auth/check-account-auth/",
+    login: "/auth/login/",
+    logout: "/auth/logout/",
+    register: "/auth/register/",
+    resendRegisterEmail: "/auth/resend-register-email/",
+    resetPassword: "/auth/reset-password/",
+    startPasswordReset: "/auth/start-password-reset/",
+    verifyEmail: "/auth/verify-email/",
+  },
+  event: {
+    dateCreate: "/event/date-create/",
+    weekCreate: "/event/week-create/",
+    checkCode: "/event/check-code/",
+    dateEdit: "/event/date-edit/",
+    weekEdit: "/event/week-edit/",
+    getDetails: "/event/get-details/",
+  },
+  availability: {
+    add: "/availability/add/",
+    checkDisplayName: "/availability/check-display-name/",
+    getSelf: "/availability/get-self/",
+    getAll: "/availability/get-all/",
+    removeSelf: "/availability/remove-self/",
+    remove: "/availability/remove/",
+  },
+  dashboard: {
+    get: "/dashboard/get/",
+  },
+  account: {
+    removeDefaultName: "/account/remove-default-name/",
+    setDefaultName: "/account/set-default-name/",
+  }
+} as const;
 
-  '/availability/get-self/': SelfAvailability;
-  '/availability/get-all/': AllAvailability;
+export type ApiEndpoints = {
+  [ROUTES.auth.checkAccountAuth]: AccountData;
+  [ROUTES.auth.login]: AccountData;
+  [ROUTES.auth.logout]: MessageResponse;
+  [ROUTES.auth.register]: MessageResponse;
+  [ROUTES.auth.resendRegisterEmail]: MessageResponse;
+  [ROUTES.auth.resetPassword]: MessageResponse;
+  [ROUTES.auth.startPasswordReset]: MessageResponse;
+  [ROUTES.auth.verifyEmail]: MessageResponse;
 
-  '/dashboard/get/': DashboardData;
-}
+  [ROUTES.event.dateCreate]: EventCode;
+  [ROUTES.event.weekCreate]: EventCode;
+  [ROUTES.event.checkCode]: MessageResponse;
+  [ROUTES.event.dateEdit]: MessageResponse;
+  [ROUTES.event.weekEdit]: MessageResponse;
+  [ROUTES.event.getDetails]: EventDetails;
 
-export type PostApiEndpoints = {
-  '/auth/check-account-auth/': AccountData;
-  '/auth/login/': AccountData;
-  '/auth/logout/': MessageResponse;
-  '/auth/register/': MessageResponse;
-  '/auth/resend-register-email/': MessageResponse;
-  '/auth/reset-password/': MessageResponse;
-  '/auth/start-password-reset/': MessageResponse;
-  '/auth/verify-email/': MessageResponse;
+  [ROUTES.availability.add]: MessageResponse;
+  [ROUTES.availability.checkDisplayName]: MessageResponse;
+  [ROUTES.availability.getSelf]: SelfAvailability;
+  [ROUTES.availability.getAll]: AllAvailability;
+  [ROUTES.availability.removeSelf]: MessageResponse;
+  [ROUTES.availability.remove]: MessageResponse;
 
-  '/event/date-create/': EventCode;
-  '/event/week-create/': EventCode;
-  '/event/check-code/': MessageResponse;
-  '/event/date-edit/': MessageResponse;
-  '/event/week-edit/': MessageResponse;
+  [ROUTES.dashboard.get]: DashboardData;
 
-  '/availability/add/': MessageResponse;
-  '/availability/check-display-name/': MessageResponse;
-  '/availability/remove-self/': MessageResponse;
-  '/availability/remove/': MessageResponse;
-
-  '/account/remove-default-name/': MessageResponse;
-  '/account/set-default-name/': MessageResponse;
+  [ROUTES.account.removeDefaultName]: MessageResponse;
+  [ROUTES.account.setDefaultName]: MessageResponse;
 }

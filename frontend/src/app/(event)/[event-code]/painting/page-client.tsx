@@ -24,6 +24,7 @@ import { MESSAGES } from "@/lib/messages";
 import { clientPost } from "@/lib/utils/api/client-fetch";
 import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
+import { ROUTES } from "@/lib/utils/api/types";
 import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
@@ -87,7 +88,7 @@ export default function ClientPage({
     }
 
     try {
-      await clientPost("/availability/check-display-name/", {
+      await clientPost(ROUTES.availability.checkDisplayName, {
         event_code: eventCode,
         display_name: displayName,
       });
@@ -146,7 +147,7 @@ export default function ClientPage({
     if (saveDefaultName) {
       if (accountDetails) {
         try {
-          await clientPost("/account/set-default-name/", {
+          await clientPost(ROUTES.account.setDefaultName, {
             display_name: displayName,
           });
           login({
@@ -179,7 +180,7 @@ export default function ClientPage({
     };
 
     try {
-      await clientPost("/availability/add/", payload);
+      await clientPost(ROUTES.availability.add, payload);
       router.push(`/${eventCode}`);
       return true;
     } catch (e) {
