@@ -1,17 +1,17 @@
-type MessageResponse = {
+export type MessageResponse = {
   message: string[];
 }
 
-type AccountData = {
+export type AccountData = {
   email: string;
   default_display_name: string;
 }
 
-type EventCode = {
+export type EventCode = {
   event_code: string;
 }
 
-type EventDetails = {
+export type EventDetails = {
   title: string;
   duration: number | null;
   timeslots: string[];
@@ -24,13 +24,13 @@ type EventDetails = {
   end_time: string;
 }
 
-type SelfAvailability = {
+export type SelfAvailability = {
   display_name: string;
   available_dates: string[];
   time_zone: string;
 }
 
-type AllAvailability = {
+export type AllAvailability = {
   user_display_name: string;
   participants: string[];
   availability: {
@@ -38,7 +38,7 @@ type AllAvailability = {
   }
 }
 
-type DashboardEvent = {
+export type DashboardEvent = {
   title: string;
   event_type: string;
   duration: number | null;
@@ -51,7 +51,7 @@ type DashboardEvent = {
   event_code: string;
 }
 
-type DashboardData = {
+export type DashboardData = {
   created_events: DashboardEvent[];
   participated_events: DashboardEvent[];
 }
