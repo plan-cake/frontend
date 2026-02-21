@@ -61,7 +61,7 @@ export type EventDetails = {
   timeslots: string[];
   time_zone: string;
   is_creator: boolean;
-  event_type: string;
+  event_type: "Date" | "Week";
   start_date: string;
   end_date: string;
   start_time: string;
@@ -96,7 +96,7 @@ export type AllAvailability = {
 
 export type DashboardEvent = {
   title: string;
-  event_type: string;
+  event_type: "Date" | "Week";
   duration: number | null;
   start_date: string;
   end_date: string;
