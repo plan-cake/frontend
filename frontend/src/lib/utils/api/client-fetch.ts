@@ -10,7 +10,7 @@ import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
  */
 export async function clientGet<T extends { url: string }>(
   endpoint: T,
-  params?: InferReq<T>,
+  params: InferReq<T>,
   options?: RequestInit
 ): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -43,7 +43,7 @@ export async function clientGet<T extends { url: string }>(
  */
 export async function clientPost<T extends { url: string }>(
   endpoint: T,
-  body?: InferReq<T>,
+  body: InferReq<T>,
   options?: RequestInit
 ): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;

@@ -11,7 +11,7 @@ import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
  */
 export async function serverGet<T extends { url: string }>(
   endpoint: T,
-  params?: InferReq<T>,
+  params: InferReq<T>,
   options?: RequestInit
 ): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
