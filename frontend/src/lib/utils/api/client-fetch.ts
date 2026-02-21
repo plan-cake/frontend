@@ -1,4 +1,4 @@
-import { ApiEndpoints } from "@/lib/utils/api/endpoints";
+import { InferReq, InferRes } from "@/lib/utils/api/endpoints";
 import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
 
 /**
@@ -8,11 +8,11 @@ import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
  * @param options Optional fetch options to override defaults.
  * @returns A Promise that resolves to the Response object from the fetch call. 
  */
-export async function clientGet<K extends keyof ApiEndpoints>(
-  endpoint: K,
-  params?: Record<string, string>,
+export async function clientGet<T extends { url: string }>(
+  endpoint: T,
+  params?: InferReq<T>,
   options?: RequestInit
-): Promise<ApiEndpoints[K]> {
+): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
 
   let queryString = "";
@@ -31,7 +31,7 @@ export async function clientGet<K extends keyof ApiEndpoints>(
     ...options,
   };
 
-  return (await fetchJson(url, requestOptions) as ApiEndpoints[K]);
+  return (await fetchJson(url, requestOptions) as InferRes<T>);
 }
 
 /**
@@ -41,11 +41,11 @@ export async function clientGet<K extends keyof ApiEndpoints>(
  * @param options Optional fetch options to override defaults.
  * @returns A Promise that resolves to the Response object from the fetch call.
  */
-export async function clientPost<K extends keyof ApiEndpoints>(
-  endpoint: K,
-  body?: object,
+export async function clientPost<T extends { url: string }>(
+  endpoint: T,
+  body?: InferReq<T>,
   options?: RequestInit
-): Promise<ApiEndpoints[K]> {
+): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
   const url = `${baseUrl}${endpoint}`;
 
@@ -59,5 +59,5 @@ export async function clientPost<K extends keyof ApiEndpoints>(
     ...options,
   };
 
-  return (await fetchJson(url, requestOptions) as ApiEndpoints[K]);
+  return (await fetchJson(url, requestOptions) as InferRes<T>);
 }
