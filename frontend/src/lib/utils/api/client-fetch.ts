@@ -1,5 +1,5 @@
+import { ApiEndpoints } from "@/lib/utils/api/endpoints";
 import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
-import { ApiEndpoints } from "@/lib/utils/api/types";
 
 /**
  * Performs a GET request to the specified API endpoint from the client.

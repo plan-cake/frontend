@@ -22,9 +22,9 @@ import EventInfoDrawer, { EventInfo } from "@/features/event/info-drawer";
 import { RateLimitBanner, useToast } from "@/features/system-feedback";
 import { MESSAGES } from "@/lib/messages";
 import { clientPost } from "@/lib/utils/api/client-fetch";
+import { ROUTES } from "@/lib/utils/api/endpoints";
 import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
 import { formatApiError } from "@/lib/utils/api/handle-api-error";
-import { ROUTES } from "@/lib/utils/api/types";
 import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
