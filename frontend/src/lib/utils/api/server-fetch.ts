@@ -21,7 +21,7 @@ export async function serverGet<T extends { url: string }>(
     queryString = `?${new URLSearchParams(params).toString()}`;
   }
 
-  const url = `${baseUrl}${endpoint}${queryString}`;
+  const url = `${baseUrl}${endpoint.url}${queryString}`;
 
   const cookieString = await getAuthCookieString();
 

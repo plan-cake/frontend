@@ -20,7 +20,7 @@ export async function clientGet<T extends { url: string }>(
     queryString = `?${new URLSearchParams(params).toString()}`;
   }
 
-  const url = `${baseUrl}${endpoint}${queryString}`;
+  const url = `${baseUrl}${endpoint.url}${queryString}`;
 
   const requestOptions: RequestInit = {
     method: "GET",
@@ -47,7 +47,7 @@ export async function clientPost<T extends { url: string }>(
   options?: RequestInit
 ): Promise<InferRes<T>> {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  const url = `${baseUrl}${endpoint}`;
+  const url = `${baseUrl}${endpoint.url}`;
 
   const requestOptions: RequestInit = {
     method: "POST",
