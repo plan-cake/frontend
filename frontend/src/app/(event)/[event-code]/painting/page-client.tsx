@@ -24,7 +24,6 @@ import { MESSAGES } from "@/lib/messages";
 import { clientPost } from "@/lib/utils/api/client-fetch";
 import { ROUTES } from "@/lib/utils/api/endpoints";
 import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
-import { formatApiError } from "@/lib/utils/api/handle-api-error";
 import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
@@ -101,8 +100,7 @@ export default function ClientPage({
           displayName: MESSAGES.ERROR_NAME_TAKEN,
         }));
       } else {
-        const message = formatApiError(error.data);
-        addToast("error", message);
+        addToast("error", error.formattedMessage);
       }
     }
   }, 300);
@@ -157,8 +155,7 @@ export default function ClientPage({
           addToast("success", MESSAGES.SUCCESS_DEFAULT_NAME_SAVED);
         } catch (e) {
           const error = e as ApiErrorResponse;
-          const message = formatApiError(error.data);
-          addToast("error", message);
+          addToast("error", error.formattedMessage);
           return false;
         }
       } else {
@@ -185,14 +182,13 @@ export default function ClientPage({
       return true;
     } catch (e) {
       const error = e as ApiErrorResponse;
-      const message = formatApiError(error.data);
-      if (error.status === 429) {
+      if (error.rateLimited) {
         setErrors((prev) => ({
           ...prev,
-          rate_limit: message || MESSAGES.ERROR_RATE_LIMIT,
+          rate_limit: error.formattedMessage || MESSAGES.ERROR_RATE_LIMIT,
         }));
       } else {
-        addToast("error", message);
+        addToast("error", error.formattedMessage);
       }
       return false;
     }
