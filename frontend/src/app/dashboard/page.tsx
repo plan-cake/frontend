@@ -8,6 +8,9 @@ import { processDashboardData } from "@/lib/utils/api/process-dashboard-data";
 import { serverGet } from "@/lib/utils/api/server-fetch";
 import { constructMetadata } from "@/lib/utils/construct-metadata";
 
+// Explicitly set this page to be dynamic so Next.js doesn't try to statically build it
+export const dynamic = "force-dynamic";
+
 export function generateMetadata(): Metadata {
   return constructMetadata("Dashboard", "View all your events on Plancake!");
 }

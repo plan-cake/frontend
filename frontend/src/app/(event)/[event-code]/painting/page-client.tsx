@@ -14,7 +14,6 @@ import { EventRange } from "@/core/event/types";
 import { useAccount } from "@/features/account/context";
 import ActionButton from "@/features/button/components/action";
 import LinkButton from "@/features/button/components/link";
-import { SelfAvailabilityResponse } from "@/features/event/availability/fetch-data";
 import { validateAvailabilityData } from "@/features/event/availability/validate-data";
 import TimeZoneSelector from "@/features/event/components/selectors/timezone";
 import { ScheduleGrid } from "@/features/event/grid";
@@ -24,6 +23,7 @@ import { MESSAGES } from "@/lib/messages";
 import { clientPost } from "@/lib/utils/api/client-fetch";
 import { ROUTES } from "@/lib/utils/api/endpoints";
 import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
+import { SelfAvailability } from "@/lib/utils/api/types";
 import { timeslotToISOString } from "@/lib/utils/date-time-format";
 
 export default function ClientPage({
@@ -37,7 +37,7 @@ export default function ClientPage({
   eventName: string;
   eventRange: EventRange;
   timeslots: Date[];
-  initialData: SelfAvailabilityResponse | null;
+  initialData: SelfAvailability | null;
 }) {
   const router = useRouter();
 
