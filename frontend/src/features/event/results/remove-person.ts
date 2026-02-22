@@ -16,11 +16,11 @@ export async function removePerson(
       await serverPost(ROUTES.availability.remove, {
         event_code: eventCode,
         display_name: person,
-      });
+      }, { cache: "no-store" });
     } else {
       await serverPost(ROUTES.availability.removeSelf, {
         event_code: eventCode,
-      });
+      }, { cache: "no-store" });
     }
     revalidatePath(`/${eventCode}`);
     return { success: true };

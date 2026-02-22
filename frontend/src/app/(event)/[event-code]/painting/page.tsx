@@ -42,9 +42,13 @@ export default async function Page({ params }: EventCodePageProps) {
 
   const [eventData, initialAvailabilityData] = await Promise.all([
     getCachedEventDetails(eventCode),
-    serverGet(ROUTES.availability.getSelf, {
-      event_code: eventCode,
-    }).catch((e) => {
+    serverGet(
+      ROUTES.availability.getSelf,
+      {
+        event_code: eventCode,
+      },
+      { cache: "no-store" },
+    ).catch((e) => {
       const error = e as ApiErrorResponse;
       handleErrorResponse(error.status, error.data);
     }),

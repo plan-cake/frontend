@@ -14,7 +14,9 @@ export function generateMetadata(): Metadata {
 
 export default async function Page() {
   try {
-    const eventData = await serverGet(ROUTES.dashboard.get);
+    const eventData = await serverGet(ROUTES.dashboard.get, undefined, {
+      cache: "no-store",
+    });
     const processedData = processDashboardData(eventData);
     return <ClientPage {...processedData} />;
   } catch (e) {
