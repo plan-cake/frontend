@@ -50,6 +50,10 @@ export default async function Page({ params }: EventCodePageProps) {
       { cache: "no-store" },
     ).catch((e) => {
       const error = e as ApiErrorResponse;
+      if (error.status === 400) {
+        // The user just didn't participate yet, ignore this error and return null
+        return null;
+      }
       handleErrorResponse(error.status, error.data);
     }),
   ]);
