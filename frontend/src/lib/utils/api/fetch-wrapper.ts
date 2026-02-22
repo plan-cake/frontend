@@ -56,8 +56,7 @@ export async function fetchJson(url: string, options: RequestInit): Promise<obje
   try {
     response = await fetch(url, options);
     data = await response.json();
-  } catch (e) {
-    console.log("CAUGHT FETCH ERROR", e);
+  } catch {
     throw new ApiErrorResponse(503, { error: { general: ["Service unavailable, please try again later."] } });
   }
 
