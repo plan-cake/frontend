@@ -51,18 +51,20 @@ export class ApiErrorResponse extends Error {
  */
 export async function fetchJson(url: string, options: RequestInit): Promise<object> {
   let response;
+  let data;
 
   try {
     response = await fetch(url, options);
+    data = await response.json();
   } catch (e) {
     console.log("CAUGHT FETCH ERROR", e);
     throw new ApiErrorResponse(503, { error: { general: ["Service unavailable, please try again later."] } });
   }
 
   if (response.ok) {
-    return await response.json();
+    return data;
   } else {
-    const errorData: ApiErrorData = await response.json();
+    const errorData: ApiErrorData = data;
     throw new ApiErrorResponse(response.status, errorData);
   }
 }
