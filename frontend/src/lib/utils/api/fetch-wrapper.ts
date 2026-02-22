@@ -47,7 +47,7 @@ export class ApiErrorResponse extends Error {
  * 
  * @param url The URL to fetch.
  * @param options The options to pass to the fetch call.
- * @returns A Promise that resolves to the Response object from the fetch call, or a 503 response if an error occurs.
+ * @returns The JSON data from the response, if the call was successful.
  */
 export async function fetchJson(url: string, options: RequestInit): Promise<object> {
   let response;
