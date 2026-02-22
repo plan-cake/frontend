@@ -125,6 +125,13 @@ export const ROUTES = {
      */
     weekEdit: route<MessageResponse, EventEditData>("/event/week-edit/"),
     /**
+     * Deletes an event.
+     * @method POST
+     * @throws 403 - If the user is not the creator of the event.
+     * @throws 404 - If the event code is invalid.
+     */
+    delete: route<MessageResponse, EventCode>("/event/delete/"),
+    /**
      * Gets the details of an event, not including availability.
      * @method GET
      * @throws 404 - If the event code is invalid.
