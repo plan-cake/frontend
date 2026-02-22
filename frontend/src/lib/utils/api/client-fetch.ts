@@ -6,7 +6,7 @@ import { fetchJson } from "@/lib/utils/api/fetch-wrapper";
  * @param endpoint The endpoint to send the request to from the `ROUTES` object.
  * @param params An object with key-value pairs to be converted into query parameters.
  * @param options Optional fetch options to override defaults.
- * @returns A Promise that resolves to the Response object from the fetch call. 
+ * @returns The JSON response from the API, typed according to the `ROUTES` interface.
  */
 export async function clientGet<T extends { url: string }>(
   endpoint: T,
@@ -39,7 +39,7 @@ export async function clientGet<T extends { url: string }>(
  * @param endpoint The endpoint to send the request to from the `ROUTES` object.
  * @param body An object representing the JSON body to be sent with the request.
  * @param options Optional fetch options to override defaults.
- * @returns A Promise that resolves to the Response object from the fetch call.
+ * @returns The JSON response from the API, typed according to the `ROUTES` interface.
  */
 export async function clientPost<T extends { url: string }>(
   endpoint: T,
