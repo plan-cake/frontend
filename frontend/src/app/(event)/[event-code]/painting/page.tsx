@@ -7,7 +7,7 @@ import { getCachedEventDetails } from "@/features/event/editor/fetch-data";
 import { ROUTES } from "@/lib/utils/api/endpoints";
 import { ApiErrorResponse } from "@/lib/utils/api/fetch-wrapper";
 import handleErrorResponse from "@/lib/utils/api/handle-api-error";
-import { processEventData } from "@/lib/utils/api/process-event-data";
+import { processEventData } from "@/lib/utils/api/processors/process-event-data";
 import { serverGet } from "@/lib/utils/api/server-fetch";
 import { constructMetadata } from "@/lib/utils/construct-metadata";
 
